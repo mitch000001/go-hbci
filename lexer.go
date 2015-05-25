@@ -8,7 +8,7 @@ import (
 	"unicode/utf8"
 )
 
-type stateFn func(*lexer) stateFn
+type stateFn func(*Lexer) stateFn
 
 // itemType identifies the type of lex items.
 type itemType int
@@ -66,9 +66,9 @@ func (i item) String() string {
 	return fmt.Sprintf("%q", i.val)
 }
 
-// lex creates a new scanner for the input string.
-func lex(name, input string) *lexer {
-	l := &lexer{
+// NewLexer creates a new scanner for the input string.
+func NewLexer(name, input string) *Lexer {
+	l := &Lexer{
 		name:  name,
 		input: input,
 		state: lexText,
@@ -77,7 +77,7 @@ func lex(name, input string) *lexer {
 	return l
 }
 
-type lexer struct {
+type Lexer struct {
 	name  string    // the name of the input; used only for error reports.
 	input string    // the string being scanned.
 	state stateFn   // the next lexing function to enter
@@ -87,7 +87,7 @@ type lexer struct {
 	items chan item // channel of scanned items.
 }
 
-func (l *lexer) run() {
+func (l *Lexer) run() {
 	for state := lexText; state != nil; {
 		state = state(l)
 	}
@@ -95,7 +95,7 @@ func (l *lexer) run() {
 }
 
 // nextItem returns the next item from the input.
-func (l *lexer) nextItem() item {
+func (l *Lexer) NextItem() item {
 	for {
 		select {
 		case item := <-l.items:
@@ -108,13 +108,13 @@ func (l *lexer) nextItem() item {
 }
 
 // emit passes an item back to the client.
-func (l *lexer) emit(t itemType) {
+func (l *Lexer) emit(t itemType) {
 	l.items <- item{t, l.input[l.start:l.pos], l.start}
 	l.start = l.pos
 }
 
 // next returns the next rune in the input.
-func (l *lexer) next() rune {
+func (l *Lexer) next() rune {
 	if l.pos >= len(l.input) {
 		l.width = 0
 		return eof
@@ -126,19 +126,19 @@ func (l *lexer) next() rune {
 }
 
 // ignore skips over the pending input before this point.
-func (l *lexer) ignore() {
+func (l *Lexer) ignore() {
 	l.start = l.pos
 }
 
 // backup steps back one rune.
 // Can be called only once per call of next.
-func (l *lexer) backup() {
+func (l *Lexer) backup() {
 	l.pos -= l.width
 }
 
 // peek returns but does not consume
 // the next rune in the input.
-func (l *lexer) peek() rune {
+func (l *Lexer) peek() rune {
 	r := l.next()
 	l.backup()
 	return r
@@ -146,7 +146,7 @@ func (l *lexer) peek() rune {
 
 // accept consumes the next rune
 // if it's from the valid set.
-func (l *lexer) accept(valid string) bool {
+func (l *Lexer) accept(valid string) bool {
 	if strings.IndexRune(valid, l.next()) >= 0 {
 		return true
 	}
@@ -155,7 +155,7 @@ func (l *lexer) accept(valid string) bool {
 }
 
 // acceptRun consumes a run of runes from the valid set.
-func (l *lexer) acceptRun(valid string) {
+func (l *Lexer) acceptRun(valid string) {
 	for strings.IndexRune(valid, l.next()) >= 0 {
 	}
 	l.backup()
@@ -163,13 +163,13 @@ func (l *lexer) acceptRun(valid string) {
 
 // lineNumber reports which line we're on. Doing it this way
 // means we don't have to worry about peek double counting.
-func (l *lexer) lineNumber() int {
+func (l *Lexer) lineNumber() int {
 	return 1 + strings.Count(l.input[:l.pos], "\n")
 }
 
 // error returns an error token and terminates the scan by passing
 // back a nil pointer that will be the next state, terminating l.run.
-func (l *lexer) errorf(format string, args ...interface{}) stateFn {
+func (l *Lexer) errorf(format string, args ...interface{}) stateFn {
 	l.items <- item{itemError, fmt.Sprintf(format, args...), l.start}
 	return nil
 }
@@ -184,7 +184,7 @@ const (
 	binaryIdentifier          = '@'
 )
 
-func lexText(l *lexer) stateFn {
+func lexText(l *Lexer) stateFn {
 	for {
 		switch r := l.next(); {
 		case r == escapeCharacter:
@@ -210,13 +210,15 @@ func lexText(l *lexer) stateFn {
 		case ('0' <= r && r <= '9'):
 			l.backup()
 			return lexDigit
-
+		default:
+			l.backup()
+			return lexAlphaNumeric
 		}
 	}
 	return nil
 }
 
-func lexAlphaNumeric(l *lexer) stateFn {
+func lexAlphaNumeric(l *Lexer) stateFn {
 	for {
 		switch r := l.next(); {
 		case r == escapeCharacter:
@@ -227,23 +229,23 @@ func lexAlphaNumeric(l *lexer) stateFn {
 			}
 		case r == dataElementSeparator:
 			l.backup()
+			l.emit(itemAlphaNumeric)
 			return lexSyntaxSymbol
 		case r == segmentEnd:
 			l.backup()
+			l.emit(itemAlphaNumeric)
 			return lexSyntaxSymbol
 		case r == groupDataElementSeparator:
 			l.backup()
+			l.emit(itemAlphaNumeric)
 			return lexSyntaxSymbol
-		case r == binaryIdentifier:
-			l.backup()
-			return lexBinaryData
 		case r == eof:
 			return l.errorf("Unexpected end of input")
 		}
 	}
 }
 
-func lexSyntaxSymbol(l *lexer) stateFn {
+func lexSyntaxSymbol(l *Lexer) stateFn {
 	switch r := l.next(); {
 	case r == dataElementSeparator:
 		l.emit(itemDataElementSeparator)
@@ -259,7 +261,7 @@ func lexSyntaxSymbol(l *lexer) stateFn {
 	}
 }
 
-func lexBinaryData(l *lexer) stateFn {
+func lexBinaryData(l *Lexer) stateFn {
 	l.accept("@")
 	digits := "0123456789"
 	binaryLengthStart := l.pos
@@ -272,7 +274,9 @@ func lexBinaryData(l *lexer) stateFn {
 	if err != nil {
 		return l.errorf("Binary length must contain of digits only")
 	}
-	l.accept("@")
+	if !l.accept("@") {
+		return l.errorf("Binary length must contain of digits only")
+	}
 	l.pos += length
 	if p := l.peek(); isSyntaxSymbol(p) {
 		l.emit(itemBinaryData)
@@ -282,22 +286,56 @@ func lexBinaryData(l *lexer) stateFn {
 	}
 }
 
-func lexDigit(l *lexer) stateFn {
-	// Is it a number?
+func lexDigit(l *Lexer) stateFn {
 	leadingZero := l.accept("0")
-	if r := l.peek(); leadingZero && (r < '0' || '9' < r) {
-		l.emit(itemNumeric)
-		return lexText
-	}
-	digits := "0123456789"
-	l.acceptRun(digits)
-	if l.accept(",") {
+	if leadingZero {
+		// Only valid number with leading 0 is 0
+		if r := l.peek(); isSyntaxSymbol(r) {
+			l.emit(itemNumeric)
+			return lexSyntaxSymbol
+		}
+		// Only valid float with leading 0 is value smaller than 1
+		if l.accept(",") {
+			digits := "0123456789"
+			l.acceptRun(digits)
+			if p := l.peek(); isSyntaxSymbol(p) {
+				l.emit(itemFloat)
+				return lexSyntaxSymbol
+			} else {
+				return l.errorf("Malformed float")
+			}
+		}
+		digits := "0123456789"
 		l.acceptRun(digits)
-		l.emit(itemFloat)
-		return lexText
+		if p := l.peek(); p == ',' {
+			return l.errorf("Malformed float")
+		}
+		if p := l.peek(); isSyntaxSymbol(p) {
+			l.emit(itemDigit)
+			return lexSyntaxSymbol
+		} else {
+			return l.errorf("Malformed digit")
+		}
+	} else {
+		digits := "0123456789"
+		l.acceptRun(digits)
+		// is it a float?
+		if l.accept(",") {
+			l.acceptRun(digits)
+			if p := l.peek(); isSyntaxSymbol(p) {
+				l.emit(itemFloat)
+				return lexSyntaxSymbol
+			} else {
+				return l.errorf("Malformed float")
+			}
+		}
+		if p := l.peek(); isSyntaxSymbol(p) {
+			l.emit(itemNumeric)
+			return lexSyntaxSymbol
+		} else {
+			return l.errorf("Malformed numeric")
+		}
 	}
-	l.emit(itemDigit)
-	return lexText
 }
 
 func isSyntaxSymbol(r rune) bool {
@@ -306,4 +344,8 @@ func isSyntaxSymbol(r rune) bool {
 
 func isAlphaNumeric(r rune) bool {
 	return r == '_' || unicode.IsLetter(r) || unicode.IsDigit(r)
+}
+
+func isText(r rune) bool {
+	return unicode.IsLetter(r) || unicode.IsDigit(r)
 }
