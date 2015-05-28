@@ -7,6 +7,7 @@ func NewParser() *Parser {
 type Parser struct {
 }
 
+// Phase1 reads the tokens from the lexer and transforms them into Segment-AST-Objects
 func (p *Parser) Phase1(l *Lexer) ([]*Segment, error) {
 	var segments []*Segment
 	var currentSegment *Segment = NewSegment(make([]Token, 0), make([]DataElement, 0))
