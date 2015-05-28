@@ -4,101 +4,53 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
-	"unicode"
 	"unicode/utf8"
+)
+
+const (
+	eof                       = -1
+	dataElementSeparator      = '+'
+	groupDataElementSeparator = ':'
+	segmentEnd                = '\''
+	escapeCharacter           = '?'
+	binaryIdentifier          = '@'
 )
 
 type stateFn func(*Lexer) stateFn
 
-// itemType identifies the type of lex items.
-type itemType int
-
-const (
-	itemError itemType = iota // error occurred;
-	// value is text of error
-	itemDataElement               // Datenelement (DE)
-	itemDataElementSeparator      // Datenelement (DE)-Trennzeichen
-	itemGroupDataElement          // Gruppendatenelement (GD)
-	itemGroupDataElementSeparator // Gruppendatenelement (GD)-Trennzeichen
-	itemSegment                   // Segment
-	itemSegmentHeader             // Segmentende-Zeichen
-	itemSegmentEnd                // Segmentende-Zeichen
-	itemEscapeSequence            // Freigabezeichen
-	itemBinaryLength              // Binärdaten Länge
-	itemBinaryData                // Binärdaten
-	itemBinaryMarker              // Binärdatenkennzeichen
-	itemAlphaNumeric              // an
-	itemText                      // txt
-	itemDTAUSCharset              // dta
-	itemNumeric                   // num: 0-9 without leading 0
-	itemDigit                     // dig: 0-9 with optional leading 0
-	itemFloat                     // float
-	itemYesNo                     // jn
-	itemDate                      // dat
-	itemVirtualDate               // vdat
-	itemTime                      // tim
-	itemIdentification            // id
-	itemCountryCode               // ctr: ISO 3166-1 numeric
-	itemCurrency                  // cur: ISO 4217
-	itemValue                     // wrt
-	itemEOF
-)
-
-const eof = -1
-
-// item represents a token returned from the scanner.
-type item struct {
-	typ itemType // Type, such as itemNumber.
-	val string   // Value, such as "23.2".
-	pos int      // position of item in input
-}
-
-func (i item) String() string {
-	switch i.typ {
-	case itemEOF:
-		return "EOF"
-	case itemError:
-		return i.val
-	}
-	if len(i.val) > 10 {
-		return fmt.Sprintf("%.10q...", i.val)
-	}
-	return fmt.Sprintf("%q", i.val)
-}
-
 // NewLexer creates a new scanner for the input string.
 func NewLexer(name, input string) *Lexer {
 	l := &Lexer{
-		name:  name,
-		input: input,
-		state: lexText,
-		items: make(chan item, 2), // Two items sufficient.
+		name:   name,
+		input:  input,
+		state:  lexText,
+		tokens: make(chan Token, 2), // Two token sufficient.
 	}
 	return l
 }
 
 type Lexer struct {
-	name  string    // the name of the input; used only for error reports.
-	input string    // the string being scanned.
-	state stateFn   // the next lexing function to enter
-	pos   int       // current position in the input.
-	start int       // start position of this item.
-	width int       // width of last rune read from input.
-	items chan item // channel of scanned items.
+	name   string     // the name of the input; used only for error reports.
+	input  string     // the string being scanned.
+	state  stateFn    // the next lexing function to enter
+	pos    int        // current position in the input.
+	start  int        // start position of this item.
+	width  int        // width of last rune read from input.
+	tokens chan Token // channel of scanned tokens.
 }
 
 func (l *Lexer) run() {
 	for state := lexText; state != nil; {
 		state = state(l)
 	}
-	close(l.items) // No more tokens will be delivered.
+	close(l.tokens) // No more tokens will be delivered.
 }
 
-// nextItem returns the next item from the input.
-func (l *Lexer) NextItem() item {
+// NextItem returns the next item from the input.
+func (l *Lexer) Next() Token {
 	for {
 		select {
-		case item := <-l.items:
+		case item := <-l.tokens:
 			return item
 		default:
 			l.state = l.state(l)
@@ -107,9 +59,14 @@ func (l *Lexer) NextItem() item {
 	panic("not reached")
 }
 
+// HasNext returns true if there are tokens left, false if EOF has reached
+func (l *Lexer) HasNext() bool {
+	return l.state != nil
+}
+
 // emit passes an item back to the client.
-func (l *Lexer) emit(t itemType) {
-	l.items <- item{t, l.input[l.start:l.pos], l.start}
+func (l *Lexer) emit(t TokenType) {
+	l.tokens <- Token{t, l.input[l.start:l.pos], l.start}
 	l.start = l.pos
 }
 
@@ -170,94 +127,69 @@ func (l *Lexer) lineNumber() int {
 // error returns an error token and terminates the scan by passing
 // back a nil pointer that will be the next state, terminating l.run.
 func (l *Lexer) errorf(format string, args ...interface{}) stateFn {
-	l.items <- item{itemError, fmt.Sprintf(format, args...), l.start}
+	l.tokens <- Token{ERROR, fmt.Sprintf(format, args...), l.start}
 	return nil
 }
 
 // state functions
 
-const (
-	dataElementSeparator      = '+'
-	groupDataElementSeparator = ':'
-	segmentEnd                = '\''
-	escapeCharacter           = '?'
-	binaryIdentifier          = '@'
-)
-
 func lexText(l *Lexer) stateFn {
-	for {
-		switch r := l.next(); {
-		case r == escapeCharacter:
-			if p := l.peek(); isSyntaxSymbol(p) {
-				l.next()
-			} else {
-				return l.errorf("Unexpected '?' at pos %d", l.pos)
-			}
-		case r == dataElementSeparator:
-			l.emit(itemDataElementSeparator)
-			return lexText
-		case r == segmentEnd:
-			l.emit(itemSegmentEnd)
-			return lexText
-		case r == groupDataElementSeparator:
-			l.emit(itemGroupDataElementSeparator)
-			return lexText
-		case r == binaryIdentifier:
-			l.backup()
-			return lexBinaryData
-		case r == eof:
-			return l.errorf("Unexpected end of input")
-		case ('0' <= r && r <= '9'):
-			l.backup()
-			return lexDigit
-		default:
-			l.backup()
-			return lexAlphaNumeric
-		}
+	switch r := l.next(); {
+	case r == escapeCharacter:
+		l.backup()
+		return lexEscapeSequence
+	case r == dataElementSeparator:
+		l.emit(DATA_ELEMENT_SEPARATOR)
+		return lexText
+	case r == segmentEnd:
+		l.emit(SEGMENT_END_MARKER)
+		return lexText
+	case r == groupDataElementSeparator:
+		l.emit(GROUP_DATA_ELEMENT_SEPARATOR)
+		return lexText
+	case r == binaryIdentifier:
+		l.backup()
+		return lexBinaryData
+	case r == eof:
+		// Correctly reached EOF.
+		l.emit(EOF)
+		return nil
+	case ('0' <= r && r <= '9'):
+		l.backup()
+		return lexDigit
+	default:
+		l.backup()
+		return lexAlphaNumeric
 	}
-	return nil
+}
+
+func lexEscapeSequence(l *Lexer) stateFn {
+	l.accept("?")
+	if l.accept("?:+'@") {
+		l.emit(ESCAPE_SEQUENCE)
+		return lexText
+	} else {
+		return l.errorf("Malformed Escape Sequence")
+	}
 }
 
 func lexAlphaNumeric(l *Lexer) stateFn {
+	text := false
 	for {
 		switch r := l.next(); {
-		case r == escapeCharacter:
-			if p := l.peek(); isSyntaxSymbol(p) {
-				l.next()
+		case isSyntaxSymbol(r):
+			l.backup()
+			if text {
+				l.emit(TEXT)
 			} else {
-				return l.errorf("Unexpected '?' at pos %d", l.pos)
+				l.emit(ALPHA_NUMERIC)
 			}
-		case r == dataElementSeparator:
-			l.backup()
-			l.emit(itemAlphaNumeric)
-			return lexSyntaxSymbol
-		case r == segmentEnd:
-			l.backup()
-			l.emit(itemAlphaNumeric)
-			return lexSyntaxSymbol
-		case r == groupDataElementSeparator:
-			l.backup()
-			l.emit(itemAlphaNumeric)
-			return lexSyntaxSymbol
+			return lexText
 		case r == eof:
 			return l.errorf("Unexpected end of input")
+		case (r == '\n' || r == '\r'):
+			text = true
 		}
-	}
-}
-
-func lexSyntaxSymbol(l *Lexer) stateFn {
-	switch r := l.next(); {
-	case r == dataElementSeparator:
-		l.emit(itemDataElementSeparator)
-		return lexText
-	case r == segmentEnd:
-		l.emit(itemSegmentEnd)
-		return lexText
-	case r == groupDataElementSeparator:
-		l.emit(itemGroupDataElementSeparator)
-		return lexText
-	default:
-		return l.errorf("Unexpected syntax symbol: %c\n", r)
 	}
 }
 
@@ -279,8 +211,8 @@ func lexBinaryData(l *Lexer) stateFn {
 	}
 	l.pos += length
 	if p := l.peek(); isSyntaxSymbol(p) {
-		l.emit(itemBinaryData)
-		return lexSyntaxSymbol
+		l.emit(BINARY_DATA)
+		return lexText
 	} else {
 		return l.errorf("Expected syntax symbol after binary data")
 	}
@@ -291,16 +223,16 @@ func lexDigit(l *Lexer) stateFn {
 	if leadingZero {
 		// Only valid number with leading 0 is 0
 		if r := l.peek(); isSyntaxSymbol(r) {
-			l.emit(itemNumeric)
-			return lexSyntaxSymbol
+			l.emit(NUMERIC)
+			return lexText
 		}
 		// Only valid float with leading 0 is value smaller than 1
 		if l.accept(",") {
 			digits := "0123456789"
 			l.acceptRun(digits)
 			if p := l.peek(); isSyntaxSymbol(p) {
-				l.emit(itemFloat)
-				return lexSyntaxSymbol
+				l.emit(FLOAT)
+				return lexText
 			} else {
 				return l.errorf("Malformed float")
 			}
@@ -311,8 +243,8 @@ func lexDigit(l *Lexer) stateFn {
 			return l.errorf("Malformed float")
 		}
 		if p := l.peek(); isSyntaxSymbol(p) {
-			l.emit(itemDigit)
-			return lexSyntaxSymbol
+			l.emit(DIGIT)
+			return lexText
 		} else {
 			return l.errorf("Malformed digit")
 		}
@@ -323,15 +255,15 @@ func lexDigit(l *Lexer) stateFn {
 		if l.accept(",") {
 			l.acceptRun(digits)
 			if p := l.peek(); isSyntaxSymbol(p) {
-				l.emit(itemFloat)
-				return lexSyntaxSymbol
+				l.emit(FLOAT)
+				return lexText
 			} else {
 				return l.errorf("Malformed float")
 			}
 		}
 		if p := l.peek(); isSyntaxSymbol(p) {
-			l.emit(itemNumeric)
-			return lexSyntaxSymbol
+			l.emit(NUMERIC)
+			return lexText
 		} else {
 			return l.errorf("Malformed numeric")
 		}
@@ -339,13 +271,5 @@ func lexDigit(l *Lexer) stateFn {
 }
 
 func isSyntaxSymbol(r rune) bool {
-	return r == '+' || r == '\'' || r == ':' || r == '@' || r == '?'
-}
-
-func isAlphaNumeric(r rune) bool {
-	return r == '_' || unicode.IsLetter(r) || unicode.IsDigit(r)
-}
-
-func isText(r rune) bool {
-	return unicode.IsLetter(r) || unicode.IsDigit(r)
+	return r == dataElementSeparator || r == segmentEnd || r == groupDataElementSeparator || r == binaryIdentifier || r == escapeCharacter
 }
