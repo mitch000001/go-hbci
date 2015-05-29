@@ -8,6 +8,16 @@ type Token interface {
 	Pos() int
 }
 
+type Tokens []Token
+
+func (t Tokens) Types() []TokenType {
+	var types []TokenType
+	for _, token := range t {
+		types = append(types, token.Type())
+	}
+	return types
+}
+
 func NewGroupToken(typ TokenType, tokens ...Token) GroupToken {
 	groupToken := GroupToken{ElementToken: ElementToken{typ: typ}, tokens: tokens}
 	val := ""
@@ -63,6 +73,7 @@ const (
 	// value is text of error
 	DATA_ELEMENT                 // Datenelement (DE)
 	DATA_ELEMENT_SEPARATOR       // Datenelement (DE)-Trennzeichen
+	DATA_ELEMENT_GROUP           // Datenelementgruppe (DEG)
 	GROUP_DATA_ELEMENT           // Gruppendatenelement (GD)
 	GROUP_DATA_ELEMENT_SEPARATOR // Gruppendatenelement (GD)-Trennzeichen
 	SEGMENT                      // Segment
@@ -99,6 +110,7 @@ var tokenName = map[TokenType]string{
 	// value is text of error
 	DATA_ELEMENT:                 "dataElement",
 	DATA_ELEMENT_SEPARATOR:       "dataElementSeparator",
+	DATA_ELEMENT_GROUP:           "dataElementGroup",
 	GROUP_DATA_ELEMENT:           "groupDataElement",
 	GROUP_DATA_ELEMENT_SEPARATOR: "groupDataElementSeparator",
 	SEGMENT:            "segment",
