@@ -11,9 +11,9 @@ type testData struct {
 	value string
 }
 
-func TestLexer(t *testing.T) {
+func TestStringLexer(t *testing.T) {
 	testInput := "ab??cd\ref+12345+@2@ab'"
-	l := NewLexer("", testInput)
+	l := NewStringLexer("", testInput)
 	var items []Token
 	for l.HasNext() {
 		item := l.Next()
@@ -21,7 +21,7 @@ func TestLexer(t *testing.T) {
 	}
 	var itemTypes []TokenType
 	for _, item := range items {
-		itemTypes = append(itemTypes, item.typ)
+		itemTypes = append(itemTypes, item.Type())
 	}
 	expectedItemTypes := []TokenType{
 		ALPHA_NUMERIC,
@@ -48,16 +48,16 @@ func TestLexText(t *testing.T) {
 		{"ab\n\rcd'", TEXT, "ab\n\rcd"},
 	}
 	for _, test := range tests {
-		l := NewLexer("", test.text)
+		l := NewStringLexer("", test.text)
 		item := l.Next()
-		if item.typ != test.typ {
+		if item.Type() != test.typ {
 			t.Logf("Input: %q\n", test.text)
-			t.Logf("Expected type to equal %s, got %s\n", test.typ, item.typ)
+			t.Logf("Expected type to equal %s, got %s\n", test.typ, item.Type())
 			t.Fail()
 		}
-		if item.val != test.value {
+		if item.Value() != test.value {
 			t.Logf("Input: %q\n", test.text)
-			t.Logf("Expected val to equal %q, got %q\n", test.value, item.val)
+			t.Logf("Expected val to equal %q, got %q\n", test.value, item.Value())
 			t.Fail()
 		}
 	}
@@ -75,16 +75,16 @@ func TestLexAlphaNumeric(t *testing.T) {
 		{"ab", ERROR, "Unexpected end of input"},
 	}
 	for _, test := range tests {
-		l := NewLexer("", test.text)
+		l := NewStringLexer("", test.text)
 		item := l.Next()
-		if item.typ != test.typ {
+		if item.Type() != test.typ {
 			t.Logf("Input: %q\n", test.text)
-			t.Logf("Expected type to equal %s, got %s\n", test.typ, item.typ)
+			t.Logf("Expected type to equal %s, got %s\n", test.typ, item.Type())
 			t.Fail()
 		}
-		if item.val != test.value {
+		if item.Value() != test.value {
 			t.Logf("Input: %q\n", test.text)
-			t.Logf("Expected val to equal %q, got %q\n", test.value, item.val)
+			t.Logf("Expected val to equal %q, got %q\n", test.value, item.Value())
 			t.Fail()
 		}
 	}
@@ -100,16 +100,16 @@ func TestLexEscapeSequence(t *testing.T) {
 		{"?a", ERROR, "Malformed Escape Sequence"},
 	}
 	for _, test := range tests {
-		l := NewLexer("", test.text)
+		l := NewStringLexer("", test.text)
 		item := l.Next()
-		if item.typ != test.typ {
+		if item.Type() != test.typ {
 			t.Logf("Input: %q\n", test.text)
-			t.Logf("Expected type to equal %s, got %s\n", test.typ, item.typ)
+			t.Logf("Expected type to equal %s, got %s\n", test.typ, item.Type())
 			t.Fail()
 		}
-		if item.val != test.value {
+		if item.Value() != test.value {
 			t.Logf("Input: %q\n", test.text)
-			t.Logf("Expected val to equal %q, got %q\n", test.value, item.val)
+			t.Logf("Expected val to equal %q, got %q\n", test.value, item.Value())
 			t.Fail()
 		}
 	}
@@ -122,16 +122,16 @@ func TestLexSyntaxSymbol(t *testing.T) {
 		{":", GROUP_DATA_ELEMENT_SEPARATOR, ":"},
 	}
 	for _, test := range tests {
-		l := NewLexer("", test.text)
+		l := NewStringLexer("", test.text)
 		item := l.Next()
-		if item.typ != test.typ {
+		if item.Type() != test.typ {
 			t.Logf("Input: %q\n", test.text)
-			t.Logf("Expected type to equal %s, got %s\n", test.typ, item.typ)
+			t.Logf("Expected type to equal %s, got %s\n", test.typ, item.Type())
 			t.Fail()
 		}
-		if item.val != test.value {
+		if item.Value() != test.value {
 			t.Logf("Input: %q\n", test.text)
-			t.Logf("Expected val to equal %q, got %q\n", test.value, item.val)
+			t.Logf("Expected val to equal %q, got %q\n", test.value, item.Value())
 			t.Fail()
 		}
 	}
@@ -146,16 +146,16 @@ func TestLexBinaryData(t *testing.T) {
 		{"@2x@ab'", ERROR, "Binary length must contain of digits only"},
 	}
 	for _, test := range tests {
-		l := NewLexer("", test.text)
+		l := NewStringLexer("", test.text)
 		item := l.Next()
-		if item.typ != test.typ {
+		if item.Type() != test.typ {
 			t.Logf("Input: %q\n", test.text)
-			t.Logf("Expected type to equal %s, got %s\n", test.typ, item.typ)
+			t.Logf("Expected type to equal %s, got %s\n", test.typ, item.Type())
 			t.Fail()
 		}
-		if item.val != test.value {
+		if item.Value() != test.value {
 			t.Logf("Input: %q\n", test.text)
-			t.Logf("Expected val to equal %q, got %q\n", test.value, item.val)
+			t.Logf("Expected val to equal %q, got %q\n", test.value, item.Value())
 			t.Fail()
 		}
 	}
@@ -177,16 +177,16 @@ func TestLexDigit(t *testing.T) {
 		{"12a'", ERROR, "Malformed numeric"},
 	}
 	for _, test := range tests {
-		l := NewLexer("", test.text)
+		l := NewStringLexer("", test.text)
 		item := l.Next()
-		if item.typ != test.typ {
+		if item.Type() != test.typ {
 			t.Logf("Input: %q\n", test.text)
-			t.Logf("Expected type to equal %s, got %s\n", test.typ, item.typ)
+			t.Logf("Expected type to equal %s, got %s\n", test.typ, item.Type())
 			t.Fail()
 		}
-		if item.val != test.value {
+		if item.Value() != test.value {
 			t.Logf("Input: %q\n", test.text)
-			t.Logf("Expected val to equal %q, got %q\n", test.value, item.val)
+			t.Logf("Expected val to equal %q, got %q\n", test.value, item.Value())
 			t.Fail()
 		}
 	}

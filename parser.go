@@ -8,7 +8,7 @@ type Parser struct {
 }
 
 // Phase1 reads the tokens from the lexer and transforms them into Segment-AST-Objects
-func (p *Parser) Phase1(l *Lexer) ([]*Segment, error) {
+func (p *Parser) Phase1(l *StringLexer) ([]*Segment, error) {
 	var segments []*Segment
 	var currentSegment *Segment = NewSegment(make([]Token, 0), make([]DataElement, 0))
 	var currentDataElement DataElement = NewDataElement(make([]Token, 0))
@@ -16,7 +16,7 @@ func (p *Parser) Phase1(l *Lexer) ([]*Segment, error) {
 	for l.HasNext() {
 		token := l.Next()
 		tokenBuf = append(tokenBuf, token)
-		switch token.typ {
+		switch token.Type() {
 		case GROUP_DATA_ELEMENT_SEPARATOR:
 			groupDataElement := GroupDataElement{tokens: tokenBuf}
 			currentDataElement.AddGroupDataElement(groupDataElement)

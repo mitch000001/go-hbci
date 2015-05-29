@@ -7,20 +7,20 @@ import (
 
 func TestParserPhase1(t *testing.T) {
 	testInput := "ab??c:d+ef'"
-	l := NewLexer("Phase1", testInput)
+	l := NewStringLexer("Phase1", testInput)
 	p := NewParser()
 
 	expectedAst := []*Segment{
 		&Segment{
 			tokens: []Token{
-				Token{ALPHA_NUMERIC, "ab", 0},
-				Token{ESCAPE_SEQUENCE, "??", 2},
-				Token{ALPHA_NUMERIC, "c", 4},
-				Token{GROUP_DATA_ELEMENT_SEPARATOR, ":", 5},
-				Token{ALPHA_NUMERIC, "d", 6},
-				Token{DATA_ELEMENT_SEPARATOR, "+", 7},
-				Token{ALPHA_NUMERIC, "ef", 8},
-				Token{SEGMENT_END_MARKER, "'", 10},
+				ElementToken{ALPHA_NUMERIC, "ab", 0},
+				ElementToken{ESCAPE_SEQUENCE, "??", 2},
+				ElementToken{ALPHA_NUMERIC, "c", 4},
+				ElementToken{GROUP_DATA_ELEMENT_SEPARATOR, ":", 5},
+				ElementToken{ALPHA_NUMERIC, "d", 6},
+				ElementToken{DATA_ELEMENT_SEPARATOR, "+", 7},
+				ElementToken{ALPHA_NUMERIC, "ef", 8},
+				ElementToken{SEGMENT_END_MARKER, "'", 10},
 			},
 			dataElements: []DataElement{
 				DataElement{
@@ -29,16 +29,16 @@ func TestParserPhase1(t *testing.T) {
 						groupDataElements: []GroupDataElement{
 							GroupDataElement{
 								tokens: []Token{
-									Token{ALPHA_NUMERIC, "ab", 0},
-									Token{ESCAPE_SEQUENCE, "??", 2},
-									Token{ALPHA_NUMERIC, "c", 4},
-									Token{GROUP_DATA_ELEMENT_SEPARATOR, ":", 5},
+									ElementToken{ALPHA_NUMERIC, "ab", 0},
+									ElementToken{ESCAPE_SEQUENCE, "??", 2},
+									ElementToken{ALPHA_NUMERIC, "c", 4},
+									ElementToken{GROUP_DATA_ELEMENT_SEPARATOR, ":", 5},
 								},
 							},
 							GroupDataElement{
 								tokens: []Token{
-									Token{ALPHA_NUMERIC, "d", 6},
-									Token{DATA_ELEMENT_SEPARATOR, "+", 7},
+									ElementToken{ALPHA_NUMERIC, "d", 6},
+									ElementToken{DATA_ELEMENT_SEPARATOR, "+", 7},
 								},
 							},
 						},
@@ -46,8 +46,8 @@ func TestParserPhase1(t *testing.T) {
 				},
 				DataElement{
 					tokens: []Token{
-						Token{ALPHA_NUMERIC, "ef", 8},
-						Token{SEGMENT_END_MARKER, "'", 10},
+						ElementToken{ALPHA_NUMERIC, "ef", 8},
+						ElementToken{SEGMENT_END_MARKER, "'", 10},
 					},
 					DataElementGroup: nil,
 				},
@@ -83,7 +83,7 @@ func TestParserPhase1(t *testing.T) {
 		{"a:b++c'd+e+f'", 6, 2, 2},
 	}
 	for _, test := range tests {
-		lexer := NewLexer("Test Phase1", test.input)
+		lexer := NewStringLexer("Test Phase1", test.input)
 		parser := NewParser()
 		segments, err := parser.Phase1(lexer)
 

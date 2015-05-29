@@ -16,11 +16,11 @@ const (
 	binaryIdentifier          = '@'
 )
 
-type stateFn func(*Lexer) stateFn
+type stringLexerStateFn func(*StringLexer) stringLexerStateFn
 
-// NewLexer creates a new scanner for the input string.
-func NewLexer(name, input string) *Lexer {
-	l := &Lexer{
+// NewStringLexer creates a new scanner for the input string.
+func NewStringLexer(name, input string) *StringLexer {
+	l := &StringLexer{
 		name:   name,
 		input:  input,
 		state:  lexText,
@@ -29,49 +29,56 @@ func NewLexer(name, input string) *Lexer {
 	return l
 }
 
-type Lexer struct {
-	name   string     // the name of the input; used only for error reports.
-	input  string     // the string being scanned.
-	state  stateFn    // the next lexing function to enter
-	pos    int        // current position in the input.
-	start  int        // start position of this item.
-	width  int        // width of last rune read from input.
-	tokens chan Token // channel of scanned tokens.
+type StringLexer struct {
+	name   string             // the name of the input; used only for error reports.
+	input  string             // the string being scanned.
+	state  stringLexerStateFn // the next lexing function to enter
+	pos    int                // current position in the input.
+	start  int                // start position of this item.
+	width  int                // width of last rune read from input.
+	tokens chan Token         // channel of scanned tokens.
 }
 
-func (l *Lexer) run() {
+func (l *StringLexer) run() {
 	for state := lexText; state != nil; {
 		state = state(l)
 	}
 	close(l.tokens) // No more tokens will be delivered.
 }
 
-// NextItem returns the next item from the input.
-func (l *Lexer) Next() Token {
+// Next returns the next item from the input.
+func (l *StringLexer) Next() Token {
 	for {
 		select {
-		case item := <-l.tokens:
-			return item
+		case item, ok := <-l.tokens:
+			if ok {
+				return item
+			} else {
+				panic("No items left")
+			}
 		default:
 			l.state = l.state(l)
+			if l.state == nil {
+				close(l.tokens)
+			}
 		}
 	}
 	panic("not reached")
 }
 
 // HasNext returns true if there are tokens left, false if EOF has reached
-func (l *Lexer) HasNext() bool {
+func (l *StringLexer) HasNext() bool {
 	return l.state != nil
 }
 
 // emit passes an item back to the client.
-func (l *Lexer) emit(t TokenType) {
-	l.tokens <- Token{t, l.input[l.start:l.pos], l.start}
+func (l *StringLexer) emit(t TokenType) {
+	l.tokens <- NewElementToken(t, l.input[l.start:l.pos], l.start)
 	l.start = l.pos
 }
 
 // next returns the next rune in the input.
-func (l *Lexer) next() rune {
+func (l *StringLexer) next() rune {
 	if l.pos >= len(l.input) {
 		l.width = 0
 		return eof
@@ -83,19 +90,19 @@ func (l *Lexer) next() rune {
 }
 
 // ignore skips over the pending input before this point.
-func (l *Lexer) ignore() {
+func (l *StringLexer) ignore() {
 	l.start = l.pos
 }
 
 // backup steps back one rune.
 // Can be called only once per call of next.
-func (l *Lexer) backup() {
+func (l *StringLexer) backup() {
 	l.pos -= l.width
 }
 
 // peek returns but does not consume
 // the next rune in the input.
-func (l *Lexer) peek() rune {
+func (l *StringLexer) peek() rune {
 	r := l.next()
 	l.backup()
 	return r
@@ -103,7 +110,7 @@ func (l *Lexer) peek() rune {
 
 // accept consumes the next rune
 // if it's from the valid set.
-func (l *Lexer) accept(valid string) bool {
+func (l *StringLexer) accept(valid string) bool {
 	if strings.IndexRune(valid, l.next()) >= 0 {
 		return true
 	}
@@ -112,7 +119,7 @@ func (l *Lexer) accept(valid string) bool {
 }
 
 // acceptRun consumes a run of runes from the valid set.
-func (l *Lexer) acceptRun(valid string) {
+func (l *StringLexer) acceptRun(valid string) {
 	for strings.IndexRune(valid, l.next()) >= 0 {
 	}
 	l.backup()
@@ -120,20 +127,20 @@ func (l *Lexer) acceptRun(valid string) {
 
 // lineNumber reports which line we're on. Doing it this way
 // means we don't have to worry about peek double counting.
-func (l *Lexer) lineNumber() int {
+func (l *StringLexer) lineNumber() int {
 	return 1 + strings.Count(l.input[:l.pos], "\n")
 }
 
 // error returns an error token and terminates the scan by passing
 // back a nil pointer that will be the next state, terminating l.run.
-func (l *Lexer) errorf(format string, args ...interface{}) stateFn {
-	l.tokens <- Token{ERROR, fmt.Sprintf(format, args...), l.start}
+func (l *StringLexer) errorf(format string, args ...interface{}) stringLexerStateFn {
+	l.tokens <- NewElementToken(ERROR, fmt.Sprintf(format, args...), l.start)
 	return nil
 }
 
 // state functions
 
-func lexText(l *Lexer) stateFn {
+func lexText(l *StringLexer) stringLexerStateFn {
 	switch r := l.next(); {
 	case r == escapeCharacter:
 		l.backup()
@@ -163,7 +170,7 @@ func lexText(l *Lexer) stateFn {
 	}
 }
 
-func lexEscapeSequence(l *Lexer) stateFn {
+func lexEscapeSequence(l *StringLexer) stringLexerStateFn {
 	l.accept("?")
 	if l.accept("?:+'@") {
 		l.emit(ESCAPE_SEQUENCE)
@@ -173,7 +180,7 @@ func lexEscapeSequence(l *Lexer) stateFn {
 	}
 }
 
-func lexAlphaNumeric(l *Lexer) stateFn {
+func lexAlphaNumeric(l *StringLexer) stringLexerStateFn {
 	text := false
 	for {
 		switch r := l.next(); {
@@ -193,7 +200,7 @@ func lexAlphaNumeric(l *Lexer) stateFn {
 	}
 }
 
-func lexBinaryData(l *Lexer) stateFn {
+func lexBinaryData(l *StringLexer) stringLexerStateFn {
 	l.accept("@")
 	digits := "0123456789"
 	binaryLengthStart := l.pos
@@ -218,7 +225,7 @@ func lexBinaryData(l *Lexer) stateFn {
 	}
 }
 
-func lexDigit(l *Lexer) stateFn {
+func lexDigit(l *StringLexer) stringLexerStateFn {
 	leadingZero := l.accept("0")
 	if leadingZero {
 		// Only valid number with leading 0 is 0

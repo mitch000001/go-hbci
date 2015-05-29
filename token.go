@@ -2,14 +2,50 @@ package hbci
 
 import "fmt"
 
-// Token represents a token returned from the scanner.
-type Token struct {
+type Token interface {
+	Type() TokenType
+	Value() string
+	Pos() int
+}
+
+func NewGroupToken(typ TokenType, tokens ...Token) GroupToken {
+	groupToken := GroupToken{ElementToken: ElementToken{typ: typ}, tokens: tokens}
+	val := ""
+	for _, token := range tokens {
+		val += token.Value()
+	}
+	groupToken.val = val
+	return groupToken
+}
+
+type GroupToken struct {
+	ElementToken
+	tokens []Token
+}
+
+func NewElementToken(typ TokenType, val string, pos int) ElementToken {
+	return ElementToken{typ, val, pos}
+}
+
+// ElementToken represents a token returned from the scanner.
+type ElementToken struct {
 	typ TokenType // Type, such as FLOAT
 	val string    // Value, such as "23.2".
 	pos int       // position of token in input
 }
 
-func (t Token) String() string {
+func (e ElementToken) Type() TokenType {
+	return e.typ
+}
+
+func (e ElementToken) Value() string {
+	return e.val
+}
+func (e ElementToken) Pos() int {
+	return e.pos
+}
+
+func (t ElementToken) String() string {
 	switch t.typ {
 	case EOF:
 		return "EOF"
