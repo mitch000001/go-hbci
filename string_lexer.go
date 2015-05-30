@@ -71,7 +71,7 @@ func (l *StringLexer) HasNext() bool {
 	return l.state != nil
 }
 
-// emit passes an item back to the client.
+// emit passes a token back to the client.
 func (l *StringLexer) emit(t TokenType) {
 	l.tokens <- NewElementToken(t, l.input[l.start:l.pos], l.start)
 	l.start = l.pos

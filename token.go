@@ -71,34 +71,36 @@ func (t ElementToken) String() string {
 const (
 	ERROR TokenType = iota // error occurred;
 	// value is text of error
-	DATA_ELEMENT                 // Datenelement (DE)
-	DATA_ELEMENT_SEPARATOR       // Datenelement (DE)-Trennzeichen
-	DATA_ELEMENT_GROUP           // Datenelementgruppe (DEG)
-	GROUP_DATA_ELEMENT           // Gruppendatenelement (GD)
-	GROUP_DATA_ELEMENT_SEPARATOR // Gruppendatenelement (GD)-Trennzeichen
-	SEGMENT                      // Segment
-	SEGMENT_HEADER               // Segmentende-Zeichen
-	SEGMENT_END_MARKER           // Segmentende-Zeichen
-	ESCAPE_SEQUENCE              // Freigabeabfolge
-	ESCAPE_CHARACTER             // Freigabezeichen
-	ESCAPED_CHARACTER            // Freigegebenes Zeichen
-	BINARY_DATA_LENGTH           // Binärdaten Länge
-	BINARY_DATA                  // Binärdaten
-	BINARY_DATA_MARKER           // Binärdatenkennzeichen
-	ALPHA_NUMERIC                // an
-	TEXT                         // txt
-	DTAUS_CHARSET                // dta
-	NUMERIC                      // num: 0-9 without leading 0
-	DIGIT                        // dig: 0-9 with optional leading 0
-	FLOAT                        // float
-	YES_NO                       // jn
-	DATE                         // dat
-	VIRTUAL_DATE                 // vdat
-	TIME                         // tim
-	IDENTIFICATION               // id
-	COUNTRY_CODE                 // ctr: ISO 3166-1 numeric
-	CURRENCY                     // cur: ISO 4217
-	VALUE                        // wrt
+	DATA_ELEMENT                       // Datenelement (DE)
+	DATA_ELEMENT_SEPARATOR             // Datenelement (DE)-Trennzeichen
+	DATA_ELEMENT_GROUP                 // Datenelementgruppe (DEG)
+	GROUP_DATA_ELEMENT                 // Gruppendatenelement (GD)
+	GROUP_DATA_ELEMENT_SEPARATOR       // Gruppendatenelement (GD)-Trennzeichen
+	SEGMENT                            // Segment
+	SEGMENT_HEADER                     // Segmentende-Zeichen
+	SEGMENT_END_MARKER                 // Segmentende-Zeichen
+	ESCAPE_SEQUENCE                    // Freigabeabfolge
+	ESCAPE_CHARACTER                   // Freigabezeichen
+	ESCAPED_CHARACTER                  // Freigegebenes Zeichen
+	BINARY_DATA_LENGTH                 // Binärdaten Länge
+	BINARY_DATA                        // Binärdaten
+	BINARY_DATA_MARKER                 // Binärdatenkennzeichen
+	ALPHA_NUMERIC                      // an
+	ALPHA_NUMERIC_WITH_ESCAPE_SEQUENCE // an with an escape sequence
+	TEXT                               // txt
+	TEXT_WITH_ESCAPE_SEQUENCE          // txt with an escape sequence
+	DTAUS_CHARSET                      // dta
+	NUMERIC                            // num: 0-9 without leading 0
+	DIGIT                              // dig: 0-9 with optional leading 0
+	FLOAT                              // float
+	YES_NO                             // jn
+	DATE                               // dat
+	VIRTUAL_DATE                       // vdat
+	TIME                               // tim
+	IDENTIFICATION                     // id
+	COUNTRY_CODE                       // ctr: ISO 3166-1 numeric
+	CURRENCY                           // cur: ISO 4217
+	VALUE                              // wrt
 	EOF
 )
 
@@ -113,30 +115,32 @@ var tokenName = map[TokenType]string{
 	DATA_ELEMENT_GROUP:           "dataElementGroup",
 	GROUP_DATA_ELEMENT:           "groupDataElement",
 	GROUP_DATA_ELEMENT_SEPARATOR: "groupDataElementSeparator",
-	SEGMENT:            "segment",
-	SEGMENT_HEADER:     "segmentHeader",
-	SEGMENT_END_MARKER: "segmentEndMarker",
-	ESCAPE_SEQUENCE:    "escapeSequence",
-	ESCAPE_CHARACTER:   "escapeCharacter",
-	ESCAPED_CHARACTER:  "escapedCharacter",
-	BINARY_DATA_LENGTH: "binaryDataLength",
-	BINARY_DATA:        "binaryData",
-	BINARY_DATA_MARKER: "binaryDataMarker",
-	ALPHA_NUMERIC:      "alphaNumeric",
-	TEXT:               "text",
-	DTAUS_CHARSET:      "dtausCharset",
-	NUMERIC:            "numeric",
-	DIGIT:              "digit",
-	FLOAT:              "float",
-	YES_NO:             "yesNo",
-	DATE:               "date",
-	VIRTUAL_DATE:       "virtualDate",
-	TIME:               "time",
-	IDENTIFICATION:     "identification",
-	COUNTRY_CODE:       "countryCode",
-	CURRENCY:           "currency",
-	VALUE:              "value",
-	EOF:                "eof",
+	SEGMENT:                            "segment",
+	SEGMENT_HEADER:                     "segmentHeader",
+	SEGMENT_END_MARKER:                 "segmentEndMarker",
+	ESCAPE_SEQUENCE:                    "escapeSequence",
+	ESCAPE_CHARACTER:                   "escapeCharacter",
+	ESCAPED_CHARACTER:                  "escapedCharacter",
+	BINARY_DATA_LENGTH:                 "binaryDataLength",
+	BINARY_DATA:                        "binaryData",
+	BINARY_DATA_MARKER:                 "binaryDataMarker",
+	ALPHA_NUMERIC:                      "alphaNumeric",
+	ALPHA_NUMERIC_WITH_ESCAPE_SEQUENCE: "alphaNumericWithEscapeSequence",
+	TEXT: "text",
+	TEXT_WITH_ESCAPE_SEQUENCE: "textWithEscapeSequence",
+	DTAUS_CHARSET:             "dtausCharset",
+	NUMERIC:                   "numeric",
+	DIGIT:                     "digit",
+	FLOAT:                     "float",
+	YES_NO:                    "yesNo",
+	DATE:                      "date",
+	VIRTUAL_DATE:              "virtualDate",
+	TIME:                      "time",
+	IDENTIFICATION:            "identification",
+	COUNTRY_CODE:              "countryCode",
+	CURRENCY:                  "currency",
+	VALUE:                     "value",
+	EOF:                       "eof",
 }
 
 func (t TokenType) String() string {
