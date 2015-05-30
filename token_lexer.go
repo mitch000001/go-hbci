@@ -46,9 +46,16 @@ func (l *TokenLexer) HasNext() bool {
 	return l.state != nil
 }
 
-// emit passes an item back to the client.
+// emit passes a token back to the client.
 func (l *TokenLexer) emit(t TokenType) {
 	l.tokens <- NewGroupToken(t, l.input[l.start:l.pos]...)
+	l.start = l.pos
+}
+
+// emitToken passes the provided token dorectly back to the client
+// without wrapping into a GroupToken.
+func (l *TokenLexer) emitToken(t Token) {
+	l.tokens <- t
 	l.start = l.pos
 }
 
@@ -89,7 +96,7 @@ func (l *TokenLexer) peek() Token {
 // accept consumes the next Token
 // if it's from the valid set.
 func (l *TokenLexer) accept(valid ...TokenType) bool {
-	if includes(valid, l.next()) {
+	if includes(l.next(), valid...) {
 		return true
 	}
 	l.backup()
@@ -98,7 +105,7 @@ func (l *TokenLexer) accept(valid ...TokenType) bool {
 
 // acceptRun consumes a run of Tokens from the valid set.
 func (l *TokenLexer) acceptRun(valid ...TokenType) {
-	for includes(valid, l.next()) {
+	for includes(l.next(), valid...) {
 	}
 	l.backup()
 }
@@ -110,7 +117,7 @@ func (l *TokenLexer) errorf(format string, args ...interface{}) tokenLexerStateF
 	return nil
 }
 
-func includes(tokens []TokenType, t Token) bool {
+func includes(t Token, tokens ...TokenType) bool {
 	for _, typ := range tokens {
 		if typ == t.Type() {
 			return true
@@ -145,14 +152,17 @@ func lexGroupDataElement(l *TokenLexer) tokenLexerStateFn {
 	for {
 		switch t := l.next(); {
 		case t.Type() == GROUP_DATA_ELEMENT_SEPARATOR:
+			l.backup()
 			l.emit(GROUP_DATA_ELEMENT)
-			return lexGroupDataElement
+			return lexSyntaxSymbolWithContext(lexGroupDataElement, l)
 		case t.Type() == DATA_ELEMENT_SEPARATOR:
+			l.backup()
 			l.emit(GROUP_DATA_ELEMENT)
-			return lexDataElement
+			return lexSyntaxSymbolWithContext(lexDataElement, l)
 		case t.Type() == SEGMENT_END_MARKER:
+			l.backup()
 			l.emit(GROUP_DATA_ELEMENT)
-			return lex
+			return lexSyntaxSymbolWithContext(lex, l)
 		}
 	}
 	return l.errorf("Syntax error")
@@ -162,18 +172,36 @@ func lexDataElement(l *TokenLexer) tokenLexerStateFn {
 	for {
 		switch t := l.next(); {
 		case t.Type() == DATA_ELEMENT_SEPARATOR:
+			l.backup()
 			l.emit(DATA_ELEMENT)
-			return lexDataElement
+			return lexSyntaxSymbolWithContext(lexDataElement, l)
 		case t.Type() == SEGMENT_END_MARKER:
+			l.backup()
 			l.emit(DATA_ELEMENT)
-			return lex
+			return lexSyntaxSymbolWithContext(lex, l)
 		}
 	}
 	return l.errorf("Syntax error")
 }
 
 func lexDataElementGroup(l *TokenLexer) tokenLexerStateFn {
-	l.acceptRun(GROUP_DATA_ELEMENT)
+	l.acceptRun(GROUP_DATA_ELEMENT, GROUP_DATA_ELEMENT_SEPARATOR)
 	l.emit(DATA_ELEMENT_GROUP)
 	return lex
+}
+
+func lexSyntaxSymbolWithContext(followingStateFn tokenLexerStateFn, l *TokenLexer) tokenLexerStateFn {
+	return func(*TokenLexer) tokenLexerStateFn {
+		switch t := l.next(); {
+		case t.Type() == GROUP_DATA_ELEMENT_SEPARATOR:
+			l.emitToken(t)
+		case t.Type() == DATA_ELEMENT_SEPARATOR:
+			l.emitToken(t)
+		case t.Type() == SEGMENT_END_MARKER:
+			l.emitToken(t)
+		default:
+			l.errorf("Syntax error")
+		}
+		return followingStateFn
+	}
 }
