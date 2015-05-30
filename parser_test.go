@@ -13,14 +13,14 @@ func TestParserPhase1(t *testing.T) {
 	expectedAst := []*Segment{
 		&Segment{
 			tokens: []Token{
-				ElementToken{ALPHA_NUMERIC, "ab", 0},
-				ElementToken{ESCAPE_SEQUENCE, "??", 2},
-				ElementToken{ALPHA_NUMERIC, "c", 4},
-				ElementToken{GROUP_DATA_ELEMENT_SEPARATOR, ":", 5},
-				ElementToken{ALPHA_NUMERIC, "d", 6},
-				ElementToken{DATA_ELEMENT_SEPARATOR, "+", 7},
-				ElementToken{ALPHA_NUMERIC, "ef", 8},
-				ElementToken{SEGMENT_END_MARKER, "'", 10},
+				elementToken{ALPHA_NUMERIC, "ab", 0},
+				elementToken{ESCAPE_SEQUENCE, "??", 2},
+				elementToken{ALPHA_NUMERIC, "c", 4},
+				elementToken{GROUP_DATA_ELEMENT_SEPARATOR, ":", 5},
+				elementToken{ALPHA_NUMERIC, "d", 6},
+				elementToken{DATA_ELEMENT_SEPARATOR, "+", 7},
+				elementToken{ALPHA_NUMERIC, "ef", 8},
+				elementToken{SEGMENT_END_MARKER, "'", 10},
 			},
 			dataElements: []DataElement{
 				DataElement{
@@ -29,16 +29,16 @@ func TestParserPhase1(t *testing.T) {
 						groupDataElements: []GroupDataElement{
 							GroupDataElement{
 								tokens: []Token{
-									ElementToken{ALPHA_NUMERIC, "ab", 0},
-									ElementToken{ESCAPE_SEQUENCE, "??", 2},
-									ElementToken{ALPHA_NUMERIC, "c", 4},
-									ElementToken{GROUP_DATA_ELEMENT_SEPARATOR, ":", 5},
+									elementToken{ALPHA_NUMERIC, "ab", 0},
+									elementToken{ESCAPE_SEQUENCE, "??", 2},
+									elementToken{ALPHA_NUMERIC, "c", 4},
+									elementToken{GROUP_DATA_ELEMENT_SEPARATOR, ":", 5},
 								},
 							},
 							GroupDataElement{
 								tokens: []Token{
-									ElementToken{ALPHA_NUMERIC, "d", 6},
-									ElementToken{DATA_ELEMENT_SEPARATOR, "+", 7},
+									elementToken{ALPHA_NUMERIC, "d", 6},
+									elementToken{DATA_ELEMENT_SEPARATOR, "+", 7},
 								},
 							},
 						},
@@ -46,8 +46,8 @@ func TestParserPhase1(t *testing.T) {
 				},
 				DataElement{
 					tokens: []Token{
-						ElementToken{ALPHA_NUMERIC, "ef", 8},
-						ElementToken{SEGMENT_END_MARKER, "'", 10},
+						elementToken{ALPHA_NUMERIC, "ef", 8},
+						elementToken{SEGMENT_END_MARKER, "'", 10},
 					},
 					DataElementGroup: nil,
 				},

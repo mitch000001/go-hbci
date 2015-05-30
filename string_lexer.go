@@ -73,7 +73,7 @@ func (l *StringLexer) HasNext() bool {
 
 // emit passes a token back to the client.
 func (l *StringLexer) emit(t TokenType) {
-	l.tokens <- NewElementToken(t, l.input[l.start:l.pos], l.start)
+	l.tokens <- NewToken(t, l.input[l.start:l.pos], l.start)
 	l.start = l.pos
 }
 
@@ -134,7 +134,7 @@ func (l *StringLexer) lineNumber() int {
 // error returns an error token and terminates the scan by passing
 // back a nil pointer that will be the next state, terminating l.run.
 func (l *StringLexer) errorf(format string, args ...interface{}) stringLexerStateFn {
-	l.tokens <- NewElementToken(ERROR, fmt.Sprintf(format, args...), l.start)
+	l.tokens <- NewToken(ERROR, fmt.Sprintf(format, args...), l.start)
 	return nil
 }
 

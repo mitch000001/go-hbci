@@ -6,6 +6,9 @@ type Token interface {
 	Type() TokenType
 	Value() string
 	Pos() int
+	IsSyntaxSymbol() bool
+	Children() Tokens
+	RawTokens() Tokens
 }
 
 type Tokens []Token
@@ -18,8 +21,34 @@ func (t Tokens) Types() []TokenType {
 	return types
 }
 
-func NewGroupToken(typ TokenType, tokens ...Token) GroupToken {
-	groupToken := GroupToken{ElementToken: ElementToken{typ: typ}, tokens: tokens}
+func NewTokenIterator(tokens Tokens) *TokenIterator {
+	return &TokenIterator{tokens: tokens, pos: 0}
+}
+
+type TokenIterator struct {
+	tokens Tokens
+	pos    int
+}
+
+func (t *TokenIterator) HasNext() bool {
+	return t.pos < len(t.tokens)
+}
+
+func (t *TokenIterator) Next() Token {
+	if t.pos >= len(t.tokens) {
+		return NewToken(EOF, "", t.pos)
+	}
+	token := t.tokens[t.pos]
+	t.pos += 1
+	return token
+}
+
+func (t *TokenIterator) Backup() {
+	t.pos -= 1
+}
+
+func NewGroupToken(typ TokenType, tokens ...Token) Token {
+	groupToken := groupToken{elementToken: elementToken{typ: typ}, tokens: tokens}
 	val := ""
 	for _, token := range tokens {
 		val += token.Value()
@@ -28,34 +57,71 @@ func NewGroupToken(typ TokenType, tokens ...Token) GroupToken {
 	return groupToken
 }
 
-type GroupToken struct {
-	ElementToken
-	tokens []Token
+type groupToken struct {
+	elementToken
+	tokens Tokens
 }
 
-func NewElementToken(typ TokenType, val string, pos int) ElementToken {
-	return ElementToken{typ, val, pos}
+func (g groupToken) Children() Tokens {
+	return g.tokens
 }
 
-// ElementToken represents a token returned from the scanner.
-type ElementToken struct {
+func (g groupToken) RawTokens() Tokens {
+	var tokens Tokens
+	for _, token := range g.Children() {
+		if len(token.Children()) > 0 {
+			tokens = append(tokens, token.RawTokens()...)
+		} else {
+			tokens = append(tokens, token)
+		}
+	}
+	return tokens
+}
+
+func NewToken(typ TokenType, val string, pos int) Token {
+	return elementToken{typ, val, pos}
+}
+
+// elementToken represents a token returned from the scanner.
+type elementToken struct {
 	typ TokenType // Type, such as FLOAT
 	val string    // Value, such as "23.2".
 	pos int       // position of token in input
 }
 
-func (e ElementToken) Type() TokenType {
+func (e elementToken) Type() TokenType {
 	return e.typ
 }
 
-func (e ElementToken) Value() string {
+func (e elementToken) Value() string {
 	return e.val
 }
-func (e ElementToken) Pos() int {
+func (e elementToken) Pos() int {
 	return e.pos
 }
 
-func (t ElementToken) String() string {
+func (e elementToken) IsSyntaxSymbol() bool {
+	switch e.typ {
+	case GROUP_DATA_ELEMENT_SEPARATOR:
+		return true
+	case DATA_ELEMENT_SEPARATOR:
+		return true
+	case SEGMENT_END_MARKER:
+		return true
+	default:
+		return false
+	}
+}
+
+func (e elementToken) Children() Tokens {
+	return Tokens{}
+}
+
+func (e elementToken) RawTokens() Tokens {
+	return Tokens{e}
+}
+
+func (t elementToken) String() string {
 	switch t.typ {
 	case EOF:
 		return "EOF"
@@ -103,6 +169,12 @@ const (
 	VALUE                              // wrt
 	EOF
 )
+
+type TokenTypes []TokenType
+
+func (t TokenTypes) Len() int           { return len(t) }
+func (t TokenTypes) Less(i, j int) bool { return t[i] < t[j] }
+func (t TokenTypes) Swap(i, j int)      { t[i], t[j] = t[j], t[i] }
 
 // TokenType identifies the type of lex tokens.
 type TokenType int

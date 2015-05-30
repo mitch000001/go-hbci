@@ -62,7 +62,7 @@ func (l *TokenLexer) emitToken(t Token) {
 // next returns the next Token in the input.
 func (l *TokenLexer) next() Token {
 	if l.pos >= len(l.input) {
-		return NewElementToken(EOF, "", l.pos)
+		return NewToken(EOF, "", l.pos)
 	}
 	t := l.input[l.pos]
 	l.pos += 1
@@ -113,7 +113,7 @@ func (l *TokenLexer) acceptRun(valid ...TokenType) {
 // error returns an error token and terminates the scan by passing
 // back a nil pointer that will be the next state, terminating l.run.
 func (l *TokenLexer) errorf(format string, args ...interface{}) tokenLexerStateFn {
-	l.tokens <- NewGroupToken(ERROR, ElementToken{ERROR, fmt.Sprintf(format, args...), l.start})
+	l.tokens <- NewGroupToken(ERROR, elementToken{ERROR, fmt.Sprintf(format, args...), l.start})
 	return nil
 }
 
@@ -141,7 +141,11 @@ func lexStart(l *TokenLexer) tokenLexerStateFn {
 	if includesEscapeSequence {
 		return lexEscapeSequenceToken
 	} else {
-		return lexTokens
+		if t := l.peek(); t.Type() == DATA_ELEMENT_GROUP {
+			return lexSegmentHeader
+		} else {
+			return lexTokens
+		}
 	}
 }
 
@@ -237,6 +241,48 @@ func lexDataElementGroup(l *TokenLexer) tokenLexerStateFn {
 	l.acceptRun(GROUP_DATA_ELEMENT, GROUP_DATA_ELEMENT_SEPARATOR)
 	l.emit(DATA_ELEMENT_GROUP)
 	return lexSyntaxSymbolWithContext(lexTokens, l)
+}
+
+func lexSegmentHeader(l *TokenLexer) tokenLexerStateFn {
+	// Token is a DATA_ELEMENT_GROUP
+	token := l.next()
+	rawTokens := token.RawTokens()
+	var tokensWithoutSeparators Tokens
+	for _, tok := range rawTokens {
+		if !tok.IsSyntaxSymbol() {
+			tokensWithoutSeparators = append(tokensWithoutSeparators, tok)
+		}
+	}
+	iter := NewTokenIterator(tokensWithoutSeparators)
+	if acceptTokenSequence(iter, ALPHA_NUMERIC, NUMERIC, NUMERIC) {
+		acceptToken(iter, NUMERIC)
+		if iter.HasNext() {
+			return l.errorf("Malformed Segment Header")
+		} else {
+			l.emit(SEGMENT_HEADER)
+			return lexSyntaxSymbolWithContext(lexTokens, l)
+		}
+	} else {
+		return l.errorf("Malformed Segment Header")
+	}
+}
+
+func acceptTokenSequence(tokens *TokenIterator, validSequence ...TokenType) bool {
+	for _, typ := range validSequence {
+		token := tokens.Next()
+		if typ != token.Type() {
+			return false
+		}
+	}
+	return true
+}
+
+func acceptToken(tokens *TokenIterator, valid ...TokenType) bool {
+	if includes(tokens.Next(), valid...) {
+		return true
+	}
+	tokens.Backup()
+	return false
 }
 
 func lexSyntaxSymbolWithContext(followingStateFn tokenLexerStateFn, l *TokenLexer) tokenLexerStateFn {
