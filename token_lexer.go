@@ -6,7 +6,7 @@ func NewTokenLexer(name string, input []Token) *TokenLexer {
 	t := &TokenLexer{
 		name:   name,
 		input:  input,
-		state:  lex,
+		state:  lexStart,
 		tokens: make(chan Token, 2), // Two token sufficient.
 	}
 	return t
@@ -128,7 +128,8 @@ func includes(t Token, tokens ...TokenType) bool {
 
 type tokenLexerStateFn func(*TokenLexer) tokenLexerStateFn
 
-func lex(l *TokenLexer) tokenLexerStateFn {
+// The first state function which is called
+func lexStart(l *TokenLexer) tokenLexerStateFn {
 	// Perform one run to see if there are escape sequences within the token set
 	includesEscapeSequence := false
 	for _, t := range l.input {
@@ -139,8 +140,12 @@ func lex(l *TokenLexer) tokenLexerStateFn {
 	}
 	if includesEscapeSequence {
 		return lexEscapeSequenceToken
+	} else {
+		return lexTokens
 	}
+}
 
+func lexTokens(l *TokenLexer) tokenLexerStateFn {
 	for {
 		switch t := l.next(); {
 		case t.Type() == GROUP_DATA_ELEMENT_SEPARATOR:
@@ -154,7 +159,7 @@ func lex(l *TokenLexer) tokenLexerStateFn {
 			return lexDataElementGroup
 		case t.Type() == DATA_ELEMENT:
 			l.emitToken(t)
-			return lexSyntaxSymbolWithContext(lex, l)
+			return lexSyntaxSymbolWithContext(lexTokens, l)
 		case t.Type() == EOF:
 			l.emit(EOF)
 			return nil
@@ -206,7 +211,7 @@ func lexGroupDataElement(l *TokenLexer) tokenLexerStateFn {
 		case t.Type() == SEGMENT_END_MARKER:
 			l.backup()
 			l.emit(GROUP_DATA_ELEMENT)
-			return lexSyntaxSymbolWithContext(lex, l)
+			return lexSyntaxSymbolWithContext(lexTokens, l)
 		}
 	}
 	return l.errorf("Syntax error")
@@ -222,7 +227,7 @@ func lexDataElement(l *TokenLexer) tokenLexerStateFn {
 		case t.Type() == SEGMENT_END_MARKER:
 			l.backup()
 			l.emit(DATA_ELEMENT)
-			return lexSyntaxSymbolWithContext(lex, l)
+			return lexSyntaxSymbolWithContext(lexTokens, l)
 		}
 	}
 	return l.errorf("Syntax error")
@@ -231,7 +236,7 @@ func lexDataElement(l *TokenLexer) tokenLexerStateFn {
 func lexDataElementGroup(l *TokenLexer) tokenLexerStateFn {
 	l.acceptRun(GROUP_DATA_ELEMENT, GROUP_DATA_ELEMENT_SEPARATOR)
 	l.emit(DATA_ELEMENT_GROUP)
-	return lexSyntaxSymbolWithContext(lex, l)
+	return lexSyntaxSymbolWithContext(lexTokens, l)
 }
 
 func lexSyntaxSymbolWithContext(followingStateFn tokenLexerStateFn, l *TokenLexer) tokenLexerStateFn {
