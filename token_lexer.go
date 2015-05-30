@@ -152,6 +152,9 @@ func lex(l *TokenLexer) tokenLexerStateFn {
 		case t.Type() == GROUP_DATA_ELEMENT:
 			l.reset()
 			return lexDataElementGroup
+		case t.Type() == DATA_ELEMENT:
+			l.emitToken(t)
+			return lexSyntaxSymbolWithContext(lex, l)
 		case t.Type() == EOF:
 			l.emit(EOF)
 			return nil
@@ -228,7 +231,7 @@ func lexDataElement(l *TokenLexer) tokenLexerStateFn {
 func lexDataElementGroup(l *TokenLexer) tokenLexerStateFn {
 	l.acceptRun(GROUP_DATA_ELEMENT, GROUP_DATA_ELEMENT_SEPARATOR)
 	l.emit(DATA_ELEMENT_GROUP)
-	return lex
+	return lexSyntaxSymbolWithContext(lex, l)
 }
 
 func lexSyntaxSymbolWithContext(followingStateFn tokenLexerStateFn, l *TokenLexer) tokenLexerStateFn {
