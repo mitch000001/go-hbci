@@ -21,6 +21,14 @@ func (t Tokens) Types() []TokenType {
 	return types
 }
 
+func (t Tokens) RawTokens() Tokens {
+	var tokens Tokens
+	for _, token := range t {
+		tokens = append(tokens, token.RawTokens()...)
+	}
+	return tokens
+}
+
 func NewTokenIterator(tokens Tokens) *TokenIterator {
 	return &TokenIterator{tokens: tokens, pos: 0}
 }
