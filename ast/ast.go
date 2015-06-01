@@ -1,10 +1,32 @@
-package hbci
+package ast
 
 import (
 	"bytes"
 	"fmt"
+	"go/token"
 	"strings"
+
+	"github.com/mitch000001/go-hbci"
 )
+
+type Node interface {
+	RawTokens() hbci.Tokens
+	Pos() int
+	End() int
+}
+
+// astNode implements the method set nescessary to use the node with ast.Walk
+type astNode struct {
+	node Node
+}
+
+func (a astNode) Pos() token.Pos {
+	return token.Pos(a.node.Pos() + 1)
+}
+
+func (a astNode) End() token.Pos {
+	return token.Pos(a.node.End() + 1)
+}
 
 func NewDataElement(tokens []Token) DataElement {
 	return DataElement{
