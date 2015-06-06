@@ -5,6 +5,8 @@ import (
 	"strconv"
 	"strings"
 	"unicode/utf8"
+
+	"github.com/mitch000001/go-hbci/token"
 )
 
 const (
@@ -24,7 +26,7 @@ func NewStringLexer(name, input string) *StringLexer {
 		name:   name,
 		input:  input,
 		state:  lexText,
-		tokens: make(chan Token, 2), // Two token sufficient.
+		tokens: make(chan token.Token, 2), // Two token sufficient.
 	}
 	return l
 }
@@ -36,7 +38,7 @@ type StringLexer struct {
 	pos    int                // current position in the input.
 	start  int                // start position of this item.
 	width  int                // width of last rune read from input.
-	tokens chan Token         // channel of scanned tokens.
+	tokens chan token.Token   // channel of scanned tokens.
 }
 
 func (l *StringLexer) run() {
@@ -47,7 +49,7 @@ func (l *StringLexer) run() {
 }
 
 // Next returns the next item from the input.
-func (l *StringLexer) Next() Token {
+func (l *StringLexer) Next() token.Token {
 	for {
 		select {
 		case item, ok := <-l.tokens:
@@ -72,8 +74,8 @@ func (l *StringLexer) HasNext() bool {
 }
 
 // emit passes a token back to the client.
-func (l *StringLexer) emit(t TokenType) {
-	l.tokens <- NewToken(t, l.input[l.start:l.pos], l.start)
+func (l *StringLexer) emit(t token.TokenType) {
+	l.tokens <- token.NewToken(t, l.input[l.start:l.pos], l.start)
 	l.start = l.pos
 }
 
@@ -134,7 +136,7 @@ func (l *StringLexer) lineNumber() int {
 // error returns an error token and terminates the scan by passing
 // back a nil pointer that will be the next state, terminating l.run.
 func (l *StringLexer) errorf(format string, args ...interface{}) stringLexerStateFn {
-	l.tokens <- NewToken(ERROR, fmt.Sprintf(format, args...), l.start)
+	l.tokens <- token.NewToken(token.ERROR, fmt.Sprintf(format, args...), l.start)
 	return nil
 }
 
@@ -146,20 +148,20 @@ func lexText(l *StringLexer) stringLexerStateFn {
 		l.backup()
 		return lexEscapeSequence
 	case r == dataElementSeparator:
-		l.emit(DATA_ELEMENT_SEPARATOR)
+		l.emit(token.DATA_ELEMENT_SEPARATOR)
 		return lexText
 	case r == segmentEnd:
-		l.emit(SEGMENT_END_MARKER)
+		l.emit(token.SEGMENT_END_MARKER)
 		return lexText
 	case r == groupDataElementSeparator:
-		l.emit(GROUP_DATA_ELEMENT_SEPARATOR)
+		l.emit(token.GROUP_DATA_ELEMENT_SEPARATOR)
 		return lexText
 	case r == binaryIdentifier:
 		l.backup()
 		return lexBinaryData
 	case r == eof:
 		// Correctly reached EOF.
-		l.emit(EOF)
+		l.emit(token.EOF)
 		return nil
 	case ('0' <= r && r <= '9'):
 		l.backup()
@@ -173,7 +175,7 @@ func lexText(l *StringLexer) stringLexerStateFn {
 func lexEscapeSequence(l *StringLexer) stringLexerStateFn {
 	l.accept("?")
 	if l.accept("?:+'@") {
-		l.emit(ESCAPE_SEQUENCE)
+		l.emit(token.ESCAPE_SEQUENCE)
 		return lexText
 	} else {
 		return l.errorf("Malformed Escape Sequence")
@@ -187,9 +189,9 @@ func lexAlphaNumeric(l *StringLexer) stringLexerStateFn {
 		case isSyntaxSymbol(r):
 			l.backup()
 			if text {
-				l.emit(TEXT)
+				l.emit(token.TEXT)
 			} else {
-				l.emit(ALPHA_NUMERIC)
+				l.emit(token.ALPHA_NUMERIC)
 			}
 			return lexText
 		case r == eof:
@@ -218,7 +220,7 @@ func lexBinaryData(l *StringLexer) stringLexerStateFn {
 	}
 	l.pos += length
 	if p := l.peek(); isSyntaxSymbol(p) {
-		l.emit(BINARY_DATA)
+		l.emit(token.BINARY_DATA)
 		return lexText
 	} else {
 		return l.errorf("Expected syntax symbol after binary data")
@@ -230,7 +232,7 @@ func lexDigit(l *StringLexer) stringLexerStateFn {
 	if leadingZero {
 		// Only valid number with leading 0 is 0
 		if r := l.peek(); isSyntaxSymbol(r) {
-			l.emit(NUMERIC)
+			l.emit(token.NUMERIC)
 			return lexText
 		}
 		// Only valid float with leading 0 is value smaller than 1
@@ -238,7 +240,7 @@ func lexDigit(l *StringLexer) stringLexerStateFn {
 			digits := "0123456789"
 			l.acceptRun(digits)
 			if p := l.peek(); isSyntaxSymbol(p) {
-				l.emit(FLOAT)
+				l.emit(token.FLOAT)
 				return lexText
 			} else {
 				return l.errorf("Malformed float")
@@ -250,7 +252,7 @@ func lexDigit(l *StringLexer) stringLexerStateFn {
 			return l.errorf("Malformed float")
 		}
 		if p := l.peek(); isSyntaxSymbol(p) {
-			l.emit(DIGIT)
+			l.emit(token.DIGIT)
 			return lexText
 		} else {
 			return l.errorf("Malformed digit")
@@ -262,14 +264,14 @@ func lexDigit(l *StringLexer) stringLexerStateFn {
 		if l.accept(",") {
 			l.acceptRun(digits)
 			if p := l.peek(); isSyntaxSymbol(p) {
-				l.emit(FLOAT)
+				l.emit(token.FLOAT)
 				return lexText
 			} else {
 				return l.errorf("Malformed float")
 			}
 		}
 		if p := l.peek(); isSyntaxSymbol(p) {
-			l.emit(NUMERIC)
+			l.emit(token.NUMERIC)
 			return lexText
 		} else {
 			return l.errorf("Malformed numeric")

@@ -3,6 +3,9 @@ package hbci
 import (
 	"reflect"
 	"testing"
+
+	"github.com/mitch000001/go-hbci/ast"
+	"github.com/mitch000001/go-hbci/token"
 )
 
 func TestParserPhase1(t *testing.T) {
@@ -10,49 +13,49 @@ func TestParserPhase1(t *testing.T) {
 	l := NewStringLexer("Phase1", testInput)
 	p := NewParser()
 
-	expectedAst := []*Segment{
-		&Segment{
-			tokens: []Token{
-				elementToken{ALPHA_NUMERIC, "ab", 0},
-				elementToken{ESCAPE_SEQUENCE, "??", 2},
-				elementToken{ALPHA_NUMERIC, "c", 4},
-				elementToken{GROUP_DATA_ELEMENT_SEPARATOR, ":", 5},
-				elementToken{ALPHA_NUMERIC, "d", 6},
-				elementToken{DATA_ELEMENT_SEPARATOR, "+", 7},
-				elementToken{ALPHA_NUMERIC, "ef", 8},
-				elementToken{SEGMENT_END_MARKER, "'", 10},
+	expectedAst := []*ast.Segment{
+		ast.NewSegment(
+			[]token.Token{
+				token.NewToken(token.ALPHA_NUMERIC, "ab", 0),
+				token.NewToken(token.ESCAPE_SEQUENCE, "??", 2),
+				token.NewToken(token.ALPHA_NUMERIC, "c", 4),
+				token.NewToken(token.GROUP_DATA_ELEMENT_SEPARATOR, ":", 5),
+				token.NewToken(token.ALPHA_NUMERIC, "d", 6),
+				token.NewToken(token.DATA_ELEMENT_SEPARATOR, "+", 7),
+				token.NewToken(token.ALPHA_NUMERIC, "ef", 8),
+				token.NewToken(token.SEGMENT_END_MARKER, "'", 10),
 			},
-			dataElements: []DataElement{
-				DataElement{
-					tokens: nil,
-					DataElementGroup: &DataElementGroup{
-						groupDataElements: []GroupDataElement{
-							GroupDataElement{
-								tokens: []Token{
-									elementToken{ALPHA_NUMERIC, "ab", 0},
-									elementToken{ESCAPE_SEQUENCE, "??", 2},
-									elementToken{ALPHA_NUMERIC, "c", 4},
-									elementToken{GROUP_DATA_ELEMENT_SEPARATOR, ":", 5},
-								},
+			[]*ast.DataElement{
+				ast.NewDataElement(
+					nil,
+					ast.NewDataElementGroup(
+						nil,
+						[]ast.GroupDataElement{
+							ast.NewGroupDataElement([]token.Token{
+								token.NewToken(token.ALPHA_NUMERIC, "ab", 0),
+								token.NewToken(token.ESCAPE_SEQUENCE, "??", 2),
+								token.NewToken(token.ALPHA_NUMERIC, "c", 4),
+								token.NewToken(token.GROUP_DATA_ELEMENT_SEPARATOR, ":", 5),
 							},
-							GroupDataElement{
-								tokens: []Token{
-									elementToken{ALPHA_NUMERIC, "d", 6},
-									elementToken{DATA_ELEMENT_SEPARATOR, "+", 7},
+							),
+							ast.NewGroupDataElement(
+								[]token.Token{
+									token.NewToken(token.ALPHA_NUMERIC, "d", 6),
+									token.NewToken(token.DATA_ELEMENT_SEPARATOR, "+", 7),
 								},
-							},
-						},
+							),
+						}...,
+					),
+				),
+				ast.NewDataElement(
+					[]token.Token{
+						token.NewToken(token.ALPHA_NUMERIC, "ef", 8),
+						token.NewToken(token.SEGMENT_END_MARKER, "'", 10),
 					},
-				},
-				DataElement{
-					tokens: []Token{
-						elementToken{ALPHA_NUMERIC, "ef", 8},
-						elementToken{SEGMENT_END_MARKER, "'", 10},
-					},
-					DataElementGroup: nil,
-				},
+					nil,
+				),
 			},
-		},
+		),
 	}
 
 	actualAst, err := p.Phase1(l)
@@ -102,10 +105,10 @@ func TestParserPhase1(t *testing.T) {
 		dataElementCount := 0
 		groupDataElementCount := 0
 		for _, segment := range segments {
-			for _, de := range segment.dataElements {
+			for _, de := range segment.DataElements() {
 				dataElementCount += 1
 				if de.IsDataElementGroup() {
-					groupDataElementCount += len(de.groupDataElements)
+					groupDataElementCount += len(de.GroupDataElements())
 				}
 			}
 		}

@@ -1,28 +1,29 @@
 package hbci
 
 import "fmt"
+import "github.com/mitch000001/go-hbci/token"
 
-func NewTokenLexer(name string, input []Token) *TokenLexer {
+func NewTokenLexer(name string, input token.Tokens) *TokenLexer {
 	t := &TokenLexer{
 		name:   name,
 		input:  input,
 		state:  lexStart,
-		tokens: make(chan Token, 2), // Two token sufficient.
+		tokens: make(chan token.Token, 2), // Two token sufficient.
 	}
 	return t
 }
 
 type TokenLexer struct {
 	name   string // the name of the input; used only for error reports.
-	input  []Token
+	input  []token.Token
 	state  tokenLexerStateFn
 	pos    int // current position in the input.
 	start  int // start position of this token.
-	tokens chan Token
+	tokens chan token.Token
 }
 
 // Next returns the next item from the input.
-func (l *TokenLexer) Next() Token {
+func (l *TokenLexer) Next() token.Token {
 	for {
 		select {
 		case item, ok := <-l.tokens:
@@ -47,22 +48,22 @@ func (l *TokenLexer) HasNext() bool {
 }
 
 // emit passes a token back to the client.
-func (l *TokenLexer) emit(t TokenType) {
-	l.tokens <- NewGroupToken(t, l.input[l.start:l.pos]...)
+func (l *TokenLexer) emit(t token.TokenType) {
+	l.tokens <- token.NewGroupToken(t, l.input[l.start:l.pos]...)
 	l.start = l.pos
 }
 
 // emitToken passes the provided token dorectly back to the client
 // without wrapping into a GroupToken.
-func (l *TokenLexer) emitToken(t Token) {
+func (l *TokenLexer) emitToken(t token.Token) {
 	l.tokens <- t
 	l.start = l.pos
 }
 
 // next returns the next Token in the input.
-func (l *TokenLexer) next() Token {
+func (l *TokenLexer) next() token.Token {
 	if l.pos >= len(l.input) {
-		return NewToken(EOF, "", l.pos)
+		return token.NewToken(token.EOF, "", l.pos)
 	}
 	t := l.input[l.pos]
 	l.pos += 1
@@ -87,7 +88,7 @@ func (l *TokenLexer) reset() {
 
 // peek returns but does not consume
 // the next Token in the input.
-func (l *TokenLexer) peek() Token {
+func (l *TokenLexer) peek() token.Token {
 	t := l.next()
 	l.backup()
 	return t
@@ -95,7 +96,7 @@ func (l *TokenLexer) peek() Token {
 
 // accept consumes the next Token
 // if it's from the valid set.
-func (l *TokenLexer) accept(valid ...TokenType) bool {
+func (l *TokenLexer) accept(valid ...token.TokenType) bool {
 	if includes(l.next(), valid...) {
 		return true
 	}
@@ -104,7 +105,7 @@ func (l *TokenLexer) accept(valid ...TokenType) bool {
 }
 
 // acceptRun consumes a run of Tokens from the valid set.
-func (l *TokenLexer) acceptRun(valid ...TokenType) {
+func (l *TokenLexer) acceptRun(valid ...token.TokenType) {
 	for includes(l.next(), valid...) {
 	}
 	l.backup()
@@ -113,11 +114,11 @@ func (l *TokenLexer) acceptRun(valid ...TokenType) {
 // error returns an error token and terminates the scan by passing
 // back a nil pointer that will be the next state, terminating l.run.
 func (l *TokenLexer) errorf(format string, args ...interface{}) tokenLexerStateFn {
-	l.tokens <- NewGroupToken(ERROR, elementToken{ERROR, fmt.Sprintf(format, args...), l.start})
+	l.tokens <- token.NewGroupToken(token.ERROR, token.NewToken(token.ERROR, fmt.Sprintf(format, args...), l.start))
 	return nil
 }
 
-func includes(t Token, tokens ...TokenType) bool {
+func includes(t token.Token, tokens ...token.TokenType) bool {
 	for _, typ := range tokens {
 		if typ == t.Type() {
 			return true
@@ -133,7 +134,7 @@ func lexStart(l *TokenLexer) tokenLexerStateFn {
 	// Perform one run to see if there are escape sequences within the token set
 	includesEscapeSequence := false
 	for _, t := range l.input {
-		if includes(t, ESCAPE_SEQUENCE) {
+		if includes(t, token.ESCAPE_SEQUENCE) {
 			includesEscapeSequence = true
 			break
 		}
@@ -141,7 +142,7 @@ func lexStart(l *TokenLexer) tokenLexerStateFn {
 	if includesEscapeSequence {
 		return lexEscapeSequenceToken
 	} else {
-		if t := l.peek(); t.Type() == DATA_ELEMENT_GROUP {
+		if t := l.peek(); t.Type() == token.DATA_ELEMENT_GROUP {
 			return lexSegmentHeader
 		} else {
 			return lexTokens
@@ -152,20 +153,20 @@ func lexStart(l *TokenLexer) tokenLexerStateFn {
 func lexTokens(l *TokenLexer) tokenLexerStateFn {
 	for {
 		switch t := l.next(); {
-		case t.Type() == GROUP_DATA_ELEMENT_SEPARATOR:
+		case t.Type() == token.GROUP_DATA_ELEMENT_SEPARATOR:
 			l.reset()
 			return lexGroupDataElement
-		case t.Type() == DATA_ELEMENT_SEPARATOR:
+		case t.Type() == token.DATA_ELEMENT_SEPARATOR:
 			l.reset()
 			return lexDataElement
-		case t.Type() == GROUP_DATA_ELEMENT:
+		case t.Type() == token.GROUP_DATA_ELEMENT:
 			l.reset()
 			return lexDataElementGroup
-		case t.Type() == DATA_ELEMENT:
+		case t.Type() == token.DATA_ELEMENT:
 			l.emitToken(t)
 			return lexSyntaxSymbolWithContext(lexTokens, l)
-		case t.Type() == EOF:
-			l.emit(EOF)
+		case t.Type() == token.EOF:
+			l.emit(token.EOF)
 			return nil
 		}
 	}
@@ -175,24 +176,24 @@ func lexTokens(l *TokenLexer) tokenLexerStateFn {
 func lexEscapeSequenceToken(l *TokenLexer) tokenLexerStateFn {
 	t := l.next()
 	switch t.Type() {
-	case ALPHA_NUMERIC:
-		if l.accept(ESCAPE_SEQUENCE) {
-			l.accept(ALPHA_NUMERIC, TEXT, NUMERIC, DIGIT)
-			l.emit(ALPHA_NUMERIC_WITH_ESCAPE_SEQUENCE)
+	case token.ALPHA_NUMERIC:
+		if l.accept(token.ESCAPE_SEQUENCE) {
+			l.accept(token.ALPHA_NUMERIC, token.TEXT, token.NUMERIC, token.DIGIT)
+			l.emit(token.ALPHA_NUMERIC_WITH_ESCAPE_SEQUENCE)
 		} else {
 			l.emitToken(t)
 		}
 		return lexEscapeSequenceToken
-	case TEXT:
-		if l.accept(ESCAPE_SEQUENCE) {
-			l.accept(ALPHA_NUMERIC, TEXT, NUMERIC, DIGIT)
-			l.emit(TEXT_WITH_ESCAPE_SEQUENCE)
+	case token.TEXT:
+		if l.accept(token.ESCAPE_SEQUENCE) {
+			l.accept(token.ALPHA_NUMERIC, token.TEXT, token.NUMERIC, token.DIGIT)
+			l.emit(token.TEXT_WITH_ESCAPE_SEQUENCE)
 		} else {
 			l.emitToken(t)
 		}
 		return lexEscapeSequenceToken
-	case EOF:
-		l.emit(EOF)
+	case token.EOF:
+		l.emit(token.EOF)
 		return nil
 	default:
 		l.emitToken(t)
@@ -204,17 +205,17 @@ func lexEscapeSequenceToken(l *TokenLexer) tokenLexerStateFn {
 func lexGroupDataElement(l *TokenLexer) tokenLexerStateFn {
 	for {
 		switch t := l.next(); {
-		case t.Type() == GROUP_DATA_ELEMENT_SEPARATOR:
+		case t.Type() == token.GROUP_DATA_ELEMENT_SEPARATOR:
 			l.backup()
-			l.emit(GROUP_DATA_ELEMENT)
+			l.emit(token.GROUP_DATA_ELEMENT)
 			return lexSyntaxSymbolWithContext(lexGroupDataElement, l)
-		case t.Type() == DATA_ELEMENT_SEPARATOR:
+		case t.Type() == token.DATA_ELEMENT_SEPARATOR:
 			l.backup()
-			l.emit(GROUP_DATA_ELEMENT)
+			l.emit(token.GROUP_DATA_ELEMENT)
 			return lexSyntaxSymbolWithContext(lexDataElement, l)
-		case t.Type() == SEGMENT_END_MARKER:
+		case t.Type() == token.SEGMENT_END_MARKER:
 			l.backup()
-			l.emit(GROUP_DATA_ELEMENT)
+			l.emit(token.GROUP_DATA_ELEMENT)
 			return lexSyntaxSymbolWithContext(lexTokens, l)
 		}
 	}
@@ -224,13 +225,13 @@ func lexGroupDataElement(l *TokenLexer) tokenLexerStateFn {
 func lexDataElement(l *TokenLexer) tokenLexerStateFn {
 	for {
 		switch t := l.next(); {
-		case t.Type() == DATA_ELEMENT_SEPARATOR:
+		case t.Type() == token.DATA_ELEMENT_SEPARATOR:
 			l.backup()
-			l.emit(DATA_ELEMENT)
+			l.emit(token.DATA_ELEMENT)
 			return lexSyntaxSymbolWithContext(lexDataElement, l)
-		case t.Type() == SEGMENT_END_MARKER:
+		case t.Type() == token.SEGMENT_END_MARKER:
 			l.backup()
-			l.emit(DATA_ELEMENT)
+			l.emit(token.DATA_ELEMENT)
 			return lexSyntaxSymbolWithContext(lexTokens, l)
 		}
 	}
@@ -238,28 +239,28 @@ func lexDataElement(l *TokenLexer) tokenLexerStateFn {
 }
 
 func lexDataElementGroup(l *TokenLexer) tokenLexerStateFn {
-	l.acceptRun(GROUP_DATA_ELEMENT, GROUP_DATA_ELEMENT_SEPARATOR)
-	l.emit(DATA_ELEMENT_GROUP)
+	l.acceptRun(token.GROUP_DATA_ELEMENT, token.GROUP_DATA_ELEMENT_SEPARATOR)
+	l.emit(token.DATA_ELEMENT_GROUP)
 	return lexSyntaxSymbolWithContext(lexTokens, l)
 }
 
 func lexSegmentHeader(l *TokenLexer) tokenLexerStateFn {
 	// Token is a DATA_ELEMENT_GROUP
-	token := l.next()
-	rawTokens := token.RawTokens()
-	var tokensWithoutSeparators Tokens
+	t := l.next()
+	rawTokens := t.RawTokens()
+	var tokensWithoutSeparators token.Tokens
 	for _, tok := range rawTokens {
 		if !tok.IsSyntaxSymbol() {
 			tokensWithoutSeparators = append(tokensWithoutSeparators, tok)
 		}
 	}
-	iter := NewTokenIterator(tokensWithoutSeparators)
-	if acceptTokenSequence(iter, ALPHA_NUMERIC, NUMERIC, NUMERIC) {
-		acceptToken(iter, NUMERIC)
+	iter := token.NewTokenIterator(tokensWithoutSeparators)
+	if acceptTokenSequence(iter, token.ALPHA_NUMERIC, token.NUMERIC, token.NUMERIC) {
+		acceptToken(iter, token.NUMERIC)
 		if iter.HasNext() {
 			return l.errorf("Malformed Segment Header")
 		} else {
-			l.emit(SEGMENT_HEADER)
+			l.emit(token.SEGMENT_HEADER)
 			return lexSyntaxSymbolWithContext(lexTokens, l)
 		}
 	} else {
@@ -267,7 +268,7 @@ func lexSegmentHeader(l *TokenLexer) tokenLexerStateFn {
 	}
 }
 
-func acceptTokenSequence(tokens *TokenIterator, validSequence ...TokenType) bool {
+func acceptTokenSequence(tokens *token.TokenIterator, validSequence ...token.TokenType) bool {
 	for _, typ := range validSequence {
 		token := tokens.Next()
 		if typ != token.Type() {
@@ -277,7 +278,7 @@ func acceptTokenSequence(tokens *TokenIterator, validSequence ...TokenType) bool
 	return true
 }
 
-func acceptToken(tokens *TokenIterator, valid ...TokenType) bool {
+func acceptToken(tokens *token.TokenIterator, valid ...token.TokenType) bool {
 	if includes(tokens.Next(), valid...) {
 		return true
 	}
@@ -288,11 +289,11 @@ func acceptToken(tokens *TokenIterator, valid ...TokenType) bool {
 func lexSyntaxSymbolWithContext(followingStateFn tokenLexerStateFn, l *TokenLexer) tokenLexerStateFn {
 	return func(*TokenLexer) tokenLexerStateFn {
 		switch t := l.next(); {
-		case t.Type() == GROUP_DATA_ELEMENT_SEPARATOR:
+		case t.Type() == token.GROUP_DATA_ELEMENT_SEPARATOR:
 			l.emitToken(t)
-		case t.Type() == DATA_ELEMENT_SEPARATOR:
+		case t.Type() == token.DATA_ELEMENT_SEPARATOR:
 			l.emitToken(t)
-		case t.Type() == SEGMENT_END_MARKER:
+		case t.Type() == token.SEGMENT_END_MARKER:
 			l.emitToken(t)
 		default:
 			l.errorf("Syntax error")

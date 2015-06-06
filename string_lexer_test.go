@@ -3,36 +3,38 @@ package hbci
 import (
 	"reflect"
 	"testing"
+
+	"github.com/mitch000001/go-hbci/token"
 )
 
 type testData struct {
 	text  string
-	typ   TokenType
+	typ   token.TokenType
 	value string
 }
 
 func TestStringLexer(t *testing.T) {
 	testInput := "ab??cd\ref+12345+@2@ab'"
 	l := NewStringLexer("", testInput)
-	var items []Token
+	var items []token.Token
 	for l.HasNext() {
 		item := l.Next()
 		items = append(items, item)
 	}
-	var itemTypes []TokenType
+	var itemTypes []token.TokenType
 	for _, item := range items {
 		itemTypes = append(itemTypes, item.Type())
 	}
-	expectedItemTypes := []TokenType{
-		ALPHA_NUMERIC,
-		ESCAPE_SEQUENCE,
-		TEXT,
-		DATA_ELEMENT_SEPARATOR,
-		NUMERIC,
-		DATA_ELEMENT_SEPARATOR,
-		BINARY_DATA,
-		SEGMENT_END_MARKER,
-		EOF,
+	expectedItemTypes := []token.TokenType{
+		token.ALPHA_NUMERIC,
+		token.ESCAPE_SEQUENCE,
+		token.TEXT,
+		token.DATA_ELEMENT_SEPARATOR,
+		token.NUMERIC,
+		token.DATA_ELEMENT_SEPARATOR,
+		token.BINARY_DATA,
+		token.SEGMENT_END_MARKER,
+		token.EOF,
 	}
 	if !reflect.DeepEqual(expectedItemTypes, itemTypes) {
 		t.Logf("Expected types to equal \n\t'%s' \ngot: \n\t'%s'\n", expectedItemTypes, itemTypes)
@@ -42,10 +44,10 @@ func TestStringLexer(t *testing.T) {
 
 func TestLexText(t *testing.T) {
 	tests := []testData{
-		{"ab\rcd'", TEXT, "ab\rcd"},
-		{"ab\ncd'", TEXT, "ab\ncd"},
-		{"ab\r\ncd'", TEXT, "ab\r\ncd"},
-		{"ab\n\rcd'", TEXT, "ab\n\rcd"},
+		{"ab\rcd'", token.TEXT, "ab\rcd"},
+		{"ab\ncd'", token.TEXT, "ab\ncd"},
+		{"ab\r\ncd'", token.TEXT, "ab\r\ncd"},
+		{"ab\n\rcd'", token.TEXT, "ab\n\rcd"},
 	}
 	for _, test := range tests {
 		l := NewStringLexer("", test.text)
@@ -65,14 +67,14 @@ func TestLexText(t *testing.T) {
 
 func TestLexAlphaNumeric(t *testing.T) {
 	tests := []testData{
-		{"ab'", ALPHA_NUMERIC, "ab"},
-		{"ab123'", ALPHA_NUMERIC, "ab123"},
-		{"ab!)'", ALPHA_NUMERIC, "ab!)"},
-		{"ab!)'", ALPHA_NUMERIC, "ab!)"},
-		{"ab!):", ALPHA_NUMERIC, "ab!)"},
-		{"ab!)+", ALPHA_NUMERIC, "ab!)"},
-		{"ab?'", ALPHA_NUMERIC, "ab"},
-		{"ab", ERROR, "Unexpected end of input"},
+		{"ab'", token.ALPHA_NUMERIC, "ab"},
+		{"ab123'", token.ALPHA_NUMERIC, "ab123"},
+		{"ab!)'", token.ALPHA_NUMERIC, "ab!)"},
+		{"ab!)'", token.ALPHA_NUMERIC, "ab!)"},
+		{"ab!):", token.ALPHA_NUMERIC, "ab!)"},
+		{"ab!)+", token.ALPHA_NUMERIC, "ab!)"},
+		{"ab?'", token.ALPHA_NUMERIC, "ab"},
+		{"ab", token.ERROR, "Unexpected end of input"},
 	}
 	for _, test := range tests {
 		l := NewStringLexer("", test.text)
@@ -92,12 +94,12 @@ func TestLexAlphaNumeric(t *testing.T) {
 
 func TestLexEscapeSequence(t *testing.T) {
 	tests := []testData{
-		{"?'", ESCAPE_SEQUENCE, "?'"},
-		{"?+", ESCAPE_SEQUENCE, "?+"},
-		{"?:", ESCAPE_SEQUENCE, "?:"},
-		{"??", ESCAPE_SEQUENCE, "??"},
-		{"?@", ESCAPE_SEQUENCE, "?@"},
-		{"?a", ERROR, "Malformed Escape Sequence"},
+		{"?'", token.ESCAPE_SEQUENCE, "?'"},
+		{"?+", token.ESCAPE_SEQUENCE, "?+"},
+		{"?:", token.ESCAPE_SEQUENCE, "?:"},
+		{"??", token.ESCAPE_SEQUENCE, "??"},
+		{"?@", token.ESCAPE_SEQUENCE, "?@"},
+		{"?a", token.ERROR, "Malformed Escape Sequence"},
 	}
 	for _, test := range tests {
 		l := NewStringLexer("", test.text)
@@ -117,9 +119,9 @@ func TestLexEscapeSequence(t *testing.T) {
 
 func TestLexSyntaxSymbol(t *testing.T) {
 	tests := []testData{
-		{"'", SEGMENT_END_MARKER, "'"},
-		{"+", DATA_ELEMENT_SEPARATOR, "+"},
-		{":", GROUP_DATA_ELEMENT_SEPARATOR, ":"},
+		{"'", token.SEGMENT_END_MARKER, "'"},
+		{"+", token.DATA_ELEMENT_SEPARATOR, "+"},
+		{":", token.GROUP_DATA_ELEMENT_SEPARATOR, ":"},
 	}
 	for _, test := range tests {
 		l := NewStringLexer("", test.text)
@@ -139,11 +141,11 @@ func TestLexSyntaxSymbol(t *testing.T) {
 
 func TestLexBinaryData(t *testing.T) {
 	tests := []testData{
-		{"@2@ab'", BINARY_DATA, "@2@ab"},
-		{"@@ab'", ERROR, "Binary length can't be empty"},
-		{"@2@a'", ERROR, "Expected syntax symbol after binary data"},
-		{"@2@abc'", ERROR, "Expected syntax symbol after binary data"},
-		{"@2x@ab'", ERROR, "Binary length must contain of digits only"},
+		{"@2@ab'", token.BINARY_DATA, "@2@ab"},
+		{"@@ab'", token.ERROR, "Binary length can't be empty"},
+		{"@2@a'", token.ERROR, "Expected syntax symbol after binary data"},
+		{"@2@abc'", token.ERROR, "Expected syntax symbol after binary data"},
+		{"@2x@ab'", token.ERROR, "Binary length must contain of digits only"},
 	}
 	for _, test := range tests {
 		l := NewStringLexer("", test.text)
@@ -163,18 +165,18 @@ func TestLexBinaryData(t *testing.T) {
 
 func TestLexDigit(t *testing.T) {
 	tests := []testData{
-		{"123'", NUMERIC, "123"},
-		{"0123'", DIGIT, "0123"},
-		{"0,123'", FLOAT, "0,123"},
-		{"1,23'", FLOAT, "1,23"},
-		{"1,''", FLOAT, "1,"},
-		{"0'", NUMERIC, "0"},
-		{"0,'", FLOAT, "0,"},
-		{"01,23'", ERROR, "Malformed float"},
-		{"0,12a'", ERROR, "Malformed float"},
-		{"1,23a'", ERROR, "Malformed float"},
-		{"012a'", ERROR, "Malformed digit"},
-		{"12a'", ERROR, "Malformed numeric"},
+		{"123'", token.NUMERIC, "123"},
+		{"0123'", token.DIGIT, "0123"},
+		{"0,123'", token.FLOAT, "0,123"},
+		{"1,23'", token.FLOAT, "1,23"},
+		{"1,''", token.FLOAT, "1,"},
+		{"0'", token.NUMERIC, "0"},
+		{"0,'", token.FLOAT, "0,"},
+		{"01,23'", token.ERROR, "Malformed float"},
+		{"0,12a'", token.ERROR, "Malformed float"},
+		{"1,23a'", token.ERROR, "Malformed float"},
+		{"012a'", token.ERROR, "Malformed digit"},
+		{"12a'", token.ERROR, "Malformed numeric"},
 	}
 	for _, test := range tests {
 		l := NewStringLexer("", test.text)
