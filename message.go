@@ -23,10 +23,10 @@ func NewMessageHeaderSegment(header *SegmentHeader, size int, hbciVersion int, d
 
 type MessageHeaderSegment struct {
 	Header      *SegmentHeader
-	Size        DataElement
-	HBCIVersion DataElement
-	DialogID    DataElement
-	Number      DataElement
+	Size        *DigitDataElement
+	HBCIVersion *NumberDataElement
+	DialogID    *AlphaNumericDataElement
+	Number      *NumberDataElement
 	Ref         *ReferenceMessage
 }
 

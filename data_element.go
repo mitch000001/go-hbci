@@ -44,25 +44,35 @@ func (d *dataElement) Valid() bool           { return d.Length() <= d.maxLength 
 func (d *dataElement) Length() int           { return len(d.String()) }
 func (d *dataElement) String() string        { return fmt.Sprintf("%v", d.val) }
 
-func NewAlphaNumericDataElement(val string, maxLength int) DataElement {
-	return NewDataElement(AlphaNumeric, val, maxLength)
+func NewAlphaNumericDataElement(val string, maxLength int) *AlphaNumericDataElement {
+	return &AlphaNumericDataElement{&dataElement{val, AlphaNumeric, maxLength}}
 }
 
-func NewDigitDataElement(val, maxLength int) DataElement {
-	dataElement := NewDataElement(Digit, val, maxLength)
-	return &digitDataElement{dataElement, maxLength}
+type AlphaNumericDataElement struct {
+	*dataElement
 }
 
-type digitDataElement struct {
-	DataElement
-	maxLength int
+func (a *AlphaNumericDataElement) Val() string { return a.val.(string) }
+
+func NewDigitDataElement(val, maxLength int) *DigitDataElement {
+	return &DigitDataElement{&dataElement{val, Digit, maxLength}}
 }
 
-func (d *digitDataElement) String() string {
+type DigitDataElement struct {
+	*dataElement
+}
+
+func (d *DigitDataElement) Val() int { return d.val.(int) }
+
+func (d *DigitDataElement) String() string {
 	fmtString := fmt.Sprintf("%%0%dd", d.maxLength)
 	return fmt.Sprintf(fmtString, d.Value().(int))
 }
 
-func NewNumberDataElement(val, maxLength int) DataElement {
-	return NewDataElement(Number, val, maxLength)
+func NewNumberDataElement(val, maxLength int) *NumberDataElement {
+	return &NumberDataElement{&dataElement{val, Number, maxLength}}
+}
+
+type NumberDataElement struct {
+	*dataElement
 }

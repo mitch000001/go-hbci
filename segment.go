@@ -23,10 +23,10 @@ func NewSegmentHeader(id string, number, version int) *SegmentHeader {
 
 // TODO: How to retrieve the concrete or casted values?
 type SegmentHeader struct {
-	ID      DataElement
-	Number  DataElement
-	Version DataElement
-	Ref     DataElement
+	ID      *AlphaNumericDataElement
+	Number  *NumberDataElement
+	Version *NumberDataElement
+	Ref     *NumberDataElement
 }
 
 func (s *SegmentHeader) Type() DataElementType {
