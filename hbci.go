@@ -41,10 +41,6 @@ type ClientMessage struct {
 	Jobs           []*Job
 }
 
-type MessageHeader struct {
-	*Segment
-}
-
 type MessageEnd struct{}
 type SignatureHeader struct{}
 type SignatureEnd struct{}

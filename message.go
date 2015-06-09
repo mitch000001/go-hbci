@@ -21,6 +21,14 @@ func NewMessageHeaderSegment(header *SegmentHeader, size int, hbciVersion int, d
 	}
 }
 
+type MessageHeader struct {
+	Size            int
+	HBCIVersion     int
+	DialogID        string
+	Number          int
+	ReferenceNumber int
+}
+
 type MessageHeaderSegment struct {
 	Header      *SegmentHeader
 	Size        *DigitDataElement
