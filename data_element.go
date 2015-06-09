@@ -84,20 +84,6 @@ func (d DataElementType) String() string {
 	return s
 }
 
-func Optional(dataElement DataElement) *OptionalDataElement {
-	return &OptionalDataElement{dataElement}
-}
-
-type OptionalDataElement struct {
-	DataElement
-}
-
-func (o *OptionalDataElement) Value() interface{}    { return o.Value() }
-func (o *OptionalDataElement) Type() DataElementType { return o.Type() }
-func (o *OptionalDataElement) Valid() bool           { return o.Valid() }
-func (o *OptionalDataElement) Length() int           { return o.Length() }
-func (o *OptionalDataElement) String() string        { return o.String() }
-
 func NewGroupDataElementGroup(typ DataElementType, elementCount int, elements ...DataElement) *GroupDataElementGroup {
 	return &GroupDataElementGroup{elements: elements, elementCount: elementCount, typ: typ}
 }
