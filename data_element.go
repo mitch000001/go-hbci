@@ -84,14 +84,40 @@ func (d DataElementType) String() string {
 	return s
 }
 
+func Optional(dataElement DataElement) *OptionalDataElement {
+	return &OptionalDataElement{dataElement}
+}
+
+type OptionalDataElement struct {
+	DataElement
+}
+
+func (o *OptionalDataElement) Value() interface{}    { return o.Value() }
+func (o *OptionalDataElement) Type() DataElementType { return o.Type() }
+func (o *OptionalDataElement) Valid() bool           { return o.Valid() }
+func (o *OptionalDataElement) Length() int           { return o.Length() }
+func (o *OptionalDataElement) String() string        { return o.String() }
+
+func NewGroupDataElementGroup(typ DataElementType, elementCount int, elements ...DataElement) *GroupDataElementGroup {
+	return &GroupDataElementGroup{elements: elements, elementCount: elementCount, typ: typ}
+}
+
+// GroupDataElementGroup defines a group of GroupDataElements.
+// It implements the DataElement and the DataElementGroup interface
 type GroupDataElementGroup struct {
 	elements     []DataElement
 	typ          DataElementType
 	elementCount int
 }
 
-// TODO: what should Value() return for GroupDataElementGroups?
-func (g *GroupDataElementGroup) Value() interface{}    { return nil }
+// Value returns the values of all GroupDataElements as []interface{}
+func (g *GroupDataElementGroup) Value() interface{} {
+	values := make([]interface{}, len(g.elements))
+	for i, elem := range g.elements {
+		values[i] = elem.Value()
+	}
+	return values
+}
 func (g *GroupDataElementGroup) Type() DataElementType { return g.typ }
 func (g *GroupDataElementGroup) Valid() bool {
 	if g.elementCount != len(g.elements) {
@@ -104,6 +130,7 @@ func (g *GroupDataElementGroup) Valid() bool {
 	}
 	return true
 }
+
 func (g *GroupDataElementGroup) Length() int {
 	length := 0
 	for _, elem := range g.elements {
@@ -117,6 +144,10 @@ func (g *GroupDataElementGroup) String() string {
 		elementStrings[i] = e.String()
 	}
 	return strings.Join(elementStrings, ":")
+}
+
+func (g *GroupDataElementGroup) GroupDataElements() []DataElement {
+	return g.elements
 }
 
 func NewDataElement(typ DataElementType, value interface{}, maxLength int) DataElement {
@@ -326,4 +357,44 @@ func NewValueDataElement(val float64) *ValueDataElement {
 
 type ValueDataElement struct {
 	*FloatDataElement
+}
+
+func NewAmountDataElement(value float64, currency string) *AmountDataElement {
+	g := NewGroupDataElementGroup(Amount, 2, NewValueDataElement(value), NewCurrencyDataElement(currency))
+	return &AmountDataElement{g}
+}
+
+type AmountDataElement struct {
+	*GroupDataElementGroup
+}
+
+func (a *AmountDataElement) Val() (value float64, currency string) {
+	return a.elements[0].Value().(float64), a.elements[1].Value().(string)
+}
+
+func NewBankIndentificationDataElement(countryCode int) *BankIdentificationDataElement {
+	g := NewGroupDataElementGroup(BankIdentification, 2, NewCountryCodeDataElement(countryCode))
+	return &BankIdentificationDataElement{g}
+}
+
+func NewBankIndentificationDataElementWithBankId(countryCode int, bankId string) *BankIdentificationDataElement {
+	g := NewGroupDataElementGroup(BankIdentification, 2, NewCountryCodeDataElement(countryCode), NewAlphaNumericDataElement(bankId, 30))
+	return &BankIdentificationDataElement{g}
+}
+
+type BankIdentificationDataElement struct {
+	*GroupDataElementGroup
+}
+
+func (b *BankIdentificationDataElement) Valid() bool {
+	if len(b.elements) == 1 {
+		elem := b.elements[0]
+		return elem.Type() == CountryCode && elem.Valid()
+	} else {
+		return b.GroupDataElementGroup.Valid()
+	}
+}
+
+type AccountConnectionDataElement struct {
+	*GroupDataElementGroup
 }
