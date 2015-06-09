@@ -18,8 +18,8 @@ type testDataElementData struct {
 
 func TestNewDataElement(t *testing.T) {
 	tests := []testDataElementData{
-		{1, Number, 3, true, 1, Number, 1, "1"},
-		{1234, Number, 3, false, 1234, Number, 4, "1234"},
+		{1, NumberDE, 3, true, 1, NumberDE, 1, "1"},
+		{1234, NumberDE, 3, false, 1234, NumberDE, 4, "1234"},
 	}
 	for _, test := range tests {
 		d := NewDataElement(test.inType, test.inValue, test.inMaxLength)
@@ -71,7 +71,7 @@ func TestNewDataElement(t *testing.T) {
 func TestNewAlphaNumericDataElement(t *testing.T) {
 	dataElement := NewAlphaNumericDataElement("abc", 5)
 
-	expectedType := AlphaNumeric
+	expectedType := AlphaNumericDE
 
 	actualType := dataElement.Type()
 
@@ -168,7 +168,7 @@ func TestDigitDataElementValue(t *testing.T) {
 func TestDigitDataElementType(t *testing.T) {
 	d := NewDigitDataElement(1, 2)
 
-	expected := Digit
+	expected := DigitDE
 
 	actual := d.Type()
 
@@ -239,7 +239,7 @@ func TestNumberDataElementValue(t *testing.T) {
 func TestNumberDataElementType(t *testing.T) {
 	d := NewNumberDataElement(1, 2)
 
-	expected := Number
+	expected := NumberDE
 
 	actual := d.Type()
 

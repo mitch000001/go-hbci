@@ -30,7 +30,7 @@ type SegmentHeader struct {
 }
 
 func (s *SegmentHeader) Type() DataElementType {
-	return SegmentHeaderType
+	return SegmentHeaderDEG
 }
 
 func (s *SegmentHeader) Valid() bool {

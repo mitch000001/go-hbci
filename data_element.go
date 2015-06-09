@@ -2,6 +2,7 @@ package hbci
 
 import (
 	"fmt"
+	"math"
 	"strconv"
 	"strings"
 	"time"
@@ -23,57 +24,57 @@ type DataElementGroup interface {
 type DataElementType int
 
 const (
-	AlphaNumeric DataElementType = iota << 1
-	Text
-	Number
-	Digit
-	Float
-	DTAUSCharset
-	Binary
+	AlphaNumericDE DataElementType = iota << 1
+	TextDE
+	NumberDE
+	DigitDE
+	FloatDE
+	DTAUSCharsetDE
+	BinaryDE
 	// Derived types
-	Boolean
-	Date
-	VirtualDate
-	Time
-	Identification
-	CountryCode
-	Currency
-	Value
+	BooleanDE
+	DateDE
+	VirtualDateDE
+	TimeDE
+	IdentificationDE
+	CountryCodeDE
+	CurrencyDE
+	ValueDE
 	// Multiple used element
-	Amount
-	BankIdentification
-	AccountConnection
-	Balance
-	Address
+	AmountGDEG
+	BankIdentificationGDEG
+	AccountConnectionGDEG
+	BalanceGDEG
+	AddressGDEG
 	// DataElementGroups
-	SegmentHeaderType
+	SegmentHeaderDEG
 )
 
 var typeName = map[DataElementType]string{
-	AlphaNumeric: "an",
-	Text:         "txt",
-	Number:       "num",
-	Digit:        "dig",
-	Float:        "float",
-	DTAUSCharset: "dta",
-	Binary:       "bin",
+	AlphaNumericDE: "an",
+	TextDE:         "txt",
+	NumberDE:       "num",
+	DigitDE:        "dig",
+	FloatDE:        "float",
+	DTAUSCharsetDE: "dta",
+	BinaryDE:       "bin",
 	// Derived types
-	Boolean:        "jn",
-	Date:           "dat",
-	VirtualDate:    "vdat",
-	Time:           "tim",
-	Identification: "id",
-	CountryCode:    "ctr",
-	Currency:       "cur",
-	Value:          "wrt",
+	BooleanDE:        "jn",
+	DateDE:           "dat",
+	VirtualDateDE:    "vdat",
+	TimeDE:           "tim",
+	IdentificationDE: "id",
+	CountryCodeDE:    "ctr",
+	CurrencyDE:       "cur",
+	ValueDE:          "wrt",
 	// Multiple used element
-	Amount:             "btg",
-	BankIdentification: "kik",
-	AccountConnection:  "ktv",
-	Balance:            "sdo",
-	Address:            "addr",
+	AmountGDEG:             "btg",
+	BankIdentificationGDEG: "kik",
+	AccountConnectionGDEG:  "ktv",
+	BalanceGDEG:            "sdo",
+	AddressGDEG:            "addr",
 	// DataElementGroups
-	SegmentHeaderType: "Segmentkopf",
+	SegmentHeaderDEG: "Segmentkopf",
 }
 
 func (d DataElementType) String() string {
@@ -153,7 +154,7 @@ func (d *dataElement) Length() int           { return len(d.String()) }
 func (d *dataElement) String() string        { return fmt.Sprintf("%v", d.val) }
 
 func NewAlphaNumericDataElement(val string, maxLength int) *AlphaNumericDataElement {
-	return &AlphaNumericDataElement{&dataElement{val, AlphaNumeric, maxLength}}
+	return &AlphaNumericDataElement{&dataElement{val, AlphaNumericDE, maxLength}}
 }
 
 type AlphaNumericDataElement struct {
@@ -163,7 +164,7 @@ type AlphaNumericDataElement struct {
 func (a *AlphaNumericDataElement) Val() string { return a.val.(string) }
 
 func NewDigitDataElement(val, maxLength int) *DigitDataElement {
-	return &DigitDataElement{&dataElement{val, Digit, maxLength}}
+	return &DigitDataElement{&dataElement{val, DigitDE, maxLength}}
 }
 
 type DigitDataElement struct {
@@ -178,7 +179,7 @@ func (d *DigitDataElement) String() string {
 }
 
 func NewNumberDataElement(val, maxLength int) *NumberDataElement {
-	return &NumberDataElement{&dataElement{val, Number, maxLength}}
+	return &NumberDataElement{&dataElement{val, NumberDE, maxLength}}
 }
 
 type NumberDataElement struct {
@@ -186,7 +187,7 @@ type NumberDataElement struct {
 }
 
 func NewFloatDataElement(val float64, maxLength int) *FloatDataElement {
-	return &FloatDataElement{&dataElement{val, Float, maxLength}}
+	return &FloatDataElement{&dataElement{val, FloatDE, maxLength}}
 }
 
 type FloatDataElement struct {
@@ -208,7 +209,7 @@ type DtausCharsetDataElement struct {
 }
 
 func NewDtausCharsetDataElement(data []byte, maxLength int) *DtausCharsetDataElement {
-	return &DtausCharsetDataElement{&dataElement{data, DTAUSCharset, maxLength}}
+	return &DtausCharsetDataElement{&dataElement{data, DTAUSCharsetDE, maxLength}}
 }
 
 type BinaryDataElement struct {
@@ -216,7 +217,7 @@ type BinaryDataElement struct {
 }
 
 func NewBinaryDataElement(data []byte, maxLength int) *BinaryDataElement {
-	return &BinaryDataElement{&dataElement{data, Binary, maxLength}}
+	return &BinaryDataElement{&dataElement{data, BinaryDE, maxLength}}
 }
 
 func (b *BinaryDataElement) Val() []byte {
@@ -228,7 +229,7 @@ func (b *BinaryDataElement) String() string {
 }
 
 func NewBooleanDataElement(val bool) *BooleanDataElement {
-	return &BooleanDataElement{&dataElement{val, Boolean, 1}}
+	return &BooleanDataElement{&dataElement{val, BooleanDE, 1}}
 }
 
 type BooleanDataElement struct {
@@ -248,7 +249,7 @@ func (b *BooleanDataElement) String() string {
 }
 
 func NewDateDataElement(date time.Time) *DateDataElement {
-	return &DateDataElement{&dataElement{date, Date, 8}}
+	return &DateDataElement{&dataElement{date, DateDE, 8}}
 }
 
 type DateDataElement struct {
@@ -269,7 +270,7 @@ func (d *DateDataElement) Valid() bool {
 
 func NewVirtualDateDataElement(date int) *VirtualDateDataElement {
 	n := NewNumberDataElement(date, 8)
-	n.typ = VirtualDate
+	n.typ = VirtualDateDE
 	return &VirtualDateDataElement{n}
 }
 
@@ -282,7 +283,7 @@ func (v *VirtualDateDataElement) Valid() bool {
 }
 
 func NewTimeDataElement(date time.Time) *TimeDataElement {
-	return &TimeDataElement{&dataElement{date, Date, 6}}
+	return &TimeDataElement{&dataElement{date, DateDE, 6}}
 }
 
 type TimeDataElement struct {
@@ -303,7 +304,7 @@ func (t *TimeDataElement) Valid() bool {
 
 func NewIdentificationDataElement(id string) *IdentificationDataElement {
 	an := NewAlphaNumericDataElement(id, 30)
-	an.typ = Identification
+	an.typ = IdentificationDE
 	return &IdentificationDataElement{an}
 }
 
@@ -313,7 +314,7 @@ type IdentificationDataElement struct {
 
 func NewCountryCodeDataElement(code int) *CountryCodeDataElement {
 	d := NewDigitDataElement(code, 3)
-	d.typ = CountryCode
+	d.typ = CountryCodeDE
 	return &CountryCodeDataElement{d}
 }
 
@@ -323,7 +324,7 @@ type CountryCodeDataElement struct {
 
 func NewCurrencyDataElement(cur string) *CurrencyDataElement {
 	an := NewAlphaNumericDataElement(cur, 3)
-	an.typ = Currency
+	an.typ = CurrencyDE
 	return &CurrencyDataElement{an}
 }
 
@@ -337,7 +338,7 @@ func (c *CurrencyDataElement) Valid() bool {
 
 func NewValueDataElement(val float64) *ValueDataElement {
 	f := NewFloatDataElement(val, 15)
-	f.typ = Value
+	f.typ = ValueDE
 	return &ValueDataElement{f}
 }
 
@@ -345,8 +346,10 @@ type ValueDataElement struct {
 	*FloatDataElement
 }
 
+// GroupDataElementGroups
+
 func NewAmountDataElement(value float64, currency string) *AmountDataElement {
-	g := NewGroupDataElementGroup(Amount, 2, NewValueDataElement(value), NewCurrencyDataElement(currency))
+	g := NewGroupDataElementGroup(AmountGDEG, 2, NewValueDataElement(value), NewCurrencyDataElement(currency))
 	return &AmountDataElement{g}
 }
 
@@ -358,13 +361,8 @@ func (a *AmountDataElement) Val() (value float64, currency string) {
 	return a.elements[0].Value().(float64), a.elements[1].Value().(string)
 }
 
-func NewBankIndentificationDataElement(countryCode int) *BankIdentificationDataElement {
-	g := NewGroupDataElementGroup(BankIdentification, 2, NewCountryCodeDataElement(countryCode))
-	return &BankIdentificationDataElement{g}
-}
-
 func NewBankIndentificationDataElementWithBankId(countryCode int, bankId string) *BankIdentificationDataElement {
-	g := NewGroupDataElementGroup(BankIdentification, 2, NewCountryCodeDataElement(countryCode), NewAlphaNumericDataElement(bankId, 30))
+	g := NewGroupDataElementGroup(BankIdentificationGDEG, 2, NewCountryCodeDataElement(countryCode), NewAlphaNumericDataElement(bankId, 30))
 	return &BankIdentificationDataElement{g}
 }
 
@@ -372,18 +370,9 @@ type BankIdentificationDataElement struct {
 	*GroupDataElementGroup
 }
 
-func (b *BankIdentificationDataElement) Valid() bool {
-	if len(b.elements) == 1 {
-		elem := b.elements[0]
-		return elem.Type() == CountryCode && elem.Valid()
-	} else {
-		return b.GroupDataElementGroup.Valid()
-	}
-}
-
 func NewAccountConnectionDataElement(accountId string, subAccountCharacteristic string, countryCode int, bankId string) *AccountConnectionDataElement {
 	g := NewGroupDataElementGroup(
-		AccountConnection,
+		AccountConnectionGDEG,
 		4,
 		NewIdentificationDataElement(accountId),
 		NewIdentificationDataElement(subAccountCharacteristic),
@@ -395,4 +384,104 @@ func NewAccountConnectionDataElement(accountId string, subAccountCharacteristic 
 
 type AccountConnectionDataElement struct {
 	*GroupDataElementGroup
+}
+
+type DebitCreditIndicator int
+
+const (
+	Debit  DebitCreditIndicator = iota // Soll
+	Credit                             // Haben
+)
+
+type Balance struct {
+	Value    float64
+	Currency string
+}
+
+func NewBalanceDataElement(balance Balance, date time.Time) *BalanceDataElement {
+	var debitCredit string
+	if balance.Value < 0 {
+		debitCredit = "D"
+	} else {
+		debitCredit = "C"
+	}
+	g := NewGroupDataElementGroup(
+		BalanceGDEG,
+		5,
+		NewAlphaNumericDataElement(debitCredit, 1),
+		NewValueDataElement(math.Abs(balance.Value)),
+		NewCurrencyDataElement(balance.Currency),
+		NewDateDataElement(date),
+		NewTimeDataElement(date),
+	)
+	return &BalanceDataElement{g}
+}
+
+type BalanceDataElement struct {
+	*GroupDataElementGroup
+}
+
+func (b *BalanceDataElement) Balance() Balance {
+	sign := b.elements[0].Value().(string)
+	val := b.elements[1].Value().(float64)
+	if sign == "D" {
+		val = -val
+	}
+	currency := b.elements[2].Value().(string)
+	balance := Balance{
+		Value:    val,
+		Currency: currency,
+	}
+	return balance
+}
+
+func (b *BalanceDataElement) Date() time.Time {
+	return b.elements[3].Value().(time.Time)
+}
+
+type Address struct {
+	Name1       string
+	Name2       string
+	Street      string
+	PLZ         string
+	City        string
+	CountryCode int
+	Phone       string
+	Fax         string
+	Email       string
+}
+
+func NewAddressDataElement(address Address) *AddressDataElement {
+	g := NewGroupDataElementGroup(
+		AddressGDEG,
+		9,
+		NewAlphaNumericDataElement(address.Name1, 35),
+		NewAlphaNumericDataElement(address.Name2, 35),
+		NewAlphaNumericDataElement(address.Street, 35),
+		NewAlphaNumericDataElement(address.PLZ, 10),
+		NewAlphaNumericDataElement(address.City, 35),
+		NewCountryCodeDataElement(address.CountryCode),
+		NewAlphaNumericDataElement(address.Phone, 35),
+		NewAlphaNumericDataElement(address.Fax, 35),
+		NewAlphaNumericDataElement(address.Email, 35),
+	)
+	return &AddressDataElement{g}
+}
+
+type AddressDataElement struct {
+	*GroupDataElementGroup
+}
+
+func (a *AddressDataElement) Address() Address {
+	return Address{
+		Name1:       a.elements[0].Value().(string),
+		Name2:       a.elements[1].Value().(string),
+		Street:      a.elements[2].Value().(string),
+		PLZ:         a.elements[3].Value().(string),
+		City:        a.elements[4].Value().(string),
+		CountryCode: a.elements[5].Value().(int),
+		Phone:       a.elements[6].Value().(string),
+		Fax:         a.elements[7].Value().(string),
+		Email:       a.elements[8].Value().(string),
+	}
 }
