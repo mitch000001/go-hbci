@@ -39,6 +39,12 @@ const (
 	CountryCode
 	Currency
 	Value
+	// Multiple used element
+	Amount
+	BankIdentification
+	AccountConnection
+	Balance
+	Address
 	// DataElementGroups
 	SegmentHeaderType
 )
@@ -60,6 +66,12 @@ var typeName = map[DataElementType]string{
 	CountryCode:    "ctr",
 	Currency:       "cur",
 	Value:          "wrt",
+	// Multiple used element
+	Amount:             "btg",
+	BankIdentification: "kik",
+	AccountConnection:  "ktv",
+	Balance:            "sdo",
+	Address:            "addr",
 	// DataElementGroups
 	SegmentHeaderType: "Segmentkopf",
 }
@@ -72,14 +84,49 @@ func (d DataElementType) String() string {
 	return s
 }
 
-type dataElement struct {
-	val       interface{}
-	typ       DataElementType
-	maxLength int
+type GroupDataElementGroup struct {
+	elements     []DataElement
+	typ          DataElementType
+	elementCount int
+}
+
+// TODO: what should Value() return for GroupDataElementGroups?
+func (g *GroupDataElementGroup) Value() interface{}    { return nil }
+func (g *GroupDataElementGroup) Type() DataElementType { return g.typ }
+func (g *GroupDataElementGroup) Valid() bool {
+	if g.elementCount != len(g.elements) {
+		return false
+	}
+	for _, elem := range g.elements {
+		if !elem.Valid() {
+			return false
+		}
+	}
+	return true
+}
+func (g *GroupDataElementGroup) Length() int {
+	length := 0
+	for _, elem := range g.elements {
+		length += elem.Length()
+	}
+	return length
+}
+func (g *GroupDataElementGroup) String() string {
+	elementStrings := make([]string, len(g.elements))
+	for i, e := range g.elements {
+		elementStrings[i] = e.String()
+	}
+	return strings.Join(elementStrings, ":")
 }
 
 func NewDataElement(typ DataElementType, value interface{}, maxLength int) DataElement {
 	return &dataElement{value, typ, maxLength}
+}
+
+type dataElement struct {
+	val       interface{}
+	typ       DataElementType
+	maxLength int
 }
 
 func (d *dataElement) Value() interface{}    { return d.val }
