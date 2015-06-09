@@ -2,7 +2,23 @@ package hbci
 
 import "strings"
 
-type Segment struct{}
+func NewSegment(header *SegmentHeader, dataElements ...DataElement) *Segment {
+	return &Segment{Header: header, elements: dataElements}
+}
+
+type Segment struct {
+	Header   *SegmentHeader
+	elements []DataElement
+}
+
+func (s *Segment) String() string {
+	elementStrings := make([]string, len(s.elements)+1)
+	elementStrings[0] = s.Header.String()
+	for i, de := range s.elements {
+		elementStrings[i+1] = de.String()
+	}
+	return strings.Join(elementStrings, "+") + "'"
+}
 
 func NewReferencingSegmentHeader(id string, number, version, reference int) *SegmentHeader {
 	return &SegmentHeader{
@@ -21,7 +37,6 @@ func NewSegmentHeader(id string, number, version int) *SegmentHeader {
 	}
 }
 
-// TODO: How to retrieve the concrete or casted values?
 type SegmentHeader struct {
 	ID      *AlphaNumericDataElement
 	Number  *NumberDataElement
@@ -62,7 +77,11 @@ func (s *SegmentHeader) String() string {
 	for i, d := range s.GroupDataElements() {
 		elementStrings[i] = d.String()
 	}
-	return strings.Join(elementStrings, ":")
+	returnStr := strings.Join(elementStrings, ":")
+	if s.Ref == nil {
+		returnStr += ":"
+	}
+	return returnStr
 }
 
 func (s *SegmentHeader) GroupDataElements() []DataElement {
