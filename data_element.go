@@ -395,6 +395,18 @@ func (b *BankIdentificationDataElement) Valid() bool {
 	}
 }
 
+func NewAccountConnectionDataElement(accountId string, subAccountCharacteristic string, countryCode int, bankId string) *AccountConnectionDataElement {
+	g := NewGroupDataElementGroup(
+		AccountConnection,
+		4,
+		NewIdentificationDataElement(accountId),
+		NewIdentificationDataElement(subAccountCharacteristic),
+		NewCountryCodeDataElement(countryCode),
+		NewAlphaNumericDataElement(bankId, 30),
+	)
+	return &AccountConnectionDataElement{g}
+}
+
 type AccountConnectionDataElement struct {
 	*GroupDataElementGroup
 }
