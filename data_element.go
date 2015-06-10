@@ -21,6 +21,10 @@ type DataElementGroup interface {
 	GroupDataElements() []DataElement
 }
 
+type GroupDataElementGroup interface {
+	Elements() []DataElement
+}
+
 type DataElementType int
 
 const (
@@ -85,32 +89,35 @@ func (d DataElementType) String() string {
 	return s
 }
 
-func NewGroupDataElementGroup(typ DataElementType, elementCount int, elements ...DataElement) *GroupDataElementGroup {
-	return &GroupDataElementGroup{elements: elements, elementCount: elementCount, typ: typ}
+func NewGroupDataElementGroup(typ DataElementType, elementCount int, group GroupDataElementGroup) *groupDataElementGroup {
+	return &groupDataElementGroup{group: group, elementCount: elementCount, typ: typ}
 }
 
 // GroupDataElementGroup defines a group of GroupDataElements.
 // It implements the DataElement and the DataElementGroup interface
-type GroupDataElementGroup struct {
+type groupDataElementGroup struct {
+	group        GroupDataElementGroup
 	elements     []DataElement
 	typ          DataElementType
 	elementCount int
 }
 
 // Value returns the values of all GroupDataElements as []interface{}
-func (g *GroupDataElementGroup) Value() interface{} {
-	values := make([]interface{}, len(g.elements))
-	for i, elem := range g.elements {
+func (g *groupDataElementGroup) Value() interface{} {
+	values := make([]interface{}, len(g.group.Elements()))
+	for i, elem := range g.group.Elements() {
 		values[i] = elem.Value()
 	}
 	return values
 }
-func (g *GroupDataElementGroup) Type() DataElementType { return g.typ }
-func (g *GroupDataElementGroup) Valid() bool {
-	if g.elementCount != len(g.elements) {
+
+func (g *groupDataElementGroup) Type() DataElementType { return g.typ }
+
+func (g *groupDataElementGroup) Valid() bool {
+	if g.elementCount != len(g.group.Elements()) {
 		return false
 	}
-	for _, elem := range g.elements {
+	for _, elem := range g.group.Elements() {
 		if !elem.Valid() {
 			return false
 		}
@@ -118,23 +125,24 @@ func (g *GroupDataElementGroup) Valid() bool {
 	return true
 }
 
-func (g *GroupDataElementGroup) Length() int {
+func (g *groupDataElementGroup) Length() int {
 	length := 0
-	for _, elem := range g.elements {
+	for _, elem := range g.group.Elements() {
 		length += elem.Length()
 	}
 	return length
 }
-func (g *GroupDataElementGroup) String() string {
-	elementStrings := make([]string, len(g.elements))
-	for i, e := range g.elements {
+
+func (g *groupDataElementGroup) String() string {
+	elementStrings := make([]string, len(g.group.Elements()))
+	for i, e := range g.group.Elements() {
 		elementStrings[i] = e.String()
 	}
 	return strings.Join(elementStrings, ":")
 }
 
-func (g *GroupDataElementGroup) GroupDataElements() []DataElement {
-	return g.elements
+func (g *groupDataElementGroup) GroupDataElements() []DataElement {
+	return g.group.Elements()
 }
 
 func NewDataElement(typ DataElementType, value interface{}, maxLength int) DataElement {
@@ -349,12 +357,25 @@ type ValueDataElement struct {
 // GroupDataElementGroups
 
 func NewAmountDataElement(value float64, currency string) *AmountDataElement {
-	g := NewGroupDataElementGroup(AmountGDEG, 2, NewValueDataElement(value), NewCurrencyDataElement(currency))
-	return &AmountDataElement{g}
+	a := &AmountDataElement{
+		Value:    NewValueDataElement(value),
+		Currency: NewCurrencyDataElement(currency),
+	}
+	a.groupDataElementGroup = NewGroupDataElementGroup(AmountGDEG, 2, a)
+	return a
 }
 
 type AmountDataElement struct {
-	*GroupDataElementGroup
+	*groupDataElementGroup
+	Value    *ValueDataElement
+	Currency *CurrencyDataElement
+}
+
+func (a *AmountDataElement) Elements() []DataElement {
+	return []DataElement{
+		a.Value,
+		a.Currency,
+	}
 }
 
 func (a *AmountDataElement) Val() (value float64, currency string) {
@@ -362,36 +383,54 @@ func (a *AmountDataElement) Val() (value float64, currency string) {
 }
 
 func NewBankIndentificationDataElementWithBankId(countryCode int, bankId string) *BankIdentificationDataElement {
-	g := NewGroupDataElementGroup(BankIdentificationGDEG, 2, NewCountryCodeDataElement(countryCode), NewAlphaNumericDataElement(bankId, 30))
-	return &BankIdentificationDataElement{g}
+	b := &BankIdentificationDataElement{
+		CountryCode: NewCountryCodeDataElement(countryCode),
+		BankId:      NewAlphaNumericDataElement(bankId, 30),
+	}
+	b.groupDataElementGroup = NewGroupDataElementGroup(BankIdentificationGDEG, 2, b)
+	return b
 }
 
 type BankIdentificationDataElement struct {
-	*GroupDataElementGroup
+	*groupDataElementGroup
+	CountryCode *CountryCodeDataElement
+	BankId      *AlphaNumericDataElement
+}
+
+func (b *BankIdentificationDataElement) Elements() []DataElement {
+	return []DataElement{
+		b.CountryCode,
+		b.BankId,
+	}
 }
 
 func NewAccountConnectionDataElement(accountId string, subAccountCharacteristic string, countryCode int, bankId string) *AccountConnectionDataElement {
-	g := NewGroupDataElementGroup(
-		AccountConnectionGDEG,
-		4,
-		NewIdentificationDataElement(accountId),
-		NewIdentificationDataElement(subAccountCharacteristic),
-		NewCountryCodeDataElement(countryCode),
-		NewAlphaNumericDataElement(bankId, 30),
-	)
-	return &AccountConnectionDataElement{g}
+	a := &AccountConnectionDataElement{
+		AccountId:                 NewIdentificationDataElement(accountId),
+		SubAccountCharacteristics: NewIdentificationDataElement(subAccountCharacteristic),
+		CountryCode:               NewCountryCodeDataElement(countryCode),
+		BankId:                    NewAlphaNumericDataElement(bankId, 30),
+	}
+	a.groupDataElementGroup = NewGroupDataElementGroup(AccountConnectionGDEG, 4, a)
+	return a
 }
 
 type AccountConnectionDataElement struct {
-	*GroupDataElementGroup
+	*groupDataElementGroup
+	AccountId                 *IdentificationDataElement
+	SubAccountCharacteristics *IdentificationDataElement
+	CountryCode               *CountryCodeDataElement
+	BankId                    *AlphaNumericDataElement
 }
 
-type DebitCreditIndicator int
-
-const (
-	Debit  DebitCreditIndicator = iota // Soll
-	Credit                             // Haben
-)
+func (a *AccountConnectionDataElement) Elements() []DataElement {
+	return []DataElement{
+		a.AccountId,
+		a.SubAccountCharacteristics,
+		a.CountryCode,
+		a.BankId,
+	}
+}
 
 type Balance struct {
 	Value    float64
@@ -405,20 +444,34 @@ func NewBalanceDataElement(balance Balance, date time.Time) *BalanceDataElement 
 	} else {
 		debitCredit = "C"
 	}
-	g := NewGroupDataElementGroup(
-		BalanceGDEG,
-		5,
-		NewAlphaNumericDataElement(debitCredit, 1),
-		NewValueDataElement(math.Abs(balance.Value)),
-		NewCurrencyDataElement(balance.Currency),
-		NewDateDataElement(date),
-		NewTimeDataElement(date),
-	)
-	return &BalanceDataElement{g}
+	b := &BalanceDataElement{
+		DebitCreditIndicator: NewAlphaNumericDataElement(debitCredit, 1),
+		Value:                NewValueDataElement(math.Abs(balance.Value)),
+		Currency:             NewCurrencyDataElement(balance.Currency),
+		TransmissionDate:     NewDateDataElement(date),
+		TransmissionTime:     NewTimeDataElement(date),
+	}
+	b.groupDataElementGroup = NewGroupDataElementGroup(BalanceGDEG, 5, b)
+	return b
 }
 
 type BalanceDataElement struct {
-	*GroupDataElementGroup
+	*groupDataElementGroup
+	DebitCreditIndicator *AlphaNumericDataElement
+	Value                *ValueDataElement
+	Currency             *CurrencyDataElement
+	TransmissionDate     *DateDataElement
+	TransmissionTime     *TimeDataElement
+}
+
+func (b *BalanceDataElement) Elements() []DataElement {
+	return []DataElement{
+		b.DebitCreditIndicator,
+		b.Value,
+		b.Currency,
+		b.TransmissionDate,
+		b.TransmissionTime,
+	}
 }
 
 func (b *BalanceDataElement) Balance() Balance {
@@ -436,7 +489,7 @@ func (b *BalanceDataElement) Balance() Balance {
 }
 
 func (b *BalanceDataElement) Date() time.Time {
-	return b.elements[3].Value().(time.Time)
+	return b.TransmissionDate.Val()
 }
 
 type Address struct {
@@ -452,36 +505,58 @@ type Address struct {
 }
 
 func NewAddressDataElement(address Address) *AddressDataElement {
-	g := NewGroupDataElementGroup(
-		AddressGDEG,
-		9,
-		NewAlphaNumericDataElement(address.Name1, 35),
-		NewAlphaNumericDataElement(address.Name2, 35),
-		NewAlphaNumericDataElement(address.Street, 35),
-		NewAlphaNumericDataElement(address.PLZ, 10),
-		NewAlphaNumericDataElement(address.City, 35),
-		NewCountryCodeDataElement(address.CountryCode),
-		NewAlphaNumericDataElement(address.Phone, 35),
-		NewAlphaNumericDataElement(address.Fax, 35),
-		NewAlphaNumericDataElement(address.Email, 35),
-	)
-	return &AddressDataElement{g}
+	a := &AddressDataElement{
+		Name1:       NewAlphaNumericDataElement(address.Name1, 35),
+		Name2:       NewAlphaNumericDataElement(address.Name2, 35),
+		Street:      NewAlphaNumericDataElement(address.Street, 35),
+		PLZ:         NewAlphaNumericDataElement(address.PLZ, 10),
+		City:        NewAlphaNumericDataElement(address.City, 35),
+		CountryCode: NewCountryCodeDataElement(address.CountryCode),
+		Phone:       NewAlphaNumericDataElement(address.Phone, 35),
+		Fax:         NewAlphaNumericDataElement(address.Fax, 35),
+		Email:       NewAlphaNumericDataElement(address.Email, 35),
+	}
+	a.groupDataElementGroup = NewGroupDataElementGroup(AddressGDEG, 9, a)
+	return a
 }
 
 type AddressDataElement struct {
-	*GroupDataElementGroup
+	*groupDataElementGroup
+	Name1       *AlphaNumericDataElement
+	Name2       *AlphaNumericDataElement
+	Street      *AlphaNumericDataElement
+	PLZ         *AlphaNumericDataElement
+	City        *AlphaNumericDataElement
+	CountryCode *CountryCodeDataElement
+	Phone       *AlphaNumericDataElement
+	Fax         *AlphaNumericDataElement
+	Email       *AlphaNumericDataElement
+}
+
+func (a *AddressDataElement) Elements() []DataElement {
+	return []DataElement{
+		a.Name1,
+		a.Name2,
+		a.Street,
+		a.PLZ,
+		a.City,
+		a.CountryCode,
+		a.Phone,
+		a.Fax,
+		a.Email,
+	}
 }
 
 func (a *AddressDataElement) Address() Address {
 	return Address{
-		Name1:       a.elements[0].Value().(string),
-		Name2:       a.elements[1].Value().(string),
-		Street:      a.elements[2].Value().(string),
-		PLZ:         a.elements[3].Value().(string),
-		City:        a.elements[4].Value().(string),
-		CountryCode: a.elements[5].Value().(int),
-		Phone:       a.elements[6].Value().(string),
-		Fax:         a.elements[7].Value().(string),
-		Email:       a.elements[8].Value().(string),
+		Name1:       a.Name1.Val(),
+		Name2:       a.Name2.Val(),
+		Street:      a.Street.Val(),
+		PLZ:         a.PLZ.Val(),
+		City:        a.City.Val(),
+		CountryCode: a.CountryCode.Val(),
+		Phone:       a.Phone.Val(),
+		Fax:         a.Fax.Val(),
+		Email:       a.Email.Val(),
 	}
 }

@@ -29,7 +29,7 @@ func TestSegmentHeaderGroupDataElements(t *testing.T) {
 func TestSegmentHeaderString(t *testing.T) {
 	header := NewSegmentHeader("abc", 1, 2)
 
-	expectedString := "abc:1:2"
+	expectedString := "abc:1:2:"
 
 	actualString := header.String()
 
