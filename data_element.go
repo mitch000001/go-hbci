@@ -97,7 +97,6 @@ func NewGroupDataElementGroup(typ DataElementType, elementCount int, group Group
 // It implements the DataElement and the DataElementGroup interface
 type groupDataElementGroup struct {
 	group        GroupDataElementGroup
-	elements     []DataElement
 	typ          DataElementType
 	elementCount int
 }
@@ -358,7 +357,7 @@ type ValueDataElement struct {
 
 func NewAmountDataElement(value float64, currency string) *AmountDataElement {
 	a := &AmountDataElement{
-		Value:    NewValueDataElement(value),
+		Amount:   NewValueDataElement(value),
 		Currency: NewCurrencyDataElement(currency),
 	}
 	a.groupDataElementGroup = NewGroupDataElementGroup(AmountGDEG, 2, a)
@@ -367,19 +366,19 @@ func NewAmountDataElement(value float64, currency string) *AmountDataElement {
 
 type AmountDataElement struct {
 	*groupDataElementGroup
-	Value    *ValueDataElement
+	Amount   *ValueDataElement
 	Currency *CurrencyDataElement
 }
 
 func (a *AmountDataElement) Elements() []DataElement {
 	return []DataElement{
-		a.Value,
+		a.Amount,
 		a.Currency,
 	}
 }
 
 func (a *AmountDataElement) Val() (value float64, currency string) {
-	return a.elements[0].Value().(float64), a.elements[1].Value().(string)
+	return a.Amount.Val(), a.Currency.Val()
 }
 
 func NewBankIndentificationDataElementWithBankId(countryCode int, bankId string) *BankIdentificationDataElement {
@@ -433,20 +432,20 @@ func (a *AccountConnectionDataElement) Elements() []DataElement {
 }
 
 type Balance struct {
-	Value    float64
+	Amount   float64
 	Currency string
 }
 
 func NewBalanceDataElement(balance Balance, date time.Time) *BalanceDataElement {
 	var debitCredit string
-	if balance.Value < 0 {
+	if balance.Amount < 0 {
 		debitCredit = "D"
 	} else {
 		debitCredit = "C"
 	}
 	b := &BalanceDataElement{
 		DebitCreditIndicator: NewAlphaNumericDataElement(debitCredit, 1),
-		Value:                NewValueDataElement(math.Abs(balance.Value)),
+		Amount:               NewValueDataElement(math.Abs(balance.Amount)),
 		Currency:             NewCurrencyDataElement(balance.Currency),
 		TransmissionDate:     NewDateDataElement(date),
 		TransmissionTime:     NewTimeDataElement(date),
@@ -458,7 +457,7 @@ func NewBalanceDataElement(balance Balance, date time.Time) *BalanceDataElement 
 type BalanceDataElement struct {
 	*groupDataElementGroup
 	DebitCreditIndicator *AlphaNumericDataElement
-	Value                *ValueDataElement
+	Amount               *ValueDataElement
 	Currency             *CurrencyDataElement
 	TransmissionDate     *DateDataElement
 	TransmissionTime     *TimeDataElement
@@ -467,7 +466,7 @@ type BalanceDataElement struct {
 func (b *BalanceDataElement) Elements() []DataElement {
 	return []DataElement{
 		b.DebitCreditIndicator,
-		b.Value,
+		b.Amount,
 		b.Currency,
 		b.TransmissionDate,
 		b.TransmissionTime,
@@ -475,14 +474,14 @@ func (b *BalanceDataElement) Elements() []DataElement {
 }
 
 func (b *BalanceDataElement) Balance() Balance {
-	sign := b.elements[0].Value().(string)
-	val := b.elements[1].Value().(float64)
+	sign := b.DebitCreditIndicator.Val()
+	val := b.Amount.Val()
 	if sign == "D" {
 		val = -val
 	}
-	currency := b.elements[2].Value().(string)
+	currency := b.Currency.Val()
 	balance := Balance{
-		Value:    val,
+		Amount:   val,
 		Currency: currency,
 	}
 	return balance
