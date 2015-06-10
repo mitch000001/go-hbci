@@ -7,7 +7,7 @@ func TestSegmentHeaderGroupDataElements(t *testing.T) {
 
 	elements := header.GroupDataElements()
 
-	expectedLength := 3
+	expectedLength := 4
 
 	if expectedLength != len(elements) {
 		t.Logf("Expected %d GroupDataElements, got %d\n", expectedLength, len(elements))

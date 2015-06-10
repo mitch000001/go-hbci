@@ -3,6 +3,7 @@ package hbci
 import (
 	"fmt"
 	"math"
+	"reflect"
 	"strconv"
 	"strings"
 	"time"
@@ -52,6 +53,7 @@ const (
 	AddressGDEG
 	// DataElementGroups
 	SegmentHeaderDEG
+	ReferenceMessageDEG
 )
 
 var typeName = map[DataElementType]string{
@@ -78,7 +80,8 @@ var typeName = map[DataElementType]string{
 	BalanceGDEG:            "sdo",
 	AddressGDEG:            "addr",
 	// DataElementGroups
-	SegmentHeaderDEG: "Segmentkopf",
+	SegmentHeaderDEG:    "Segmentkopf",
+	ReferenceMessageDEG: "Bezugsnachricht",
 }
 
 func (d DataElementType) String() string {
@@ -89,59 +92,68 @@ func (d DataElementType) String() string {
 	return s
 }
 
-func NewGroupDataElementGroup(typ DataElementType, elementCount int, group GroupDataElementGroup) *groupDataElementGroup {
-	return &groupDataElementGroup{group: group, elementCount: elementCount, typ: typ}
+func NewDataElementGroup(typ DataElementType, elementCount int, group DataElementGroup) *elementGroup {
+	return &elementGroup{elements: group.GroupDataElements(), elementSeparator: ":", elementCount: elementCount, typ: typ}
 }
 
-// GroupDataElementGroup defines a group of GroupDataElements.
+func NewGroupDataElementGroup(typ DataElementType, elementCount int, group GroupDataElementGroup) *elementGroup {
+	return &elementGroup{elements: group.Elements(), elementSeparator: ":", elementCount: elementCount, typ: typ}
+}
+
+// groupDataElementGroup defines a group of GroupDataElements.
 // It implements the DataElement and the DataElementGroup interface
-type groupDataElementGroup struct {
-	group        GroupDataElementGroup
-	typ          DataElementType
-	elementCount int
+type elementGroup struct {
+	elements         []DataElement
+	elementSeparator string
+	typ              DataElementType
+	elementCount     int
 }
 
 // Value returns the values of all GroupDataElements as []interface{}
-func (g *groupDataElementGroup) Value() interface{} {
-	values := make([]interface{}, len(g.group.Elements()))
-	for i, elem := range g.group.Elements() {
-		values[i] = elem.Value()
+func (g *elementGroup) Value() interface{} {
+	values := make([]interface{}, len(g.elements))
+	for i, elem := range g.elements {
+		if !reflect.ValueOf(elem).IsNil() {
+			values[i] = elem.Value()
+		}
 	}
 	return values
 }
 
-func (g *groupDataElementGroup) Type() DataElementType { return g.typ }
+func (g *elementGroup) Type() DataElementType { return g.typ }
 
-func (g *groupDataElementGroup) Valid() bool {
-	if g.elementCount != len(g.group.Elements()) {
+func (g *elementGroup) Valid() bool {
+	if g.elementCount != len(g.elements) {
 		return false
 	}
-	for _, elem := range g.group.Elements() {
-		if !elem.Valid() {
-			return false
+	for _, elem := range g.elements {
+		if !reflect.ValueOf(elem).IsNil() {
+			if !elem.Valid() {
+				return false
+			}
 		}
 	}
 	return true
 }
 
-func (g *groupDataElementGroup) Length() int {
+func (g *elementGroup) Length() int {
 	length := 0
-	for _, elem := range g.group.Elements() {
-		length += elem.Length()
+	for _, elem := range g.elements {
+		if !reflect.ValueOf(elem).IsNil() {
+			length += elem.Length()
+		}
 	}
 	return length
 }
 
-func (g *groupDataElementGroup) String() string {
-	elementStrings := make([]string, len(g.group.Elements()))
-	for i, e := range g.group.Elements() {
-		elementStrings[i] = e.String()
+func (g *elementGroup) String() string {
+	elementStrings := make([]string, len(g.elements))
+	for i, e := range g.elements {
+		if !reflect.ValueOf(e).IsNil() {
+			elementStrings[i] = e.String()
+		}
 	}
-	return strings.Join(elementStrings, ":")
-}
-
-func (g *groupDataElementGroup) GroupDataElements() []DataElement {
-	return g.group.Elements()
+	return strings.Join(elementStrings, g.elementSeparator)
 }
 
 func NewDataElement(typ DataElementType, value interface{}, maxLength int) DataElement {
@@ -281,6 +293,7 @@ func NewVirtualDateDataElement(date int) *VirtualDateDataElement {
 	return &VirtualDateDataElement{n}
 }
 
+// TODO: modelling a virtual date?!
 type VirtualDateDataElement struct {
 	*NumberDataElement
 }
@@ -360,12 +373,12 @@ func NewAmountDataElement(value float64, currency string) *AmountDataElement {
 		Amount:   NewValueDataElement(value),
 		Currency: NewCurrencyDataElement(currency),
 	}
-	a.groupDataElementGroup = NewGroupDataElementGroup(AmountGDEG, 2, a)
+	a.elementGroup = NewGroupDataElementGroup(AmountGDEG, 2, a)
 	return a
 }
 
 type AmountDataElement struct {
-	*groupDataElementGroup
+	*elementGroup
 	Amount   *ValueDataElement
 	Currency *CurrencyDataElement
 }
@@ -386,12 +399,12 @@ func NewBankIndentificationDataElementWithBankId(countryCode int, bankId string)
 		CountryCode: NewCountryCodeDataElement(countryCode),
 		BankId:      NewAlphaNumericDataElement(bankId, 30),
 	}
-	b.groupDataElementGroup = NewGroupDataElementGroup(BankIdentificationGDEG, 2, b)
+	b.elementGroup = NewGroupDataElementGroup(BankIdentificationGDEG, 2, b)
 	return b
 }
 
 type BankIdentificationDataElement struct {
-	*groupDataElementGroup
+	*elementGroup
 	CountryCode *CountryCodeDataElement
 	BankId      *AlphaNumericDataElement
 }
@@ -410,12 +423,12 @@ func NewAccountConnectionDataElement(accountId string, subAccountCharacteristic 
 		CountryCode:               NewCountryCodeDataElement(countryCode),
 		BankId:                    NewAlphaNumericDataElement(bankId, 30),
 	}
-	a.groupDataElementGroup = NewGroupDataElementGroup(AccountConnectionGDEG, 4, a)
+	a.elementGroup = NewGroupDataElementGroup(AccountConnectionGDEG, 4, a)
 	return a
 }
 
 type AccountConnectionDataElement struct {
-	*groupDataElementGroup
+	*elementGroup
 	AccountId                 *IdentificationDataElement
 	SubAccountCharacteristics *IdentificationDataElement
 	CountryCode               *CountryCodeDataElement
@@ -450,12 +463,12 @@ func NewBalanceDataElement(balance Balance, date time.Time) *BalanceDataElement 
 		TransmissionDate:     NewDateDataElement(date),
 		TransmissionTime:     NewTimeDataElement(date),
 	}
-	b.groupDataElementGroup = NewGroupDataElementGroup(BalanceGDEG, 5, b)
+	b.elementGroup = NewGroupDataElementGroup(BalanceGDEG, 5, b)
 	return b
 }
 
 type BalanceDataElement struct {
-	*groupDataElementGroup
+	*elementGroup
 	DebitCreditIndicator *AlphaNumericDataElement
 	Amount               *ValueDataElement
 	Currency             *CurrencyDataElement
@@ -515,12 +528,12 @@ func NewAddressDataElement(address Address) *AddressDataElement {
 		Fax:         NewAlphaNumericDataElement(address.Fax, 35),
 		Email:       NewAlphaNumericDataElement(address.Email, 35),
 	}
-	a.groupDataElementGroup = NewGroupDataElementGroup(AddressGDEG, 9, a)
+	a.elementGroup = NewGroupDataElementGroup(AddressGDEG, 9, a)
 	return a
 }
 
 type AddressDataElement struct {
-	*groupDataElementGroup
+	*elementGroup
 	Name1       *AlphaNumericDataElement
 	Name2       *AlphaNumericDataElement
 	Street      *AlphaNumericDataElement
