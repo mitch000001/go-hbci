@@ -1,7 +1,13 @@
 package hbci
 
-func NewKeyNameDataElement() *KeyNameDataElement {
-	a := &KeyNameDataElement{}
+func NewKeyNameDataElement(countryCode int, bankId string, userId string, keyType string, keyNumber, keyVersion int) *KeyNameDataElement {
+	a := &KeyNameDataElement{
+		Bank:       NewBankIndentificationDataElementWithBankId(countryCode, bankId),
+		UserID:     NewIdentificationDataElement(userId),
+		KeyType:    NewAlphaNumericDataElement(keyType, 1),
+		KeyNumber:  NewNumberDataElement(keyNumber, 3),
+		KeyVersion: NewNumberDataElement(keyVersion, 3),
+	}
 	a.elementGroup = NewDataElementGroup(KeyNameDEG, 5, a)
 	return a
 }
