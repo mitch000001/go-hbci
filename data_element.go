@@ -54,6 +54,8 @@ const (
 	// DataElementGroups
 	SegmentHeaderDEG
 	ReferenceMessageDEG
+	AcknowledgementDEG
+	KeyNameDEG
 )
 
 var typeName = map[DataElementType]string{
@@ -82,6 +84,8 @@ var typeName = map[DataElementType]string{
 	// DataElementGroups
 	SegmentHeaderDEG:    "Segmentkopf",
 	ReferenceMessageDEG: "Bezugsnachricht",
+	AcknowledgementDEG:  "Rückmeldung",
+	KeyNameDEG:          "Schlüsselname",
 }
 
 func (d DataElementType) String() string {
