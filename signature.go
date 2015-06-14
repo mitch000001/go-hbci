@@ -1,10 +1,10 @@
 package hbci
 
 import (
-	"crypto/aes"
 	"crypto/cipher"
 	"crypto/des"
 	"crypto/rand"
+	"crypto/rsa"
 	"fmt"
 	"io"
 
@@ -12,20 +12,20 @@ import (
 )
 
 const initializationVector = "\x01\x23\x45\x67\x89\xAB\xCD\xEF\xFE\xDC\xBA\x98\x76\x54\x32\x10\xF0\xE1\xD2\xC3"
-const hashPadding = "\x00\x00\x00\x00"
+
+func GenerateSigningKey() (*rsa.PrivateKey, error) {
+	return rsa.GenerateKey(rand.Reader, 1024)
+}
 
 func MessageHashSum(message fmt.Stringer) []byte {
 	h := ripemd160.New()
 	io.WriteString(h, initializationVector)
 	io.WriteString(h, message.String())
-	hash := h.Sum(nil)
-	hash = append(hash, []byte(hashPadding)...)
-	return hash
+	return h.Sum(nil)
 }
 
-func SignMessageHash(messageHash []byte) ([]byte, error) {
-	return nil, nil
-
+func SignMessageHash(messageHash []byte, key *rsa.PrivateKey) ([]byte, error) {
+	return rsa.SignPKCS1v15(rand.Reader, key, 0, messageHash)
 }
 
 func EncryptMessage(message fmt.Stringer) (string, error) {
@@ -40,7 +40,7 @@ func EncryptMessage(message fmt.Stringer) (string, error) {
 	}
 
 	mode := cipher.NewCBCEncrypter(block, iv)
-	mode.CryptBlocks(ciphertext[aes.BlockSize:], []byte(message.String()))
+	mode.CryptBlocks(ciphertext[des.BlockSize:], []byte(message.String()))
 
 	// It's important to remember that ciphertexts must be authenticated
 	// (i.e. by using crypto/hmac) as well as being encrypted in order to
