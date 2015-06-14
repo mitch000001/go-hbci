@@ -83,7 +83,8 @@ func (r *rsaCoreEngine) convertOutput(result *big.Int) []byte {
 			// have ended up with an extra zero byte, copy down.
 			tmp := make([]byte, len(output)-1)
 
-			copy(tmp, output[1:])
+			// System.arraycopy(output, 1, tmp, 0, tmp.length);
+			arrayCopy(output, 1, tmp, 0, len(tmp))
 
 			return tmp
 		}
@@ -91,7 +92,8 @@ func (r *rsaCoreEngine) convertOutput(result *big.Int) []byte {
 		if len(output) < r.outputBlockSize() { // have ended up with less bytes than normal, lengthen
 			tmp := make([]byte, r.outputBlockSize())
 
-			copy(tmp, output[(len(tmp)-len(output)):])
+			// System.arraycopy(output, 0, tmp, tmp.length - output.length, output.length);
+			arrayCopy(output, 0, tmp, len(tmp)-len(output), len(output))
 
 			return tmp
 		}
@@ -100,7 +102,8 @@ func (r *rsaCoreEngine) convertOutput(result *big.Int) []byte {
 		if output[0] == 0 { // have ended up with an extra zero byte, copy down.
 			tmp := make([]byte, len(output)-1)
 
-			copy(tmp, output[1:])
+			// System.arraycopy(output, 1, tmp, 0, tmp.length);
+			arrayCopy(output, 1, tmp, 0, len(tmp))
 
 			return tmp
 		}
@@ -119,7 +122,8 @@ func (r *rsaCoreEngine) convertInput(in []byte, inOff, inLen int) *big.Int {
 
 	if inOff != 0 || inLen != len(in) {
 		block = make([]byte, inLen)
-		copy(block, in[inOff:inLen])
+		// System.arraycopy(in, inOff, block, 0, inLen);
+		arrayCopy(in, inOff, block, 0, inLen)
 	} else {
 		block = in
 	}
@@ -274,9 +278,11 @@ func (i *ISO9796d1Encoding) encodeBlock(in []byte, inOff, inLen int) ([]byte, er
 
 	for i := 0; i < t; i += z {
 		if i > t-z {
-			copy(block[len(block)-t:], in[inOff+inLen-(t-i):t-i])
+			// System.arraycopy(in, inOff + inLen - (t - i), block, block.length - t, t - i);
+			arrayCopy(in, inOff+inLen-(t-i), block, len(block)-t, t-i)
 		} else {
-			copy(block[len(block)-(i+z):], in[inOff:z])
+			// System.arraycopy(in, inOff, block, block.length - (i + z), z);
+			arrayCopy(in, inOff, block, len(block)-(i+z), z)
 		}
 	}
 
@@ -368,8 +374,13 @@ func (i *ISO9796d1Encoding) convertOutputDecryptOnly(result *big.Int) []byte {
 	output := result.Bytes()
 	if output[0] == 0 { // have ended up with an extra zero byte, copy down.
 		tmp := make([]byte, len(output)-1)
-		copy(tmp, output[1:len(tmp)])
+		// System.arraycopy(output, 1, tmp, 0, tmp.length);
+		arrayCopy(output, 1, tmp, 0, len(tmp))
 		return tmp
 	}
 	return output
+}
+
+func arrayCopy(src []byte, srcOff int, dst []byte, dstOff int, length int) {
+	copy(dst[dstOff:], src[srcOff:srcOff+length])
 }
