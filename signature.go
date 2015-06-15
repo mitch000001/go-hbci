@@ -57,7 +57,7 @@ func NewSignatureHeaderSegment(controlReference string, signatureId int, securit
 		SecurityControlRef:       NewAlphaNumericDataElement(controlReference, 14),
 		SecurityApplicationRange: NewAlphaNumericDataElement("1", 3),
 		SecuritySupplierRole:     NewAlphaNumericDataElement("1", 3),
-		SecurityID:               NewSecurityIdentificationDataElement(securityHolder, holderId),
+		SecurityID:               NewRDHSecurityIdentificationDataElement(securityHolder, holderId),
 		SecurityRefNumber:        NewNumberDataElement(signatureId, 16),
 		SecurityDate:             NewSecurityDateDataElement(SecurityDateIdentifierSecurityTimestamp, time.Now()),
 		HashAlgorithm:            NewDefaultHashAlgorithmDataElement(),
@@ -135,7 +135,7 @@ const (
 	SecurityHolderMessageReceiver = "MR"
 )
 
-func NewSecurityIdentificationDataElement(securityHolder, holderId string) *SecurityIdentificationDataElement {
+func NewRDHSecurityIdentificationDataElement(securityHolder, holderId string) *SecurityIdentificationDataElement {
 	var holder string
 	if securityHolder == SecurityHolderMessageSender {
 		holder = "1"

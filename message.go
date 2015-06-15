@@ -2,13 +2,9 @@ package hbci
 
 type EncryptedMessage struct {
 	*Message
-	EncryptionHeader *EncryptionHeader
+	EncryptionHeader *EncryptionHeaderSegment
 	EncryptedData    *EncryptedData
 }
-
-type EncryptionHeader struct{}
-
-type EncryptedData struct{}
 
 type Message struct {
 	Header *MessageHeaderSegment
