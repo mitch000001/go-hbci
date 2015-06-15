@@ -1,175 +1,15 @@
-package hbci
+package crypto
 
 import (
-	"crypto/rsa"
 	"fmt"
 	"math/big"
 )
 
 type cipherEngine interface {
-	Init(forEncryption bool, key *rsa.PrivateKey)
-	processBlock(in []byte, inOff, inLen int) []byte
-	inputBlockSize() int
-	outputBlockSize() int
-}
-
-type rsaEngine struct {
-	*rsaCoreEngine
-}
-
-func (r *rsaEngine) Init(forEncryption bool, key *rsa.PrivateKey) {
-	if r.rsaCoreEngine == nil {
-		r.rsaCoreEngine = newRsaCoreEngine()
-	}
-	r.rsaCoreEngine.Init(forEncryption, key)
-}
-
-func (r *rsaEngine) CryptBlocks(dst, src []byte) {
-	if r.rsaCoreEngine == nil {
-		panic(fmt.Errorf("RAS engine not initialized"))
-	}
-	res := r.processBlock(src, 0, len(src))
-	copy(dst, res)
-}
-
-func (r *rsaEngine) processBlock(in []byte, inOff, inLen int) []byte {
-	if r.rsaCoreEngine == nil {
-		panic(fmt.Errorf("RAS engine not initialized"))
-	}
-	return r.rsaCoreEngine.convertOutput(r.rsaCoreEngine.processBlock(r.rsaCoreEngine.convertInput(in, inOff, inLen)))
-}
-
-func newRsaCoreEngine() *rsaCoreEngine {
-	return &rsaCoreEngine{}
-}
-
-type rsaCoreEngine struct {
-	key           *rsa.PrivateKey
-	forEncryption bool
-}
-
-func (r *rsaCoreEngine) Init(forEncryption bool, key *rsa.PrivateKey) {
-	r.key = key
-	r.forEncryption = forEncryption
-}
-
-func (r *rsaCoreEngine) BlockSize() int {
-	return r.outputBlockSize()
-}
-
-func (r *rsaCoreEngine) inputBlockSize() int {
-	bitSize := r.key.N.BitLen()
-	if r.forEncryption {
-		return (bitSize+7)/8 - 1
-	} else {
-		return (bitSize + 7) / 8
-	}
-}
-
-func (r *rsaCoreEngine) outputBlockSize() int {
-	bitSize := r.key.N.BitLen()
-	if r.forEncryption {
-		return (bitSize + 7) / 8
-	} else {
-		return (bitSize+7)/8 - 1
-	}
-}
-
-func (r *rsaCoreEngine) convertOutput(result *big.Int) []byte {
-	output := result.Bytes()
-	if r.forEncryption {
-		if output[0] == 0 && len(output) > r.outputBlockSize() {
-
-			// have ended up with an extra zero byte, copy down.
-			tmp := make([]byte, len(output)-1)
-
-			// System.arraycopy(output, 1, tmp, 0, tmp.length);
-			arrayCopy(output, 1, tmp, 0, len(tmp))
-
-			return tmp
-		}
-
-		if len(output) < r.outputBlockSize() { // have ended up with less bytes than normal, lengthen
-			tmp := make([]byte, r.outputBlockSize())
-
-			// System.arraycopy(output, 0, tmp, tmp.length - output.length, output.length);
-			arrayCopy(output, 0, tmp, len(tmp)-len(output), len(output))
-
-			return tmp
-		}
-
-	} else {
-		if output[0] == 0 { // have ended up with an extra zero byte, copy down.
-			tmp := make([]byte, len(output)-1)
-
-			// System.arraycopy(output, 1, tmp, 0, tmp.length);
-			arrayCopy(output, 1, tmp, 0, len(tmp))
-
-			return tmp
-		}
-	}
-	return output
-}
-
-func (r *rsaCoreEngine) convertInput(in []byte, inOff, inLen int) *big.Int {
-	if inLen > (r.inputBlockSize() + 1) {
-		panic(fmt.Errorf("input too large for RSA cipher."))
-	} else if inLen == (r.inputBlockSize()+1) && !r.forEncryption {
-		panic(fmt.Errorf("input too large for RSA cipher."))
-	}
-
-	var block []byte
-
-	if inOff != 0 || inLen != len(in) {
-		block = make([]byte, inLen)
-		// System.arraycopy(in, inOff, block, 0, inLen);
-		arrayCopy(in, inOff, block, 0, inLen)
-	} else {
-		block = in
-	}
-	res := new(big.Int)
-	res = res.Abs(res.SetBytes(block))
-	if res.Cmp(r.key.N) >= 0 {
-		panic(fmt.Errorf("input too large for RSA cipher."))
-	}
-	return res
-}
-
-func (r *rsaCoreEngine) processBlock(input *big.Int) *big.Int {
-	if crtKey := r.key.Precomputed; &crtKey != nil {
-		//
-		// we have the extra factors, use the Chinese Remainder Theorem - the author
-		// wishes to express his thanks to Dirk Bonekaemper at rtsffm.com for
-		// advice regarding the expression of this.
-		//
-
-		p := r.key.Primes[0]
-		q := r.key.Primes[1]
-		dP := crtKey.Dp
-		dQ := crtKey.Dq
-		qInv := crtKey.Qinv
-
-		var mP, mQ, h, m *big.Int
-
-		// mP = ((input mod p) ^ dP)) mod p
-		mP = mP.Exp(new(big.Int).Rem(input, p), dP, p)
-
-		// mQ = ((input mod q) ^ dQ)) mod q
-		mQ = mQ.Exp(new(big.Int).Rem(input, q), dQ, q)
-
-		// h = qInv * (mP - mQ) mod p
-		h = h.Sub(mP, mQ)
-		h = h.Mul(h, qInv)
-		h = h.Mod(h, p) // mod (in Java) returns the positive residual
-
-		// m = h * q + mQ
-		m = h.Mul(h, q)
-		m = m.Add(m, mQ)
-
-		return m
-	} else {
-		return new(big.Int).Exp(input, big.NewInt(int64(r.key.E)), r.key.N)
-	}
+	Init(forEncryption bool, key RSAKeyParameters)
+	ProcessBlock(in []byte, inOff, inLen int) []byte
+	InputBlockSize() int
+	OutputBlockSize() int
 }
 
 var SIXTEEN = big.NewInt(16)
@@ -204,9 +44,9 @@ func (i *ISO9796d1Encoding) GetUnderlyingCipher() cipherEngine {
 	return i.engine
 }
 
-func (i *ISO9796d1Encoding) Init(forEncryption bool, key *rsa.PrivateKey) {
+func (i *ISO9796d1Encoding) Init(forEncryption bool, key RSAKeyParameters) {
 	i.engine.Init(forEncryption, key)
-	i.modulus = key.N
+	i.modulus = key.Modulus()
 	i.bitSize = i.modulus.BitLen()
 	i.forEncryption = forEncryption
 }
@@ -220,8 +60,8 @@ func (i *ISO9796d1Encoding) BlockSize() int {
 * is (key_size_in_bits + 3)/16, which in our world comes to
 * key_size_in_bytes / 2.
  */
-func (i *ISO9796d1Encoding) inputBlockSize() int {
-	baseBlockSize := i.engine.inputBlockSize()
+func (i *ISO9796d1Encoding) InputBlockSize() int {
+	baseBlockSize := i.engine.InputBlockSize()
 
 	if i.forEncryption {
 		return (baseBlockSize + 1) / 2
@@ -233,8 +73,8 @@ func (i *ISO9796d1Encoding) inputBlockSize() int {
 /**
 * return the maximum possible size for the output.
  */
-func (i *ISO9796d1Encoding) outputBlockSize() int {
-	baseBlockSize := i.engine.outputBlockSize()
+func (i *ISO9796d1Encoding) OutputBlockSize() int {
+	baseBlockSize := i.engine.OutputBlockSize()
 
 	if i.forEncryption {
 		return baseBlockSize
@@ -307,14 +147,14 @@ func (i *ISO9796d1Encoding) encodeBlock(in []byte, inOff, inLen int) ([]byte, er
 		offSet = 1
 	}
 
-	return i.engine.processBlock(block, offSet, len(block)-offSet), nil
+	return i.engine.ProcessBlock(block, offSet, len(block)-offSet), nil
 }
 
 /**
 * error if the decrypted block is not a valid ISO 9796 bit string
  */
 func (i *ISO9796d1Encoding) decodeBlock(in []byte, inOff, inLen int) ([]byte, error) {
-	block := i.engine.processBlock(in, inOff, inLen)
+	block := i.engine.ProcessBlock(in, inOff, inLen)
 	r := 1
 	t := (i.bitSize + 13) / 16
 

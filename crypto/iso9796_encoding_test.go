@@ -1,8 +1,7 @@
-package hbci
+package crypto
 
 import (
 	"bytes"
-	"crypto/rsa"
 	"encoding/hex"
 	"math/big"
 	"reflect"
@@ -110,13 +109,9 @@ var msg9 = mustBytes(hex.DecodeString("61626364626364656364656664656667656667686
 var sig9 = new(big.Int).Exp(mustBigInt(new(big.Int).SetString("6F2BB97571FE2EF205B66000E9DD06656655C1977F374E8666D636556A5FEEEEAF645555B25F45567C4EE5341F96FED86508C90A9E3F11B26E8D496139ED3E55ECE42860A6FB3A0817DAFBF13019D93E1D382DA07264FE99D9797D2F0B7779357CA7E74EE440D8855B7DDF15F000AC58EE3FFF144845E771907C0C83324A6FBC", 16)), pri6, mod6).Bytes()
 
 func doTest1(t *testing.T) {
-	pubParameters := new(rsa.PrivateKey)
-	pubParameters.N = mod1
-	pubParameters.E = int(pub1.Int64())
-	privParameters := new(rsa.PrivateKey)
-	privParameters.N = mod1
-	privParameters.E = int(pri1.Int64())
-	rsaEngine := new(rsaEngine)
+	pubParameters := NewRSAKeyParameters(false, mod1, pub1)
+	privParameters := NewRSAKeyParameters(true, mod1, pri1)
+	rsaEngine := new(RSAEngine)
 	var data []byte
 	var err error
 
@@ -157,13 +152,9 @@ func doTest1(t *testing.T) {
 }
 
 func doTest2(t *testing.T) {
-	pubParameters := new(rsa.PrivateKey)
-	pubParameters.N = mod1
-	pubParameters.E = int(pub1.Int64())
-	privParameters := new(rsa.PrivateKey)
-	privParameters.N = mod1
-	privParameters.E = int(pri1.Int64())
-	rsaEngine := new(rsaEngine)
+	pubParameters := NewRSAKeyParameters(false, mod1, pub1)
+	privParameters := NewRSAKeyParameters(true, mod1, pri1)
+	rsaEngine := new(RSAEngine)
 	var data []byte
 	var err error
 
@@ -202,13 +193,9 @@ func doTest2(t *testing.T) {
 }
 
 func doTest3(t *testing.T) {
-	pubParameters := new(rsa.PrivateKey)
-	pubParameters.N = mod2
-	pubParameters.E = int(pub2.Int64())
-	privParameters := new(rsa.PrivateKey)
-	privParameters.N = mod2
-	privParameters.E = int(pri2.Int64())
-	rsaEngine := new(rsaEngine)
+	pubParameters := NewRSAKeyParameters(false, mod2, pub2)
+	privParameters := NewRSAKeyParameters(true, mod2, pri2)
+	rsaEngine := new(RSAEngine)
 	var data []byte
 	var err error
 
