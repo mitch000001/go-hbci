@@ -24,6 +24,41 @@ func (s *segment) String() string {
 	return strings.Join(elementStrings, "+") + "'"
 }
 
+func NewIdentificationSegment(countryCode int, bankId string, clientId string, clientSystemId string, systemIdRequired bool) *IdentificationSegment {
+	var clientSystemStatus *NumberDataElement
+	if systemIdRequired {
+		clientSystemStatus = NewNumberDataElement(1, 1)
+	} else {
+		clientSystemStatus = NewNumberDataElement(0, 1)
+	}
+	id := &IdentificationSegment{
+		BankId:             NewBankIndentificationDataElementWithBankId(countryCode, bankId),
+		ClientId:           NewIdentificationDataElement(clientId),
+		ClientSystemId:     NewIdentificationDataElement(clientSystemId),
+		ClientSystemStatus: clientSystemStatus,
+	}
+	header := NewSegmentHeader("HKIDN", 3, 2)
+	id.segment = NewSegment(header, id)
+	return id
+}
+
+type IdentificationSegment struct {
+	*segment
+	BankId             *BankIdentificationDataElement
+	ClientId           *IdentificationDataElement
+	ClientSystemId     *IdentificationDataElement
+	ClientSystemStatus *NumberDataElement
+}
+
+func (i *IdentificationSegment) DataElements() []DataElement {
+	return []DataElement{
+		i.BankId,
+		i.ClientId,
+		i.ClientSystemId,
+		i.ClientSystemStatus,
+	}
+}
+
 func NewReferencingSegmentHeader(id string, number, version, reference int) *SegmentHeader {
 	return &SegmentHeader{
 		ID:      NewAlphaNumericDataElement(id, 6),

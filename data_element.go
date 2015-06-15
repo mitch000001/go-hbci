@@ -55,7 +55,13 @@ const (
 	SegmentHeaderDEG
 	ReferenceMessageDEG
 	AcknowledgementDEG
+	SecurityIdentificationDEG
+	SecurityDateDEG
+	HashAlgorithmDEG
+	SignatureAlgorithmDEG
 	KeyNameDEG
+	CertificateDEG
+	PublicKeyDEG
 )
 
 var typeName = map[DataElementType]string{
@@ -82,10 +88,16 @@ var typeName = map[DataElementType]string{
 	BalanceGDEG:            "sdo",
 	AddressGDEG:            "addr",
 	// DataElementGroups
-	SegmentHeaderDEG:    "Segmentkopf",
-	ReferenceMessageDEG: "Bezugsnachricht",
-	AcknowledgementDEG:  "Rückmeldung",
-	KeyNameDEG:          "Schlüsselname",
+	SegmentHeaderDEG:          "Segmentkopf",
+	ReferenceMessageDEG:       "Bezugsnachricht",
+	AcknowledgementDEG:        "Rückmeldung",
+	SecurityIdentificationDEG: "Sicherheitsidentifikation, Details",
+	SecurityDateDEG:           "Sicherheitsdatum und -uhrzeit",
+	HashAlgorithmDEG:          "Hashalgorithmus",
+	SignatureAlgorithmDEG:     "Signaturalgorithmus",
+	KeyNameDEG:                "Schlüsselname",
+	CertificateDEG:            "Zertifikat",
+	PublicKeyDEG:              "Öffentlicher Schlüssel",
 }
 
 func (d DataElementType) String() string {
@@ -208,6 +220,8 @@ func NewNumberDataElement(val, maxLength int) *NumberDataElement {
 type NumberDataElement struct {
 	*dataElement
 }
+
+func (n *NumberDataElement) Val() int { return n.val.(int) }
 
 func NewFloatDataElement(val float64, maxLength int) *FloatDataElement {
 	return &FloatDataElement{&dataElement{val, FloatDE, maxLength}}
@@ -401,7 +415,7 @@ func (a *AmountDataElement) Val() (value float64, currency string) {
 func NewBankIndentificationDataElementWithBankId(countryCode int, bankId string) *BankIdentificationDataElement {
 	b := &BankIdentificationDataElement{
 		CountryCode: NewCountryCodeDataElement(countryCode),
-		BankId:      NewAlphaNumericDataElement(bankId, 30),
+		BankID:      NewAlphaNumericDataElement(bankId, 30),
 	}
 	b.elementGroup = NewGroupDataElementGroup(BankIdentificationGDEG, 2, b)
 	return b
@@ -410,13 +424,13 @@ func NewBankIndentificationDataElementWithBankId(countryCode int, bankId string)
 type BankIdentificationDataElement struct {
 	*elementGroup
 	CountryCode *CountryCodeDataElement
-	BankId      *AlphaNumericDataElement
+	BankID      *AlphaNumericDataElement
 }
 
 func (b *BankIdentificationDataElement) Elements() []DataElement {
 	return []DataElement{
 		b.CountryCode,
-		b.BankId,
+		b.BankID,
 	}
 }
 

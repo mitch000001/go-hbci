@@ -7,6 +7,8 @@ import (
 	"crypto/rsa"
 	"fmt"
 	"io"
+	"reflect"
+	"time"
 
 	"golang.org/x/crypto/ripemd160"
 )
@@ -49,13 +51,247 @@ func EncryptMessage(message fmt.Stringer) (string, error) {
 	return fmt.Sprintf("%x", ciphertext), nil
 }
 
-func NewKeyNameDataElement(countryCode int, bankId string, userId string, keyType string, keyNumber, keyVersion int) *KeyNameDataElement {
+func NewSignatureHeaderSegment(controlReference string, signatureId int, securityHolder, holderId string, keyName KeyName) *SignatureHeaderSegment {
+	s := &SignatureHeaderSegment{
+		SecurityFunction:         NewAlphaNumericDataElement("1", 3),
+		SecurityControlRef:       NewAlphaNumericDataElement(controlReference, 14),
+		SecurityApplicationRange: NewAlphaNumericDataElement("1", 3),
+		SecuritySupplierRole:     NewAlphaNumericDataElement("1", 3),
+		SecurityID:               NewSecurityIdentificationDataElement(securityHolder, holderId),
+		SecurityRefNumber:        NewNumberDataElement(signatureId, 16),
+		SecurityDate:             NewSecurityDateDataElement(SecurityDateIdentifierSecurityTimestamp, time.Now()),
+		HashAlgorithm:            NewDefaultHashAlgorithmDataElement(),
+		SignatureAlgorithm:       NewRDHSignatureAlgorithmDataElement(),
+		KeyName:                  NewKeyNameDataElement(keyName),
+	}
+	header := NewSegmentHeader("HNSHK", 2, 3)
+	s.segment = NewSegment(header, s)
+	return s
+}
+
+type SignatureHeaderSegment struct {
+	*segment
+	// "1" for NRO, Non-Repudiation of Origin (RDH)
+	// "2" for AUT, Message Origin Authentication (DDV)
+	SecurityFunction   *AlphaNumericDataElement
+	SecurityControlRef *AlphaNumericDataElement
+	// "1" for SHM (SignatureHeader and HBCI-Data)
+	// "2" for SHT (SignatureHeader to SignatureEnd)
+	SecurityApplicationRange *AlphaNumericDataElement
+	// "1" for ISS, Herausgeber der signierten Nachricht (z.B. Erfasser oder Erstsignatur)
+	// "3" for CON, der Unterzeichnete unterstützt den Inhalt der Nachricht (z.B. bei Zweitsignatur)
+	// "4" for WIT, der Unterzeichnete ist Zeuge (z.B. Übermittler), aber für den Inhalt der Nachricht nicht verantwortlich)
+	SecuritySupplierRole *AlphaNumericDataElement
+	SecurityID           *SecurityIdentificationDataElement
+	SecurityRefNumber    *NumberDataElement
+	SecurityDate         *SecurityDateDataElement
+	HashAlgorithm        *HashAlgorithmDataElement
+	SignatureAlgorithm   *SignatureAlgorithmDataElement
+	KeyName              *KeyNameDataElement
+	Certificate          *CertificateDataElement
+}
+
+func (s *SignatureHeaderSegment) DataElements() []DataElement {
+	return []DataElement{
+		s.SecurityFunction,
+		s.SecurityControlRef,
+		s.SecurityApplicationRange,
+		s.SecuritySupplierRole,
+		s.SecurityID,
+		s.SecurityRefNumber,
+		s.SecurityDate,
+		s.HashAlgorithm,
+		s.SignatureAlgorithm,
+		s.KeyName,
+		s.Certificate,
+	}
+}
+
+func NewSignatureEndSegment(number int, controlReference string, signature []byte) *SignatureEndSegment {
+	s := &SignatureEndSegment{
+		SecurityControlRef: NewAlphaNumericDataElement(controlReference, 14),
+		Signature:          NewBinaryDataElement(signature, 512),
+	}
+	header := NewSegmentHeader("HNSHA", number, 1)
+	s.segment = NewSegment(header, s)
+	return s
+}
+
+type SignatureEndSegment struct {
+	*segment
+	SecurityControlRef *AlphaNumericDataElement
+	Signature          *BinaryDataElement
+}
+
+func (s *SignatureEndSegment) DataElements() []DataElement {
+	return []DataElement{
+		s.SecurityControlRef,
+		s.Signature,
+	}
+}
+
+const (
+	SecurityHolderMessageSender   = "MS"
+	SecurityHolderMessageReceiver = "MR"
+)
+
+func NewSecurityIdentificationDataElement(securityHolder, holderId string) *SecurityIdentificationDataElement {
+	var holder string
+	if securityHolder == SecurityHolderMessageSender {
+		holder = "1"
+	} else if securityHolder == SecurityHolderMessageReceiver {
+		holder = "2"
+	} else {
+		panic(fmt.Errorf("SecurityHolder must be 'MS' or 'MR'"))
+	}
+	s := &SecurityIdentificationDataElement{
+		SecurityHolder: NewAlphaNumericDataElement(holder, 3),
+		HolderID:       NewIdentificationDataElement(holderId),
+	}
+	s.elementGroup = NewDataElementGroup(SecurityIdentificationDEG, 3, s)
+	return s
+}
+
+type SecurityIdentificationDataElement struct {
+	*elementGroup
+	// Bezeichner für Sicherheitspartei
+	SecurityHolder *AlphaNumericDataElement
+	CID            *BinaryDataElement
+	HolderID       *IdentificationDataElement
+}
+
+func (s *SecurityIdentificationDataElement) GroupDataElements() []DataElement {
+	return []DataElement{
+		s.SecurityHolder,
+		s.CID,
+		s.HolderID,
+	}
+}
+
+const (
+	SecurityDateIdentifierSecurityTimestamp         = "STS"
+	SecurityDateIdentifierCertificateRevocationTime = "CRT"
+)
+
+func NewSecurityDateDataElement(dateId string, date time.Time) *SecurityDateDataElement {
+	var id string
+	if dateId == SecurityDateIdentifierSecurityTimestamp {
+		id = "1"
+	} else if dateId == SecurityDateIdentifierCertificateRevocationTime {
+		id = "6"
+	} else {
+		panic(fmt.Errorf("DateIdentifier must be 'STS' or 'CRT'"))
+	}
+	s := &SecurityDateDataElement{
+		DateIdentifier: NewAlphaNumericDataElement(id, 3),
+		Date:           NewDateDataElement(date),
+		Time:           NewTimeDataElement(date),
+	}
+	s.elementGroup = NewDataElementGroup(SecurityDateDEG, 3, s)
+	return s
+}
+
+type SecurityDateDataElement struct {
+	*elementGroup
+	DateIdentifier *AlphaNumericDataElement
+	Date           *DateDataElement
+	Time           *TimeDataElement
+}
+
+func (s *SecurityDateDataElement) GroupDataElements() []DataElement {
+	return []DataElement{
+		s.DateIdentifier,
+		s.Date,
+		s.Time,
+	}
+}
+
+func NewDefaultHashAlgorithmDataElement() *HashAlgorithmDataElement {
+	h := &HashAlgorithmDataElement{
+		Usage:            NewAlphaNumericDataElement("1", 3),
+		Algorithm:        NewAlphaNumericDataElement("999", 3),
+		AlgorithmParamId: NewAlphaNumericDataElement("1", 3),
+	}
+	h.elementGroup = NewDataElementGroup(HashAlgorithmDEG, 4, h)
+	return h
+}
+
+type HashAlgorithmDataElement struct {
+	*elementGroup
+	// "1" for OHA, Owner Hashing
+	Usage *AlphaNumericDataElement
+	// "999" for ZZZ (RIPEMD-160)
+	Algorithm *AlphaNumericDataElement
+	// "1" for IVC, Initialization value, clear text
+	AlgorithmParamId *AlphaNumericDataElement
+	// may not be used in versions 2.20 and below
+	AlgorithmParamValue *BinaryDataElement
+}
+
+func (h *HashAlgorithmDataElement) GroupDataElements() []DataElement {
+	return []DataElement{
+		h.Usage,
+		h.Algorithm,
+		h.AlgorithmParamId,
+		h.AlgorithmParamValue,
+	}
+}
+
+func NewRDHSignatureAlgorithmDataElement() *SignatureAlgorithmDataElement {
+	s := &SignatureAlgorithmDataElement{
+		Usage:         NewAlphaNumericDataElement("6", 3),
+		Algorithm:     NewAlphaNumericDataElement("10", 3),
+		OperationMode: NewAlphaNumericDataElement("16", 3),
+	}
+	s.elementGroup = NewDataElementGroup(SignatureAlgorithmDEG, 3, s)
+	return s
+}
+
+type SignatureAlgorithmDataElement struct {
+	*elementGroup
+	// "1" for OSG, Owner Signing
+	Usage *AlphaNumericDataElement
+	// "1" for DES (DDV)
+	// "10" for RSA (RDH)
+	Algorithm *AlphaNumericDataElement
+	// "16" for DSMR, Digital Signature Scheme giving Message Recovery: ISO 9796 (RDH)
+	// "999" for ZZZ (DDV)
+	OperationMode *AlphaNumericDataElement
+}
+
+func (s *SignatureAlgorithmDataElement) GroupDataElements() []DataElement {
+	return []DataElement{
+		s.Usage,
+		s.Algorithm,
+		s.OperationMode,
+	}
+}
+
+func NewCertificateDataElement(typ int, certificate []byte) *CertificateDataElement {
+	c := &CertificateDataElement{
+		CertificateType: NewNumberDataElement(typ, 1),
+		Content:         NewBinaryDataElement(certificate, 2048),
+	}
+	c.elementGroup = NewDataElementGroup(CertificateDEG, 2, c)
+	return c
+}
+
+type KeyName struct {
+	CountryCode int
+	BankID      string
+	UserID      string
+	KeyType     string
+	KeyNumber   int
+	KeyVersion  int
+}
+
+func NewKeyNameDataElement(keyName KeyName) *KeyNameDataElement {
 	a := &KeyNameDataElement{
-		Bank:       NewBankIndentificationDataElementWithBankId(countryCode, bankId),
-		UserID:     NewIdentificationDataElement(userId),
-		KeyType:    NewAlphaNumericDataElement(keyType, 1),
-		KeyNumber:  NewNumberDataElement(keyNumber, 3),
-		KeyVersion: NewNumberDataElement(keyVersion, 3),
+		Bank:       NewBankIndentificationDataElementWithBankId(keyName.CountryCode, keyName.BankID),
+		UserID:     NewIdentificationDataElement(keyName.UserID),
+		KeyType:    NewAlphaNumericDataElement(keyName.KeyType, 1),
+		KeyNumber:  NewNumberDataElement(keyName.KeyNumber, 3),
+		KeyVersion: NewNumberDataElement(keyName.KeyVersion, 3),
 	}
 	a.elementGroup = NewDataElementGroup(KeyNameDEG, 5, a)
 	return a
@@ -70,6 +306,17 @@ type KeyNameDataElement struct {
 	KeyVersion *NumberDataElement
 }
 
+func (k *KeyNameDataElement) Val() KeyName {
+	return KeyName{
+		CountryCode: k.Bank.CountryCode.Val(),
+		BankID:      k.Bank.BankID.Val(),
+		UserID:      k.UserID.Val(),
+		KeyType:     k.KeyType.Val(),
+		KeyNumber:   k.KeyNumber.Val(),
+		KeyVersion:  k.KeyVersion.Val(),
+	}
+}
+
 func (k *KeyNameDataElement) GroupDataElements() []DataElement {
 	return []DataElement{
 		k.Bank,
@@ -77,5 +324,82 @@ func (k *KeyNameDataElement) GroupDataElements() []DataElement {
 		k.KeyType,
 		k.KeyNumber,
 		k.KeyVersion,
+	}
+}
+
+type CertificateDataElement struct {
+	*elementGroup
+	// "1" for ZKA
+	// "2" for UN/EDIFACT
+	// "3" for X.509
+	CertificateType *NumberDataElement
+	Content         *BinaryDataElement
+}
+
+func (c *CertificateDataElement) GroupDataElements() []DataElement {
+	return []DataElement{
+		c.CertificateType,
+		c.Content,
+	}
+}
+
+type PublicKey struct {
+	Type     string
+	Modulus  []byte
+	Exponent []byte
+}
+
+func NewPublicKeyDataElement(pubKey *PublicKey) *PublicKeyDataElement {
+	if !reflect.DeepEqual(pubKey.Exponent, []byte("65537")) {
+		panic(fmt.Errorf("Exponent must equal 65537 (% X)", "65537"))
+	}
+	p := &PublicKeyDataElement{
+		Usage:         NewAlphaNumericDataElement(pubKey.Type, 3),
+		OperationMode: NewAlphaNumericDataElement("16", 3),
+		Cipher:        NewAlphaNumericDataElement("10", 3),
+		Modulus:       NewBinaryDataElement(pubKey.Modulus, 512),
+		ModulusID:     NewAlphaNumericDataElement("12", 3),
+		Exponent:      NewBinaryDataElement(pubKey.Exponent, 512),
+		ExponentID:    NewAlphaNumericDataElement("13", 3),
+	}
+	p.elementGroup = NewDataElementGroup(PublicKeyDEG, 7, p)
+	return p
+}
+
+type PublicKeyDataElement struct {
+	*elementGroup
+	// "5" for OCF, Owner Ciphering (Encryption key)
+	// "6" for OSG, Owner Signing (Signing key)
+	Usage *AlphaNumericDataElement
+	// "16" for DSMR (ISO 9796)
+	OperationMode *AlphaNumericDataElement
+	// "10" for RSA
+	Cipher  *AlphaNumericDataElement
+	Modulus *BinaryDataElement
+	// "12" for MOD, Modulus
+	ModulusID *AlphaNumericDataElement
+	// "65537"
+	Exponent *BinaryDataElement
+	// "13" for EXP, Exponent
+	ExponentID *AlphaNumericDataElement
+}
+
+func (p *PublicKeyDataElement) GroupDataElements() []DataElement {
+	return []DataElement{
+		p.Usage,
+		p.OperationMode,
+		p.Cipher,
+		p.Modulus,
+		p.ModulusID,
+		p.Exponent,
+		p.ExponentID,
+	}
+}
+
+func (p *PublicKeyDataElement) Val() *PublicKey {
+	return &PublicKey{
+		Type:     p.Usage.Val(),
+		Modulus:  p.Modulus.Val(),
+		Exponent: p.Exponent.Val(),
 	}
 }
