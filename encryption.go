@@ -26,12 +26,12 @@ func NewEncryptionHeaderSegment(signatureId int, securityHolder, holderId string
 		SecurityFunction:     NewAlphaNumericDataElement("4", 3),
 		SecuritySupplierRole: NewAlphaNumericDataElement("1", 3),
 		SecurityID:           NewRDHSecurityIdentificationDataElement(securityHolder, holderId),
-		SecurityDate:         NewSecurityDateDataElement(SecurityDateIdentifierSecurityTimestamp, time.Now()),
+		SecurityDate:         NewSecurityDateDataElement(SecurityTimestamp, time.Now()),
 		EncryptionAlgorithm:  NewRDHEncryptionAlgorithmDataElement(key),
-		CompressionFunction:  NewAlphaNumericDataElement("0", 3),
 		KeyName:              NewKeyNameDataElement(keyName),
+		CompressionFunction:  NewAlphaNumericDataElement("0", 3),
 	}
-	header := NewSegmentHeader("HNVSK", 2, 2)
+	header := NewSegmentHeader("HNVSK", 998, 2)
 	e.segment = NewSegment(header, e)
 	return e
 }
@@ -62,6 +62,26 @@ func (e *EncryptionHeaderSegment) DataElements() []DataElement {
 		e.KeyName,
 		e.CompressionFunction,
 		e.Certificate,
+	}
+}
+
+func NewEncryptedDataSegment(encryptedData []byte) *EncryptedDataSegment {
+	e := &EncryptedDataSegment{
+		Data: NewBinaryDataElement(encryptedData, -1),
+	}
+	header := NewSegmentHeader("HNVSD", 999, 1)
+	e.segment = NewSegment(header, e)
+	return e
+}
+
+type EncryptedDataSegment struct {
+	*segment
+	Data *BinaryDataElement
+}
+
+func (e *EncryptedDataSegment) DataElements() []DataElement {
+	return []DataElement{
+		e.Data,
 	}
 }
 
@@ -105,5 +125,3 @@ func (e *EncryptionAlgorithmDataElement) GroupDataElements() []DataElement {
 		e.InitializationValue,
 	}
 }
-
-type EncryptedData struct{}

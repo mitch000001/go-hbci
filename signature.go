@@ -59,7 +59,7 @@ func NewSignatureHeaderSegment(controlReference string, signatureId int, securit
 		SecuritySupplierRole:     NewAlphaNumericDataElement("1", 3),
 		SecurityID:               NewRDHSecurityIdentificationDataElement(securityHolder, holderId),
 		SecurityRefNumber:        NewNumberDataElement(signatureId, 16),
-		SecurityDate:             NewSecurityDateDataElement(SecurityDateIdentifierSecurityTimestamp, time.Now()),
+		SecurityDate:             NewSecurityDateDataElement(SecurityTimestamp, time.Now()),
 		HashAlgorithm:            NewDefaultHashAlgorithmDataElement(),
 		SignatureAlgorithm:       NewRDHSignatureAlgorithmDataElement(),
 		KeyName:                  NewKeyNameDataElement(keyName),
@@ -169,15 +169,15 @@ func (s *SecurityIdentificationDataElement) GroupDataElements() []DataElement {
 }
 
 const (
-	SecurityDateIdentifierSecurityTimestamp         = "STS"
-	SecurityDateIdentifierCertificateRevocationTime = "CRT"
+	SecurityTimestamp         = "STS"
+	CertificateRevocationTime = "CRT"
 )
 
 func NewSecurityDateDataElement(dateId string, date time.Time) *SecurityDateDataElement {
 	var id string
-	if dateId == SecurityDateIdentifierSecurityTimestamp {
+	if dateId == SecurityTimestamp {
 		id = "1"
-	} else if dateId == SecurityDateIdentifierCertificateRevocationTime {
+	} else if dateId == CertificateRevocationTime {
 		id = "6"
 	} else {
 		panic(fmt.Errorf("DateIdentifier must be 'STS' or 'CRT'"))
@@ -276,6 +276,17 @@ func NewCertificateDataElement(typ int, certificate []byte) *CertificateDataElem
 	return c
 }
 
+func NewInitialKeyName(countryCode int, bankId, userId string, keyType string) KeyName {
+	return KeyName{
+		CountryCode: countryCode,
+		BankID:      bankId,
+		UserID:      userId,
+		KeyType:     keyType,
+		KeyNumber:   999,
+		KeyVersion:  999,
+	}
+}
+
 type KeyName struct {
 	CountryCode int
 	BankID      string
@@ -283,6 +294,10 @@ type KeyName struct {
 	KeyType     string
 	KeyNumber   int
 	KeyVersion  int
+}
+
+func (k KeyName) IsInitial() bool {
+	return k.KeyNumber == 999 && k.KeyVersion == 999
 }
 
 func NewKeyNameDataElement(keyName KeyName) *KeyNameDataElement {

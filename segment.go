@@ -24,6 +24,10 @@ func (s *segment) String() string {
 	return strings.Join(elementStrings, "+") + "'"
 }
 
+func (s *segment) SetNumber(number int) {
+	s.Header.SetNumber(number)
+}
+
 func NewIdentificationSegment(countryCode int, bankId string, clientId string, clientSystemId string, systemIdRequired bool) *IdentificationSegment {
 	var clientSystemStatus *NumberDataElement
 	if systemIdRequired {
@@ -84,6 +88,10 @@ type SegmentHeader struct {
 	Number  *NumberDataElement
 	Version *NumberDataElement
 	Ref     *NumberDataElement
+}
+
+func (s *SegmentHeader) SetNumber(number int) {
+	s.Number = NewNumberDataElement(number, 3)
 }
 
 func (s *SegmentHeader) Valid() bool {

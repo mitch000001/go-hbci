@@ -3,7 +3,7 @@ package hbci
 type EncryptedMessage struct {
 	*Message
 	EncryptionHeader *EncryptionHeaderSegment
-	EncryptedData    *EncryptedData
+	EncryptedData    *EncryptedDataSegment
 }
 
 type Message struct {
