@@ -6,6 +6,9 @@ import (
 	"time"
 )
 
+type PublicKeyRenewalMessage struct {
+}
+
 func NewPublicKeyRenewalSegment(number int, keyName KeyName, pubKey *PublicKey) *PublicKeyRenewalSegment {
 	if keyName.KeyType == "B" {
 		panic(fmt.Errorf("KeyType may not be 'B'"))

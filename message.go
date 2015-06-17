@@ -1,39 +1,49 @@
 package hbci
 
-type EncryptedMessage struct {
-	*Message
-	EncryptionHeader *EncryptionHeaderSegment
-	EncryptedData    *EncryptedDataSegment
-}
-
-type Message struct {
+type message struct {
 	Header *MessageHeaderSegment
 	End    *MessageEndSegment
 }
 
-type BankMessage struct {
-	*Message
-	SignatureBegin         *SignatureHeader
-	SignatureEnd           *SignatureEnd
-	MessageAcknowledgement *MessageAcknowledgement
-	SegmentAcknowledgement *SegmentAcknowledgement
-	DataSegments           []*DataSegment
+type ClientMessage interface {
+	Jobs() SegmentSequence
+}
+
+type BankMessage interface {
+	DataSegments() SegmentSequence
+}
+
+type bankMessage struct {
+	*message
+	BankMessage
+	SignatureBegin          *SignatureHeaderSegment
+	SignatureEnd            *SignatureEndSegment
+	MessageAcknowledgements *MessageAcknowledgement
+	SegmentAcknowledgements *SegmentAcknowledgement
 }
 
 type DataSegment struct{}
 
-type ClientMessage struct {
-	*Message
-	SignatureBegin *SignatureHeader
-	SignatureEnd   *SignatureEnd
-	Jobs           []*Job
+type clientMessage struct {
+	*message
+	SignatureBegin *SignatureHeaderSegment
+	SignatureEnd   *SignatureEndSegment
+	Jobs           SegmentSequence
 }
 
-type SignatureHeader struct{}
-type SignatureEnd struct{}
-type Job struct{}
+type SegmentSequence []*Segment
 
-type SegmentSequence struct{}
+func NewDialogCancellationMessage(messageAcknowledgement *MessageAcknowledgement) *DialogCancellationMessage {
+	d := &DialogCancellationMessage{
+		MessageAcknowledgements: messageAcknowledgement,
+	}
+	return d
+}
+
+type DialogCancellationMessage struct {
+	*message
+	MessageAcknowledgements *MessageAcknowledgement
+}
 
 func NewReferencingMessageHeaderSegment(size int, hbciVersion int, dialogId string, number int, referencedMessage *ReferenceMessage) *MessageHeaderSegment {
 	segmentHeader := NewSegmentHeader("HNHBK", 1, 3)

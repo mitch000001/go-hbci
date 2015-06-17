@@ -21,6 +21,12 @@ func GenerateEncryptionKey() (*rsa.PrivateKey, error) {
 	return rsa.GenerateKey(rand.Reader, 1024)
 }
 
+type EncryptedMessage struct {
+	*message
+	EncryptionHeader *EncryptionHeaderSegment
+	EncryptedData    *EncryptedDataSegment
+}
+
 func NewEncryptionHeaderSegment(signatureId int, securityHolder, holderId string, keyName KeyName, key []byte) *EncryptionHeaderSegment {
 	e := &EncryptionHeaderSegment{
 		SecurityFunction:     NewAlphaNumericDataElement("4", 3),
