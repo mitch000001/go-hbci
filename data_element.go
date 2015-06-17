@@ -62,6 +62,8 @@ const (
 	KeyNameDEG
 	CertificateDEG
 	PublicKeyDEG
+	SupportedLanguagesDEG
+	SupportedHBCIVersionDEG
 )
 
 var typeName = map[DataElementType]string{
@@ -98,6 +100,8 @@ var typeName = map[DataElementType]string{
 	KeyNameDEG:                "Schlüsselname",
 	CertificateDEG:            "Zertifikat",
 	PublicKeyDEG:              "Öffentlicher Schlüssel",
+	SupportedLanguagesDEG:     "Unterstützte Sprachen",
+	SupportedHBCIVersionDEG:   "Unterstützte HBCI-Versionen",
 }
 
 func (d DataElementType) String() string {
@@ -170,6 +174,33 @@ func (g *elementGroup) String() string {
 		}
 	}
 	return strings.Join(elementStrings, g.elementSeparator)
+}
+
+func NewArrayElementGroup(typ DataElementType, min, max int, elem ...DataElement) *arrayElementGroup {
+	e := &arrayElementGroup{
+		array: elem,
+	}
+	e.elementGroup = NewDataElementGroup(typ, max, e)
+	return e
+}
+
+type arrayElementGroup struct {
+	*elementGroup
+	minLength int
+	maxLength int
+	array     []DataElement
+}
+
+func (a *arrayElementGroup) IsValid() bool {
+	if len(a.array) < a.minLength || len(a.array) > a.maxLength {
+		return false
+	} else {
+		return a.elementGroup.IsValid()
+	}
+}
+
+func (a *arrayElementGroup) GroupDataElements() []DataElement {
+	return a.array
 }
 
 func NewDataElement(typ DataElementType, value interface{}, maxLength int) DataElement {
