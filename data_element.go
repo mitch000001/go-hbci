@@ -198,6 +198,24 @@ type AlphaNumericDataElement struct {
 
 func (a *AlphaNumericDataElement) Val() string { return a.val.(string) }
 
+func (a *AlphaNumericDataElement) IsValid() bool {
+	if strings.ContainsAny(a.Val(), "\n & \r") {
+		return false
+	} else {
+		return a.dataElement.IsValid()
+	}
+}
+
+func NewTextDataElement(val string, maxLength int) *TextDataElement {
+	return &TextDataElement{&dataElement{val, TextDE, maxLength}}
+}
+
+type TextDataElement struct {
+	*dataElement
+}
+
+func (a *TextDataElement) Val() string { return a.val.(string) }
+
 func NewDigitDataElement(val, maxLength int) *DigitDataElement {
 	return &DigitDataElement{&dataElement{val, DigitDE, maxLength}}
 }
