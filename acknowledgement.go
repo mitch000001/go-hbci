@@ -1,7 +1,7 @@
 package hbci
 
 type MessageAcknowledgement struct {
-	*segment
+	*basicSegment
 	Acknowledgements []*AcknowledgementDataElement
 }
 type SegmentAcknowledgement struct{}

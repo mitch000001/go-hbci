@@ -20,12 +20,12 @@ func NewPublicKeyRenewalSegment(number int, keyName KeyName, pubKey *PublicKey) 
 		PublicKey:  NewPublicKeyDataElement(pubKey),
 	}
 	header := NewSegmentHeader("HKSAK", number, 2)
-	p.segment = NewSegment(header, p)
+	p.basicSegment = NewBasicSegment(header, p)
 	return p
 }
 
 type PublicKeyRenewalSegment struct {
-	*segment
+	*basicSegment
 	// "2" für ‘Key-Management-Nachricht erwartet Antwort’
 	MessageID *NumberDataElement
 	// "112" für ‘Certificate Replacement’ (Ersatz des Zertifikats))
@@ -36,7 +36,7 @@ type PublicKeyRenewalSegment struct {
 	Certificate *CertificateDataElement
 }
 
-func (p *PublicKeyRenewalSegment) DataElements() []DataElement {
+func (p *PublicKeyRenewalSegment) elements() []DataElement {
 	return []DataElement{
 		p.MessageID,
 		p.FunctionID,
@@ -53,12 +53,12 @@ func NewPublicKeyRequestSegment(number int, keyName KeyName) *PublicKeyRequestSe
 		KeyName:    NewKeyNameDataElement(keyName),
 	}
 	header := NewSegmentHeader("HKISA", number, 2)
-	p.segment = NewSegment(header, p)
+	p.basicSegment = NewBasicSegment(header, p)
 	return p
 }
 
 type PublicKeyRequestSegment struct {
-	*segment
+	*basicSegment
 	// "2" für ‘Key-Management-Nachricht erwartet Antwort’
 	MessageID *NumberDataElement
 	// "124" für ‘Certificate Status Request’
@@ -67,7 +67,7 @@ type PublicKeyRequestSegment struct {
 	Certificate *CertificateDataElement
 }
 
-func (p *PublicKeyRequestSegment) DataElements() []DataElement {
+func (p *PublicKeyRequestSegment) elements() []DataElement {
 	return []DataElement{
 		p.MessageID,
 		p.FunctionID,
@@ -88,13 +88,13 @@ func NewPublicKeyTransmissionSegment(dialogId string, number int, messageReferen
 		KeyName:    NewKeyNameDataElement(keyName),
 		PublicKey:  NewPublicKeyDataElement(pubKey),
 	}
-	header := NewReferencingSegmentHeader("HIISA", number, 2, refSegment.Header.Number.Val())
-	p.segment = NewSegment(header, p)
+	header := NewReferencingSegmentHeader("HIISA", number, 2, refSegment.header.Number.Val())
+	p.basicSegment = NewBasicSegment(header, p)
 	return p
 }
 
 type PublicKeyTransmissionSegment struct {
-	*segment
+	*basicSegment
 	// "1" für ‘Key-Management-Nachricht ist Antwort’
 	MessageID  *NumberDataElement
 	DialogID   *IdentificationDataElement
@@ -106,7 +106,7 @@ type PublicKeyTransmissionSegment struct {
 	Certificate *CertificateDataElement
 }
 
-func (p *PublicKeyTransmissionSegment) DataElements() []DataElement {
+func (p *PublicKeyTransmissionSegment) elements() []DataElement {
 	return []DataElement{
 		p.MessageID,
 		p.DialogID,
@@ -142,12 +142,12 @@ func NewPublicKeyRevocationSegment(number int, keyName KeyName, reason string) *
 		Date:             NewSecurityDateDataElement(SecurityTimestamp, time.Now()),
 	}
 	header := NewSegmentHeader("HKSSP", number, 2)
-	p.segment = NewSegment(header, p)
+	p.basicSegment = NewBasicSegment(header, p)
 	return p
 }
 
 type PublicKeyRevocationSegment struct {
-	*segment
+	*basicSegment
 	// "2" für ‘Key-Management-Nachricht erwartet Antwort’
 	MessageID *NumberDataElement
 	// "130" für ‘Certificate Revocation’ (Zertifikatswiderruf)
@@ -161,7 +161,7 @@ type PublicKeyRevocationSegment struct {
 	Certificate      *CertificateDataElement
 }
 
-func (p *PublicKeyRevocationSegment) DataElements() []DataElement {
+func (p *PublicKeyRevocationSegment) elements() []DataElement {
 	return []DataElement{
 		p.MessageID,
 		p.FunctionID,
@@ -188,13 +188,13 @@ func NewPublicKeyRevocationConfirmationSegment(dialogId string, number int, mess
 		RevocationReason: NewAlphaNumericDataElement(reason, 3),
 		Date:             NewSecurityDateDataElement(SecurityTimestamp, time.Now()),
 	}
-	header := NewReferencingSegmentHeader("HISSP", number, 2, refSegment.Header.Number.Val())
-	p.segment = NewSegment(header, p)
+	header := NewReferencingSegmentHeader("HISSP", number, 2, refSegment.header.Number.Val())
+	p.basicSegment = NewBasicSegment(header, p)
 	return p
 }
 
 type PublicKeyRevocationConfirmationSegment struct {
-	*segment
+	*basicSegment
 	// "1" für ‘Key-Management-Nachricht ist Antwort’
 	MessageID  *NumberDataElement
 	DialogID   *IdentificationDataElement
@@ -210,7 +210,7 @@ type PublicKeyRevocationConfirmationSegment struct {
 	Certificate      *CertificateDataElement
 }
 
-func (p *PublicKeyRevocationConfirmationSegment) DataElements() []DataElement {
+func (p *PublicKeyRevocationConfirmationSegment) elements() []DataElement {
 	return []DataElement{
 		p.MessageID,
 		p.DialogID,

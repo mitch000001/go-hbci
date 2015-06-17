@@ -65,12 +65,12 @@ func NewSignatureHeaderSegment(controlReference string, signatureId int, securit
 		KeyName:                  NewKeyNameDataElement(keyName),
 	}
 	header := NewSegmentHeader("HNSHK", 2, 3)
-	s.segment = NewSegment(header, s)
+	s.basicSegment = NewBasicSegment(header, s)
 	return s
 }
 
 type SignatureHeaderSegment struct {
-	*segment
+	*basicSegment
 	// "1" for NRO, Non-Repudiation of Origin (RDH)
 	// "2" for AUT, Message Origin Authentication (DDV)
 	SecurityFunction   *AlphaNumericDataElement
@@ -91,7 +91,7 @@ type SignatureHeaderSegment struct {
 	Certificate          *CertificateDataElement
 }
 
-func (s *SignatureHeaderSegment) DataElements() []DataElement {
+func (s *SignatureHeaderSegment) elements() []DataElement {
 	return []DataElement{
 		s.SecurityFunction,
 		s.SecurityControlRef,
@@ -113,17 +113,17 @@ func NewSignatureEndSegment(number int, controlReference string, signature []byt
 		Signature:          NewBinaryDataElement(signature, 512),
 	}
 	header := NewSegmentHeader("HNSHA", number, 1)
-	s.segment = NewSegment(header, s)
+	s.basicSegment = NewBasicSegment(header, s)
 	return s
 }
 
 type SignatureEndSegment struct {
-	*segment
+	*basicSegment
 	SecurityControlRef *AlphaNumericDataElement
 	Signature          *BinaryDataElement
 }
 
-func (s *SignatureEndSegment) DataElements() []DataElement {
+func (s *SignatureEndSegment) elements() []DataElement {
 	return []DataElement{
 		s.SecurityControlRef,
 		s.Signature,

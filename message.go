@@ -1,6 +1,6 @@
 package hbci
 
-type message struct {
+type basicMessage struct {
 	Header *MessageHeaderSegment
 	End    *MessageEndSegment
 }
@@ -13,8 +13,8 @@ type BankMessage interface {
 	DataSegments() SegmentSequence
 }
 
-type bankMessage struct {
-	*message
+type basicBankMessage struct {
+	*basicMessage
 	BankMessage
 	SignatureBegin          *SignatureHeaderSegment
 	SignatureEnd            *SignatureEndSegment
@@ -22,16 +22,13 @@ type bankMessage struct {
 	SegmentAcknowledgements *SegmentAcknowledgement
 }
 
-type DataSegment struct{}
-
-type clientMessage struct {
-	*message
+type basicClientMessage struct {
+	*basicMessage
 	SignatureBegin *SignatureHeaderSegment
 	SignatureEnd   *SignatureEndSegment
-	Jobs           SegmentSequence
 }
 
-type SegmentSequence []*Segment
+type SegmentSequence []Segment
 
 func NewDialogCancellationMessage(messageAcknowledgement *MessageAcknowledgement) *DialogCancellationMessage {
 	d := &DialogCancellationMessage{
@@ -41,36 +38,32 @@ func NewDialogCancellationMessage(messageAcknowledgement *MessageAcknowledgement
 }
 
 type DialogCancellationMessage struct {
-	*message
+	*basicMessage
 	MessageAcknowledgements *MessageAcknowledgement
 }
 
+var validHBCIVersions = []int{201, 210, 220}
+
 func NewReferencingMessageHeaderSegment(size int, hbciVersion int, dialogId string, number int, referencedMessage *ReferenceMessage) *MessageHeaderSegment {
-	segmentHeader := NewSegmentHeader("HNHBK", 1, 3)
-	return &MessageHeaderSegment{
-		Header:      segmentHeader,
-		Size:        NewDigitDataElement(size, 12),
-		HBCIVersion: NewNumberDataElement(hbciVersion, 3),
-		DialogID:    NewIdentificationDataElement(dialogId),
-		Number:      NewNumberDataElement(number, 4),
-		Ref:         referencedMessage,
-	}
+	m := NewMessageHeaderSegment(size, hbciVersion, dialogId, number)
+	m.Ref = referencedMessage
+	return m
 }
 
 func NewMessageHeaderSegment(size int, hbciVersion int, dialogId string, number int) *MessageHeaderSegment {
 	segmentHeader := NewSegmentHeader("HNHBK", 1, 3)
-	return &MessageHeaderSegment{
-		Header:      segmentHeader,
+	m := &MessageHeaderSegment{
 		Size:        NewDigitDataElement(size, 12),
 		HBCIVersion: NewNumberDataElement(hbciVersion, 3),
 		DialogID:    NewIdentificationDataElement(dialogId),
 		Number:      NewNumberDataElement(number, 4),
 	}
+	m.basicSegment = NewBasicSegment(segmentHeader, m)
+	return m
 }
 
 type MessageHeaderSegment struct {
-	*segment
-	Header      *SegmentHeader
+	*basicSegment
 	Size        *DigitDataElement
 	HBCIVersion *NumberDataElement
 	DialogID    *IdentificationDataElement
@@ -78,7 +71,7 @@ type MessageHeaderSegment struct {
 	Ref         *ReferenceMessage
 }
 
-func (m *MessageHeaderSegment) DataElements() []DataElement {
+func (m *MessageHeaderSegment) elements() []DataElement {
 	return []DataElement{
 		m.Size,
 		m.HBCIVersion,
@@ -88,21 +81,25 @@ func (m *MessageHeaderSegment) DataElements() []DataElement {
 	}
 }
 
+func (m *MessageHeaderSegment) SetSize(size int) {
+	m.Size = NewDigitDataElement(size, 12)
+}
+
 func NewMessageEndSegment(segmentNumber, messageNumber int) *MessageEndSegment {
 	segmentHeader := NewSegmentHeader("HNHBS", segmentNumber, 1)
 	end := &MessageEndSegment{
 		Number: NewNumberDataElement(messageNumber, 4),
 	}
-	end.segment = NewSegment(segmentHeader, end)
+	end.basicSegment = NewBasicSegment(segmentHeader, end)
 	return end
 }
 
 type MessageEndSegment struct {
-	*segment
+	*basicSegment
 	Number *NumberDataElement
 }
 
-func (m *MessageEndSegment) DataElements() []DataElement {
+func (m *MessageEndSegment) elements() []DataElement {
 	return []DataElement{
 		m.Number,
 	}

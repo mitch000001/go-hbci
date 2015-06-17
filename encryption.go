@@ -22,7 +22,7 @@ func GenerateEncryptionKey() (*rsa.PrivateKey, error) {
 }
 
 type EncryptedMessage struct {
-	*message
+	*basicMessage
 	EncryptionHeader *EncryptionHeaderSegment
 	EncryptedData    *EncryptedDataSegment
 }
@@ -38,12 +38,12 @@ func NewEncryptionHeaderSegment(signatureId int, securityHolder, holderId string
 		CompressionFunction:  NewAlphaNumericDataElement("0", 3),
 	}
 	header := NewSegmentHeader("HNVSK", 998, 2)
-	e.segment = NewSegment(header, e)
+	e.basicSegment = NewBasicSegment(header, e)
 	return e
 }
 
 type EncryptionHeaderSegment struct {
-	*segment
+	*basicSegment
 	// "4" for ENC, Encryption (encryption and eventually compression)
 	SecurityFunction *AlphaNumericDataElement
 	// "1" for ISS,  Herausgeber der chiffrierten Nachricht (Erfasser)
@@ -58,7 +58,7 @@ type EncryptionHeaderSegment struct {
 	Certificate          *CertificateDataElement
 }
 
-func (e *EncryptionHeaderSegment) DataElements() []DataElement {
+func (e *EncryptionHeaderSegment) elements() []DataElement {
 	return []DataElement{
 		e.SecurityFunction,
 		e.SecuritySupplierRole,
@@ -76,16 +76,16 @@ func NewEncryptedDataSegment(encryptedData []byte) *EncryptedDataSegment {
 		Data: NewBinaryDataElement(encryptedData, -1),
 	}
 	header := NewSegmentHeader("HNVSD", 999, 1)
-	e.segment = NewSegment(header, e)
+	e.basicSegment = NewBasicSegment(header, e)
 	return e
 }
 
 type EncryptedDataSegment struct {
-	*segment
+	*basicSegment
 	Data *BinaryDataElement
 }
 
-func (e *EncryptedDataSegment) DataElements() []DataElement {
+func (e *EncryptedDataSegment) elements() []DataElement {
 	return []DataElement{
 		e.Data,
 	}

@@ -3,29 +3,46 @@ package hbci
 import "strings"
 
 type Segment interface {
+	Header() *SegmentHeader
 	DataElements() []DataElement
+	String() string
 }
 
-func NewSegment(header *SegmentHeader, seg Segment) *segment {
-	return &segment{Header: header, segment: seg}
+type segment interface {
+	elements() []DataElement
 }
 
-type segment struct {
-	segment Segment
-	Header  *SegmentHeader
+func NewBasicSegment(header *SegmentHeader, seg segment) *basicSegment {
+	return &basicSegment{header: header, segment: seg}
 }
 
-func (s *segment) String() string {
-	elementStrings := make([]string, len(s.segment.DataElements())+1)
-	elementStrings[0] = s.Header.String()
-	for i, de := range s.segment.DataElements() {
+type basicSegment struct {
+	segment segment
+	header  *SegmentHeader
+}
+
+func (s *basicSegment) String() string {
+	elementStrings := make([]string, len(s.segment.elements())+1)
+	elementStrings[0] = s.header.String()
+	for i, de := range s.segment.elements() {
 		elementStrings[i+1] = de.String()
 	}
 	return strings.Join(elementStrings, "+") + "'"
 }
 
-func (s *segment) SetNumber(number int) {
-	s.Header.SetNumber(number)
+func (s *basicSegment) DataElements() []DataElement {
+	var dataElements []DataElement
+	dataElements = append(dataElements, s.header)
+	dataElements = append(dataElements, s.segment.elements()...)
+	return dataElements
+}
+
+func (s *basicSegment) Header() *SegmentHeader {
+	return s.header
+}
+
+func (s *basicSegment) SetNumber(number int) {
+	s.header.SetNumber(number)
 }
 
 func NewIdentificationSegment(countryCode int, bankId string, clientId string, clientSystemId string, systemIdRequired bool) *IdentificationSegment {
@@ -42,19 +59,19 @@ func NewIdentificationSegment(countryCode int, bankId string, clientId string, c
 		ClientSystemStatus: clientSystemStatus,
 	}
 	header := NewSegmentHeader("HKIDN", 3, 2)
-	id.segment = NewSegment(header, id)
+	id.basicSegment = NewBasicSegment(header, id)
 	return id
 }
 
 type IdentificationSegment struct {
-	*segment
+	*basicSegment
 	BankId             *BankIdentificationDataElement
 	ClientId           *IdentificationDataElement
 	ClientSystemId     *IdentificationDataElement
 	ClientSystemStatus *NumberDataElement
 }
 
-func (i *IdentificationSegment) DataElements() []DataElement {
+func (i *IdentificationSegment) elements() []DataElement {
 	return []DataElement{
 		i.BankId,
 		i.ClientId,
@@ -64,12 +81,9 @@ func (i *IdentificationSegment) DataElements() []DataElement {
 }
 
 func NewReferencingSegmentHeader(id string, number, version, reference int) *SegmentHeader {
-	return &SegmentHeader{
-		ID:      NewAlphaNumericDataElement(id, 6),
-		Number:  NewNumberDataElement(number, 3),
-		Version: NewNumberDataElement(version, 3),
-		Ref:     NewNumberDataElement(reference, 3),
-	}
+	header := NewSegmentHeader(id, number, version)
+	header.Ref = NewNumberDataElement(reference, 3)
+	return header
 }
 
 func NewSegmentHeader(id string, number, version int) *SegmentHeader {
