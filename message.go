@@ -123,11 +123,11 @@ type ReferenceMessage struct {
 	MessageNumber *NumberDataElement
 }
 
-func (r *ReferenceMessage) Valid() bool {
+func (r *ReferenceMessage) IsValid() bool {
 	if r.DialogID == nil || r.MessageNumber == nil {
 		return false
 	} else {
-		return r.elementGroup.Valid()
+		return r.elementGroup.IsValid()
 	}
 }
 

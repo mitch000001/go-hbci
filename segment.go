@@ -94,11 +94,11 @@ func (s *SegmentHeader) SetNumber(number int) {
 	s.Number = NewNumberDataElement(number, 3)
 }
 
-func (s *SegmentHeader) Valid() bool {
+func (s *SegmentHeader) IsValid() bool {
 	if s.ID == nil || s.Number == nil || s.Version == nil {
 		return false
 	} else {
-		return s.elementGroup.Valid()
+		return s.elementGroup.IsValid()
 	}
 }
 

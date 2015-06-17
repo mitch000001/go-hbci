@@ -31,14 +31,14 @@ type AcknowledgementDataElement struct {
 	Params               []*AlphaNumericDataElement
 }
 
-func (a *AcknowledgementDataElement) Valid() bool {
+func (a *AcknowledgementDataElement) IsValid() bool {
 	if len(a.Params) != 0 || len(a.Params) != 10 {
 		return false
 	} else {
 		if a.Code == nil || a.Text == nil {
 			return false
 		} else {
-			return a.elementGroup.Valid()
+			return a.elementGroup.IsValid()
 		}
 	}
 }

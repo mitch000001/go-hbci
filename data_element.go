@@ -12,7 +12,7 @@ import (
 type DataElement interface {
 	Value() interface{}
 	Type() DataElementType
-	Valid() bool
+	IsValid() bool
 	Length() int
 	String() string
 }
@@ -138,13 +138,13 @@ func (g *elementGroup) Value() interface{} {
 
 func (g *elementGroup) Type() DataElementType { return g.typ }
 
-func (g *elementGroup) Valid() bool {
+func (g *elementGroup) IsValid() bool {
 	if g.elementCount != len(g.elements) {
 		return false
 	}
 	for _, elem := range g.elements {
 		if !reflect.ValueOf(elem).IsNil() {
-			if !elem.Valid() {
+			if !elem.IsValid() {
 				return false
 			}
 		}
@@ -184,7 +184,7 @@ type dataElement struct {
 
 func (d *dataElement) Value() interface{}    { return d.val }
 func (d *dataElement) Type() DataElementType { return d.typ }
-func (d *dataElement) Valid() bool           { return d.Length() <= d.maxLength }
+func (d *dataElement) IsValid() bool         { return d.Length() <= d.maxLength }
 func (d *dataElement) Length() int           { return len(d.String()) }
 func (d *dataElement) String() string        { return fmt.Sprintf("%v", d.val) }
 
@@ -301,7 +301,7 @@ func (d *DateDataElement) String() string {
 	return d.Val().Format("20060102")
 }
 
-func (d *DateDataElement) Valid() bool {
+func (d *DateDataElement) IsValid() bool {
 	return !d.Val().IsZero()
 }
 
@@ -336,7 +336,7 @@ func (t *TimeDataElement) String() string {
 	return t.Val().Format("150405")
 }
 
-func (t *TimeDataElement) Valid() bool {
+func (t *TimeDataElement) IsValid() bool {
 	return !t.Val().IsZero()
 }
 
@@ -370,7 +370,7 @@ type CurrencyDataElement struct {
 	*AlphaNumericDataElement
 }
 
-func (c *CurrencyDataElement) Valid() bool {
+func (c *CurrencyDataElement) IsValid() bool {
 	return c.Length() == 3
 }
 

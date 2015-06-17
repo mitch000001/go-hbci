@@ -53,7 +53,7 @@ func TestNewDataElement(t *testing.T) {
 			t.Fail()
 		}
 
-		valid := d.Valid()
+		valid := d.IsValid()
 
 		if valid != test.valid {
 			t.Logf("Input: %+#v\n", test)
@@ -137,7 +137,7 @@ func TestNewDigitDataElement(t *testing.T) {
 			t.Fail()
 		}
 
-		valid := d.Valid()
+		valid := d.IsValid()
 
 		if valid != test.valid {
 			t.Logf("Input: %+#v\n", test)
@@ -208,7 +208,7 @@ func TestNewNumberDataElement(t *testing.T) {
 			t.Fail()
 		}
 
-		valid := d.Valid()
+		valid := d.IsValid()
 
 		if valid != test.valid {
 			t.Logf("Input: %+#v\n", test)
