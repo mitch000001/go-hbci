@@ -54,6 +54,10 @@ func (s *basicSegment) SetNumber(number int) {
 	s.header.SetNumber(number)
 }
 
+func (s *basicSegment) SetReference(ref int) {
+	s.header.SetReference(ref)
+}
+
 func NewIdentificationSegment(countryCode int, bankId string, clientId string, clientSystemId string, systemIdRequired bool) *IdentificationSegment {
 	var clientSystemStatus *NumberDataElement
 	if systemIdRequired {
@@ -114,6 +118,10 @@ type SegmentHeader struct {
 
 func (s *SegmentHeader) SetNumber(number int) {
 	s.Number = NewNumberDataElement(number, 3)
+}
+
+func (s *SegmentHeader) SetReference(ref int) {
+	s.Ref = NewNumberDataElement(ref, 3)
 }
 
 func (s *SegmentHeader) IsValid() bool {
