@@ -31,8 +31,7 @@ func NewProcessingPreparationSegment(bdpVersion int, udpVersion int, language in
 		ProductName:    NewAlphaNumericDataElement(productName, 25),
 		ProductVersion: NewAlphaNumericDataElement(productVersion, 5),
 	}
-	header := NewSegmentHeader("HKVVB", 4, 2)
-	p.basicSegment = NewBasicSegment(header, p)
+	p.basicSegment = NewBasicSegment("HKVVB", 4, 2, p)
 	return p
 }
 
@@ -66,8 +65,7 @@ func NewBankAnnouncementSegment(subject, body string) *BankAnnouncementSegment {
 		Subject: NewAlphaNumericDataElement(subject, 35),
 		Body:    NewTextDataElement(body, 2048),
 	}
-	header := NewSegmentHeader("HIKIM", 8, 2)
-	b.basicSegment = NewBasicSegment(header, b)
+	b.basicSegment = NewBasicSegment("HIKIM", 8, 2, b)
 	return b
 }
 

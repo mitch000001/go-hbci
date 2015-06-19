@@ -64,8 +64,7 @@ func NewSignatureHeaderSegment(controlReference string, signatureId int, securit
 		SignatureAlgorithm:       NewRDHSignatureAlgorithmDataElement(),
 		KeyName:                  NewKeyNameDataElement(keyName),
 	}
-	header := NewSegmentHeader("HNSHK", 2, 3)
-	s.basicSegment = NewBasicSegment(header, s)
+	s.basicSegment = NewBasicSegment("HNSHK", 2, 3, s)
 	return s
 }
 
@@ -112,8 +111,7 @@ func NewSignatureEndSegment(number int, controlReference string, signature []byt
 		SecurityControlRef: NewAlphaNumericDataElement(controlReference, 14),
 		Signature:          NewBinaryDataElement(signature, 512),
 	}
-	header := NewSegmentHeader("HNSHA", number, 1)
-	s.basicSegment = NewBasicSegment(header, s)
+	s.basicSegment = NewBasicSegment("HNSHA", number, 1, s)
 	return s
 }
 

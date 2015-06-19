@@ -19,8 +19,7 @@ func NewPublicKeyRenewalSegment(number int, keyName KeyName, pubKey *PublicKey) 
 		KeyName:    NewKeyNameDataElement(keyName),
 		PublicKey:  NewPublicKeyDataElement(pubKey),
 	}
-	header := NewSegmentHeader("HKSAK", number, 2)
-	p.basicSegment = NewBasicSegment(header, p)
+	p.basicSegment = NewBasicSegment("HKSAK", number, 2, p)
 	return p
 }
 
@@ -52,8 +51,7 @@ func NewPublicKeyRequestSegment(number int, keyName KeyName) *PublicKeyRequestSe
 		FunctionID: NewNumberDataElement(124, 3),
 		KeyName:    NewKeyNameDataElement(keyName),
 	}
-	header := NewSegmentHeader("HKISA", number, 2)
-	p.basicSegment = NewBasicSegment(header, p)
+	p.basicSegment = NewBasicSegment("HKISA", number, 2, p)
 	return p
 }
 
@@ -89,7 +87,7 @@ func NewPublicKeyTransmissionSegment(dialogId string, number int, messageReferen
 		PublicKey:  NewPublicKeyDataElement(pubKey),
 	}
 	header := NewReferencingSegmentHeader("HIISA", number, 2, refSegment.header.Number.Val())
-	p.basicSegment = NewBasicSegment(header, p)
+	p.basicSegment = NewBasicSegmentWithHeader(header, p)
 	return p
 }
 
@@ -141,8 +139,7 @@ func NewPublicKeyRevocationSegment(number int, keyName KeyName, reason string) *
 		RevocationReason: NewAlphaNumericDataElement(reason, 3),
 		Date:             NewSecurityDateDataElement(SecurityTimestamp, time.Now()),
 	}
-	header := NewSegmentHeader("HKSSP", number, 2)
-	p.basicSegment = NewBasicSegment(header, p)
+	p.basicSegment = NewBasicSegment("HKSSP", number, 2, p)
 	return p
 }
 
@@ -189,7 +186,7 @@ func NewPublicKeyRevocationConfirmationSegment(dialogId string, number int, mess
 		Date:             NewSecurityDateDataElement(SecurityTimestamp, time.Now()),
 	}
 	header := NewReferencingSegmentHeader("HISSP", number, 2, refSegment.header.Number.Val())
-	p.basicSegment = NewBasicSegment(header, p)
+	p.basicSegment = NewBasicSegmentWithHeader(header, p)
 	return p
 }
 

@@ -12,7 +12,12 @@ type segment interface {
 	elements() []DataElement
 }
 
-func NewBasicSegment(header *SegmentHeader, seg segment) *basicSegment {
+func NewBasicSegment(id string, number int, version int, seg segment) *basicSegment {
+	header := NewSegmentHeader(id, number, version)
+	return NewBasicSegmentWithHeader(header, seg)
+}
+
+func NewBasicSegmentWithHeader(header *SegmentHeader, seg segment) *basicSegment {
 	return &basicSegment{header: header, segment: seg}
 }
 
@@ -41,6 +46,10 @@ func (s *basicSegment) Header() *SegmentHeader {
 	return s.header
 }
 
+func (s *basicSegment) ID() string {
+	return s.header.ID.Val()
+}
+
 func (s *basicSegment) SetNumber(number int) {
 	s.header.SetNumber(number)
 }
@@ -58,8 +67,7 @@ func NewIdentificationSegment(countryCode int, bankId string, clientId string, c
 		ClientSystemId:     NewIdentificationDataElement(clientSystemId),
 		ClientSystemStatus: clientSystemStatus,
 	}
-	header := NewSegmentHeader("HKIDN", 3, 2)
-	id.basicSegment = NewBasicSegment(header, id)
+	id.basicSegment = NewBasicSegment("HKIDN", 3, 2, id)
 	return id
 }
 

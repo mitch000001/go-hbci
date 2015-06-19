@@ -37,8 +37,7 @@ func NewEncryptionHeaderSegment(signatureId int, securityHolder, holderId string
 		KeyName:              NewKeyNameDataElement(keyName),
 		CompressionFunction:  NewAlphaNumericDataElement("0", 3),
 	}
-	header := NewSegmentHeader("HNVSK", 998, 2)
-	e.basicSegment = NewBasicSegment(header, e)
+	e.basicSegment = NewBasicSegment("HNVSK", 998, 2, e)
 	return e
 }
 
@@ -75,8 +74,7 @@ func NewEncryptedDataSegment(encryptedData []byte) *EncryptedDataSegment {
 	e := &EncryptedDataSegment{
 		Data: NewBinaryDataElement(encryptedData, -1),
 	}
-	header := NewSegmentHeader("HNVSD", 999, 1)
-	e.basicSegment = NewBasicSegment(header, e)
+	e.basicSegment = NewBasicSegment("HNVSD", 999, 1, e)
 	return e
 }
 
