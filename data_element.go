@@ -461,10 +461,15 @@ func (a *AmountDataElement) Val() (value float64, currency string) {
 	return a.Amount.Val(), a.Currency.Val()
 }
 
-func NewBankIndentificationDataElementWithBankId(countryCode int, bankId string) *BankIdentificationDataElement {
+type BankId struct {
+	CountryCode int
+	ID          string
+}
+
+func NewBankIndentificationDataElement(bankId BankId) *BankIdentificationDataElement {
 	b := &BankIdentificationDataElement{
-		CountryCode: NewCountryCodeDataElement(countryCode),
-		BankID:      NewAlphaNumericDataElement(bankId, 30),
+		CountryCode: NewCountryCodeDataElement(bankId.CountryCode),
+		BankID:      NewAlphaNumericDataElement(bankId.ID, 30),
 	}
 	b.elementGroup = NewGroupDataElementGroup(BankIdentificationGDEG, 2, b)
 	return b

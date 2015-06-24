@@ -276,22 +276,20 @@ func NewCertificateDataElement(typ int, certificate []byte) *CertificateDataElem
 
 func NewInitialKeyName(countryCode int, bankId, userId string, keyType string) KeyName {
 	return KeyName{
-		CountryCode: countryCode,
-		BankID:      bankId,
-		UserID:      userId,
-		KeyType:     keyType,
-		KeyNumber:   999,
-		KeyVersion:  999,
+		BankID:     BankId{CountryCode: countryCode, ID: bankId},
+		UserID:     userId,
+		KeyType:    keyType,
+		KeyNumber:  999,
+		KeyVersion: 999,
 	}
 }
 
 type KeyName struct {
-	CountryCode int
-	BankID      string
-	UserID      string
-	KeyType     string
-	KeyNumber   int
-	KeyVersion  int
+	BankID     BankId
+	UserID     string
+	KeyType    string
+	KeyNumber  int
+	KeyVersion int
 }
 
 func (k KeyName) IsInitial() bool {
@@ -300,7 +298,7 @@ func (k KeyName) IsInitial() bool {
 
 func NewKeyNameDataElement(keyName KeyName) *KeyNameDataElement {
 	a := &KeyNameDataElement{
-		Bank:       NewBankIndentificationDataElementWithBankId(keyName.CountryCode, keyName.BankID),
+		Bank:       NewBankIndentificationDataElement(keyName.BankID),
 		UserID:     NewIdentificationDataElement(keyName.UserID),
 		KeyType:    NewAlphaNumericDataElement(keyName.KeyType, 1),
 		KeyNumber:  NewNumberDataElement(keyName.KeyNumber, 3),
@@ -312,8 +310,10 @@ func NewKeyNameDataElement(keyName KeyName) *KeyNameDataElement {
 
 type KeyNameDataElement struct {
 	*elementGroup
-	Bank       *BankIdentificationDataElement
-	UserID     *IdentificationDataElement
+	Bank   *BankIdentificationDataElement
+	UserID *IdentificationDataElement
+	// "S" for Signing key
+	// "V" for Encryption key
 	KeyType    *AlphaNumericDataElement
 	KeyNumber  *NumberDataElement
 	KeyVersion *NumberDataElement
@@ -321,12 +321,11 @@ type KeyNameDataElement struct {
 
 func (k *KeyNameDataElement) Val() KeyName {
 	return KeyName{
-		CountryCode: k.Bank.CountryCode.Val(),
-		BankID:      k.Bank.BankID.Val(),
-		UserID:      k.UserID.Val(),
-		KeyType:     k.KeyType.Val(),
-		KeyNumber:   k.KeyNumber.Val(),
-		KeyVersion:  k.KeyVersion.Val(),
+		BankID:     BankId{k.Bank.CountryCode.Val(), k.Bank.BankID.Val()},
+		UserID:     k.UserID.Val(),
+		KeyType:    k.KeyType.Val(),
+		KeyNumber:  k.KeyNumber.Val(),
+		KeyVersion: k.KeyVersion.Val(),
 	}
 }
 

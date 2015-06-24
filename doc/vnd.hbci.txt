@@ -1,0 +1,63 @@
+
+Name : Ingo Hammann
+
+E-mail : ingo.hammann&ppi.de
+
+MIME media type name : Application
+
+MIME subtype name : Vendor Tree - vnd.hbci
+
+Required parameters : version : Version of the HBCI specification with the
+pattern x.yz where x, y ans z are digits and z is omitted if it is 0; at the
+moment valid version-parameters are: 2.01, 2.1, 2.2, 3.0 and 4.0
+
+Optional parameters :
+none
+
+Encoding considerations :
+The encodings base64 or binary MUST be used.
+
+Security considerations :
+HBCI has its own security framework and uses DES- and RSA-encryption.
+Signatures are used for secure identifiaction of customers and banks. It is
+also possible that banks and customers exchange messages using bilateral
+concerted security techniques. This MIME-type is used for the exchange of
+financial messages. There is no executable content in HBCI messages. (see
+HBCI specification)
+
+Interoperability considerations :
+Conformance of HBCI MIME to the HBCI specification is required.
+
+Published specification :
+The specification of HBCI in German and English language can be downloaded
+from http://www.hbci-zka.de/spezifikation/2.html
+
+Applications which use this media :
+German Banks support HBCI as an open standard. There are several HBCI server
+products and at least two different client APIs. The client APIs will be
+available free. Additional information: http://www.siz.de and
+http://www.bdb.de
+
+Additional information :
+
+1. Magic number(s) : none
+2. File extension(s) : .hbci and .hbc; .kom, .upa, .pkd an .bpd for special purpose
+3. Macintosh file type code : none
+4. Object Identifiers: none
+
+The usage is limited to banking applications.
+
+Person to contact for further information :
+
+1. Name : Ingo Hammann
+2. E-mail : ingo.hammann&ppi.de
+
+Intended usage : Limited Use
+The media type application/vnd.hbci is containing sequences of segments
+specified in the Homebanking Computer Interface (HBCI) specification.
+
+Author/Change controller : Zentraler Kreditausschuss (http://www.zka.de) is
+the standardization board for the HBCI standard.
+Please contact me under the above address if you need further information.
+
+(created 17 Jan 2002)

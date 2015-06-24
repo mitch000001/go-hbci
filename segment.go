@@ -58,7 +58,7 @@ func (s *basicSegment) SetReference(ref int) {
 	s.header.SetReference(ref)
 }
 
-func NewIdentificationSegment(countryCode int, bankId string, clientId string, clientSystemId string, systemIdRequired bool) *IdentificationSegment {
+func NewIdentificationSegment(bankId BankId, clientId string, clientSystemId string, systemIdRequired bool) *IdentificationSegment {
 	var clientSystemStatus *NumberDataElement
 	if systemIdRequired {
 		clientSystemStatus = NewNumberDataElement(1, 1)
@@ -66,7 +66,7 @@ func NewIdentificationSegment(countryCode int, bankId string, clientId string, c
 		clientSystemStatus = NewNumberDataElement(0, 1)
 	}
 	id := &IdentificationSegment{
-		BankId:             NewBankIndentificationDataElementWithBankId(countryCode, bankId),
+		BankId:             NewBankIndentificationDataElement(bankId),
 		ClientId:           NewIdentificationDataElement(clientId),
 		ClientSystemId:     NewIdentificationDataElement(clientSystemId),
 		ClientSystemStatus: clientSystemStatus,

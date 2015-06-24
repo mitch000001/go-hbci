@@ -4,8 +4,7 @@ var HKVVBSegmentNumber = -1
 
 func NewCommonBankParameterSegment(
 	bpdVersion int,
-	countryCode int,
-	bankId string,
+	bankId BankId,
 	bankName string,
 	businessTransactionCount int,
 	supportedLanguages []int,
@@ -13,7 +12,7 @@ func NewCommonBankParameterSegment(
 	maxMessageSize int) *CommonBankParameterSegment {
 	c := &CommonBankParameterSegment{
 		BPDVersion:               NewNumberDataElement(bpdVersion, 3),
-		BankID:                   NewBankIndentificationDataElementWithBankId(countryCode, bankId),
+		BankID:                   NewBankIndentificationDataElement(bankId),
 		BankName:                 NewAlphaNumericDataElement(bankName, 60),
 		BusinessTransactionCount: NewNumberDataElement(businessTransactionCount, 3),
 		SupportedLanguages:       NewSupportedLanguagesDataElement(supportedLanguages...),
