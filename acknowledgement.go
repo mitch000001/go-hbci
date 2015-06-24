@@ -43,7 +43,7 @@ func (a *AcknowledgementDataElement) IsValid() bool {
 	}
 }
 
-func (a *AcknowledgementDataElement) GroupDataElements() []DataElement {
+func (a *AcknowledgementDataElement) groupDataElements() []DataElement {
 	elements := []DataElement{
 		a.Code,
 		a.ReferenceDataElement,

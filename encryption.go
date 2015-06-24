@@ -99,6 +99,7 @@ func NewRDHEncryptionAlgorithmDataElement(pubKey []byte) *EncryptionAlgorithmDat
 		InitializationValueParamID: NewAlphaNumericDataElement("1", 3),
 		InitializationValue:        NewBinaryDataElement([]byte(encryptionInitializationVector), 8),
 	}
+	e.elementGroup = NewDataElementGroup(EncryptionAlgorithmDEG, 7, e)
 	return e
 }
 
@@ -118,7 +119,7 @@ type EncryptionAlgorithmDataElement struct {
 	InitializationValue        *BinaryDataElement
 }
 
-func (e *EncryptionAlgorithmDataElement) GroupDataElements() []DataElement {
+func (e *EncryptionAlgorithmDataElement) groupDataElements() []DataElement {
 	return []DataElement{
 		e.Usage,
 		e.OperationMode,

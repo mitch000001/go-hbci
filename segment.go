@@ -136,7 +136,7 @@ func (s *SegmentHeader) Value() interface{} {
 	return s
 }
 
-func (s *SegmentHeader) GroupDataElements() []DataElement {
+func (s *SegmentHeader) groupDataElements() []DataElement {
 	return []DataElement{
 		s.ID,
 		s.Number,

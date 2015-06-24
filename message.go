@@ -130,7 +130,7 @@ func (r *ReferenceMessage) Value() interface{} {
 	return r
 }
 
-func (r *ReferenceMessage) GroupDataElements() []DataElement {
+func (r *ReferenceMessage) groupDataElements() []DataElement {
 	return []DataElement{
 		r.DialogID,
 		r.MessageNumber,

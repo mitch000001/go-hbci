@@ -17,19 +17,25 @@ type DataElement interface {
 	String() string
 }
 
+type OptionalDataElement interface {
+	DataElement
+	Optional() bool
+}
+
 type DataElementGroup interface {
 	DataElement
-	GroupDataElements() []DataElement
+	groupDataElements() []DataElement
 }
 
 type GroupDataElementGroup interface {
-	Elements() []DataElement
+	elements() []DataElement
 }
 
 type DataElementType int
 
 const (
-	AlphaNumericDE DataElementType = iota << 1
+	// DataElements
+	AlphaNumericDE DataElementType = iota + 1
 	TextDE
 	NumberDE
 	DigitDE
@@ -112,21 +118,40 @@ func (d DataElementType) String() string {
 	return s
 }
 
+func NewDataElement(typ DataElementType, value interface{}, maxLength int) DataElement {
+	return &dataElement{value, typ, maxLength, false}
+}
+
+type dataElement struct {
+	val       interface{}
+	typ       DataElementType
+	maxLength int
+	optional  bool
+}
+
+func (d *dataElement) Value() interface{}    { return d.val }
+func (d *dataElement) Type() DataElementType { return d.typ }
+func (d *dataElement) IsValid() bool         { return d.Length() <= d.maxLength }
+func (d *dataElement) Length() int           { return len(d.String()) }
+func (d *dataElement) String() string        { return fmt.Sprintf("%v", d.val) }
+func (d *dataElement) Optional() bool        { return d.optional }
+func (d *dataElement) SetOptional()          { d.optional = true }
+
 func NewDataElementGroup(typ DataElementType, elementCount int, group DataElementGroup) *elementGroup {
-	return &elementGroup{elements: group.GroupDataElements(), elementSeparator: ":", elementCount: elementCount, typ: typ}
+	return &elementGroup{elements: group.groupDataElements(), elementCount: elementCount, typ: typ}
 }
 
 func NewGroupDataElementGroup(typ DataElementType, elementCount int, group GroupDataElementGroup) *elementGroup {
-	return &elementGroup{elements: group.Elements(), elementSeparator: ":", elementCount: elementCount, typ: typ}
+	return &elementGroup{elements: group.elements(), elementCount: elementCount, typ: typ}
 }
 
 // groupDataElementGroup defines a group of GroupDataElements.
 // It implements the DataElement and the DataElementGroup interface
 type elementGroup struct {
-	elements         []DataElement
-	elementSeparator string
-	typ              DataElementType
-	elementCount     int
+	elements     []DataElement
+	typ          DataElementType
+	elementCount int
+	optional     bool
 }
 
 // Value returns the values of all GroupDataElements as []interface{}
@@ -167,13 +192,21 @@ func (g *elementGroup) Length() int {
 }
 
 func (g *elementGroup) String() string {
-	elementStrings := make([]string, len(g.elements))
+	elementStrings := make([]string, g.elementCount)
 	for i, e := range g.elements {
 		if !reflect.ValueOf(e).IsNil() {
 			elementStrings[i] = e.String()
 		}
 	}
-	return strings.Join(elementStrings, g.elementSeparator)
+	return strings.Join(elementStrings, ":")
+}
+
+func (g *elementGroup) Optional() bool {
+	return g.optional
+}
+
+func (g *elementGroup) SetOptional() {
+	g.optional = true
 }
 
 func NewArrayElementGroup(typ DataElementType, min, max int, elem ...DataElement) *arrayElementGroup {
@@ -199,28 +232,17 @@ func (a *arrayElementGroup) IsValid() bool {
 	}
 }
 
-func (a *arrayElementGroup) GroupDataElements() []DataElement {
+func (a *arrayElementGroup) groupDataElements() []DataElement {
 	return a.array
 }
 
-func NewDataElement(typ DataElementType, value interface{}, maxLength int) DataElement {
-	return &dataElement{value, typ, maxLength}
+func escape(in string) string {
+	replacer := strings.NewReplacer("?", "??", "@", "?@", "'", "?'", ":", "?:", "+", "?+")
+	return replacer.Replace(in)
 }
-
-type dataElement struct {
-	val       interface{}
-	typ       DataElementType
-	maxLength int
-}
-
-func (d *dataElement) Value() interface{}    { return d.val }
-func (d *dataElement) Type() DataElementType { return d.typ }
-func (d *dataElement) IsValid() bool         { return d.Length() <= d.maxLength }
-func (d *dataElement) Length() int           { return len(d.String()) }
-func (d *dataElement) String() string        { return fmt.Sprintf("%v", d.val) }
 
 func NewAlphaNumericDataElement(val string, maxLength int) *AlphaNumericDataElement {
-	return &AlphaNumericDataElement{&dataElement{val, AlphaNumericDE, maxLength}}
+	return &AlphaNumericDataElement{&dataElement{val, AlphaNumericDE, maxLength, false}}
 }
 
 type AlphaNumericDataElement struct {
@@ -237,8 +259,12 @@ func (a *AlphaNumericDataElement) IsValid() bool {
 	}
 }
 
+func (a *AlphaNumericDataElement) String() string {
+	return escape(a.dataElement.String())
+}
+
 func NewTextDataElement(val string, maxLength int) *TextDataElement {
-	return &TextDataElement{&dataElement{val, TextDE, maxLength}}
+	return &TextDataElement{&dataElement{val, TextDE, maxLength, false}}
 }
 
 type TextDataElement struct {
@@ -246,9 +272,12 @@ type TextDataElement struct {
 }
 
 func (a *TextDataElement) Val() string { return a.val.(string) }
+func (a *TextDataElement) String() string {
+	return escape(a.dataElement.String())
+}
 
 func NewDigitDataElement(val, maxLength int) *DigitDataElement {
-	return &DigitDataElement{&dataElement{val, DigitDE, maxLength}}
+	return &DigitDataElement{&dataElement{val, DigitDE, maxLength, false}}
 }
 
 type DigitDataElement struct {
@@ -263,7 +292,7 @@ func (d *DigitDataElement) String() string {
 }
 
 func NewNumberDataElement(val, maxLength int) *NumberDataElement {
-	return &NumberDataElement{&dataElement{val, NumberDE, maxLength}}
+	return &NumberDataElement{&dataElement{val, NumberDE, maxLength, false}}
 }
 
 type NumberDataElement struct {
@@ -273,7 +302,7 @@ type NumberDataElement struct {
 func (n *NumberDataElement) Val() int { return n.val.(int) }
 
 func NewFloatDataElement(val float64, maxLength int) *FloatDataElement {
-	return &FloatDataElement{&dataElement{val, FloatDE, maxLength}}
+	return &FloatDataElement{&dataElement{val, FloatDE, maxLength, false}}
 }
 
 type FloatDataElement struct {
@@ -295,7 +324,7 @@ type DtausCharsetDataElement struct {
 }
 
 func NewDtausCharsetDataElement(data []byte, maxLength int) *DtausCharsetDataElement {
-	return &DtausCharsetDataElement{&dataElement{data, DTAUSCharsetDE, maxLength}}
+	return &DtausCharsetDataElement{&dataElement{data, DTAUSCharsetDE, maxLength, false}}
 }
 
 type BinaryDataElement struct {
@@ -303,7 +332,7 @@ type BinaryDataElement struct {
 }
 
 func NewBinaryDataElement(data []byte, maxLength int) *BinaryDataElement {
-	return &BinaryDataElement{&dataElement{data, BinaryDE, maxLength}}
+	return &BinaryDataElement{&dataElement{data, BinaryDE, maxLength, false}}
 }
 
 func (b *BinaryDataElement) Val() []byte {
@@ -315,7 +344,7 @@ func (b *BinaryDataElement) String() string {
 }
 
 func NewBooleanDataElement(val bool) *BooleanDataElement {
-	return &BooleanDataElement{&dataElement{val, BooleanDE, 1}}
+	return &BooleanDataElement{&dataElement{val, BooleanDE, 1, false}}
 }
 
 type BooleanDataElement struct {
@@ -335,7 +364,7 @@ func (b *BooleanDataElement) String() string {
 }
 
 func NewDateDataElement(date time.Time) *DateDataElement {
-	return &DateDataElement{&dataElement{date, DateDE, 8}}
+	return &DateDataElement{&dataElement{date, DateDE, 8, false}}
 }
 
 type DateDataElement struct {
@@ -370,7 +399,7 @@ func (v *VirtualDateDataElement) Valid() bool {
 }
 
 func NewTimeDataElement(date time.Time) *TimeDataElement {
-	return &TimeDataElement{&dataElement{date, DateDE, 6}}
+	return &TimeDataElement{&dataElement{date, DateDE, 6, false}}
 }
 
 type TimeDataElement struct {
@@ -450,7 +479,7 @@ type AmountDataElement struct {
 	Currency *CurrencyDataElement
 }
 
-func (a *AmountDataElement) Elements() []DataElement {
+func (a *AmountDataElement) elements() []DataElement {
 	return []DataElement{
 		a.Amount,
 		a.Currency,
@@ -481,7 +510,7 @@ type BankIdentificationDataElement struct {
 	BankID      *AlphaNumericDataElement
 }
 
-func (b *BankIdentificationDataElement) Elements() []DataElement {
+func (b *BankIdentificationDataElement) elements() []DataElement {
 	return []DataElement{
 		b.CountryCode,
 		b.BankID,
@@ -507,7 +536,7 @@ type AccountConnectionDataElement struct {
 	BankId                    *AlphaNumericDataElement
 }
 
-func (a *AccountConnectionDataElement) Elements() []DataElement {
+func (a *AccountConnectionDataElement) elements() []DataElement {
 	return []DataElement{
 		a.AccountId,
 		a.SubAccountCharacteristics,
@@ -548,7 +577,7 @@ type BalanceDataElement struct {
 	TransmissionTime     *TimeDataElement
 }
 
-func (b *BalanceDataElement) Elements() []DataElement {
+func (b *BalanceDataElement) elements() []DataElement {
 	return []DataElement{
 		b.DebitCreditIndicator,
 		b.Amount,
@@ -617,7 +646,7 @@ type AddressDataElement struct {
 	Email       *AlphaNumericDataElement
 }
 
-func (a *AddressDataElement) Elements() []DataElement {
+func (a *AddressDataElement) elements() []DataElement {
 	return []DataElement{
 		a.Name1,
 		a.Name2,
