@@ -1,9 +1,13 @@
 package hbci
 
-import "strings"
+import (
+	"reflect"
+	"strings"
+)
 
 type Segment interface {
 	Header() *SegmentHeader
+	SetNumber(int)
 	DataElements() []DataElement
 	String() string
 }
@@ -30,7 +34,9 @@ func (s *basicSegment) String() string {
 	elementStrings := make([]string, len(s.segment.elements())+1)
 	elementStrings[0] = s.header.String()
 	for i, de := range s.segment.elements() {
-		elementStrings[i+1] = de.String()
+		if !reflect.ValueOf(de).IsNil() {
+			elementStrings[i+1] = de.String()
+		}
 	}
 	return strings.Join(elementStrings, "+") + "'"
 }

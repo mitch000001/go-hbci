@@ -1,8 +1,156 @@
 package hbci
 
+import (
+	"bytes"
+	"fmt"
+	"reflect"
+)
+
+var bankSegments = map[string]Segment{
+	"HIRMG": &MessageAcknowledgement{},
+}
+
+type Message interface {
+	MarshalHBCI() ([]byte, error)
+}
+
+type HBCIMessage interface {
+	HBCISegments() []Segment
+}
+
+type SignedHBCIMessage interface {
+	HBCIMessage
+	SignatureBeginSegment() *SignatureHeaderSegment
+	SignatureEndSegment() *SignatureEndSegment
+}
+
+func newBasicMessage(message HBCIMessage) *basicMessage {
+	b := &basicMessage{
+		HBCIMessage: message,
+	}
+	return b
+}
+
 type basicMessage struct {
 	Header *MessageHeaderSegment
 	End    *MessageEndSegment
+	HBCIMessage
+	marshaledContent []byte
+}
+
+func (b *basicMessage) SetNumbers() {
+	if b.HBCIMessage == nil {
+		panic(fmt.Errorf("HBCIMessage must be set"))
+	}
+	n := 0
+	num := func() int {
+		n += 1
+		return n
+	}
+	b.Header.SetNumber(num())
+	switch msg := b.HBCIMessage.(type) {
+	case SignedHBCIMessage:
+		msg.SignatureBeginSegment().SetNumber(num())
+		for _, segment := range msg.HBCISegments() {
+			if !reflect.ValueOf(segment).IsNil() {
+				segment.SetNumber(num())
+			}
+		}
+		msg.SignatureEndSegment().SetNumber(num())
+	default:
+		for _, segment := range b.HBCIMessage.HBCISegments() {
+			if !reflect.ValueOf(segment).IsNil() {
+				segment.SetNumber(num())
+			}
+		}
+	}
+	b.End.SetNumber(num())
+}
+
+func (b *basicMessage) SetSize() {
+	if b.HBCIMessage == nil {
+		panic(fmt.Errorf("HBCIMessage must be set"))
+	}
+	var buffer bytes.Buffer
+	buffer.WriteString(b.Header.String())
+	switch msg := b.HBCIMessage.(type) {
+	case SignedHBCIMessage:
+		buffer.WriteString(msg.SignatureBeginSegment().String())
+		for _, segment := range msg.HBCISegments() {
+			if !reflect.ValueOf(segment).IsNil() {
+				buffer.WriteString(segment.String())
+			}
+		}
+		buffer.WriteString(msg.SignatureEndSegment().String())
+	default:
+		for _, segment := range b.HBCIMessage.HBCISegments() {
+			if !reflect.ValueOf(segment).IsNil() {
+				buffer.WriteString(segment.String())
+			}
+		}
+	}
+	buffer.WriteString(b.End.String())
+	b.Header.SetSize(buffer.Len())
+}
+
+func (b *basicMessage) MarshalHBCI() ([]byte, error) {
+	if b.HBCIMessage == nil {
+		panic(fmt.Errorf("HBCIMessage must be set"))
+	}
+	if len(b.marshaledContent) == 0 {
+		var buffer bytes.Buffer
+		buffer.WriteString(b.Header.String())
+		switch msg := b.HBCIMessage.(type) {
+		case SignedHBCIMessage:
+			buffer.WriteString(msg.SignatureBeginSegment().String())
+			for _, segment := range msg.HBCISegments() {
+				if !reflect.ValueOf(segment).IsNil() {
+					buffer.WriteString(segment.String())
+				}
+			}
+			buffer.WriteString(msg.SignatureEndSegment().String())
+		default:
+			for _, segment := range b.HBCIMessage.HBCISegments() {
+				if !reflect.ValueOf(segment).IsNil() {
+					buffer.WriteString(segment.String())
+				}
+			}
+		}
+		buffer.WriteString(b.End.String())
+		b.marshaledContent = buffer.Bytes()
+	}
+	return b.marshaledContent, nil
+}
+
+func newBasicSignedMessage(message HBCIMessage) *basicSignedMessage {
+	b := &basicSignedMessage{
+		HBCIMessage: message,
+	}
+	b.basicMessage = newBasicMessage(b)
+	return b
+}
+
+type basicSignedMessage struct {
+	*basicMessage
+	SignatureBegin *SignatureHeaderSegment
+	SignatureEnd   *SignatureEndSegment
+	HBCIMessage
+}
+
+func (b *basicSignedMessage) SetSignatureBeginSegment(sigBegin *SignatureHeaderSegment) {
+	b.SignatureBegin = sigBegin
+}
+
+func (b *basicSignedMessage) SetSignatureEndSegment(sigEnd *SignatureEndSegment) {
+	b.SignatureEnd = sigEnd
+}
+
+func (b *basicSignedMessage) SignatureBeginSegment() *SignatureHeaderSegment {
+	return b.SignatureBegin
+}
+
+func (b *basicSignedMessage) SignatureEndSegment() *SignatureEndSegment {
+	return b.SignatureEnd
 }
 
 type ClientMessage interface {
@@ -14,33 +162,30 @@ type BankMessage interface {
 }
 
 type basicBankMessage struct {
-	*basicMessage
+	*basicSignedMessage
 	BankMessage
-	SignatureBegin          *SignatureHeaderSegment
-	SignatureEnd            *SignatureEndSegment
 	MessageAcknowledgements *MessageAcknowledgement
 	SegmentAcknowledgements *SegmentAcknowledgement
 }
 
+func newBasicClientMessage(clientMessage ClientMessage) *basicClientMessage {
+	b := &basicClientMessage{
+		ClientMessage: clientMessage,
+	}
+	b.basicSignedMessage = newBasicSignedMessage(b)
+	return b
+}
+
 type basicClientMessage struct {
-	*basicMessage
-	SignatureBegin *SignatureHeaderSegment
-	SignatureEnd   *SignatureEndSegment
+	*basicSignedMessage
+	ClientMessage
+}
+
+func (b *basicClientMessage) HBCISegments() []Segment {
+	return b.ClientMessage.Jobs()
 }
 
 type SegmentSequence []Segment
-
-func NewDialogCancellationMessage(messageAcknowledgement *MessageAcknowledgement) *DialogCancellationMessage {
-	d := &DialogCancellationMessage{
-		MessageAcknowledgements: messageAcknowledgement,
-	}
-	return d
-}
-
-type DialogCancellationMessage struct {
-	*basicMessage
-	MessageAcknowledgements *MessageAcknowledgement
-}
 
 var validHBCIVersions = []int{201, 210, 220}
 
