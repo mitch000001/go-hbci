@@ -1,17 +1,25 @@
 package hbci
 
+func NewDialogInitializationClientMessage() *DialogInitializationClientMessage {
+	d := &DialogInitializationClientMessage{}
+	d.basicClientMessage = newBasicClientMessage(d)
+	return d
+}
+
 type DialogInitializationClientMessage struct {
 	*basicClientMessage
-	Identification        *IdentificationSegment
-	ProcessingPreparation *ProcessingPreparationSegment
-	PublicKeyRenewal      *PublicKeyRenewalSegment
+	Identification             *IdentificationSegment
+	ProcessingPreparation      *ProcessingPreparationSegment
+	PublicSigningKeyRequest    *PublicKeyRequestSegment
+	PublicEncryptionKeyRequest *PublicKeyRequestSegment
 }
 
 func (d *DialogInitializationClientMessage) Jobs() SegmentSequence {
 	return SegmentSequence{
 		d.Identification,
 		d.ProcessingPreparation,
-		d.PublicKeyRenewal,
+		d.PublicSigningKeyRequest,
+		d.PublicEncryptionKeyRequest,
 	}
 }
 
@@ -21,6 +29,54 @@ type DialogInitializationBankMessage struct {
 	UserParams            SegmentSequence
 	PublicKeyTransmission *PublicKeyTransmissionSegment
 	Announcement          *BankAnnouncementSegment
+}
+
+type DialogFinishingMessage struct {
+	*basicClientMessage
+	DialogEnd *DialogEndSegment
+}
+
+func (d *DialogFinishingMessage) Jobs() SegmentSequence {
+	return SegmentSequence{
+		d.DialogEnd,
+	}
+}
+
+func NewDialogCancellationMessage(messageAcknowledgement *MessageAcknowledgement) *DialogCancellationMessage {
+	d := &DialogCancellationMessage{
+		MessageAcknowledgements: messageAcknowledgement,
+	}
+	return d
+}
+
+type DialogCancellationMessage struct {
+	*basicMessage
+	MessageAcknowledgements *MessageAcknowledgement
+}
+
+type AnonymousDialogMessage struct {
+	*basicMessage
+	Identification        *IdentificationSegment
+	ProcessingPreparation *ProcessingPreparationSegment
+}
+
+func NewDialogEndSegment(dialogId string) *DialogEndSegment {
+	d := &DialogEndSegment{
+		DialogID: NewIdentificationDataElement(dialogId),
+	}
+	d.basicSegment = NewBasicSegment("HKEND", 3, 1, d)
+	return d
+}
+
+type DialogEndSegment struct {
+	*basicSegment
+	DialogID *IdentificationDataElement
+}
+
+func (d *DialogEndSegment) elements() []DataElement {
+	return []DataElement{
+		d.DialogID,
+	}
 }
 
 func NewProcessingPreparationSegment(bdpVersion int, udpVersion int, language int) *ProcessingPreparationSegment {

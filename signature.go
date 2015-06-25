@@ -7,7 +7,7 @@ import (
 	"crypto/rsa"
 	"fmt"
 	"io"
-	"reflect"
+	"math/big"
 	"time"
 
 	"golang.org/x/crypto/ripemd160"
@@ -20,14 +20,24 @@ type SignatureProvider interface {
 
 const initializationVector = "\x01\x23\x45\x67\x89\xAB\xCD\xEF\xFE\xDC\xBA\x98\x76\x54\x32\x10\xF0\xE1\xD2\xC3"
 
-func GenerateSigningKey() (*rsa.PrivateKey, error) {
-	return rsa.GenerateKey(rand.Reader, 1024)
+func GenerateSigningKey() (*PublicKey, error) {
+	rsaKey, err := rsa.GenerateKey(rand.Reader, 768)
+	if err != nil {
+		return nil, err
+	}
+	p := PublicKey{
+		Type:          "S",
+		Modulus:       rsaKey.N.Bytes(),
+		Exponent:      big.NewInt(int64(rsaKey.E)).Bytes(),
+		rsaPrivateKey: rsaKey,
+	}
+	return &p, nil
 }
 
-func MessageHashSum(message fmt.Stringer) []byte {
+func MessageHashSum(message string) []byte {
 	h := ripemd160.New()
-	io.WriteString(h, initializationVector)
-	io.WriteString(h, message.String())
+	//io.WriteString(h, initializationVector)
+	io.WriteString(h, message)
 	return h.Sum(nil)
 }
 
@@ -357,66 +367,5 @@ func (c *CertificateDataElement) groupDataElements() []DataElement {
 	return []DataElement{
 		c.CertificateType,
 		c.Content,
-	}
-}
-
-type PublicKey struct {
-	Type     string
-	Modulus  []byte
-	Exponent []byte
-}
-
-func NewPublicKeyDataElement(pubKey *PublicKey) *PublicKeyDataElement {
-	if !reflect.DeepEqual(pubKey.Exponent, []byte("65537")) {
-		panic(fmt.Errorf("Exponent must equal 65537 (% X)", "65537"))
-	}
-	p := &PublicKeyDataElement{
-		Usage:         NewAlphaNumericDataElement(pubKey.Type, 3),
-		OperationMode: NewAlphaNumericDataElement("16", 3),
-		Cipher:        NewAlphaNumericDataElement("10", 3),
-		Modulus:       NewBinaryDataElement(pubKey.Modulus, 512),
-		ModulusID:     NewAlphaNumericDataElement("12", 3),
-		Exponent:      NewBinaryDataElement(pubKey.Exponent, 512),
-		ExponentID:    NewAlphaNumericDataElement("13", 3),
-	}
-	p.elementGroup = NewDataElementGroup(PublicKeyDEG, 7, p)
-	return p
-}
-
-type PublicKeyDataElement struct {
-	*elementGroup
-	// "5" for OCF, Owner Ciphering (Encryption key)
-	// "6" for OSG, Owner Signing (Signing key)
-	Usage *AlphaNumericDataElement
-	// "16" for DSMR (ISO 9796)
-	OperationMode *AlphaNumericDataElement
-	// "10" for RSA
-	Cipher  *AlphaNumericDataElement
-	Modulus *BinaryDataElement
-	// "12" for MOD, Modulus
-	ModulusID *AlphaNumericDataElement
-	// "65537"
-	Exponent *BinaryDataElement
-	// "13" for EXP, Exponent
-	ExponentID *AlphaNumericDataElement
-}
-
-func (p *PublicKeyDataElement) GroupDataElements() []DataElement {
-	return []DataElement{
-		p.Usage,
-		p.OperationMode,
-		p.Cipher,
-		p.Modulus,
-		p.ModulusID,
-		p.Exponent,
-		p.ExponentID,
-	}
-}
-
-func (p *PublicKeyDataElement) Val() *PublicKey {
-	return &PublicKey{
-		Type:     p.Usage.Val(),
-		Modulus:  p.Modulus.Val(),
-		Exponent: p.Exponent.Val(),
 	}
 }

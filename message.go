@@ -180,6 +180,17 @@ func (b *basicSignedMessage) SignatureEndSegment() *SignatureEndSegment {
 	return b.SignatureEnd
 }
 
+func (b *basicSignedMessage) SignRDHMessage(signingKey *RSAKey) error {
+	if b.basicMessage == nil {
+		panic(fmt.Errorf("basicMessage must be set"))
+	}
+	if b.HBCIMessage == nil {
+		panic(fmt.Errorf("HBCIMessage must be set"))
+	}
+	provider := NewRDHSignatureProvider(signingKey)
+	return provider.SignMessage(b)
+}
+
 func (b *basicSignedMessage) Sign(provider SignatureProvider) error {
 	return provider.SignMessage(b)
 }
