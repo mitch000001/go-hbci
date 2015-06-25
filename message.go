@@ -195,6 +195,11 @@ func (b *basicSignedMessage) Sign(provider SignatureProvider) error {
 	return provider.SignMessage(b)
 }
 
+func (b *basicSignedMessage) SignPinTanMessage(pin *PinKey) error {
+	provider := NewPinTanSignatureProvider(pin)
+	return provider.SignMessage(b)
+}
+
 type ClientMessage interface {
 	Jobs() SegmentSequence
 }

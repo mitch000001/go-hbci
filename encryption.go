@@ -22,8 +22,13 @@ func GenerateMessageKey() ([]byte, error) {
 	return b, nil
 }
 
-func GenerateEncryptionKey() (*rsa.PrivateKey, error) {
-	return rsa.GenerateKey(rand.Reader, 1024)
+func NewEncryptedPinTanMessage(clientSystemId string, keyName KeyName, encryptedMessage []byte) *EncryptedMessage {
+	e := &EncryptedMessage{
+		EncryptionHeader: NewPinTanEncryptionHeaderSegment(clientSystemId, keyName),
+		EncryptedData:    NewEncryptedDataSegment(encryptedMessage),
+	}
+	e.basicMessage = newBasicMessage(e)
+	return e
 }
 
 type EncryptedMessage struct {
@@ -47,6 +52,20 @@ func (e *EncryptedMessage) SetSize() {
 	panic(fmt.Errorf("SetSize: Operation not allowed on encrypted messages"))
 }
 
+func NewPinTanEncryptionHeaderSegment(clientSystemId string, keyName KeyName) *EncryptionHeaderSegment {
+	e := &EncryptionHeaderSegment{
+		SecurityFunction:     NewAlphaNumericDataElement("998", 3),
+		SecuritySupplierRole: NewAlphaNumericDataElement("1", 3),
+		SecurityID:           NewRDHSecurityIdentificationDataElement(SecurityHolderMessageSender, clientSystemId),
+		SecurityDate:         NewSecurityDateDataElement(SecurityTimestamp, time.Now()),
+		EncryptionAlgorithm:  NewPinTanEncryptionAlgorithmDataElement(),
+		KeyName:              NewKeyNameDataElement(keyName),
+		CompressionFunction:  NewAlphaNumericDataElement("0", 3),
+	}
+	e.basicSegment = NewBasicSegment("HNVSK", 998, 2, e)
+	return e
+}
+
 func NewEncryptionHeaderSegment(clientSystemId string, keyName KeyName, key []byte) *EncryptionHeaderSegment {
 	e := &EncryptionHeaderSegment{
 		SecurityFunction:     NewAlphaNumericDataElement("4", 3),
@@ -64,6 +83,7 @@ func NewEncryptionHeaderSegment(clientSystemId string, keyName KeyName, key []by
 type EncryptionHeaderSegment struct {
 	*basicSegment
 	// "4" for ENC, Encryption (encryption and eventually compression)
+	// "998" for Cleartext
 	SecurityFunction *AlphaNumericDataElement
 	// "1" for ISS,  Herausgeber der chiffrierten Nachricht (Erfasser)
 	// "4" for WIT, der Unterzeichnete ist Zeuge, aber für den Inhalt der
@@ -107,6 +127,19 @@ func (e *EncryptedDataSegment) elements() []DataElement {
 	return []DataElement{
 		e.Data,
 	}
+}
+
+func NewPinTanEncryptionAlgorithmDataElement() *EncryptionAlgorithmDataElement {
+	e := &EncryptionAlgorithmDataElement{
+		Usage:                      NewAlphaNumericDataElement("2", 3),
+		OperationMode:              NewAlphaNumericDataElement("2", 3),
+		Algorithm:                  NewAlphaNumericDataElement("13", 3),
+		Key:                        NewBinaryDataElement([]byte(defaultPinTan), 512),
+		KeyParamID:                 NewAlphaNumericDataElement("5", 3),
+		InitializationValueParamID: NewAlphaNumericDataElement("1", 3),
+	}
+	e.elementGroup = NewDataElementGroup(EncryptionAlgorithmDEG, 7, e)
+	return e
 }
 
 func NewRDHEncryptionAlgorithmDataElement(pubKey []byte) *EncryptionAlgorithmDataElement {
