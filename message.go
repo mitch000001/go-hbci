@@ -122,6 +122,33 @@ func (b *basicMessage) MarshalHBCI() ([]byte, error) {
 	return b.marshaledContent, nil
 }
 
+func (b *basicMessage) Encrypt(provider EncryptionProvider) (*EncryptedMessage, error) {
+	var buffer bytes.Buffer
+	switch msg := b.HBCIMessage.(type) {
+	case SignedHBCIMessage:
+		buffer.WriteString(msg.SignatureBeginSegment().String())
+		for _, segment := range msg.HBCISegments() {
+			if !reflect.ValueOf(segment).IsNil() {
+				buffer.WriteString(segment.String())
+			}
+		}
+		buffer.WriteString(msg.SignatureEndSegment().String())
+	default:
+		for _, segment := range b.HBCIMessage.HBCISegments() {
+			if !reflect.ValueOf(segment).IsNil() {
+				buffer.WriteString(segment.String())
+			}
+		}
+	}
+	encryptedMessage, err := provider.Encrypt(buffer.Bytes())
+	if err != nil {
+		return nil, err
+	}
+	encryptedMessage.Header = b.Header
+	encryptedMessage.End = b.End
+	return encryptedMessage, nil
+}
+
 func newBasicSignedMessage(message HBCIMessage) *basicSignedMessage {
 	b := &basicSignedMessage{
 		HBCIMessage: message,
@@ -151,6 +178,10 @@ func (b *basicSignedMessage) SignatureBeginSegment() *SignatureHeaderSegment {
 
 func (b *basicSignedMessage) SignatureEndSegment() *SignatureEndSegment {
 	return b.SignatureEnd
+}
+
+func (b *basicSignedMessage) Sign(provider SignatureProvider) error {
+	return provider.SignMessage(b)
 }
 
 type ClientMessage interface {

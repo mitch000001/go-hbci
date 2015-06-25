@@ -13,6 +13,11 @@ import (
 	"golang.org/x/crypto/ripemd160"
 )
 
+type SignatureProvider interface {
+	SignMessage(SignedHBCIMessage) error
+	NewSignatureHeader(controlReference string, signatureId int, clientSystemId string) *SignatureHeaderSegment
+}
+
 const initializationVector = "\x01\x23\x45\x67\x89\xAB\xCD\xEF\xFE\xDC\xBA\x98\x76\x54\x32\x10\xF0\xE1\xD2\xC3"
 
 func GenerateSigningKey() (*rsa.PrivateKey, error) {
@@ -57,7 +62,7 @@ func NewSignatureHeaderSegment(controlReference string, signatureId int, securit
 		SecurityControlRef:       NewAlphaNumericDataElement(controlReference, 14),
 		SecurityApplicationRange: NewAlphaNumericDataElement("1", 3),
 		SecuritySupplierRole:     NewAlphaNumericDataElement("1", 3),
-		SecurityID:               NewRDHSecurityIdentificationDataElement(securityHolder, holderId),
+		SecurityID:               NewRDHSecurityIdentificationDataElement(SecurityHolderMessageSender, holderId),
 		SecurityRefNumber:        NewNumberDataElement(signatureId, 16),
 		SecurityDate:             NewSecurityDateDataElement(SecurityTimestamp, time.Now()),
 		HashAlgorithm:            NewDefaultHashAlgorithmDataElement(),
@@ -133,7 +138,7 @@ const (
 	SecurityHolderMessageReceiver = "MR"
 )
 
-func NewRDHSecurityIdentificationDataElement(securityHolder, holderId string) *SecurityIdentificationDataElement {
+func NewRDHSecurityIdentificationDataElement(securityHolder, clientSystemId string) *SecurityIdentificationDataElement {
 	var holder string
 	if securityHolder == SecurityHolderMessageSender {
 		holder = "1"
@@ -144,7 +149,7 @@ func NewRDHSecurityIdentificationDataElement(securityHolder, holderId string) *S
 	}
 	s := &SecurityIdentificationDataElement{
 		SecurityHolder: NewAlphaNumericDataElement(holder, 3),
-		HolderID:       NewIdentificationDataElement(holderId),
+		ClientSystemID: NewIdentificationDataElement(clientSystemId),
 	}
 	s.elementGroup = NewDataElementGroup(SecurityIdentificationDEG, 3, s)
 	return s
@@ -155,14 +160,14 @@ type SecurityIdentificationDataElement struct {
 	// Bezeichner für Sicherheitspartei
 	SecurityHolder *AlphaNumericDataElement
 	CID            *BinaryDataElement
-	HolderID       *IdentificationDataElement
+	ClientSystemID *IdentificationDataElement
 }
 
 func (s *SecurityIdentificationDataElement) groupDataElements() []DataElement {
 	return []DataElement{
 		s.SecurityHolder,
 		s.CID,
-		s.HolderID,
+		s.ClientSystemID,
 	}
 }
 
@@ -274,8 +279,8 @@ func NewCertificateDataElement(typ int, certificate []byte) *CertificateDataElem
 	return c
 }
 
-func NewInitialKeyName(countryCode int, bankId, userId string, keyType string) KeyName {
-	return KeyName{
+func NewInitialKeyName(countryCode int, bankId, userId string, keyType string) *KeyName {
+	return &KeyName{
 		BankID:     BankId{CountryCode: countryCode, ID: bankId},
 		UserID:     userId,
 		KeyType:    keyType,
@@ -292,7 +297,7 @@ type KeyName struct {
 	KeyVersion int
 }
 
-func (k KeyName) IsInitial() bool {
+func (k *KeyName) IsInitial() bool {
 	return k.KeyNumber == 999 && k.KeyVersion == 999
 }
 

@@ -2,9 +2,14 @@ package hbci
 
 import (
 	"crypto/rand"
-	"crypto/rsa"
+	"fmt"
 	"time"
 )
+
+type EncryptionProvider interface {
+	SetClientSystemID(clientSystemId string)
+	Encrypt(message []byte) (*EncryptedMessage, error)
+}
 
 const encryptionInitializationVector = "\x00\x00\x00\x00\x00\x00\x00\x00"
 
@@ -27,11 +32,26 @@ type EncryptedMessage struct {
 	EncryptedData    *EncryptedDataSegment
 }
 
-func NewEncryptionHeaderSegment(signatureId int, securityHolder, holderId string, keyName KeyName, key []byte) *EncryptionHeaderSegment {
+func (e *EncryptedMessage) HBCISegments() []Segment {
+	return []Segment{
+		e.EncryptionHeader,
+		e.EncryptedData,
+	}
+}
+
+func (e *EncryptedMessage) SetNumbers() {
+	panic(fmt.Errorf("SetNumbers: Operation not allowed on encrypted messages"))
+}
+
+func (e *EncryptedMessage) SetSize() {
+	panic(fmt.Errorf("SetSize: Operation not allowed on encrypted messages"))
+}
+
+func NewEncryptionHeaderSegment(clientSystemId string, keyName KeyName, key []byte) *EncryptionHeaderSegment {
 	e := &EncryptionHeaderSegment{
 		SecurityFunction:     NewAlphaNumericDataElement("4", 3),
 		SecuritySupplierRole: NewAlphaNumericDataElement("1", 3),
-		SecurityID:           NewRDHSecurityIdentificationDataElement(securityHolder, holderId),
+		SecurityID:           NewRDHSecurityIdentificationDataElement(SecurityHolderMessageSender, clientSystemId),
 		SecurityDate:         NewSecurityDateDataElement(SecurityTimestamp, time.Now()),
 		EncryptionAlgorithm:  NewRDHEncryptionAlgorithmDataElement(key),
 		KeyName:              NewKeyNameDataElement(keyName),
