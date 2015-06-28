@@ -122,6 +122,33 @@ func (b *basicMessage) MarshalHBCI() ([]byte, error) {
 	return b.marshaledContent, nil
 }
 
+func (b *basicMessage) EncryptWithInitialKeyName(provider EncryptionProvider) (*EncryptedMessage, error) {
+	var buffer bytes.Buffer
+	switch msg := b.HBCIMessage.(type) {
+	case SignedHBCIMessage:
+		buffer.WriteString(msg.SignatureBeginSegment().String())
+		for _, segment := range msg.HBCISegments() {
+			if !reflect.ValueOf(segment).IsNil() {
+				buffer.WriteString(segment.String())
+			}
+		}
+		buffer.WriteString(msg.SignatureEndSegment().String())
+	default:
+		for _, segment := range b.HBCIMessage.HBCISegments() {
+			if !reflect.ValueOf(segment).IsNil() {
+				buffer.WriteString(segment.String())
+			}
+		}
+	}
+	encryptedMessage, err := provider.EncryptWithInitialKeyName(buffer.Bytes())
+	if err != nil {
+		return nil, err
+	}
+	encryptedMessage.Header = b.Header
+	encryptedMessage.End = b.End
+	return encryptedMessage, nil
+}
+
 func (b *basicMessage) Encrypt(provider EncryptionProvider) (*EncryptedMessage, error) {
 	var buffer bytes.Buffer
 	switch msg := b.HBCIMessage.(type) {
@@ -180,23 +207,13 @@ func (b *basicSignedMessage) SignatureEndSegment() *SignatureEndSegment {
 	return b.SignatureEnd
 }
 
-func (b *basicSignedMessage) SignRDHMessage(signingKey *RSAKey) error {
+func (b *basicSignedMessage) Sign(provider SignatureProvider) error {
 	if b.basicMessage == nil {
 		panic(fmt.Errorf("basicMessage must be set"))
 	}
 	if b.HBCIMessage == nil {
 		panic(fmt.Errorf("HBCIMessage must be set"))
 	}
-	provider := NewRDHSignatureProvider(signingKey)
-	return provider.SignMessage(b)
-}
-
-func (b *basicSignedMessage) Sign(provider SignatureProvider) error {
-	return provider.SignMessage(b)
-}
-
-func (b *basicSignedMessage) SignPinTanMessage(pin *PinKey) error {
-	provider := NewPinTanSignatureProvider(pin)
 	return provider.SignMessage(b)
 }
 
@@ -249,12 +266,12 @@ func NewMessageHeaderSegment(size int, hbciVersion int, dialogId string, number 
 		DialogID:    NewIdentificationDataElement(dialogId),
 		Number:      NewNumberDataElement(number, 4),
 	}
-	m.basicSegment = NewBasicSegment("HNHBK", 1, 3, m)
+	m.Segment = NewBasicSegment("HNHBK", 1, 3, m)
 	return m
 }
 
 type MessageHeaderSegment struct {
-	*basicSegment
+	Segment
 	Size        *DigitDataElement
 	HBCIVersion *NumberDataElement
 	DialogID    *IdentificationDataElement
@@ -280,12 +297,12 @@ func NewMessageEndSegment(segmentNumber, messageNumber int) *MessageEndSegment {
 	end := &MessageEndSegment{
 		Number: NewNumberDataElement(messageNumber, 4),
 	}
-	end.basicSegment = NewBasicSegment("HNHBS", segmentNumber, 1, end)
+	end.Segment = NewBasicSegment("HNHBS", segmentNumber, 1, end)
 	return end
 }
 
 type MessageEndSegment struct {
-	*basicSegment
+	Segment
 	Number *NumberDataElement
 }
 
@@ -300,12 +317,12 @@ func NewReferenceMessage(dialogId string, messageNumber int) *ReferenceMessage {
 		DialogID:      NewIdentificationDataElement(dialogId),
 		MessageNumber: NewNumberDataElement(messageNumber, 4),
 	}
-	r.elementGroup = NewDataElementGroup(ReferenceMessageDEG, 2, r)
+	r.DataElement = NewDataElementGroup(ReferenceMessageDEG, 2, r)
 	return r
 }
 
 type ReferenceMessage struct {
-	*elementGroup
+	DataElement
 	DialogID      *IdentificationDataElement
 	MessageNumber *NumberDataElement
 }
@@ -314,7 +331,7 @@ func (r *ReferenceMessage) IsValid() bool {
 	if r.DialogID == nil || r.MessageNumber == nil {
 		return false
 	} else {
-		return r.elementGroup.IsValid()
+		return r.DataElement.IsValid()
 	}
 }
 
@@ -322,7 +339,7 @@ func (r *ReferenceMessage) Value() interface{} {
 	return r
 }
 
-func (r *ReferenceMessage) groupDataElements() []DataElement {
+func (r *ReferenceMessage) GroupDataElements() []DataElement {
 	return []DataElement{
 		r.DialogID,
 		r.MessageNumber,

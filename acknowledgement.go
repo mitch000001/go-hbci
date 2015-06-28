@@ -1,10 +1,32 @@
 package hbci
 
 type MessageAcknowledgement struct {
-	*basicSegment
+	Segment
 	Acknowledgements []*AcknowledgementDataElement
 }
-type SegmentAcknowledgement struct{}
+
+func (m *MessageAcknowledgement) elements() []DataElement {
+	m.Acknowledgements = make([]*AcknowledgementDataElement, 99)
+	dataElements := make([]DataElement, 99)
+	for i, _ := range dataElements {
+		dataElements[i] = m.Acknowledgements[i]
+	}
+	return dataElements
+}
+
+type SegmentAcknowledgement struct {
+	Segment
+	Acknowledgements []*AcknowledgementDataElement
+}
+
+func (s *SegmentAcknowledgement) elements() []DataElement {
+	s.Acknowledgements = make([]*AcknowledgementDataElement, 99)
+	dataElements := make([]DataElement, 99)
+	for i, _ := range dataElements {
+		dataElements[i] = s.Acknowledgements[i]
+	}
+	return dataElements
+}
 
 func NewAcknowledgementDataElement(code int, referenceDataElement, text string, params []string) *AcknowledgementDataElement {
 	paramDataElements := make([]*AlphaNumericDataElement, len(params))
@@ -17,42 +39,45 @@ func NewAcknowledgementDataElement(code int, referenceDataElement, text string, 
 		Code:                 NewDigitDataElement(code, 4),
 		ReferenceDataElement: NewAlphaNumericDataElement(referenceDataElement, 7),
 		Text:                 NewAlphaNumericDataElement(text, 80),
-		Params:               paramDataElements,
+		Params:               NewParamsDataElement(10, 10, params...),
 	}
-	a.elementGroup = NewDataElementGroup(AcknowledgementDEG, 3+len(paramDataElements), a)
+	a.DataElement = NewDataElementGroup(AcknowledgementDEG, 4, a)
 	return a
 }
 
 type AcknowledgementDataElement struct {
-	*elementGroup
+	DataElement
 	Code                 *DigitDataElement
 	ReferenceDataElement *AlphaNumericDataElement
 	Text                 *AlphaNumericDataElement
-	Params               []*AlphaNumericDataElement
+	Params               *ParamsDataElement
 }
 
 func (a *AcknowledgementDataElement) IsValid() bool {
-	if len(a.Params) != 0 || len(a.Params) != 10 {
+	if a.Code == nil || a.Text == nil {
 		return false
 	} else {
-		if a.Code == nil || a.Text == nil {
-			return false
-		} else {
-			return a.elementGroup.IsValid()
-		}
+		return a.DataElement.IsValid()
 	}
 }
 
-func (a *AcknowledgementDataElement) groupDataElements() []DataElement {
-	elements := []DataElement{
+func (a *AcknowledgementDataElement) GroupDataElements() []DataElement {
+	return []DataElement{
 		a.Code,
 		a.ReferenceDataElement,
 		a.Text,
+		a.Params,
 	}
-	var paramElements []DataElement
-	for _, p := range a.Params {
-		paramElements = append(paramElements, p)
+}
+
+func NewParamsDataElement(min, max int, params ...string) *ParamsDataElement {
+	var paramDE []DataElement
+	for _, p := range params {
+		paramDE = append(paramDE, NewAlphaNumericDataElement(p, 35))
 	}
-	elements = append(elements, paramElements...)
-	return elements
+	return &ParamsDataElement{arrayElementGroup: NewArrayElementGroup(AcknowlegdementParamsGDEG, min, max, paramDE...)}
+}
+
+type ParamsDataElement struct {
+	*arrayElementGroup
 }

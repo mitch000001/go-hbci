@@ -25,7 +25,7 @@ func NewFINTS3CommunicationAccessRequestSegment(fromBank BankId, toBank BankId, 
 		ToBankID:   NewBankIndentificationDataElement(toBank),
 		MaxEntries: NewNumberDataElement(maxEntries, 4),
 	}
-	c.basicSegment = NewBasicSegment("HKKOM", 2, 4, c)
+	c.Segment = NewBasicSegment("HKKOM", 2, 4, c)
 	return c
 }
 
@@ -36,12 +36,12 @@ func NewCommunicationAccessRequestSegment(fromBank BankId, toBank BankId, maxEnt
 		MaxEntries:   NewNumberDataElement(maxEntries, 4),
 		Aufsetzpunkt: NewAlphaNumericDataElement(aufsetzpunkt, 35),
 	}
-	c.basicSegment = NewBasicSegment("HKKOM", 2, 3, c)
+	c.Segment = NewBasicSegment("HKKOM", 2, 3, c)
 	return c
 }
 
 type CommunicationAccessRequestSegment struct {
-	*basicSegment
+	Segment
 	FromBankID *BankIdentificationDataElement
 	ToBankID   *BankIdentificationDataElement
 	MaxEntries *NumberDataElement
@@ -67,12 +67,12 @@ func NewCommunicationAccessResponseSegment(bankId BankId, language int, params C
 		CommunicationParams: NewCommunicationParameterDataElement(params),
 	}
 	header := NewReferencingSegmentHeader("HIKOM", 4, 3, HKKOMSegmentNumber)
-	c.basicSegment = NewBasicSegmentWithHeader(header, c)
+	c.Segment = NewBasicSegmentWithHeader(header, c)
 	return c
 }
 
 type CommunicationAccessResponseSegment struct {
-	*basicSegment
+	Segment
 	BankID              *BankIdentificationDataElement
 	StandardLanguage    *NumberDataElement
 	CommunicationParams *CommunicationParameterDataElement
@@ -102,12 +102,12 @@ func NewCommunicationParameterDataElement(params CommunicationParameter) *Commun
 		FilterFunction:        NewAlphaNumericDataElement(params.FilterFunction, 3),
 		FilterFunctionVersion: NewNumberDataElement(params.FilterFunctionVersion, 3),
 	}
-	c.elementGroup = NewDataElementGroup(CommunicationParameterDEG, 5, c)
+	c.DataElement = NewDataElementGroup(CommunicationParameterDEG, 5, c)
 	return c
 }
 
 type CommunicationParameterDataElement struct {
-	*elementGroup
+	DataElement
 	// Code | Zugang   | Protokollstack
 	// ---------------------------------------------------￼
 	// 1	| T-Online | ETSI 300 072 (CEPT), EHKP, BtxFIF
@@ -134,7 +134,7 @@ type CommunicationParameterDataElement struct {
 	FilterFunctionVersion *NumberDataElement
 }
 
-func (c *CommunicationParameterDataElement) groupDataElements() []DataElement {
+func (c *CommunicationParameterDataElement) GroupDataElements() []DataElement {
 	return []DataElement{
 		c.Protocol,
 		c.Address,

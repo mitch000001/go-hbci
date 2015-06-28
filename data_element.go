@@ -24,11 +24,11 @@ type OptionalDataElement interface {
 
 type DataElementGroup interface {
 	DataElement
-	groupDataElements() []DataElement
+	GroupDataElements() []DataElement
 }
 
 type GroupDataElementGroup interface {
-	elements() []DataElement
+	Elements() []DataElement
 }
 
 type DataElementType int
@@ -57,6 +57,8 @@ const (
 	AccountConnectionGDEG
 	BalanceGDEG
 	AddressGDEG
+	SecurityMethodVersionGDEG
+	AcknowlegdementParamsGDEG
 	// DataElementGroups
 	SegmentHeaderDEG
 	ReferenceMessageDEG
@@ -65,11 +67,15 @@ const (
 	SecurityDateDEG
 	HashAlgorithmDEG
 	SignatureAlgorithmDEG
+	EncryptionAlgorithmDEG
 	KeyNameDEG
 	CertificateDEG
 	PublicKeyDEG
 	SupportedLanguagesDEG
 	SupportedHBCIVersionDEG
+	CommunicationParameterDEG
+	SupportedSecurityMethodDEG
+	PinTanDEG
 )
 
 var typeName = map[DataElementType]string{
@@ -90,11 +96,13 @@ var typeName = map[DataElementType]string{
 	CurrencyDE:       "cur",
 	ValueDE:          "wrt",
 	// Multiple used element
-	AmountGDEG:             "btg",
-	BankIdentificationGDEG: "kik",
-	AccountConnectionGDEG:  "ktv",
-	BalanceGDEG:            "sdo",
-	AddressGDEG:            "addr",
+	AmountGDEG:                "btg",
+	BankIdentificationGDEG:    "kik",
+	AccountConnectionGDEG:     "ktv",
+	BalanceGDEG:               "sdo",
+	AddressGDEG:               "addr",
+	SecurityMethodVersionGDEG: "Unterstützte Sicherheitsverfahren",
+	AcknowlegdementParamsGDEG: "Rückmeldungsparameter",
 	// DataElementGroups
 	SegmentHeaderDEG:          "Segmentkopf",
 	ReferenceMessageDEG:       "Bezugsnachricht",
@@ -103,11 +111,14 @@ var typeName = map[DataElementType]string{
 	SecurityDateDEG:           "Sicherheitsdatum und -uhrzeit",
 	HashAlgorithmDEG:          "Hashalgorithmus",
 	SignatureAlgorithmDEG:     "Signaturalgorithmus",
+	EncryptionAlgorithmDEG:    "Verschlüsselungsalgorithmus",
 	KeyNameDEG:                "Schlüsselname",
 	CertificateDEG:            "Zertifikat",
 	PublicKeyDEG:              "Öffentlicher Schlüssel",
 	SupportedLanguagesDEG:     "Unterstützte Sprachen",
 	SupportedHBCIVersionDEG:   "Unterstützte HBCI-Versionen",
+	CommunicationParameterDEG: "Kommunikationsparameter",
+	PinTanDEG:                 "PIN-TAN",
 }
 
 func (d DataElementType) String() string {
@@ -137,12 +148,12 @@ func (d *dataElement) String() string        { return fmt.Sprintf("%v", d.val) }
 func (d *dataElement) Optional() bool        { return d.optional }
 func (d *dataElement) SetOptional()          { d.optional = true }
 
-func NewDataElementGroup(typ DataElementType, elementCount int, group DataElementGroup) *elementGroup {
-	return &elementGroup{elements: group.groupDataElements(), elementCount: elementCount, typ: typ}
+func NewDataElementGroup(typ DataElementType, elementCount int, group DataElementGroup) DataElement {
+	return &elementGroup{elements: group.GroupDataElements(), elementCount: elementCount, typ: typ}
 }
 
-func NewGroupDataElementGroup(typ DataElementType, elementCount int, group GroupDataElementGroup) *elementGroup {
-	return &elementGroup{elements: group.elements(), elementCount: elementCount, typ: typ}
+func NewGroupDataElementGroup(typ DataElementType, elementCount int, group GroupDataElementGroup) DataElement {
+	return &elementGroup{elements: group.Elements(), elementCount: elementCount, typ: typ}
 }
 
 // groupDataElementGroup defines a group of GroupDataElements.
@@ -213,12 +224,12 @@ func NewArrayElementGroup(typ DataElementType, min, max int, elem ...DataElement
 	e := &arrayElementGroup{
 		array: elem,
 	}
-	e.elementGroup = NewDataElementGroup(typ, max, e)
+	e.DataElement = NewDataElementGroup(typ, max, e)
 	return e
 }
 
 type arrayElementGroup struct {
-	*elementGroup
+	DataElement
 	minLength int
 	maxLength int
 	array     []DataElement
@@ -228,16 +239,21 @@ func (a *arrayElementGroup) IsValid() bool {
 	if len(a.array) < a.minLength || len(a.array) > a.maxLength {
 		return false
 	} else {
-		return a.elementGroup.IsValid()
+		return a.DataElement.IsValid()
 	}
 }
 
-func (a *arrayElementGroup) groupDataElements() []DataElement {
+func (a *arrayElementGroup) GroupDataElements() []DataElement {
 	return a.array
 }
 
 func escape(in string) string {
 	replacer := strings.NewReplacer("?", "??", "@", "?@", "'", "?'", ":", "?:", "+", "?+")
+	return replacer.Replace(in)
+}
+
+func unescape(in string) string {
+	replacer := strings.NewReplacer("??", "?", "?@", "@", "?'", "'", "?:", ":", "?+", "+")
 	return replacer.Replace(in)
 }
 
@@ -319,8 +335,14 @@ func (f *FloatDataElement) String() string {
 	return str
 }
 
+func NewDtausCharsetDataElement(data []byte, maxLength int) *DtausCharsetDataElement {
+	b := NewBinaryDataElement(data, maxLength)
+	b.typ = DTAUSCharsetDE
+	return &DtausCharsetDataElement{b}
+}
+
 type DtausCharsetDataElement struct {
-	*dataElement
+	*BinaryDataElement
 }
 
 func NewDtausCharsetDataElement(data []byte, maxLength int) *DtausCharsetDataElement {
@@ -428,6 +450,10 @@ type IdentificationDataElement struct {
 	*AlphaNumericDataElement
 }
 
+func (i *IdentificationDataElement) Type() DataElementType {
+	return IdentificationDE
+}
+
 func NewCountryCodeDataElement(code int) *CountryCodeDataElement {
 	d := NewDigitDataElement(code, 3)
 	d.typ = CountryCodeDE
@@ -436,6 +462,10 @@ func NewCountryCodeDataElement(code int) *CountryCodeDataElement {
 
 type CountryCodeDataElement struct {
 	*DigitDataElement
+}
+
+func (c *CountryCodeDataElement) Type() DataElementType {
+	return CountryCodeDE
 }
 
 func NewCurrencyDataElement(cur string) *CurrencyDataElement {
@@ -452,6 +482,10 @@ func (c *CurrencyDataElement) IsValid() bool {
 	return c.Length() == 3
 }
 
+func (c *CurrencyDataElement) Type() DataElementType {
+	return CurrencyDE
+}
+
 func NewValueDataElement(val float64) *ValueDataElement {
 	f := NewFloatDataElement(val, 15)
 	f.typ = ValueDE
@@ -462,6 +496,10 @@ type ValueDataElement struct {
 	*FloatDataElement
 }
 
+func (v *ValueDataElement) Type() DataElementType {
+	return ValueDE
+}
+
 // GroupDataElementGroups
 
 func NewAmountDataElement(value float64, currency string) *AmountDataElement {
@@ -469,17 +507,17 @@ func NewAmountDataElement(value float64, currency string) *AmountDataElement {
 		Amount:   NewValueDataElement(value),
 		Currency: NewCurrencyDataElement(currency),
 	}
-	a.elementGroup = NewGroupDataElementGroup(AmountGDEG, 2, a)
+	a.DataElement = NewGroupDataElementGroup(AmountGDEG, 2, a)
 	return a
 }
 
 type AmountDataElement struct {
-	*elementGroup
+	DataElement
 	Amount   *ValueDataElement
 	Currency *CurrencyDataElement
 }
 
-func (a *AmountDataElement) elements() []DataElement {
+func (a *AmountDataElement) Elements() []DataElement {
 	return []DataElement{
 		a.Amount,
 		a.Currency,
@@ -500,17 +538,17 @@ func NewBankIndentificationDataElement(bankId BankId) *BankIdentificationDataEle
 		CountryCode: NewCountryCodeDataElement(bankId.CountryCode),
 		BankID:      NewAlphaNumericDataElement(bankId.ID, 30),
 	}
-	b.elementGroup = NewGroupDataElementGroup(BankIdentificationGDEG, 2, b)
+	b.DataElement = NewGroupDataElementGroup(BankIdentificationGDEG, 2, b)
 	return b
 }
 
 type BankIdentificationDataElement struct {
-	*elementGroup
+	DataElement
 	CountryCode *CountryCodeDataElement
 	BankID      *AlphaNumericDataElement
 }
 
-func (b *BankIdentificationDataElement) elements() []DataElement {
+func (b *BankIdentificationDataElement) Elements() []DataElement {
 	return []DataElement{
 		b.CountryCode,
 		b.BankID,
@@ -524,19 +562,19 @@ func NewAccountConnectionDataElement(accountId string, subAccountCharacteristic 
 		CountryCode:               NewCountryCodeDataElement(countryCode),
 		BankId:                    NewAlphaNumericDataElement(bankId, 30),
 	}
-	a.elementGroup = NewGroupDataElementGroup(AccountConnectionGDEG, 4, a)
+	a.DataElement = NewGroupDataElementGroup(AccountConnectionGDEG, 4, a)
 	return a
 }
 
 type AccountConnectionDataElement struct {
-	*elementGroup
+	DataElement
 	AccountId                 *IdentificationDataElement
 	SubAccountCharacteristics *IdentificationDataElement
 	CountryCode               *CountryCodeDataElement
 	BankId                    *AlphaNumericDataElement
 }
 
-func (a *AccountConnectionDataElement) elements() []DataElement {
+func (a *AccountConnectionDataElement) Elements() []DataElement {
 	return []DataElement{
 		a.AccountId,
 		a.SubAccountCharacteristics,
@@ -564,12 +602,12 @@ func NewBalanceDataElement(balance Balance, date time.Time) *BalanceDataElement 
 		TransmissionDate:     NewDateDataElement(date),
 		TransmissionTime:     NewTimeDataElement(date),
 	}
-	b.elementGroup = NewGroupDataElementGroup(BalanceGDEG, 5, b)
+	b.DataElement = NewGroupDataElementGroup(BalanceGDEG, 5, b)
 	return b
 }
 
 type BalanceDataElement struct {
-	*elementGroup
+	DataElement
 	DebitCreditIndicator *AlphaNumericDataElement
 	Amount               *ValueDataElement
 	Currency             *CurrencyDataElement
@@ -577,7 +615,7 @@ type BalanceDataElement struct {
 	TransmissionTime     *TimeDataElement
 }
 
-func (b *BalanceDataElement) elements() []DataElement {
+func (b *BalanceDataElement) Elements() []DataElement {
 	return []DataElement{
 		b.DebitCreditIndicator,
 		b.Amount,
@@ -629,12 +667,12 @@ func NewAddressDataElement(address Address) *AddressDataElement {
 		Fax:         NewAlphaNumericDataElement(address.Fax, 35),
 		Email:       NewAlphaNumericDataElement(address.Email, 35),
 	}
-	a.elementGroup = NewGroupDataElementGroup(AddressGDEG, 9, a)
+	a.DataElement = NewGroupDataElementGroup(AddressGDEG, 9, a)
 	return a
 }
 
 type AddressDataElement struct {
-	*elementGroup
+	DataElement
 	Name1       *AlphaNumericDataElement
 	Name2       *AlphaNumericDataElement
 	Street      *AlphaNumericDataElement
@@ -646,7 +684,7 @@ type AddressDataElement struct {
 	Email       *AlphaNumericDataElement
 }
 
-func (a *AddressDataElement) elements() []DataElement {
+func (a *AddressDataElement) Elements() []DataElement {
 	return []DataElement{
 		a.Name1,
 		a.Name2,

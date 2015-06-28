@@ -54,7 +54,12 @@ func NewRDHSignatureProvider(signingKey *RSAKey) SignatureProvider {
 }
 
 type RDHSignatureProvider struct {
-	signingKey *RSAKey
+	signingKey     *RSAKey
+	clientSystemId string
+}
+
+func (r *RDHSignatureProvider) SetClientSystemID(clientSystemId string) {
+	r.clientSystemId = clientSystemId
 }
 
 func (r *RDHSignatureProvider) SignMessage(message SignedHBCIMessage) error {
@@ -71,8 +76,8 @@ func (r *RDHSignatureProvider) SignMessage(message SignedHBCIMessage) error {
 	return nil
 }
 
-func (p *RDHSignatureProvider) NewSignatureHeader(controlReference string, signatureId int, holderId string) *SignatureHeaderSegment {
-	return NewRDHSignatureHeaderSegment(controlReference, signatureId, holderId, p.signingKey.KeyName())
+func (p *RDHSignatureProvider) NewSignatureHeader(controlReference string, signatureId int) *SignatureHeaderSegment {
+	return NewRDHSignatureHeaderSegment(controlReference, signatureId, p.clientSystemId, p.signingKey.KeyName())
 }
 
 func NewEncryptionKey(modulus, exponent []byte) *PublicKey {
@@ -130,12 +135,12 @@ func NewPublicKeyRenewalSegment(number int, keyName KeyName, pubKey *PublicKey) 
 		KeyName:    NewKeyNameDataElement(keyName),
 		PublicKey:  NewPublicKeyDataElement(pubKey),
 	}
-	p.basicSegment = NewBasicSegment("HKSAK", number, 2, p)
+	p.Segment = NewBasicSegment("HKSAK", number, 2, p)
 	return p
 }
 
 type PublicKeyRenewalSegment struct {
-	*basicSegment
+	Segment
 	// "2" für ‘Key-Management-Nachricht erwartet Antwort’
 	MessageID *NumberDataElement
 	// "112" für ‘Certificate Replacement’ (Ersatz des Zertifikats))
@@ -162,12 +167,12 @@ func NewPublicKeyRequestSegment(number int, keyName KeyName) *PublicKeyRequestSe
 		FunctionID: NewNumberDataElement(124, 3),
 		KeyName:    NewKeyNameDataElement(keyName),
 	}
-	p.basicSegment = NewBasicSegment("HKISA", number, 2, p)
+	p.Segment = NewBasicSegment("HKISA", number, 2, p)
 	return p
 }
 
 type PublicKeyRequestSegment struct {
-	*basicSegment
+	Segment
 	// "2" für ‘Key-Management-Nachricht erwartet Antwort’
 	MessageID *NumberDataElement
 	// "124" für ‘Certificate Status Request’
@@ -197,13 +202,13 @@ func NewPublicKeyTransmissionSegment(dialogId string, number int, messageReferen
 		KeyName:    NewKeyNameDataElement(keyName),
 		PublicKey:  NewPublicKeyDataElement(pubKey),
 	}
-	header := NewReferencingSegmentHeader("HIISA", number, 2, refSegment.header.Number.Val())
-	p.basicSegment = NewBasicSegmentWithHeader(header, p)
+	header := NewReferencingSegmentHeader("HIISA", number, 2, refSegment.Header().Number.Val())
+	p.Segment = NewBasicSegmentWithHeader(header, p)
 	return p
 }
 
 type PublicKeyTransmissionSegment struct {
-	*basicSegment
+	Segment
 	// "1" für ‘Key-Management-Nachricht ist Antwort’
 	MessageID  *NumberDataElement
 	DialogID   *IdentificationDataElement
@@ -250,12 +255,12 @@ func NewPublicKeyRevocationSegment(number int, keyName KeyName, reason string) *
 		RevocationReason: NewAlphaNumericDataElement(reason, 3),
 		Date:             NewSecurityDateDataElement(SecurityTimestamp, time.Now()),
 	}
-	p.basicSegment = NewBasicSegment("HKSSP", number, 2, p)
+	p.Segment = NewBasicSegment("HKSSP", number, 2, p)
 	return p
 }
 
 type PublicKeyRevocationSegment struct {
-	*basicSegment
+	Segment
 	// "2" für ‘Key-Management-Nachricht erwartet Antwort’
 	MessageID *NumberDataElement
 	// "130" für ‘Certificate Revocation’ (Zertifikatswiderruf)
@@ -296,13 +301,13 @@ func NewPublicKeyRevocationConfirmationSegment(dialogId string, number int, mess
 		RevocationReason: NewAlphaNumericDataElement(reason, 3),
 		Date:             NewSecurityDateDataElement(SecurityTimestamp, time.Now()),
 	}
-	header := NewReferencingSegmentHeader("HISSP", number, 2, refSegment.header.Number.Val())
-	p.basicSegment = NewBasicSegmentWithHeader(header, p)
+	header := NewReferencingSegmentHeader("HISSP", number, 2, refSegment.Header().Number.Val())
+	p.Segment = NewBasicSegmentWithHeader(header, p)
 	return p
 }
 
 type PublicKeyRevocationConfirmationSegment struct {
-	*basicSegment
+	Segment
 	// "1" für ‘Key-Management-Nachricht ist Antwort’
 	MessageID  *NumberDataElement
 	DialogID   *IdentificationDataElement
@@ -344,12 +349,12 @@ func NewPublicKeyDataElement(pubKey *PublicKey) *PublicKeyDataElement {
 		Exponent:      NewBinaryDataElement(pubKey.Exponent, 512),
 		ExponentID:    NewAlphaNumericDataElement("13", 3),
 	}
-	p.elementGroup = NewDataElementGroup(PublicKeyDEG, 7, p)
+	p.DataElement = NewDataElementGroup(PublicKeyDEG, 7, p)
 	return p
 }
 
 type PublicKeyDataElement struct {
-	*elementGroup
+	DataElement
 	// "5" for OCF, Owner Ciphering (Encryption key)
 	// "6" for OSG, Owner Signing (Signing key)
 	Usage *AlphaNumericDataElement
@@ -366,7 +371,7 @@ type PublicKeyDataElement struct {
 	ExponentID *AlphaNumericDataElement
 }
 
-func (p *PublicKeyDataElement) groupDataElements() []DataElement {
+func (p *PublicKeyDataElement) GroupDataElements() []DataElement {
 	return []DataElement{
 		p.Usage,
 		p.OperationMode,

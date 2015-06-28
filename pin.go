@@ -68,12 +68,25 @@ func (p *PinTanEncryptionProvider) Encrypt(message []byte) (*EncryptedMessage, e
 	return encryptedMessage, nil
 }
 
-func NewPinTanSignatureProvider(key *PinKey) SignatureProvider {
-	return &PinTanSignatureProvider{key: key}
+func (p *PinTanEncryptionProvider) EncryptWithInitialKeyName(message []byte) (*EncryptedMessage, error) {
+	keyName := p.key.KeyName()
+	keyName.SetInitial()
+	encryptedBytes, _ := p.key.Encrypt(message)
+	encryptedMessage := NewEncryptedPinTanMessage(p.clientSystemId, keyName, encryptedBytes)
+	return encryptedMessage, nil
+}
+
+func NewPinTanSignatureProvider(key *PinKey, clientSystemId string) SignatureProvider {
+	return &PinTanSignatureProvider{key: key, clientSystemId: clientSystemId}
 }
 
 type PinTanSignatureProvider struct {
-	key *PinKey
+	key            *PinKey
+	clientSystemId string
+}
+
+func (p *PinTanSignatureProvider) SetClientSystemID(clientSystemId string) {
+	p.clientSystemId = clientSystemId
 }
 
 func (p *PinTanSignatureProvider) SignMessage(signedMessage SignedHBCIMessage) error {
@@ -81,8 +94,8 @@ func (p *PinTanSignatureProvider) SignMessage(signedMessage SignedHBCIMessage) e
 	return nil
 }
 
-func (p *PinTanSignatureProvider) NewSignatureHeader(controlReference string, signatureId int, holderId string) *SignatureHeaderSegment {
-	return NewPinTanSignatureHeaderSegment(controlReference, holderId, p.key.KeyName())
+func (p *PinTanSignatureProvider) NewSignatureHeader(controlReference string, signatureId int) *SignatureHeaderSegment {
+	return NewPinTanSignatureHeaderSegment(controlReference, p.clientSystemId, p.key.KeyName())
 }
 
 func NewPinTanDataElement(pin, tan string) *PinTanDataElement {
@@ -92,17 +105,17 @@ func NewPinTanDataElement(pin, tan string) *PinTanDataElement {
 	if tan != "" {
 		p.TAN = NewAlphaNumericDataElement(tan, 35)
 	}
-	p.elementGroup = NewDataElementGroup(PinTanDEG, 2, p)
+	p.DataElement = NewDataElementGroup(PinTanDEG, 2, p)
 	return p
 }
 
 type PinTanDataElement struct {
-	*elementGroup
+	DataElement
 	PIN *AlphaNumericDataElement
 	TAN *AlphaNumericDataElement
 }
 
-func (p *PinTanDataElement) groupDataElements() []DataElement {
+func (p *PinTanDataElement) GroupDataElements() []DataElement {
 	return []DataElement{
 		p.PIN,
 		p.TAN,

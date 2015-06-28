@@ -20,12 +20,12 @@ func NewCommonBankParameterSegment(
 		MaxMessageSize:           NewNumberDataElement(maxMessageSize, 4),
 	}
 	header := NewReferencingSegmentHeader("HIBPA", 1, 2, HKVVBSegmentNumber)
-	c.basicSegment = NewBasicSegmentWithHeader(header, c)
+	c.Segment = NewBasicSegmentWithHeader(header, c)
 	return c
 }
 
 type CommonBankParameterSegment struct {
-	*basicSegment
+	Segment
 	BPDVersion               *NumberDataElement
 	BankID                   *BankIdentificationDataElement
 	BankName                 *AlphaNumericDataElement
@@ -65,12 +65,12 @@ func NewSupportedSecurityMethodDataElement(methodCode string, versions ...int) *
 		MethodCode: NewAlphaNumericDataElement(methodCode, 3),
 		Versions:   NewSecurityMethodVersionDataElement(1, 9, versions...),
 	}
-	s.elementGroup = NewDataElementGroup(SupportedSecurityMethodDEG, 2, s)
+	s.DataElement = NewDataElementGroup(SupportedSecurityMethodDEG, 2, s)
 	return s
 }
 
 type SupportedSecurityMethodDataElement struct {
-	*elementGroup
+	DataElement
 	// Code | Bedeutung
 	// ------------------------------
 	// DDV  | DES-DES-Verfahren
@@ -80,7 +80,7 @@ type SupportedSecurityMethodDataElement struct {
 	Versions *SecurityMethodVersionDataElement
 }
 
-func (s *SupportedSecurityMethodDataElement) groupDataElements() []DataElement {
+func (s *SupportedSecurityMethodDataElement) GroupDataElements() []DataElement {
 	return []DataElement{
 		s.MethodCode,
 		s.Versions,

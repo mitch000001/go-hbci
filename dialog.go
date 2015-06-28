@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"net"
 	"net/http"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -27,6 +28,7 @@ func newDialog(bankId BankId, hbciUrl string, clientId string, signatureProvider
 		hbciUrl:            hbciUrl,
 		BankID:             bankId,
 		ClientID:           clientId,
+		ClientSystemID:     initialClientSystemID,
 		signatureProvider:  signatureProvider,
 		encryptionProvider: encryptionProvider,
 	}
@@ -51,14 +53,13 @@ func (d *dialog) dialogEnd(dialogId string) *DialogFinishingMessage {
 	dialogEnd := new(DialogFinishingMessage)
 	messageNum := d.nextMessageNumber()
 	dialogEnd.basicClientMessage = newBasicClientMessage(dialogEnd)
-	dialogEnd.Header = NewMessageHeaderSegment(-1, 220, initialDialogID, messageNum)
+	dialogEnd.Header = NewMessageHeaderSegment(0, 220, dialogId, messageNum)
 	dialogEnd.End = NewMessageEndSegment(8, messageNum)
 	dialogEnd.DialogEnd = NewDialogEndSegment(dialogId)
 	return dialogEnd
 }
 
 func (d *dialog) post(message []byte) ([]byte, error) {
-	fmt.Printf("Marshaled message: %q\n", strings.Split(string(message), "'"))
 	encodedMessage := base64.StdEncoding.EncodeToString(message)
 	response, err := http.Post(d.hbciUrl, "application/vnd.hbci", strings.NewReader(encodedMessage))
 	if err != nil {
@@ -113,7 +114,7 @@ func (d *dialog) dial(message []byte) ([]byte, error) {
 }
 
 func NewPinTanDialog(bankId BankId, hbciUrl string, clientId string) *pinTanDialog {
-	signatureProvider := NewPinTanSignatureProvider(nil)
+	signatureProvider := NewPinTanSignatureProvider(nil, "")
 	encryptionProvider := NewPinTanEncryptionProvider(nil, "")
 	d := &pinTanDialog{
 		dialog: newDialog(bankId, hbciUrl, clientId, signatureProvider, encryptionProvider),
@@ -132,7 +133,8 @@ func (d *pinTanDialog) SetPin(pin string) {
 	d.pin = pin
 	pinKey := NewPinKey(pin, NewPinTanKeyName(d.BankID, d.ClientID, "S"))
 	d.signingKey = pinKey
-	d.signatureProvider = NewPinTanSignatureProvider(pinKey)
+	d.signatureProvider = NewPinTanSignatureProvider(pinKey, d.ClientSystemID)
+	pinKey = NewPinKey(pin, NewPinTanKeyName(d.BankID, d.ClientID, "V"))
 	d.encryptionProvider = NewPinTanEncryptionProvider(pinKey, d.ClientSystemID)
 }
 
@@ -143,19 +145,19 @@ func (d *pinTanDialog) Init() (string, error) {
 	initMessage.End = NewMessageEndSegment(8, messageNum)
 	initMessage.Identification = NewIdentificationSegment(d.BankID, d.ClientID, initialClientSystemID, true)
 	initMessage.ProcessingPreparation = NewProcessingPreparationSegment(0, 0, 1)
-	controlRef := "1234567890"
-	initMessage.SignatureBegin = d.signatureProvider.NewSignatureHeader(controlRef, 0, "0")
+	controlRef := "1"
+	initMessage.SignatureBegin = d.signatureProvider.NewSignatureHeader(controlRef, 0)
 	initMessage.SignatureEnd = NewSignatureEndSegment(7, controlRef)
 	initMessage.SetNumbers()
 	err := initMessage.Sign(d.signatureProvider)
 	if err != nil {
 		return "", err
 	}
-	initMessage.SetSize()
 	encryptedInitMessage, err := initMessage.Encrypt(d.encryptionProvider)
 	if err != nil {
 		return "", err
 	}
+	encryptedInitMessage.SetSize()
 	marshaledMessage, err := encryptedInitMessage.MarshalHBCI()
 	if err != nil {
 		return "", err
@@ -169,7 +171,7 @@ func (d *pinTanDialog) Init() (string, error) {
 	fmt.Printf("Response: %q\n", strings.Split(string(response), "'"))
 
 	dialogEnd := d.dialogEnd(initialDialogID)
-	dialogEnd.SignatureBegin = d.signatureProvider.NewSignatureHeader(controlRef, 0, "0")
+	dialogEnd.SignatureBegin = d.signatureProvider.NewSignatureHeader(controlRef, 0)
 	dialogEnd.SignatureEnd = NewSignatureEndSegment(7, controlRef)
 	dialogEnd.SetNumbers()
 	err = dialogEnd.Sign(d.signatureProvider)
@@ -197,24 +199,25 @@ func (d *pinTanDialog) SyncClientSystemID() (string, error) {
 	syncMessage := new(SynchronisationMessage)
 	messageNum := d.nextMessageNumber()
 	syncMessage.basicClientMessage = newBasicClientMessage(syncMessage)
-	syncMessage.Header = NewMessageHeaderSegment(-1, 300, initialDialogID, messageNum)
+	syncMessage.Header = NewMessageHeaderSegment(-1, 220, initialDialogID, messageNum)
 	syncMessage.End = NewMessageEndSegment(8, messageNum)
 	syncMessage.Identification = NewIdentificationSegment(d.BankID, d.ClientID, initialClientSystemID, true)
 	syncMessage.ProcessingPreparation = NewProcessingPreparationSegment(0, 0, 1)
 	syncMessage.Sync = NewSynchronisationSegment(0)
 	controlRef := "1"
-	syncMessage.SignatureBegin = d.signatureProvider.NewSignatureHeader(controlRef, 0, "0")
+	syncMessage.SignatureBegin = d.signatureProvider.NewSignatureHeader(controlRef, 0)
 	syncMessage.SignatureEnd = NewSignatureEndSegment(7, controlRef)
 	syncMessage.SetNumbers()
 	err := syncMessage.Sign(d.signatureProvider)
 	if err != nil {
 		return "", err
 	}
-	syncMessage.SetSize()
+	d.encryptionProvider.SetClientSystemID(initialClientSystemID)
 	encryptedSyncMessage, err := syncMessage.Encrypt(d.encryptionProvider)
 	if err != nil {
 		return "", err
 	}
+	encryptedSyncMessage.SetSize()
 	marshaledMessage, err := encryptedSyncMessage.MarshalHBCI()
 	if err != nil {
 		return "", err
@@ -224,10 +227,28 @@ func (d *pinTanDialog) SyncClientSystemID() (string, error) {
 	if err != nil && err != io.EOF {
 		return "", err
 	}
-	fmt.Printf("Response: %q\n", strings.Split(string(response), "'"))
+	fmt.Printf("Response: \n%s\n", bytes.Join(bytes.Split(response, []byte("'")), []byte("'\n")))
 
-	dialogEnd := d.dialogEnd(initialDialogID)
-	dialogEnd.SignatureBegin = d.signatureProvider.NewSignatureHeader(controlRef, 0, "0")
+	result := bytes.Split(response, []byte("'"))
+	i := sort.Search(len(result), func(i int) bool {
+		return bytes.HasPrefix(result[i], []byte("HISYN"))
+	})
+	if i < len(result) {
+		syncResponse := result[i]
+		dataElements := bytes.Split(syncResponse, []byte("+"))
+		newClientSystemId := dataElements[1]
+		fmt.Printf("SyncResponse: %s\n", syncResponse)
+		d.ClientSystemID = string(newClientSystemId)
+		d.signatureProvider.SetClientSystemID(d.ClientSystemID)
+		d.encryptionProvider.SetClientSystemID(d.ClientSystemID)
+	}
+	messageHeader := result[0]
+	dataElements := bytes.Split(messageHeader, []byte("+"))
+	newDialogId := string(dataElements[3])
+	fmt.Printf("New dialogID: %s\n", newDialogId)
+
+	dialogEnd := d.dialogEnd(newDialogId)
+	dialogEnd.SignatureBegin = d.signatureProvider.NewSignatureHeader(controlRef, 0)
 	dialogEnd.SignatureEnd = NewSignatureEndSegment(7, controlRef)
 	dialogEnd.SetNumbers()
 	err = dialogEnd.Sign(d.signatureProvider)
@@ -235,7 +256,11 @@ func (d *pinTanDialog) SyncClientSystemID() (string, error) {
 		return "", err
 	}
 	dialogEnd.SetSize()
-	marshaledEndMessage, err := dialogEnd.MarshalHBCI()
+	encryptedDialogEnd, err := dialogEnd.Encrypt(d.encryptionProvider)
+	if err != nil {
+		return "", err
+	}
+	marshaledEndMessage, err := encryptedDialogEnd.MarshalHBCI()
 	if err != nil {
 		return "", err
 	}
@@ -391,12 +416,12 @@ func NewDialogEndSegment(dialogId string) *DialogEndSegment {
 	d := &DialogEndSegment{
 		DialogID: NewIdentificationDataElement(dialogId),
 	}
-	d.basicSegment = NewBasicSegment("HKEND", 3, 1, d)
+	d.Segment = NewBasicSegment("HKEND", 3, 1, d)
 	return d
 }
 
 type DialogEndSegment struct {
-	*basicSegment
+	Segment
 	DialogID *IdentificationDataElement
 }
 
@@ -414,12 +439,12 @@ func NewProcessingPreparationSegment(bdpVersion int, udpVersion int, language in
 		ProductName:    NewAlphaNumericDataElement(productName, 25),
 		ProductVersion: NewAlphaNumericDataElement(productVersion, 5),
 	}
-	p.basicSegment = NewBasicSegment("HKVVB", 4, 2, p)
+	p.Segment = NewBasicSegment("HKVVB", 4, 2, p)
 	return p
 }
 
 type ProcessingPreparationSegment struct {
-	*basicSegment
+	Segment
 	BPDVersion *NumberDataElement
 	UPDVersion *NumberDataElement
 	// 0 for undefined
@@ -448,12 +473,12 @@ func NewBankAnnouncementSegment(subject, body string) *BankAnnouncementSegment {
 		Subject: NewAlphaNumericDataElement(subject, 35),
 		Body:    NewTextDataElement(body, 2048),
 	}
-	b.basicSegment = NewBasicSegment("HIKIM", 8, 2, b)
+	b.Segment = NewBasicSegment("HIKIM", 8, 2, b)
 	return b
 }
 
 type BankAnnouncementSegment struct {
-	*basicSegment
+	Segment
 	Subject *AlphaNumericDataElement
 	Body    *TextDataElement
 }

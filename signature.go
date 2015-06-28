@@ -14,8 +14,9 @@ import (
 )
 
 type SignatureProvider interface {
+	SetClientSystemID(clientSystemId string)
 	SignMessage(SignedHBCIMessage) error
-	NewSignatureHeader(controlReference string, signatureId int, clientSystemId string) *SignatureHeaderSegment
+	NewSignatureHeader(controlReference string, signatureId int) *SignatureHeaderSegment
 }
 
 const initializationVector = "\x01\x23\x45\x67\x89\xAB\xCD\xEF\xFE\xDC\xBA\x98\x76\x54\x32\x10\xF0\xE1\xD2\xC3"
@@ -66,41 +67,57 @@ func EncryptMessage(message fmt.Stringer) (string, error) {
 	return fmt.Sprintf("%x", ciphertext), nil
 }
 
-func NewPinTanSignatureHeaderSegment(controlReference string, holderId string, keyName KeyName) *SignatureHeaderSegment {
-	s := &SignatureHeaderSegment{
+func NewPinTanSignatureHeaderSegment(controlReference string, clientSystemId string, keyName KeyName) *SignatureHeaderSegment {
+	v3 := &SignatureHeaderVersion3{
 		SecurityFunction:         NewAlphaNumericDataElement("999", 3),
 		SecurityControlRef:       NewAlphaNumericDataElement(controlReference, 14),
 		SecurityApplicationRange: NewAlphaNumericDataElement("1", 3),
 		SecuritySupplierRole:     NewAlphaNumericDataElement("1", 3),
-		SecurityID:               NewRDHSecurityIdentificationDataElement(SecurityHolderMessageSender, holderId),
+		SecurityID:               NewRDHSecurityIdentificationDataElement(SecurityHolderMessageSender, clientSystemId),
+		SecurityRefNumber:        NewNumberDataElement(0, 16),
 		SecurityDate:             NewSecurityDateDataElement(SecurityTimestamp, time.Now()),
 		HashAlgorithm:            NewDefaultHashAlgorithmDataElement(),
 		SignatureAlgorithm:       NewRDHSignatureAlgorithmDataElement(),
 		KeyName:                  NewKeyNameDataElement(keyName),
 	}
-	s.basicSegment = NewBasicSegment("HNSHK", 2, 3, s)
+	s := &SignatureHeaderSegment{
+		version: v3,
+	}
+	s.Segment = NewBasicSegment("HNSHK", 2, 3, s)
 	return s
 }
 
-func NewRDHSignatureHeaderSegment(controlReference string, signatureId int, holderId string, keyName KeyName) *SignatureHeaderSegment {
-	s := &SignatureHeaderSegment{
+func NewRDHSignatureHeaderSegment(controlReference string, signatureId int, clientSystemId string, keyName KeyName) *SignatureHeaderSegment {
+	v3 := &SignatureHeaderVersion3{
 		SecurityFunction:         NewAlphaNumericDataElement("1", 3),
 		SecurityControlRef:       NewAlphaNumericDataElement(controlReference, 14),
 		SecurityApplicationRange: NewAlphaNumericDataElement("1", 3),
 		SecuritySupplierRole:     NewAlphaNumericDataElement("1", 3),
-		SecurityID:               NewRDHSecurityIdentificationDataElement(SecurityHolderMessageSender, holderId),
+		SecurityID:               NewRDHSecurityIdentificationDataElement(SecurityHolderMessageSender, clientSystemId),
 		SecurityRefNumber:        NewNumberDataElement(signatureId, 16),
 		SecurityDate:             NewSecurityDateDataElement(SecurityTimestamp, time.Now()),
 		HashAlgorithm:            NewDefaultHashAlgorithmDataElement(),
 		SignatureAlgorithm:       NewRDHSignatureAlgorithmDataElement(),
 		KeyName:                  NewKeyNameDataElement(keyName),
 	}
-	s.basicSegment = NewBasicSegment("HNSHK", 2, 3, s)
+	s := &SignatureHeaderSegment{
+		version: v3,
+	}
+	s.Segment = NewBasicSegment("HNSHK", 2, 3, s)
 	return s
 }
 
 type SignatureHeaderSegment struct {
-	*basicSegment
+	Segment
+	version
+	SecurityProfile *SecurityProfileDataElement
+}
+
+func (s *SignatureHeaderSegment) elements() []DataElement {
+	return s.version.versionedElements()
+}
+
+type SignatureHeaderVersion3 struct {
 	// "1" for NRO, Non-Repudiation of Origin (RDH)
 	// "2" for AUT, Message Origin Authentication (DDV)
 	// "999" for PIN/TAN
@@ -122,7 +139,11 @@ type SignatureHeaderSegment struct {
 	Certificate          *CertificateDataElement
 }
 
-func (s *SignatureHeaderSegment) elements() []DataElement {
+func (s SignatureHeaderVersion3) version() int {
+	return 3
+}
+
+func (s *SignatureHeaderVersion3) versionedElements() []DataElement {
 	return []DataElement{
 		s.SecurityFunction,
 		s.SecurityControlRef,
@@ -142,12 +163,12 @@ func NewSignatureEndSegment(number int, controlReference string) *SignatureEndSe
 	s := &SignatureEndSegment{
 		SecurityControlRef: NewAlphaNumericDataElement(controlReference, 14),
 	}
-	s.basicSegment = NewBasicSegment("HNSHA", number, 1, s)
+	s.Segment = NewBasicSegment("HNSHA", number, 1, s)
 	return s
 }
 
 type SignatureEndSegment struct {
-	*basicSegment
+	Segment
 	SecurityControlRef *AlphaNumericDataElement
 	Signature          *BinaryDataElement
 	PinTan             *PinTanDataElement
@@ -187,19 +208,19 @@ func NewRDHSecurityIdentificationDataElement(securityHolder, clientSystemId stri
 		SecurityHolder: NewAlphaNumericDataElement(holder, 3),
 		ClientSystemID: NewIdentificationDataElement(clientSystemId),
 	}
-	s.elementGroup = NewDataElementGroup(SecurityIdentificationDEG, 3, s)
+	s.DataElement = NewDataElementGroup(SecurityIdentificationDEG, 3, s)
 	return s
 }
 
 type SecurityIdentificationDataElement struct {
-	*elementGroup
+	DataElement
 	// Bezeichner für Sicherheitspartei
 	SecurityHolder *AlphaNumericDataElement
 	CID            *BinaryDataElement
 	ClientSystemID *IdentificationDataElement
 }
 
-func (s *SecurityIdentificationDataElement) groupDataElements() []DataElement {
+func (s *SecurityIdentificationDataElement) GroupDataElements() []DataElement {
 	return []DataElement{
 		s.SecurityHolder,
 		s.CID,
@@ -226,18 +247,18 @@ func NewSecurityDateDataElement(dateId string, date time.Time) *SecurityDateData
 		Date:           NewDateDataElement(date),
 		Time:           NewTimeDataElement(date),
 	}
-	s.elementGroup = NewDataElementGroup(SecurityDateDEG, 3, s)
+	s.DataElement = NewDataElementGroup(SecurityDateDEG, 3, s)
 	return s
 }
 
 type SecurityDateDataElement struct {
-	*elementGroup
+	DataElement
 	DateIdentifier *AlphaNumericDataElement
 	Date           *DateDataElement
 	Time           *TimeDataElement
 }
 
-func (s *SecurityDateDataElement) groupDataElements() []DataElement {
+func (s *SecurityDateDataElement) GroupDataElements() []DataElement {
 	return []DataElement{
 		s.DateIdentifier,
 		s.Date,
@@ -251,12 +272,12 @@ func NewDefaultHashAlgorithmDataElement() *HashAlgorithmDataElement {
 		Algorithm:        NewAlphaNumericDataElement("999", 3),
 		AlgorithmParamId: NewAlphaNumericDataElement("1", 3),
 	}
-	h.elementGroup = NewDataElementGroup(HashAlgorithmDEG, 4, h)
+	h.DataElement = NewDataElementGroup(HashAlgorithmDEG, 4, h)
 	return h
 }
 
 type HashAlgorithmDataElement struct {
-	*elementGroup
+	DataElement
 	// "1" for OHA, Owner Hashing
 	Usage *AlphaNumericDataElement
 	// "999" for ZZZ (RIPEMD-160)
@@ -267,7 +288,7 @@ type HashAlgorithmDataElement struct {
 	AlgorithmParamValue *BinaryDataElement
 }
 
-func (h *HashAlgorithmDataElement) groupDataElements() []DataElement {
+func (h *HashAlgorithmDataElement) GroupDataElements() []DataElement {
 	return []DataElement{
 		h.Usage,
 		h.Algorithm,
@@ -282,12 +303,12 @@ func NewRDHSignatureAlgorithmDataElement() *SignatureAlgorithmDataElement {
 		Algorithm:     NewAlphaNumericDataElement("10", 3),
 		OperationMode: NewAlphaNumericDataElement("16", 3),
 	}
-	s.elementGroup = NewDataElementGroup(SignatureAlgorithmDEG, 3, s)
+	s.DataElement = NewDataElementGroup(SignatureAlgorithmDEG, 3, s)
 	return s
 }
 
 type SignatureAlgorithmDataElement struct {
-	*elementGroup
+	DataElement
 	// "1" for OSG, Owner Signing
 	Usage *AlphaNumericDataElement
 	// "1" for DES (DDV)
@@ -298,21 +319,12 @@ type SignatureAlgorithmDataElement struct {
 	OperationMode *AlphaNumericDataElement
 }
 
-func (s *SignatureAlgorithmDataElement) groupDataElements() []DataElement {
+func (s *SignatureAlgorithmDataElement) GroupDataElements() []DataElement {
 	return []DataElement{
 		s.Usage,
 		s.Algorithm,
 		s.OperationMode,
 	}
-}
-
-func NewCertificateDataElement(typ int, certificate []byte) *CertificateDataElement {
-	c := &CertificateDataElement{
-		CertificateType: NewNumberDataElement(typ, 1),
-		Content:         NewBinaryDataElement(certificate, 2048),
-	}
-	c.elementGroup = NewDataElementGroup(CertificateDEG, 2, c)
-	return c
 }
 
 func NewPinTanKeyName(bankId BankId, userId string, keyType string) *KeyName {
@@ -347,6 +359,11 @@ func (k *KeyName) IsInitial() bool {
 	return k.KeyNumber == 999 && k.KeyVersion == 999
 }
 
+func (k *KeyName) SetInitial() {
+	k.KeyNumber = 999
+	k.KeyVersion = 999
+}
+
 func NewKeyNameDataElement(keyName KeyName) *KeyNameDataElement {
 	a := &KeyNameDataElement{
 		Bank:       NewBankIndentificationDataElement(keyName.BankID),
@@ -355,12 +372,12 @@ func NewKeyNameDataElement(keyName KeyName) *KeyNameDataElement {
 		KeyNumber:  NewNumberDataElement(keyName.KeyNumber, 3),
 		KeyVersion: NewNumberDataElement(keyName.KeyVersion, 3),
 	}
-	a.elementGroup = NewDataElementGroup(KeyNameDEG, 5, a)
+	a.DataElement = NewDataElementGroup(KeyNameDEG, 5, a)
 	return a
 }
 
 type KeyNameDataElement struct {
-	*elementGroup
+	DataElement
 	Bank   *BankIdentificationDataElement
 	UserID *IdentificationDataElement
 	// "S" for Signing key
@@ -380,7 +397,7 @@ func (k *KeyNameDataElement) Val() KeyName {
 	}
 }
 
-func (k *KeyNameDataElement) groupDataElements() []DataElement {
+func (k *KeyNameDataElement) GroupDataElements() []DataElement {
 	return []DataElement{
 		k.Bank,
 		k.UserID,
@@ -390,8 +407,17 @@ func (k *KeyNameDataElement) groupDataElements() []DataElement {
 	}
 }
 
+func NewCertificateDataElement(typ int, certificate []byte) *CertificateDataElement {
+	c := &CertificateDataElement{
+		CertificateType: NewNumberDataElement(typ, 1),
+		Content:         NewBinaryDataElement(certificate, 2048),
+	}
+	c.DataElement = NewDataElementGroup(CertificateDEG, 2, c)
+	return c
+}
+
 type CertificateDataElement struct {
-	*elementGroup
+	DataElement
 	// "1" for ZKA
 	// "2" for UN/EDIFACT
 	// "3" for X.509
@@ -399,7 +425,7 @@ type CertificateDataElement struct {
 	Content         *BinaryDataElement
 }
 
-func (c *CertificateDataElement) groupDataElements() []DataElement {
+func (c *CertificateDataElement) GroupDataElements() []DataElement {
 	return []DataElement{
 		c.CertificateType,
 		c.Content,

@@ -29,12 +29,12 @@ func NewSynchronisationSegment(modus int) *SynchronisationSegment {
 	s := &SynchronisationSegment{
 		SyncModus: NewNumberDataElement(modus, 1),
 	}
-	s.basicSegment = NewBasicSegment("HKSYN", 6, 2, s)
+	s.Segment = NewBasicSegment("HKSYN", 5, 2, s)
 	return s
 }
 
 type SynchronisationSegment struct {
-	*basicSegment
+	Segment
 	// Code | Bedeutung
 	// ---------------------------------------------------------
 	// 0 ￼ ￼| Neue Kundensystem-ID zurückmelden

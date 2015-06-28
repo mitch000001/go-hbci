@@ -5,7 +5,7 @@ import "testing"
 func TestSegmentHeaderGroupDataElements(t *testing.T) {
 	header := NewSegmentHeader("abc", 1, 2)
 
-	elements := header.groupDataElements()
+	elements := header.GroupDataElements()
 
 	expectedLength := 4
 
@@ -16,7 +16,7 @@ func TestSegmentHeaderGroupDataElements(t *testing.T) {
 
 	header = NewReferencingSegmentHeader("abc", 1, 2, 3)
 
-	elements = header.groupDataElements()
+	elements = header.GroupDataElements()
 
 	expectedLength = 4
 

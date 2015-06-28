@@ -9,6 +9,7 @@ import (
 type EncryptionProvider interface {
 	SetClientSystemID(clientSystemId string)
 	Encrypt(message []byte) (*EncryptedMessage, error)
+	EncryptWithInitialKeyName(message []byte) (*EncryptedMessage, error)
 }
 
 const encryptionInitializationVector = "\x00\x00\x00\x00\x00\x00\x00\x00"
@@ -48,12 +49,8 @@ func (e *EncryptedMessage) SetNumbers() {
 	panic(fmt.Errorf("SetNumbers: Operation not allowed on encrypted messages"))
 }
 
-func (e *EncryptedMessage) SetSize() {
-	panic(fmt.Errorf("SetSize: Operation not allowed on encrypted messages"))
-}
-
 func NewPinTanEncryptionHeaderSegment(clientSystemId string, keyName KeyName) *EncryptionHeaderSegment {
-	e := &EncryptionHeaderSegment{
+	v2 := &EncryptionHeaderVersion2{
 		SecurityFunction:     NewAlphaNumericDataElement("998", 3),
 		SecuritySupplierRole: NewAlphaNumericDataElement("1", 3),
 		SecurityID:           NewRDHSecurityIdentificationDataElement(SecurityHolderMessageSender, clientSystemId),
@@ -62,12 +59,15 @@ func NewPinTanEncryptionHeaderSegment(clientSystemId string, keyName KeyName) *E
 		KeyName:              NewKeyNameDataElement(keyName),
 		CompressionFunction:  NewAlphaNumericDataElement("0", 3),
 	}
-	e.basicSegment = NewBasicSegment("HNVSK", 998, 2, e)
+	e := &EncryptionHeaderSegment{
+		version: v2,
+	}
+	e.Segment = NewBasicSegment("HNVSK", 998, 2, e)
 	return e
 }
 
 func NewEncryptionHeaderSegment(clientSystemId string, keyName KeyName, key []byte) *EncryptionHeaderSegment {
-	e := &EncryptionHeaderSegment{
+	v2 := &EncryptionHeaderVersion2{
 		SecurityFunction:     NewAlphaNumericDataElement("4", 3),
 		SecuritySupplierRole: NewAlphaNumericDataElement("1", 3),
 		SecurityID:           NewRDHSecurityIdentificationDataElement(SecurityHolderMessageSender, clientSystemId),
@@ -76,12 +76,23 @@ func NewEncryptionHeaderSegment(clientSystemId string, keyName KeyName, key []by
 		KeyName:              NewKeyNameDataElement(keyName),
 		CompressionFunction:  NewAlphaNumericDataElement("0", 3),
 	}
-	e.basicSegment = NewBasicSegment("HNVSK", 998, 2, e)
+	e := &EncryptionHeaderSegment{
+		version: v2,
+	}
+	e.Segment = NewBasicSegment("HNVSK", 998, 2, e)
 	return e
 }
 
 type EncryptionHeaderSegment struct {
-	*basicSegment
+	Segment
+	version
+}
+
+func (e *EncryptionHeaderSegment) elements() []DataElement {
+	return e.version.versionedElements()
+}
+
+type EncryptionHeaderVersion2 struct {
 	// "4" for ENC, Encryption (encryption and eventually compression)
 	// "998" for Cleartext
 	SecurityFunction *AlphaNumericDataElement
@@ -97,7 +108,11 @@ type EncryptionHeaderSegment struct {
 	Certificate          *CertificateDataElement
 }
 
-func (e *EncryptionHeaderSegment) elements() []DataElement {
+func (e *EncryptionHeaderVersion2) version() int {
+	return 2
+}
+
+func (e *EncryptionHeaderVersion2) versionedElements() []DataElement {
 	return []DataElement{
 		e.SecurityFunction,
 		e.SecuritySupplierRole,
@@ -114,12 +129,12 @@ func NewEncryptedDataSegment(encryptedData []byte) *EncryptedDataSegment {
 	e := &EncryptedDataSegment{
 		Data: NewBinaryDataElement(encryptedData, -1),
 	}
-	e.basicSegment = NewBasicSegment("HNVSD", 999, 1, e)
+	e.Segment = NewBasicSegment("HNVSD", 999, 1, e)
 	return e
 }
 
 type EncryptedDataSegment struct {
-	*basicSegment
+	Segment
 	Data *BinaryDataElement
 }
 
@@ -138,7 +153,7 @@ func NewPinTanEncryptionAlgorithmDataElement() *EncryptionAlgorithmDataElement {
 		KeyParamID:                 NewAlphaNumericDataElement("5", 3),
 		InitializationValueParamID: NewAlphaNumericDataElement("1", 3),
 	}
-	e.elementGroup = NewDataElementGroup(EncryptionAlgorithmDEG, 7, e)
+	e.DataElement = NewDataElementGroup(EncryptionAlgorithmDEG, 7, e)
 	return e
 }
 
@@ -150,14 +165,13 @@ func NewRDHEncryptionAlgorithmDataElement(pubKey []byte) *EncryptionAlgorithmDat
 		Key:                        NewBinaryDataElement(pubKey, 512),
 		KeyParamID:                 NewAlphaNumericDataElement("6", 3),
 		InitializationValueParamID: NewAlphaNumericDataElement("1", 3),
-		InitializationValue:        NewBinaryDataElement([]byte(encryptionInitializationVector), 8),
 	}
-	e.elementGroup = NewDataElementGroup(EncryptionAlgorithmDEG, 7, e)
+	e.DataElement = NewDataElementGroup(EncryptionAlgorithmDEG, 7, e)
 	return e
 }
 
 type EncryptionAlgorithmDataElement struct {
-	*elementGroup
+	DataElement
 	// "2" for OSY, Owner Symmetric
 	Usage *AlphaNumericDataElement
 	// "2" for CBC, Cipher Block Chaining.
@@ -172,7 +186,7 @@ type EncryptionAlgorithmDataElement struct {
 	InitializationValue        *BinaryDataElement
 }
 
-func (e *EncryptionAlgorithmDataElement) groupDataElements() []DataElement {
+func (e *EncryptionAlgorithmDataElement) GroupDataElements() []DataElement {
 	return []DataElement{
 		e.Usage,
 		e.OperationMode,

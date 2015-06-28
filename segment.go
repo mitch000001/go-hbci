@@ -1,6 +1,7 @@
 package hbci
 
 import (
+	"fmt"
 	"reflect"
 	"strings"
 )
@@ -16,12 +17,12 @@ type segment interface {
 	elements() []DataElement
 }
 
-func NewBasicSegment(id string, number int, version int, seg segment) *basicSegment {
+func NewBasicSegment(id string, number int, version int, seg segment) Segment {
 	header := NewSegmentHeader(id, number, version)
 	return NewBasicSegmentWithHeader(header, seg)
 }
 
-func NewBasicSegmentWithHeader(header *SegmentHeader, seg segment) *basicSegment {
+func NewBasicSegmentWithHeader(header *SegmentHeader, seg segment) Segment {
 	return &basicSegment{header: header, segment: seg}
 }
 
@@ -77,12 +78,12 @@ func NewIdentificationSegment(bankId BankId, clientId string, clientSystemId str
 		ClientSystemId:     NewIdentificationDataElement(clientSystemId),
 		ClientSystemStatus: clientSystemStatus,
 	}
-	id.basicSegment = NewBasicSegment("HKIDN", 3, 2, id)
+	id.Segment = NewBasicSegment("HKIDN", 3, 2, id)
 	return id
 }
 
 type IdentificationSegment struct {
-	*basicSegment
+	Segment
 	BankId             *BankIdentificationDataElement
 	ClientId           *IdentificationDataElement
 	ClientSystemId     *IdentificationDataElement
@@ -110,12 +111,12 @@ func NewSegmentHeader(id string, number, version int) *SegmentHeader {
 		Number:  NewNumberDataElement(number, 3),
 		Version: NewNumberDataElement(version, 3),
 	}
-	header.elementGroup = NewDataElementGroup(SegmentHeaderDEG, 4, header)
+	header.DataElement = NewDataElementGroup(SegmentHeaderDEG, 4, header)
 	return header
 }
 
 type SegmentHeader struct {
-	*elementGroup
+	DataElement
 	ID      *AlphaNumericDataElement
 	Number  *NumberDataElement
 	Version *NumberDataElement
@@ -123,18 +124,18 @@ type SegmentHeader struct {
 }
 
 func (s *SegmentHeader) SetNumber(number int) {
-	s.Number = NewNumberDataElement(number, 3)
+	*s.Number = *NewNumberDataElement(number, 3)
 }
 
 func (s *SegmentHeader) SetReference(ref int) {
-	s.Ref = NewNumberDataElement(ref, 3)
+	*s.Ref = *NewNumberDataElement(ref, 3)
 }
 
 func (s *SegmentHeader) IsValid() bool {
 	if s.ID == nil || s.Number == nil || s.Version == nil {
 		return false
 	} else {
-		return s.elementGroup.IsValid()
+		return s.DataElement.IsValid()
 	}
 }
 
@@ -142,7 +143,7 @@ func (s *SegmentHeader) Value() interface{} {
 	return s
 }
 
-func (s *SegmentHeader) groupDataElements() []DataElement {
+func (s *SegmentHeader) GroupDataElements() []DataElement {
 	return []DataElement{
 		s.ID,
 		s.Number,
