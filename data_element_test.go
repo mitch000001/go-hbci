@@ -1,6 +1,7 @@
 package hbci
 
 import (
+	"bytes"
 	"reflect"
 	"testing"
 )
@@ -246,5 +247,152 @@ func TestNumberDataElementType(t *testing.T) {
 	if !reflect.DeepEqual(expected, actual) {
 		t.Logf("Expected Value() to return %v, got %v\n", expected, actual)
 		t.Fail()
+	}
+}
+
+func TestBinaryDataElementString(t *testing.T) {
+	b := NewBinaryDataElement([]byte("test123"), 7)
+
+	expected := "@7@test123"
+
+	actual := b.String()
+
+	if expected != actual {
+		t.Logf("Expected BinaryDataElement to serialize to %q, got %q\n", expected, actual)
+		t.Fail()
+	}
+}
+
+func TestBinaryDataElementUnmarshalHBCI(t *testing.T) {
+	var b BinaryDataElement
+
+	err := b.UnmarshalHBCI([]byte("@7@test123"))
+
+	if err != nil {
+		t.Logf("Expected no error, got %T:%v\n", err, err)
+		t.Fail()
+	}
+
+	val := b.Val()
+	expectedVal := []byte("test123")
+
+	if !bytes.Equal(val, expectedVal) {
+		t.Logf("Expected Val() to return %q, got %q\n", expectedVal, val)
+		t.Fail()
+	}
+}
+
+type testDataElement struct {
+	alpha *AlphaNumericDataElement
+	num   *NumberDataElement
+}
+
+func (t *testDataElement) groupDataElements() []DataElement {
+	return []DataElement{t.alpha, t.num}
+}
+
+func (t *testDataElement) Elements() []DataElement {
+	return []DataElement{t.alpha, t.num}
+}
+
+type testDataElementGroupData struct {
+	alphaIn *AlphaNumericDataElement
+	numIn   *NumberDataElement
+	out     string
+}
+
+func TestGroupDataElementGroupString(t *testing.T) {
+	tests := []testDataElementGroupData{
+		{
+			NewAlphaNumericDataElement("abc", 3),
+			NewNumberDataElement(123, 3),
+			"abc:123",
+		},
+		{
+			NewAlphaNumericDataElement("abc", 3),
+			nil,
+			"abc:",
+		},
+		{
+			nil,
+			NewNumberDataElement(123, 3),
+			":123",
+		},
+		{
+			nil,
+			nil,
+			":",
+		},
+	}
+
+	for _, test := range tests {
+		testData := &testDataElement{
+			alpha: test.alphaIn,
+			num:   test.numIn,
+		}
+
+		group := NewGroupDataElementGroup(0, 2, testData)
+
+		actualString := group.String()
+
+		if test.out != actualString {
+			t.Logf("Input: %#v\n", testData)
+			t.Logf("Expected String() to return %q, got %q\n", test.out, actualString)
+			t.Fail()
+		}
+	}
+}
+
+func TestGroupDataElementGroupUnmarshalHBCI(t *testing.T) {
+	type testDataElementGroupUnmarshalData struct {
+		in       string
+		alphaOut *AlphaNumericDataElement
+		numOut   *NumberDataElement
+	}
+
+	tests := []testDataElementGroupUnmarshalData{
+		{
+			"abc:123",
+			NewAlphaNumericDataElement("abc", 3),
+			NewNumberDataElement(123, 3),
+		},
+		{
+			"abc:",
+			NewAlphaNumericDataElement("abc", 3),
+			nil,
+		},
+		{
+			":123",
+			nil,
+			NewNumberDataElement(123, 3),
+		},
+		{
+			":",
+			nil,
+			nil,
+		},
+	}
+
+	for _, test := range tests {
+		tde := testDataElement{}
+		group := new(elementGroup)
+		group.elements = tde.Elements()
+
+		err := group.UnmarshalHBCI([]byte(test.in))
+
+		if err != nil {
+			t.Logf("Input: %q\n", test.in)
+			t.Logf("Expected no error, got %T:%v\n", err, err)
+			t.Fail()
+		}
+
+		expectedArray := []DataElement{test.alphaOut, test.numOut}
+		actualArray := group.elements
+
+		if !reflect.DeepEqual(expectedArray, actualArray) {
+			t.Logf("Input: %q\n", test.in)
+			t.Logf("Expected UnmarshalHBCI() to return \n%+#s\n\tgot \n%+#s\n", expectedArray, actualArray)
+			t.Fail()
+		}
 	}
 }

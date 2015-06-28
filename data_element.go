@@ -1,9 +1,11 @@
 package hbci
 
 import (
+	"bytes"
 	"fmt"
 	"math"
 	"reflect"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -15,6 +17,7 @@ type DataElement interface {
 	IsValid() bool
 	Length() int
 	String() string
+	UnmarshalHBCI([]byte) error
 }
 
 type OptionalDataElement interface {
@@ -147,6 +150,9 @@ func (d *dataElement) Length() int           { return len(d.String()) }
 func (d *dataElement) String() string        { return fmt.Sprintf("%v", d.val) }
 func (d *dataElement) Optional() bool        { return d.optional }
 func (d *dataElement) SetOptional()          { d.optional = true }
+func (d *dataElement) UnmarshalHBCI(value []byte) error {
+	return fmt.Errorf("Not implemented")
+}
 
 func NewDataElementGroup(typ DataElementType, elementCount int, group DataElementGroup) DataElement {
 	return &elementGroup{elements: group.GroupDataElements(), elementCount: elementCount, typ: typ}
@@ -210,6 +216,27 @@ func (g *elementGroup) String() string {
 		}
 	}
 	return strings.Join(elementStrings, ":")
+}
+
+func (g *elementGroup) UnmarshalHBCI(value []byte) error {
+	marshaledElements := bytes.Split(value, []byte(":"))
+	var errors []string
+	for i, elem := range marshaledElements {
+		if len(elem) == 0 {
+			continue
+		}
+		elemToMarshal := reflect.New(reflect.TypeOf(g.elements[i]).Elem())
+		err := elemToMarshal.MethodByName("UnmarshalHBCI").Call([]reflect.Value{reflect.ValueOf(elem)})[0]
+		if err.IsNil() {
+			g.elements[i] = elemToMarshal.Interface().(DataElement)
+		} else {
+			errors = append(errors, fmt.Sprintf("%v:%q", err.Type(), err.MethodByName("Error").Call([]reflect.Value{})[0]))
+		}
+	}
+	if len(errors) != 0 {
+		return fmt.Errorf("Errors while unmarshaling elements:\n%s", strings.Join(errors, "\n"))
+	}
+	return nil
 }
 
 func (g *elementGroup) Optional() bool {
@@ -279,6 +306,12 @@ func (a *AlphaNumericDataElement) String() string {
 	return escape(a.dataElement.String())
 }
 
+func (a *AlphaNumericDataElement) UnmarshalHBCI(value []byte) error {
+	unescaped := unescape(string(value))
+	*a = AlphaNumericDataElement{&dataElement{unescaped, AlphaNumericDE, len(unescaped), false}}
+	return nil
+}
+
 func NewTextDataElement(val string, maxLength int) *TextDataElement {
 	return &TextDataElement{&dataElement{val, TextDE, maxLength, false}}
 }
@@ -290,6 +323,12 @@ type TextDataElement struct {
 func (a *TextDataElement) Val() string { return a.val.(string) }
 func (a *TextDataElement) String() string {
 	return escape(a.dataElement.String())
+}
+
+func (a *TextDataElement) UnmarshalHBCI(value []byte) error {
+	unescaped := unescape(string(value))
+	*a = TextDataElement{&dataElement{unescaped, TextDE, len(unescaped), false}}
+	return nil
 }
 
 func NewDigitDataElement(val, maxLength int) *DigitDataElement {
@@ -307,6 +346,15 @@ func (d *DigitDataElement) String() string {
 	return fmt.Sprintf(fmtString, d.Val())
 }
 
+func (d *DigitDataElement) UnmarshalHBCI(value []byte) error {
+	val, err := strconv.Atoi(string(value))
+	if err != nil {
+		return err
+	}
+	*d = DigitDataElement{&dataElement{val, DigitDE, len(value), false}}
+	return nil
+}
+
 func NewNumberDataElement(val, maxLength int) *NumberDataElement {
 	return &NumberDataElement{&dataElement{val, NumberDE, maxLength, false}}
 }
@@ -316,6 +364,15 @@ type NumberDataElement struct {
 }
 
 func (n *NumberDataElement) Val() int { return n.val.(int) }
+
+func (n *NumberDataElement) UnmarshalHBCI(value []byte) error {
+	val, err := strconv.Atoi(string(value))
+	if err != nil {
+		return err
+	}
+	*n = NumberDataElement{&dataElement{val, NumberDE, len(value), false}}
+	return nil
+}
 
 func NewFloatDataElement(val float64, maxLength int) *FloatDataElement {
 	return &FloatDataElement{&dataElement{val, FloatDE, maxLength, false}}
@@ -334,6 +391,15 @@ func (f *FloatDataElement) String() string {
 	}
 	return str
 }
+func (f *FloatDataElement) UnmarshalHBCI(value []byte) error {
+	str := strings.Replace(string(value), ",", ".", 1)
+	val, err := strconv.ParseFloat(str, 64)
+	if err != nil {
+		return err
+	}
+	*f = FloatDataElement{&dataElement{val, FloatDE, len(value), false}}
+	return nil
+}
 
 func NewDtausCharsetDataElement(data []byte, maxLength int) *DtausCharsetDataElement {
 	b := NewBinaryDataElement(data, maxLength)
@@ -345,8 +411,14 @@ type DtausCharsetDataElement struct {
 	*BinaryDataElement
 }
 
-func NewDtausCharsetDataElement(data []byte, maxLength int) *DtausCharsetDataElement {
-	return &DtausCharsetDataElement{&dataElement{data, DTAUSCharsetDE, maxLength, false}}
+func (d *DtausCharsetDataElement) UnmarshalHBCI(value []byte) error {
+	var bin BinaryDataElement
+	err := bin.UnmarshalHBCI(value)
+	if err != nil {
+		return err
+	}
+	*d = DtausCharsetDataElement{&bin}
+	return nil
 }
 
 type BinaryDataElement struct {
@@ -363,6 +435,29 @@ func (b *BinaryDataElement) Val() []byte {
 
 func (b *BinaryDataElement) String() string {
 	return fmt.Sprintf("@%d@%s", len(b.Val()), b.Val())
+}
+
+func (b *BinaryDataElement) UnmarshalHBCI(value []byte) error {
+	buf := bytes.NewBuffer(value)
+	r, _, err := buf.ReadRune()
+	if err != nil {
+		return err
+	}
+	if r != '@' {
+		return fmt.Errorf("BinaryDataElement: Malformed input")
+	}
+	binSizeStr, err := buf.ReadString('@')
+	if err != nil {
+		return err
+	}
+	binSize, err := strconv.Atoi(binSizeStr[:len(binSizeStr)-1])
+	if err != nil {
+		return fmt.Errorf("Error while parsing binary size: %T:%v", err, err)
+	}
+	binData := make([]byte, binSize)
+	buf.Read(binData)
+	*b = BinaryDataElement{&dataElement{binData, BinaryDE, binSize, false}}
+	return nil
 }
 
 func NewBooleanDataElement(val bool) *BooleanDataElement {
@@ -385,6 +480,18 @@ func (b *BooleanDataElement) String() string {
 	}
 }
 
+func (b *BooleanDataElement) UnmarshalHBCI(value []byte) error {
+	val := string(value)
+	if val == "J" {
+		*b = BooleanDataElement{&dataElement{true, BooleanDE, 1, false}}
+	} else if val == "N" {
+		*b = BooleanDataElement{&dataElement{false, BooleanDE, 1, false}}
+	} else {
+		return fmt.Errorf("BooleanDataElement: Malformed input")
+	}
+	return nil
+}
+
 func NewDateDataElement(date time.Time) *DateDataElement {
 	return &DateDataElement{&dataElement{date, DateDE, 8, false}}
 }
@@ -399,6 +506,15 @@ func (d *DateDataElement) Val() time.Time {
 
 func (d *DateDataElement) String() string {
 	return d.Val().Format("20060102")
+}
+
+func (d *DateDataElement) UnmarshalHBCI(value []byte) error {
+	t, err := time.Parse("20060102", string(value))
+	if err != nil {
+		return err
+	}
+	*d = DateDataElement{&dataElement{t, DateDE, 8, false}}
+	return nil
 }
 
 func (d *DateDataElement) IsValid() bool {
@@ -436,6 +552,15 @@ func (t *TimeDataElement) String() string {
 	return t.Val().Format("150405")
 }
 
+func (t *TimeDataElement) UnmarshalHBCI(value []byte) error {
+	parsedTime, err := time.Parse("150405", string(value))
+	if err != nil {
+		return err
+	}
+	*t = TimeDataElement{&dataElement{parsedTime, TimeDE, 6, false}}
+	return nil
+}
+
 func (t *TimeDataElement) IsValid() bool {
 	return !t.Val().IsZero()
 }
@@ -454,6 +579,16 @@ func (i *IdentificationDataElement) Type() DataElementType {
 	return IdentificationDE
 }
 
+func (i *IdentificationDataElement) UnmarshalHBCI(value []byte) error {
+	var alpha AlphaNumericDataElement
+	err := alpha.UnmarshalHBCI(value)
+	if err != nil {
+		return err
+	}
+	*i = IdentificationDataElement{&alpha}
+	return nil
+}
+
 func NewCountryCodeDataElement(code int) *CountryCodeDataElement {
 	d := NewDigitDataElement(code, 3)
 	d.typ = CountryCodeDE
@@ -466,6 +601,16 @@ type CountryCodeDataElement struct {
 
 func (c *CountryCodeDataElement) Type() DataElementType {
 	return CountryCodeDE
+}
+
+func (c *CountryCodeDataElement) UnmarshalHBCI(value []byte) error {
+	var d DigitDataElement
+	err := d.UnmarshalHBCI(value)
+	if err != nil {
+		return nil
+	}
+	*c = CountryCodeDataElement{&d}
+	return nil
 }
 
 func NewCurrencyDataElement(cur string) *CurrencyDataElement {
@@ -486,6 +631,16 @@ func (c *CurrencyDataElement) Type() DataElementType {
 	return CurrencyDE
 }
 
+func (c *CurrencyDataElement) UnmarshalHBCI(value []byte) error {
+	var a AlphaNumericDataElement
+	err := a.UnmarshalHBCI(value)
+	if err != nil {
+		return err
+	}
+	*c = CurrencyDataElement{&a}
+	return nil
+}
+
 func NewValueDataElement(val float64) *ValueDataElement {
 	f := NewFloatDataElement(val, 15)
 	f.typ = ValueDE
@@ -498,6 +653,16 @@ type ValueDataElement struct {
 
 func (v *ValueDataElement) Type() DataElementType {
 	return ValueDE
+}
+
+func (v *ValueDataElement) UnmarshalHBCI(value []byte) error {
+	var f FloatDataElement
+	err := f.UnmarshalHBCI(value)
+	if err != nil {
+		return err
+	}
+	*v = ValueDataElement{&f}
+	return nil
 }
 
 // GroupDataElementGroups
