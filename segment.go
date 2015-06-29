@@ -1,7 +1,6 @@
 package hbci
 
 import (
-	"fmt"
 	"reflect"
 	"strings"
 )

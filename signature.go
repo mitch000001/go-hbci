@@ -110,7 +110,6 @@ func NewRDHSignatureHeaderSegment(controlReference string, signatureId int, clie
 type SignatureHeaderSegment struct {
 	Segment
 	version
-	SecurityProfile *SecurityProfileDataElement
 }
 
 func (s *SignatureHeaderSegment) elements() []DataElement {
