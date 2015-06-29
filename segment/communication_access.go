@@ -1,28 +1,9 @@
-package hbci
+package segment
 
 import (
 	"github.com/mitch000001/go-hbci/dataelement"
 	"github.com/mitch000001/go-hbci/domain"
 )
-
-func NewCommunicationAccessMessage(fromBank domain.BankId, toBank domain.BankId, maxEntries int, aufsetzpunkt string) *CommunicationAccessMessage {
-	c := &CommunicationAccessMessage{
-		Request: NewCommunicationAccessRequestSegment(fromBank, toBank, maxEntries, aufsetzpunkt),
-	}
-	c.basicMessage = newBasicMessage(c)
-	return c
-}
-
-type CommunicationAccessMessage struct {
-	*basicMessage
-	Request *CommunicationAccessRequestSegment
-}
-
-func (c *CommunicationAccessMessage) HBCISegments() []Segment {
-	return []Segment{
-		c.Request,
-	}
-}
 
 func NewFINTS3CommunicationAccessRequestSegment(fromBank domain.BankId, toBank domain.BankId, maxEntries int) *CommunicationAccessRequestSegment {
 	c := &CommunicationAccessRequestSegment{

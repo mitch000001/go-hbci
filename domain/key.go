@@ -6,6 +6,18 @@ import (
 	"math/big"
 )
 
+type Key interface {
+	KeyName() KeyName
+	SetKeyNumber(number int)
+	SetKeyVersion(version int)
+	Sign(message []byte) (signature []byte, err error)
+	Encrypt(message []byte) (encrypted []byte, err error)
+	CanSign() bool
+	CanEncrypt() bool
+}
+
+const initialKeyVersion = 999
+
 func NewPinTanKeyName(bankId BankId, userId string, keyType string) *KeyName {
 	return &KeyName{
 		BankID:     bankId,
@@ -41,6 +53,50 @@ func (k *KeyName) IsInitial() bool {
 func (k *KeyName) SetInitial() {
 	k.KeyNumber = 999
 	k.KeyVersion = 999
+}
+
+func NewPinKey(pin string, keyName *KeyName) *PinKey {
+	return &PinKey{pin: pin, keyName: keyName}
+}
+
+type PinKey struct {
+	pin     string
+	keyName *KeyName
+}
+
+func (p *PinKey) KeyName() KeyName {
+	return *p.keyName
+}
+
+func (p *PinKey) SetKeyNumber(number int) {
+	p.keyName.KeyNumber = number
+}
+
+func (p *PinKey) SetKeyVersion(version int) {
+	p.keyName.KeyVersion = version
+}
+
+func (p *PinKey) CanSign() bool {
+	return true
+}
+
+func (p *PinKey) CanEncrypt() bool {
+	return true
+}
+
+func (p *PinKey) Pin() string {
+	return p.pin
+}
+
+func (p *PinKey) Sign(message []byte) ([]byte, error) {
+	return []byte(p.pin), nil
+}
+
+func (p *PinKey) Encrypt(message []byte) ([]byte, error) {
+	encMessage := make([]byte, len(message))
+	// Make a deep copy, just in case
+	copy(encMessage, message)
+	return encMessage, nil
 }
 
 func GenerateSigningKey() (*PublicKey, error) {

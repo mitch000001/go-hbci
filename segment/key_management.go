@@ -1,4 +1,4 @@
-package hbci
+package segment
 
 import (
 	"fmt"
@@ -8,56 +8,6 @@ import (
 	"github.com/mitch000001/go-hbci/dataelement"
 	"github.com/mitch000001/go-hbci/domain"
 )
-
-type Key interface {
-	KeyName() domain.KeyName
-	SetKeyNumber(number int)
-	SetKeyVersion(version int)
-	Sign(message []byte) (signature []byte, err error)
-	Encrypt(message []byte) (encrypted []byte, err error)
-	CanSign() bool
-	CanEncrypt() bool
-}
-
-func NewRDHSignatureProvider(signingKey *domain.RSAKey) SignatureProvider {
-	return &RDHSignatureProvider{signingKey: signingKey}
-}
-
-type RDHSignatureProvider struct {
-	signingKey     *domain.RSAKey
-	clientSystemId string
-}
-
-func (r *RDHSignatureProvider) SetClientSystemID(clientSystemId string) {
-	r.clientSystemId = clientSystemId
-}
-
-func (r *RDHSignatureProvider) SignMessage(message SignedHBCIMessage) error {
-	marshaledMessage := message.SignatureBeginSegment().String()
-	for _, segment := range message.HBCISegments() {
-		marshaledMessage += segment.String()
-	}
-	hashSum := MessageHashSum(marshaledMessage)
-	sig, err := r.signingKey.Sign(hashSum)
-	if err != nil {
-		return err
-	}
-	message.SignatureEndSegment().SetSignature(sig)
-	return nil
-}
-
-func (p *RDHSignatureProvider) NewSignatureHeader(controlReference string, signatureId int) *SignatureHeaderSegment {
-	return NewRDHSignatureHeaderSegment(controlReference, signatureId, p.clientSystemId, p.signingKey.KeyName())
-}
-
-const initialKeyVersion = 999
-
-type InitialPublicKeyRenewalMessage struct {
-	*basicMessage
-	Identification             *IdentificationSegment
-	PublicSigningKeyRequest    *PublicKeyRequestSegment
-	PublicEncryptionKeyRequest *PublicKeyRequestSegment
-}
 
 func NewPublicKeyRenewalSegment(number int, keyName domain.KeyName, pubKey *domain.PublicKey) *PublicKeyRenewalSegment {
 	if keyName.KeyType == "B" {

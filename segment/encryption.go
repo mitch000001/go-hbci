@@ -1,56 +1,11 @@
-package hbci
+package segment
 
 import (
-	"crypto/rand"
-	"fmt"
 	"time"
 
 	"github.com/mitch000001/go-hbci/dataelement"
 	"github.com/mitch000001/go-hbci/domain"
 )
-
-type EncryptionProvider interface {
-	SetClientSystemID(clientSystemId string)
-	Encrypt(message []byte) (*EncryptedMessage, error)
-	EncryptWithInitialKeyName(message []byte) (*EncryptedMessage, error)
-}
-
-const encryptionInitializationVector = "\x00\x00\x00\x00\x00\x00\x00\x00"
-
-func GenerateMessageKey() ([]byte, error) {
-	b := make([]byte, 16)
-	_, err := rand.Read(b)
-	if err != nil {
-		return nil, err
-	}
-	return b, nil
-}
-
-func NewEncryptedPinTanMessage(clientSystemId string, keyName domain.KeyName, encryptedMessage []byte) *EncryptedMessage {
-	e := &EncryptedMessage{
-		EncryptionHeader: NewPinTanEncryptionHeaderSegment(clientSystemId, keyName),
-		EncryptedData:    NewEncryptedDataSegment(encryptedMessage),
-	}
-	e.basicMessage = newBasicMessage(e)
-	return e
-}
-
-type EncryptedMessage struct {
-	*basicMessage
-	EncryptionHeader *EncryptionHeaderSegment
-	EncryptedData    *EncryptedDataSegment
-}
-
-func (e *EncryptedMessage) HBCISegments() []Segment {
-	return []Segment{
-		e.EncryptionHeader,
-		e.EncryptedData,
-	}
-}
-
-func (e *EncryptedMessage) SetNumbers() {
-	panic(fmt.Errorf("SetNumbers: Operation not allowed on encrypted messages"))
-}
 
 func NewPinTanEncryptionHeaderSegment(clientSystemId string, keyName domain.KeyName) *EncryptionHeaderSegment {
 	v2 := &EncryptionHeaderVersion2{

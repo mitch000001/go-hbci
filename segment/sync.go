@@ -1,31 +1,6 @@
-package hbci
+package segment
 
 import "github.com/mitch000001/go-hbci/dataelement"
-
-func NewSynchronisationMessage() *SynchronisationMessage {
-	s := new(SynchronisationMessage)
-	s.basicClientMessage = newBasicClientMessage(s)
-	return s
-}
-
-type SynchronisationMessage struct {
-	*basicClientMessage
-	Identification             *IdentificationSegment
-	ProcessingPreparation      *ProcessingPreparationSegment
-	PublicSigningKeyRequest    *PublicKeyRequestSegment
-	PublicEncryptionKeyRequest *PublicKeyRequestSegment
-	Sync                       *SynchronisationSegment
-}
-
-func (s *SynchronisationMessage) Jobs() SegmentSequence {
-	return SegmentSequence{
-		s.Identification,
-		s.ProcessingPreparation,
-		s.PublicSigningKeyRequest,
-		s.PublicEncryptionKeyRequest,
-		s.Sync,
-	}
-}
 
 func NewSynchronisationSegment(modus int) *SynchronisationSegment {
 	s := &SynchronisationSegment{

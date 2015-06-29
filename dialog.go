@@ -14,8 +14,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/mitch000001/go-hbci/dataelement"
 	"github.com/mitch000001/go-hbci/domain"
+	"github.com/mitch000001/go-hbci/message"
+	"github.com/mitch000001/go-hbci/segment"
 )
 
 const initialDialogID = "0"
@@ -26,7 +27,7 @@ type Dialog interface {
 	Init() (string, error)
 }
 
-func newDialog(bankId domain.BankId, hbciUrl string, clientId string, signatureProvider SignatureProvider, encryptionProvider EncryptionProvider) *dialog {
+func newDialog(bankId domain.BankId, hbciUrl string, clientId string, signatureProvider message.SignatureProvider, encryptionProvider message.EncryptionProvider) *dialog {
 	return &dialog{
 		hbciUrl:            hbciUrl,
 		BankID:             bankId,
@@ -43,8 +44,8 @@ type dialog struct {
 	ClientID           string
 	ClientSystemID     string
 	messageCount       int
-	signatureProvider  SignatureProvider
-	encryptionProvider EncryptionProvider
+	signatureProvider  message.SignatureProvider
+	encryptionProvider message.EncryptionProvider
 }
 
 func (d *dialog) nextMessageNumber() int {
@@ -52,13 +53,13 @@ func (d *dialog) nextMessageNumber() int {
 	return d.messageCount
 }
 
-func (d *dialog) dialogEnd(dialogId string) *DialogFinishingMessage {
-	dialogEnd := new(DialogFinishingMessage)
+func (d *dialog) dialogEnd(dialogId string) *message.DialogFinishingMessage {
+	dialogEnd := new(message.DialogFinishingMessage)
 	messageNum := d.nextMessageNumber()
-	dialogEnd.basicClientMessage = newBasicClientMessage(dialogEnd)
-	dialogEnd.Header = NewMessageHeaderSegment(0, 220, dialogId, messageNum)
-	dialogEnd.End = NewMessageEndSegment(8, messageNum)
-	dialogEnd.DialogEnd = NewDialogEndSegment(dialogId)
+	dialogEnd.BasicClientMessage = message.NewBasicClientMessage(dialogEnd)
+	dialogEnd.Header = segment.NewMessageHeaderSegment(0, 220, dialogId, messageNum)
+	dialogEnd.End = segment.NewMessageEndSegment(8, messageNum)
+	dialogEnd.DialogEnd = segment.NewDialogEndSegment(dialogId)
 	return dialogEnd
 }
 
@@ -117,8 +118,8 @@ func (d *dialog) dial(message []byte) ([]byte, error) {
 }
 
 func NewPinTanDialog(bankId domain.BankId, hbciUrl string, clientId string) *pinTanDialog {
-	signatureProvider := NewPinTanSignatureProvider(nil, "")
-	encryptionProvider := NewPinTanEncryptionProvider(nil, "")
+	signatureProvider := message.NewPinTanSignatureProvider(nil, "")
+	encryptionProvider := message.NewPinTanEncryptionProvider(nil, "")
 	d := &pinTanDialog{
 		dialog: newDialog(bankId, hbciUrl, clientId, signatureProvider, encryptionProvider),
 	}
@@ -128,29 +129,29 @@ func NewPinTanDialog(bankId domain.BankId, hbciUrl string, clientId string) *pin
 type pinTanDialog struct {
 	*dialog
 	pin           string
-	signingKey    Key
+	signingKey    domain.Key
 	pinTanKeyName domain.KeyName
 }
 
 func (d *pinTanDialog) SetPin(pin string) {
 	d.pin = pin
-	pinKey := NewPinKey(pin, domain.NewPinTanKeyName(d.BankID, d.ClientID, "S"))
+	pinKey := domain.NewPinKey(pin, domain.NewPinTanKeyName(d.BankID, d.ClientID, "S"))
 	d.signingKey = pinKey
-	d.signatureProvider = NewPinTanSignatureProvider(pinKey, d.ClientSystemID)
-	pinKey = NewPinKey(pin, domain.NewPinTanKeyName(d.BankID, d.ClientID, "V"))
-	d.encryptionProvider = NewPinTanEncryptionProvider(pinKey, d.ClientSystemID)
+	d.signatureProvider = message.NewPinTanSignatureProvider(pinKey, d.ClientSystemID)
+	pinKey = domain.NewPinKey(pin, domain.NewPinTanKeyName(d.BankID, d.ClientID, "V"))
+	d.encryptionProvider = message.NewPinTanEncryptionProvider(pinKey, d.ClientSystemID)
 }
 
 func (d *pinTanDialog) Init() (string, error) {
-	initMessage := NewDialogInitializationClientMessage()
+	initMessage := message.NewDialogInitializationClientMessage()
 	messageNum := d.nextMessageNumber()
-	initMessage.Header = NewMessageHeaderSegment(-1, 220, initialDialogID, messageNum)
-	initMessage.End = NewMessageEndSegment(8, messageNum)
-	initMessage.Identification = NewIdentificationSegment(d.BankID, d.ClientID, initialClientSystemID, true)
-	initMessage.ProcessingPreparation = NewProcessingPreparationSegment(0, 0, 1)
+	initMessage.Header = segment.NewMessageHeaderSegment(-1, 220, initialDialogID, messageNum)
+	initMessage.End = segment.NewMessageEndSegment(8, messageNum)
+	initMessage.Identification = segment.NewIdentificationSegment(d.BankID, d.ClientID, initialClientSystemID, true)
+	initMessage.ProcessingPreparation = segment.NewProcessingPreparationSegment(0, 0, 1)
 	controlRef := "1"
 	initMessage.SignatureBegin = d.signatureProvider.NewSignatureHeader(controlRef, 0)
-	initMessage.SignatureEnd = NewSignatureEndSegment(7, controlRef)
+	initMessage.SignatureEnd = segment.NewSignatureEndSegment(7, controlRef)
 	initMessage.SetNumbers()
 	err := initMessage.Sign(d.signatureProvider)
 	if err != nil {
@@ -175,7 +176,7 @@ func (d *pinTanDialog) Init() (string, error) {
 
 	dialogEnd := d.dialogEnd(initialDialogID)
 	dialogEnd.SignatureBegin = d.signatureProvider.NewSignatureHeader(controlRef, 0)
-	dialogEnd.SignatureEnd = NewSignatureEndSegment(7, controlRef)
+	dialogEnd.SignatureEnd = segment.NewSignatureEndSegment(7, controlRef)
 	dialogEnd.SetNumbers()
 	err = dialogEnd.Sign(d.signatureProvider)
 	if err != nil {
@@ -199,17 +200,17 @@ func (d *pinTanDialog) Init() (string, error) {
 }
 
 func (d *pinTanDialog) SyncClientSystemID() (string, error) {
-	syncMessage := new(SynchronisationMessage)
+	syncMessage := new(message.SynchronisationMessage)
 	messageNum := d.nextMessageNumber()
-	syncMessage.basicClientMessage = newBasicClientMessage(syncMessage)
-	syncMessage.Header = NewMessageHeaderSegment(-1, 220, initialDialogID, messageNum)
-	syncMessage.End = NewMessageEndSegment(8, messageNum)
-	syncMessage.Identification = NewIdentificationSegment(d.BankID, d.ClientID, initialClientSystemID, true)
-	syncMessage.ProcessingPreparation = NewProcessingPreparationSegment(0, 0, 1)
-	syncMessage.Sync = NewSynchronisationSegment(0)
+	syncMessage.BasicClientMessage = message.NewBasicClientMessage(syncMessage)
+	syncMessage.Header = segment.NewMessageHeaderSegment(-1, 220, initialDialogID, messageNum)
+	syncMessage.End = segment.NewMessageEndSegment(8, messageNum)
+	syncMessage.Identification = segment.NewIdentificationSegment(d.BankID, d.ClientID, initialClientSystemID, true)
+	syncMessage.ProcessingPreparation = segment.NewProcessingPreparationSegment(0, 0, 1)
+	syncMessage.Sync = segment.NewSynchronisationSegment(0)
 	controlRef := "1"
 	syncMessage.SignatureBegin = d.signatureProvider.NewSignatureHeader(controlRef, 0)
-	syncMessage.SignatureEnd = NewSignatureEndSegment(7, controlRef)
+	syncMessage.SignatureEnd = segment.NewSignatureEndSegment(7, controlRef)
 	syncMessage.SetNumbers()
 	err := syncMessage.Sign(d.signatureProvider)
 	if err != nil {
@@ -252,7 +253,7 @@ func (d *pinTanDialog) SyncClientSystemID() (string, error) {
 
 	dialogEnd := d.dialogEnd(newDialogId)
 	dialogEnd.SignatureBegin = d.signatureProvider.NewSignatureHeader(controlRef, 0)
-	dialogEnd.SignatureEnd = NewSignatureEndSegment(7, controlRef)
+	dialogEnd.SignatureEnd = segment.NewSignatureEndSegment(7, controlRef)
 	dialogEnd.SetNumbers()
 	err = dialogEnd.Sign(d.signatureProvider)
 	if err != nil {
@@ -276,9 +277,9 @@ func (d *pinTanDialog) SyncClientSystemID() (string, error) {
 }
 
 func (d *pinTanDialog) CommunicationAccess() (string, error) {
-	comm := NewCommunicationAccessMessage(d.BankID, d.BankID, 5, "")
-	comm.Header = NewMessageHeaderSegment(0, 220, initialDialogID, 1)
-	comm.End = NewMessageEndSegment(3, 1)
+	comm := message.NewCommunicationAccessMessage(d.BankID, d.BankID, 5, "")
+	comm.Header = segment.NewMessageHeaderSegment(0, 220, initialDialogID, 1)
+	comm.End = segment.NewMessageEndSegment(3, 1)
 	comm.SetSize()
 	marshaled, err := comm.MarshalHBCI()
 	if err != nil {
@@ -293,12 +294,12 @@ func (d *pinTanDialog) CommunicationAccess() (string, error) {
 }
 
 func (d *pinTanDialog) Anonymous(fn func() (string, error)) (string, error) {
-	initMessage := NewDialogInitializationClientMessage()
+	initMessage := message.NewDialogInitializationClientMessage()
 	messageNum := d.nextMessageNumber()
-	initMessage.Header = NewMessageHeaderSegment(-1, 220, initialDialogID, messageNum)
-	initMessage.End = NewMessageEndSegment(8, messageNum)
-	initMessage.Identification = NewIdentificationSegment(d.BankID, d.ClientID, "0", false)
-	initMessage.ProcessingPreparation = NewProcessingPreparationSegment(0, 0, 1)
+	initMessage.Header = segment.NewMessageHeaderSegment(-1, 220, initialDialogID, messageNum)
+	initMessage.End = segment.NewMessageEndSegment(8, messageNum)
+	initMessage.Identification = segment.NewIdentificationSegment(d.BankID, d.ClientID, "0", false)
+	initMessage.ProcessingPreparation = segment.NewProcessingPreparationSegment(0, 0, 1)
 	initMessage.SetNumbers()
 	initMessage.SetSize()
 	marshaledMessage, err := initMessage.MarshalHBCI()
@@ -340,7 +341,7 @@ func NewRDHDialog(bankId domain.BankId, hbciUrl string, clientId string) *rdhDia
 		panic(err)
 	}
 	signingKey := domain.NewRSAKey(key, domain.NewInitialKeyName(bankId.CountryCode, bankId.ID, clientId, "S"))
-	provider := NewRDHSignatureProvider(signingKey)
+	provider := message.NewRDHSignatureProvider(signingKey)
 	d := &rdhDialog{
 		dialog:      newDialog(bankId, hbciUrl, clientId, provider, nil),
 		SigningKey:  signingKey,
@@ -352,143 +353,5 @@ func NewRDHDialog(bankId domain.BankId, hbciUrl string, clientId string) *rdhDia
 type rdhDialog struct {
 	*dialog
 	SignatureID int
-	SigningKey  Key
-}
-
-func NewDialogInitializationClientMessage() *DialogInitializationClientMessage {
-	d := &DialogInitializationClientMessage{}
-	d.basicClientMessage = newBasicClientMessage(d)
-	return d
-}
-
-type DialogInitializationClientMessage struct {
-	*basicClientMessage
-	Identification             *IdentificationSegment
-	ProcessingPreparation      *ProcessingPreparationSegment
-	PublicSigningKeyRequest    *PublicKeyRequestSegment
-	PublicEncryptionKeyRequest *PublicKeyRequestSegment
-}
-
-func (d *DialogInitializationClientMessage) Jobs() SegmentSequence {
-	return SegmentSequence{
-		d.Identification,
-		d.ProcessingPreparation,
-		d.PublicSigningKeyRequest,
-		d.PublicEncryptionKeyRequest,
-	}
-}
-
-type DialogInitializationBankMessage struct {
-	*basicBankMessage
-	BankParams            SegmentSequence
-	UserParams            SegmentSequence
-	PublicKeyTransmission *PublicKeyTransmissionSegment
-	Announcement          *BankAnnouncementSegment
-}
-
-type DialogFinishingMessage struct {
-	*basicClientMessage
-	DialogEnd *DialogEndSegment
-}
-
-func (d *DialogFinishingMessage) Jobs() SegmentSequence {
-	return SegmentSequence{
-		d.DialogEnd,
-	}
-}
-
-func NewDialogCancellationMessage(messageAcknowledgement *MessageAcknowledgement) *DialogCancellationMessage {
-	d := &DialogCancellationMessage{
-		MessageAcknowledgements: messageAcknowledgement,
-	}
-	return d
-}
-
-type DialogCancellationMessage struct {
-	*basicMessage
-	MessageAcknowledgements *MessageAcknowledgement
-}
-
-type AnonymousDialogMessage struct {
-	*basicMessage
-	Identification        *IdentificationSegment
-	ProcessingPreparation *ProcessingPreparationSegment
-}
-
-func NewDialogEndSegment(dialogId string) *DialogEndSegment {
-	d := &DialogEndSegment{
-		DialogID: dataelement.NewIdentificationDataElement(dialogId),
-	}
-	d.Segment = NewBasicSegment("HKEND", 3, 1, d)
-	return d
-}
-
-type DialogEndSegment struct {
-	Segment
-	DialogID *dataelement.IdentificationDataElement
-}
-
-func (d *DialogEndSegment) elements() []dataelement.DataElement {
-	return []dataelement.DataElement{
-		d.DialogID,
-	}
-}
-
-func NewProcessingPreparationSegment(bdpVersion int, udpVersion int, language int) *ProcessingPreparationSegment {
-	p := &ProcessingPreparationSegment{
-		BPDVersion:     dataelement.NewNumberDataElement(bdpVersion, 3),
-		UPDVersion:     dataelement.NewNumberDataElement(udpVersion, 3),
-		DialogLanguage: dataelement.NewNumberDataElement(language, 3),
-		ProductName:    dataelement.NewAlphaNumericDataElement(productName, 25),
-		ProductVersion: dataelement.NewAlphaNumericDataElement(productVersion, 5),
-	}
-	p.Segment = NewBasicSegment("HKVVB", 4, 2, p)
-	return p
-}
-
-type ProcessingPreparationSegment struct {
-	Segment
-	BPDVersion *dataelement.NumberDataElement
-	UPDVersion *dataelement.NumberDataElement
-	// 0 for undefined
-	// Sprachkennzeichen | Bedeutung   | Sprachencode ISO 639 | ISO 8859 Subset | ISO 8859- Codeset
-	// --------------------------------------------------------------------------------------------
-	// 1				 | Deutsch	   | de (German) ￼	      | Deutsch ￼ ￼		| 1 (Latin 1)
-	// 2				 | Englisch	   | en (English)		  | Englisch		| 1 (Latin 1)
-	// 3 				 | Französisch | fr (French)  		  | Französisch ￼	| 1 (Latin 1)
-	DialogLanguage *dataelement.NumberDataElement
-	ProductName    *dataelement.AlphaNumericDataElement
-	ProductVersion *dataelement.AlphaNumericDataElement
-}
-
-func (p *ProcessingPreparationSegment) elements() []dataelement.DataElement {
-	return []dataelement.DataElement{
-		p.BPDVersion,
-		p.UPDVersion,
-		p.DialogLanguage,
-		p.ProductName,
-		p.ProductVersion,
-	}
-}
-
-func NewBankAnnouncementSegment(subject, body string) *BankAnnouncementSegment {
-	b := &BankAnnouncementSegment{
-		Subject: dataelement.NewAlphaNumericDataElement(subject, 35),
-		Body:    dataelement.NewTextDataElement(body, 2048),
-	}
-	b.Segment = NewBasicSegment("HIKIM", 8, 2, b)
-	return b
-}
-
-type BankAnnouncementSegment struct {
-	Segment
-	Subject *dataelement.AlphaNumericDataElement
-	Body    *dataelement.TextDataElement
-}
-
-func (b *BankAnnouncementSegment) elements() []dataelement.DataElement {
-	return []dataelement.DataElement{
-		b.Subject,
-		b.Body,
-	}
+	SigningKey  domain.Key
 }
