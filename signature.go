@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/mitch000001/go-hbci/dataelement"
+	"github.com/mitch000001/go-hbci/domain"
 	"golang.org/x/crypto/ripemd160"
 )
 
@@ -53,7 +54,7 @@ func EncryptMessage(message fmt.Stringer) (string, error) {
 	return fmt.Sprintf("%x", ciphertext), nil
 }
 
-func NewPinTanSignatureHeaderSegment(controlReference string, clientSystemId string, keyName dataelement.KeyName) *SignatureHeaderSegment {
+func NewPinTanSignatureHeaderSegment(controlReference string, clientSystemId string, keyName domain.KeyName) *SignatureHeaderSegment {
 	v3 := &SignatureHeaderVersion3{
 		SecurityFunction:         dataelement.NewAlphaNumericDataElement("999", 3),
 		SecurityControlRef:       dataelement.NewAlphaNumericDataElement(controlReference, 14),
@@ -73,7 +74,7 @@ func NewPinTanSignatureHeaderSegment(controlReference string, clientSystemId str
 	return s
 }
 
-func NewRDHSignatureHeaderSegment(controlReference string, signatureId int, clientSystemId string, keyName dataelement.KeyName) *SignatureHeaderSegment {
+func NewRDHSignatureHeaderSegment(controlReference string, signatureId int, clientSystemId string, keyName domain.KeyName) *SignatureHeaderSegment {
 	v3 := &SignatureHeaderVersion3{
 		SecurityFunction:         dataelement.NewAlphaNumericDataElement("1", 3),
 		SecurityControlRef:       dataelement.NewAlphaNumericDataElement(controlReference, 14),

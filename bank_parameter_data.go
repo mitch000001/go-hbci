@@ -1,12 +1,15 @@
 package hbci
 
-import "github.com/mitch000001/go-hbci/dataelement"
+import (
+	"github.com/mitch000001/go-hbci/dataelement"
+	"github.com/mitch000001/go-hbci/domain"
+)
 
 var HKVVBSegmentNumber = -1
 
 func NewCommonBankParameterSegment(
 	bpdVersion int,
-	bankId dataelement.BankId,
+	bankId domain.BankId,
 	bankName string,
 	businessTransactionCount int,
 	supportedLanguages []int,

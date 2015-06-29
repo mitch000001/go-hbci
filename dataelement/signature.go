@@ -1,31 +1,16 @@
 package dataelement
 
 import (
-	"crypto/rand"
-	"crypto/rsa"
 	"fmt"
-	"math/big"
 	"time"
+
+	"github.com/mitch000001/go-hbci/domain"
 )
 
 const (
 	SecurityHolderMessageSender   = "MS"
 	SecurityHolderMessageReceiver = "MR"
 )
-
-func GenerateSigningKey() (*PublicKey, error) {
-	rsaKey, err := rsa.GenerateKey(rand.Reader, 768)
-	if err != nil {
-		return nil, err
-	}
-	p := PublicKey{
-		Type:          "S",
-		Modulus:       rsaKey.N.Bytes(),
-		Exponent:      big.NewInt(int64(rsaKey.E)).Bytes(),
-		rsaPrivateKey: rsaKey,
-	}
-	return &p, nil
-}
 
 func NewRDHSecurityIdentificationDataElement(securityHolder, clientSystemId string) *SecurityIdentificationDataElement {
 	var holder string
@@ -159,44 +144,7 @@ func (s *SignatureAlgorithmDataElement) GroupDataElements() []DataElement {
 	}
 }
 
-func NewPinTanKeyName(bankId BankId, userId string, keyType string) *KeyName {
-	return &KeyName{
-		BankID:     bankId,
-		UserID:     userId,
-		KeyType:    keyType,
-		KeyNumber:  0,
-		KeyVersion: 0,
-	}
-}
-
-func NewInitialKeyName(countryCode int, bankId, userId string, keyType string) *KeyName {
-	return &KeyName{
-		BankID:     BankId{CountryCode: countryCode, ID: bankId},
-		UserID:     userId,
-		KeyType:    keyType,
-		KeyNumber:  999,
-		KeyVersion: 999,
-	}
-}
-
-type KeyName struct {
-	BankID     BankId
-	UserID     string
-	KeyType    string
-	KeyNumber  int
-	KeyVersion int
-}
-
-func (k *KeyName) IsInitial() bool {
-	return k.KeyNumber == 999 && k.KeyVersion == 999
-}
-
-func (k *KeyName) SetInitial() {
-	k.KeyNumber = 999
-	k.KeyVersion = 999
-}
-
-func NewKeyNameDataElement(keyName KeyName) *KeyNameDataElement {
+func NewKeyNameDataElement(keyName domain.KeyName) *KeyNameDataElement {
 	a := &KeyNameDataElement{
 		Bank:       NewBankIndentificationDataElement(keyName.BankID),
 		UserID:     NewIdentificationDataElement(keyName.UserID),
@@ -219,9 +167,9 @@ type KeyNameDataElement struct {
 	KeyVersion *NumberDataElement
 }
 
-func (k *KeyNameDataElement) Val() KeyName {
-	return KeyName{
-		BankID:     BankId{k.Bank.CountryCode.Val(), k.Bank.BankID.Val()},
+func (k *KeyNameDataElement) Val() domain.KeyName {
+	return domain.KeyName{
+		BankID:     domain.BankId{k.Bank.CountryCode.Val(), k.Bank.BankID.Val()},
 		UserID:     k.UserID.Val(),
 		KeyType:    k.KeyType.Val(),
 		KeyNumber:  k.KeyNumber.Val(),

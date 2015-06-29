@@ -8,6 +8,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/mitch000001/go-hbci/domain"
 )
 
 type DataElement interface {
@@ -692,12 +694,7 @@ func (a *AmountDataElement) Val() (value float64, currency string) {
 	return a.Amount.Val(), a.Currency.Val()
 }
 
-type BankId struct {
-	CountryCode int
-	ID          string
-}
-
-func NewBankIndentificationDataElement(bankId BankId) *BankIdentificationDataElement {
+func NewBankIndentificationDataElement(bankId domain.BankId) *BankIdentificationDataElement {
 	b := &BankIdentificationDataElement{
 		CountryCode: NewCountryCodeDataElement(bankId.CountryCode),
 		BankID:      NewAlphaNumericDataElement(bankId.ID, 30),
@@ -747,12 +744,7 @@ func (a *AccountConnectionDataElement) Elements() []DataElement {
 	}
 }
 
-type Balance struct {
-	Amount   float64
-	Currency string
-}
-
-func NewBalanceDataElement(balance Balance, date time.Time) *BalanceDataElement {
+func NewBalanceDataElement(balance domain.Balance, date time.Time) *BalanceDataElement {
 	var debitCredit string
 	if balance.Amount < 0 {
 		debitCredit = "D"
@@ -789,14 +781,14 @@ func (b *BalanceDataElement) Elements() []DataElement {
 	}
 }
 
-func (b *BalanceDataElement) Balance() Balance {
+func (b *BalanceDataElement) Balance() domain.Balance {
 	sign := b.DebitCreditIndicator.Val()
 	val := b.Amount.Val()
 	if sign == "D" {
 		val = -val
 	}
 	currency := b.Currency.Val()
-	balance := Balance{
+	balance := domain.Balance{
 		Amount:   val,
 		Currency: currency,
 	}
@@ -807,19 +799,7 @@ func (b *BalanceDataElement) Date() time.Time {
 	return b.TransmissionDate.Val()
 }
 
-type Address struct {
-	Name1       string
-	Name2       string
-	Street      string
-	PLZ         string
-	City        string
-	CountryCode int
-	Phone       string
-	Fax         string
-	Email       string
-}
-
-func NewAddressDataElement(address Address) *AddressDataElement {
+func NewAddressDataElement(address domain.Address) *AddressDataElement {
 	a := &AddressDataElement{
 		Name1:       NewAlphaNumericDataElement(address.Name1, 35),
 		Name2:       NewAlphaNumericDataElement(address.Name2, 35),
@@ -862,8 +842,8 @@ func (a *AddressDataElement) Elements() []DataElement {
 	}
 }
 
-func (a *AddressDataElement) Address() Address {
-	return Address{
+func (a *AddressDataElement) Address() domain.Address {
+	return domain.Address{
 		Name1:       a.Name1.Val(),
 		Name2:       a.Name2.Val(),
 		Street:      a.Street.Val(),

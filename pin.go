@@ -1,17 +1,17 @@
 package hbci
 
-import "github.com/mitch000001/go-hbci/dataelement"
+import "github.com/mitch000001/go-hbci/domain"
 
-func NewPinKey(pin string, keyName *dataelement.KeyName) *PinKey {
+func NewPinKey(pin string, keyName *domain.KeyName) *PinKey {
 	return &PinKey{pin: pin, keyName: keyName}
 }
 
 type PinKey struct {
 	pin     string
-	keyName *dataelement.KeyName
+	keyName *domain.KeyName
 }
 
-func (p *PinKey) KeyName() dataelement.KeyName {
+func (p *PinKey) KeyName() domain.KeyName {
 	return *p.keyName
 }
 

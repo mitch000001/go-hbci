@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/mitch000001/go-hbci/dataelement"
+	"github.com/mitch000001/go-hbci/domain"
 )
 
 type Segment interface {
@@ -66,7 +67,7 @@ func (s *basicSegment) SetReference(ref int) {
 	s.header.SetReference(ref)
 }
 
-func NewIdentificationSegment(bankId dataelement.BankId, clientId string, clientSystemId string, systemIdRequired bool) *IdentificationSegment {
+func NewIdentificationSegment(bankId domain.BankId, clientId string, clientSystemId string, systemIdRequired bool) *IdentificationSegment {
 	var clientSystemStatus *dataelement.NumberDataElement
 	if systemIdRequired {
 		clientSystemStatus = dataelement.NewNumberDataElement(1, 1)

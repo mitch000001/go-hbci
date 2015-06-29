@@ -15,6 +15,7 @@ import (
 	"time"
 
 	"github.com/mitch000001/go-hbci/dataelement"
+	"github.com/mitch000001/go-hbci/domain"
 )
 
 const initialDialogID = "0"
@@ -25,7 +26,7 @@ type Dialog interface {
 	Init() (string, error)
 }
 
-func newDialog(bankId dataelement.BankId, hbciUrl string, clientId string, signatureProvider SignatureProvider, encryptionProvider EncryptionProvider) *dialog {
+func newDialog(bankId domain.BankId, hbciUrl string, clientId string, signatureProvider SignatureProvider, encryptionProvider EncryptionProvider) *dialog {
 	return &dialog{
 		hbciUrl:            hbciUrl,
 		BankID:             bankId,
@@ -38,7 +39,7 @@ func newDialog(bankId dataelement.BankId, hbciUrl string, clientId string, signa
 
 type dialog struct {
 	hbciUrl            string
-	BankID             dataelement.BankId
+	BankID             domain.BankId
 	ClientID           string
 	ClientSystemID     string
 	messageCount       int
@@ -115,7 +116,7 @@ func (d *dialog) dial(message []byte) ([]byte, error) {
 	return retBuf.Bytes(), err
 }
 
-func NewPinTanDialog(bankId dataelement.BankId, hbciUrl string, clientId string) *pinTanDialog {
+func NewPinTanDialog(bankId domain.BankId, hbciUrl string, clientId string) *pinTanDialog {
 	signatureProvider := NewPinTanSignatureProvider(nil, "")
 	encryptionProvider := NewPinTanEncryptionProvider(nil, "")
 	d := &pinTanDialog{
@@ -128,15 +129,15 @@ type pinTanDialog struct {
 	*dialog
 	pin           string
 	signingKey    Key
-	pinTanKeyName dataelement.KeyName
+	pinTanKeyName domain.KeyName
 }
 
 func (d *pinTanDialog) SetPin(pin string) {
 	d.pin = pin
-	pinKey := NewPinKey(pin, dataelement.NewPinTanKeyName(d.BankID, d.ClientID, "S"))
+	pinKey := NewPinKey(pin, domain.NewPinTanKeyName(d.BankID, d.ClientID, "S"))
 	d.signingKey = pinKey
 	d.signatureProvider = NewPinTanSignatureProvider(pinKey, d.ClientSystemID)
-	pinKey = NewPinKey(pin, dataelement.NewPinTanKeyName(d.BankID, d.ClientID, "V"))
+	pinKey = NewPinKey(pin, domain.NewPinTanKeyName(d.BankID, d.ClientID, "V"))
 	d.encryptionProvider = NewPinTanEncryptionProvider(pinKey, d.ClientSystemID)
 }
 
@@ -333,12 +334,12 @@ func (d *pinTanDialog) Anonymous(fn func() (string, error)) (string, error) {
 	return string(response), nil
 }
 
-func NewRDHDialog(bankId dataelement.BankId, hbciUrl string, clientId string) *rdhDialog {
-	key, err := dataelement.GenerateSigningKey()
+func NewRDHDialog(bankId domain.BankId, hbciUrl string, clientId string) *rdhDialog {
+	key, err := domain.GenerateSigningKey()
 	if err != nil {
 		panic(err)
 	}
-	signingKey := dataelement.NewRSAKey(key, dataelement.NewInitialKeyName(bankId.CountryCode, bankId.ID, clientId, "S"))
+	signingKey := domain.NewRSAKey(key, domain.NewInitialKeyName(bankId.CountryCode, bankId.ID, clientId, "S"))
 	provider := NewRDHSignatureProvider(signingKey)
 	d := &rdhDialog{
 		dialog:      newDialog(bankId, hbciUrl, clientId, provider, nil),

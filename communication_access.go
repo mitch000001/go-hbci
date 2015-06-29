@@ -1,8 +1,11 @@
 package hbci
 
-import "github.com/mitch000001/go-hbci/dataelement"
+import (
+	"github.com/mitch000001/go-hbci/dataelement"
+	"github.com/mitch000001/go-hbci/domain"
+)
 
-func NewCommunicationAccessMessage(fromBank dataelement.BankId, toBank dataelement.BankId, maxEntries int, aufsetzpunkt string) *CommunicationAccessMessage {
+func NewCommunicationAccessMessage(fromBank domain.BankId, toBank domain.BankId, maxEntries int, aufsetzpunkt string) *CommunicationAccessMessage {
 	c := &CommunicationAccessMessage{
 		Request: NewCommunicationAccessRequestSegment(fromBank, toBank, maxEntries, aufsetzpunkt),
 	}
@@ -21,7 +24,7 @@ func (c *CommunicationAccessMessage) HBCISegments() []Segment {
 	}
 }
 
-func NewFINTS3CommunicationAccessRequestSegment(fromBank dataelement.BankId, toBank dataelement.BankId, maxEntries int) *CommunicationAccessRequestSegment {
+func NewFINTS3CommunicationAccessRequestSegment(fromBank domain.BankId, toBank domain.BankId, maxEntries int) *CommunicationAccessRequestSegment {
 	c := &CommunicationAccessRequestSegment{
 		FromBankID: dataelement.NewBankIndentificationDataElement(fromBank),
 		ToBankID:   dataelement.NewBankIndentificationDataElement(toBank),
@@ -31,7 +34,7 @@ func NewFINTS3CommunicationAccessRequestSegment(fromBank dataelement.BankId, toB
 	return c
 }
 
-func NewCommunicationAccessRequestSegment(fromBank dataelement.BankId, toBank dataelement.BankId, maxEntries int, aufsetzpunkt string) *CommunicationAccessRequestSegment {
+func NewCommunicationAccessRequestSegment(fromBank domain.BankId, toBank domain.BankId, maxEntries int, aufsetzpunkt string) *CommunicationAccessRequestSegment {
 	c := &CommunicationAccessRequestSegment{
 		FromBankID:   dataelement.NewBankIndentificationDataElement(fromBank),
 		ToBankID:     dataelement.NewBankIndentificationDataElement(toBank),
@@ -62,7 +65,7 @@ func (c *CommunicationAccessRequestSegment) elements() []dataelement.DataElement
 
 const HKKOMSegmentNumber = -1
 
-func NewCommunicationAccessResponseSegment(bankId dataelement.BankId, language int, params dataelement.CommunicationParameter) *CommunicationAccessResponseSegment {
+func NewCommunicationAccessResponseSegment(bankId domain.BankId, language int, params domain.CommunicationParameter) *CommunicationAccessResponseSegment {
 	c := &CommunicationAccessResponseSegment{
 		BankID:              dataelement.NewBankIndentificationDataElement(bankId),
 		StandardLanguage:    dataelement.NewNumberDataElement(language, 3),

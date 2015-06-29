@@ -6,10 +6,11 @@ import (
 	"time"
 
 	"github.com/mitch000001/go-hbci/dataelement"
+	"github.com/mitch000001/go-hbci/domain"
 )
 
 type Key interface {
-	KeyName() dataelement.KeyName
+	KeyName() domain.KeyName
 	SetKeyNumber(number int)
 	SetKeyVersion(version int)
 	Sign(message []byte) (signature []byte, err error)
@@ -18,12 +19,12 @@ type Key interface {
 	CanEncrypt() bool
 }
 
-func NewRDHSignatureProvider(signingKey *dataelement.RSAKey) SignatureProvider {
+func NewRDHSignatureProvider(signingKey *domain.RSAKey) SignatureProvider {
 	return &RDHSignatureProvider{signingKey: signingKey}
 }
 
 type RDHSignatureProvider struct {
-	signingKey     *dataelement.RSAKey
+	signingKey     *domain.RSAKey
 	clientSystemId string
 }
 
@@ -58,7 +59,7 @@ type InitialPublicKeyRenewalMessage struct {
 	PublicEncryptionKeyRequest *PublicKeyRequestSegment
 }
 
-func NewPublicKeyRenewalSegment(number int, keyName dataelement.KeyName, pubKey *dataelement.PublicKey) *PublicKeyRenewalSegment {
+func NewPublicKeyRenewalSegment(number int, keyName domain.KeyName, pubKey *domain.PublicKey) *PublicKeyRenewalSegment {
 	if keyName.KeyType == "B" {
 		panic(fmt.Errorf("KeyType may not be 'B'"))
 	}
@@ -94,7 +95,7 @@ func (p *PublicKeyRenewalSegment) elements() []dataelement.DataElement {
 	}
 }
 
-func NewPublicKeyRequestSegment(number int, keyName dataelement.KeyName) *PublicKeyRequestSegment {
+func NewPublicKeyRequestSegment(number int, keyName domain.KeyName) *PublicKeyRequestSegment {
 	p := &PublicKeyRequestSegment{
 		MessageID:  dataelement.NewNumberDataElement(2, 1),
 		FunctionID: dataelement.NewNumberDataElement(124, 3),
@@ -123,7 +124,7 @@ func (p *PublicKeyRequestSegment) elements() []dataelement.DataElement {
 	}
 }
 
-func NewPublicKeyTransmissionSegment(dialogId string, number int, messageReference int, keyName dataelement.KeyName, pubKey *dataelement.PublicKey, refSegment *PublicKeyRequestSegment) *PublicKeyTransmissionSegment {
+func NewPublicKeyTransmissionSegment(dialogId string, number int, messageReference int, keyName domain.KeyName, pubKey *domain.PublicKey, refSegment *PublicKeyRequestSegment) *PublicKeyTransmissionSegment {
 	if messageReference <= 0 {
 		panic(fmt.Errorf("Message Reference number must be greater 0"))
 	}
@@ -177,7 +178,7 @@ var validRevocationReasons = []string{
 	KeyRevocationMisc,
 }
 
-func NewPublicKeyRevocationSegment(number int, keyName dataelement.KeyName, reason string) *PublicKeyRevocationSegment {
+func NewPublicKeyRevocationSegment(number int, keyName domain.KeyName, reason string) *PublicKeyRevocationSegment {
 	if sort.SearchStrings(validRevocationReasons, reason) > len(validRevocationReasons) {
 		panic(fmt.Errorf("Reason must be one of %v", validRevocationReasons))
 	}
@@ -218,7 +219,7 @@ func (p *PublicKeyRevocationSegment) elements() []dataelement.DataElement {
 	}
 }
 
-func NewPublicKeyRevocationConfirmationSegment(dialogId string, number int, messageReference int, keyName dataelement.KeyName, reason string, refSegment *PublicKeyRevocationSegment) *PublicKeyRevocationConfirmationSegment {
+func NewPublicKeyRevocationConfirmationSegment(dialogId string, number int, messageReference int, keyName domain.KeyName, reason string, refSegment *PublicKeyRevocationSegment) *PublicKeyRevocationConfirmationSegment {
 	if messageReference <= 0 {
 		panic(fmt.Errorf("Message Reference number must be greater 0"))
 	}

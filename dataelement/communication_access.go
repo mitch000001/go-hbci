@@ -1,14 +1,8 @@
 package dataelement
 
-type CommunicationParameter struct {
-	Protocol              int
-	Address               string
-	AddressAddition       string
-	FilterFunction        string
-	FilterFunctionVersion int
-}
+import "github.com/mitch000001/go-hbci/domain"
 
-func NewCommunicationParameterDataElement(params CommunicationParameter) *CommunicationParameterDataElement {
+func NewCommunicationParameterDataElement(params domain.CommunicationParameter) *CommunicationParameterDataElement {
 	c := &CommunicationParameterDataElement{
 		Protocol:              NewNumberDataElement(params.Protocol, 2),
 		Address:               NewAlphaNumericDataElement(params.Address, 512),

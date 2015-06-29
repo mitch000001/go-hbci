@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/mitch000001/go-hbci/dataelement"
+	"github.com/mitch000001/go-hbci/domain"
 )
 
 type EncryptionProvider interface {
@@ -25,7 +26,7 @@ func GenerateMessageKey() ([]byte, error) {
 	return b, nil
 }
 
-func NewEncryptedPinTanMessage(clientSystemId string, keyName dataelement.KeyName, encryptedMessage []byte) *EncryptedMessage {
+func NewEncryptedPinTanMessage(clientSystemId string, keyName domain.KeyName, encryptedMessage []byte) *EncryptedMessage {
 	e := &EncryptedMessage{
 		EncryptionHeader: NewPinTanEncryptionHeaderSegment(clientSystemId, keyName),
 		EncryptedData:    NewEncryptedDataSegment(encryptedMessage),
@@ -51,7 +52,7 @@ func (e *EncryptedMessage) SetNumbers() {
 	panic(fmt.Errorf("SetNumbers: Operation not allowed on encrypted messages"))
 }
 
-func NewPinTanEncryptionHeaderSegment(clientSystemId string, keyName dataelement.KeyName) *EncryptionHeaderSegment {
+func NewPinTanEncryptionHeaderSegment(clientSystemId string, keyName domain.KeyName) *EncryptionHeaderSegment {
 	v2 := &EncryptionHeaderVersion2{
 		SecurityFunction:     dataelement.NewAlphaNumericDataElement("998", 3),
 		SecuritySupplierRole: dataelement.NewAlphaNumericDataElement("1", 3),
@@ -68,7 +69,7 @@ func NewPinTanEncryptionHeaderSegment(clientSystemId string, keyName dataelement
 	return e
 }
 
-func NewEncryptionHeaderSegment(clientSystemId string, keyName dataelement.KeyName, key []byte) *EncryptionHeaderSegment {
+func NewEncryptionHeaderSegment(clientSystemId string, keyName domain.KeyName, key []byte) *EncryptionHeaderSegment {
 	v2 := &EncryptionHeaderVersion2{
 		SecurityFunction:     dataelement.NewAlphaNumericDataElement("4", 3),
 		SecuritySupplierRole: dataelement.NewAlphaNumericDataElement("1", 3),
