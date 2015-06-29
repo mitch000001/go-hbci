@@ -1,5 +1,7 @@
 package hbci
 
+import "github.com/mitch000001/go-hbci/dataelement"
+
 func NewSynchronisationMessage() *SynchronisationMessage {
 	s := new(SynchronisationMessage)
 	s.basicClientMessage = newBasicClientMessage(s)
@@ -27,7 +29,7 @@ func (s *SynchronisationMessage) Jobs() SegmentSequence {
 
 func NewSynchronisationSegment(modus int) *SynchronisationSegment {
 	s := &SynchronisationSegment{
-		SyncModus: NewNumberDataElement(modus, 1),
+		SyncModus: dataelement.NewNumberDataElement(modus, 1),
 	}
 	s.Segment = NewBasicSegment("HKSYN", 5, 2, s)
 	return s
@@ -40,11 +42,11 @@ type SynchronisationSegment struct {
 	// 0 ￼ ￼| Neue Kundensystem-ID zurückmelden
 	// 1	| Letzte verarbeitete Nachrichtennummer zurückmelden ￼ ￼
 	// 2 ￼ ￼| Signatur-ID zurückmelden
-	SyncModus *NumberDataElement
+	SyncModus *dataelement.NumberDataElement
 }
 
-func (s *SynchronisationSegment) elements() []DataElement {
-	return []DataElement{
+func (s *SynchronisationSegment) elements() []dataelement.DataElement {
+	return []dataelement.DataElement{
 		s.SyncModus,
 	}
 }

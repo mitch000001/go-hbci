@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"fmt"
 	"reflect"
+
+	"github.com/mitch000001/go-hbci/dataelement"
 )
 
 var bankSegments = map[string]Segment{
@@ -253,7 +255,7 @@ type SegmentSequence []Segment
 
 var validHBCIVersions = []int{201, 210, 220}
 
-func NewReferencingMessageHeaderSegment(size int, hbciVersion int, dialogId string, number int, referencedMessage *ReferenceMessage) *MessageHeaderSegment {
+func NewReferencingMessageHeaderSegment(size int, hbciVersion int, dialogId string, number int, referencedMessage *dataelement.ReferenceMessage) *MessageHeaderSegment {
 	m := NewMessageHeaderSegment(size, hbciVersion, dialogId, number)
 	m.Ref = referencedMessage
 	return m
@@ -261,10 +263,10 @@ func NewReferencingMessageHeaderSegment(size int, hbciVersion int, dialogId stri
 
 func NewMessageHeaderSegment(size int, hbciVersion int, dialogId string, number int) *MessageHeaderSegment {
 	m := &MessageHeaderSegment{
-		Size:        NewDigitDataElement(size, 12),
-		HBCIVersion: NewNumberDataElement(hbciVersion, 3),
-		DialogID:    NewIdentificationDataElement(dialogId),
-		Number:      NewNumberDataElement(number, 4),
+		Size:        dataelement.NewDigitDataElement(size, 12),
+		HBCIVersion: dataelement.NewNumberDataElement(hbciVersion, 3),
+		DialogID:    dataelement.NewIdentificationDataElement(dialogId),
+		Number:      dataelement.NewNumberDataElement(number, 4),
 	}
 	m.Segment = NewBasicSegment("HNHBK", 1, 3, m)
 	return m
@@ -272,15 +274,15 @@ func NewMessageHeaderSegment(size int, hbciVersion int, dialogId string, number 
 
 type MessageHeaderSegment struct {
 	Segment
-	Size        *DigitDataElement
-	HBCIVersion *NumberDataElement
-	DialogID    *IdentificationDataElement
-	Number      *NumberDataElement
-	Ref         *ReferenceMessage
+	Size        *dataelement.DigitDataElement
+	HBCIVersion *dataelement.NumberDataElement
+	DialogID    *dataelement.IdentificationDataElement
+	Number      *dataelement.NumberDataElement
+	Ref         *dataelement.ReferenceMessage
 }
 
-func (m *MessageHeaderSegment) elements() []DataElement {
-	return []DataElement{
+func (m *MessageHeaderSegment) elements() []dataelement.DataElement {
+	return []dataelement.DataElement{
 		m.Size,
 		m.HBCIVersion,
 		m.DialogID,
@@ -290,12 +292,12 @@ func (m *MessageHeaderSegment) elements() []DataElement {
 }
 
 func (m *MessageHeaderSegment) SetSize(size int) {
-	m.Size = NewDigitDataElement(size, 12)
+	m.Size = dataelement.NewDigitDataElement(size, 12)
 }
 
 func NewMessageEndSegment(segmentNumber, messageNumber int) *MessageEndSegment {
 	end := &MessageEndSegment{
-		Number: NewNumberDataElement(messageNumber, 4),
+		Number: dataelement.NewNumberDataElement(messageNumber, 4),
 	}
 	end.Segment = NewBasicSegment("HNHBS", segmentNumber, 1, end)
 	return end
@@ -303,45 +305,11 @@ func NewMessageEndSegment(segmentNumber, messageNumber int) *MessageEndSegment {
 
 type MessageEndSegment struct {
 	Segment
-	Number *NumberDataElement
+	Number *dataelement.NumberDataElement
 }
 
-func (m *MessageEndSegment) elements() []DataElement {
-	return []DataElement{
+func (m *MessageEndSegment) elements() []dataelement.DataElement {
+	return []dataelement.DataElement{
 		m.Number,
-	}
-}
-
-func NewReferenceMessage(dialogId string, messageNumber int) *ReferenceMessage {
-	r := &ReferenceMessage{
-		DialogID:      NewIdentificationDataElement(dialogId),
-		MessageNumber: NewNumberDataElement(messageNumber, 4),
-	}
-	r.DataElement = NewDataElementGroup(ReferenceMessageDEG, 2, r)
-	return r
-}
-
-type ReferenceMessage struct {
-	DataElement
-	DialogID      *IdentificationDataElement
-	MessageNumber *NumberDataElement
-}
-
-func (r *ReferenceMessage) IsValid() bool {
-	if r.DialogID == nil || r.MessageNumber == nil {
-		return false
-	} else {
-		return r.DataElement.IsValid()
-	}
-}
-
-func (r *ReferenceMessage) Value() interface{} {
-	return r
-}
-
-func (r *ReferenceMessage) GroupDataElements() []DataElement {
-	return []DataElement{
-		r.DialogID,
-		r.MessageNumber,
 	}
 }

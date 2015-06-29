@@ -13,6 +13,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/mitch000001/go-hbci/dataelement"
 )
 
 const initialDialogID = "0"
@@ -23,7 +25,7 @@ type Dialog interface {
 	Init() (string, error)
 }
 
-func newDialog(bankId BankId, hbciUrl string, clientId string, signatureProvider SignatureProvider, encryptionProvider EncryptionProvider) *dialog {
+func newDialog(bankId dataelement.BankId, hbciUrl string, clientId string, signatureProvider SignatureProvider, encryptionProvider EncryptionProvider) *dialog {
 	return &dialog{
 		hbciUrl:            hbciUrl,
 		BankID:             bankId,
@@ -36,7 +38,7 @@ func newDialog(bankId BankId, hbciUrl string, clientId string, signatureProvider
 
 type dialog struct {
 	hbciUrl            string
-	BankID             BankId
+	BankID             dataelement.BankId
 	ClientID           string
 	ClientSystemID     string
 	messageCount       int
@@ -113,7 +115,7 @@ func (d *dialog) dial(message []byte) ([]byte, error) {
 	return retBuf.Bytes(), err
 }
 
-func NewPinTanDialog(bankId BankId, hbciUrl string, clientId string) *pinTanDialog {
+func NewPinTanDialog(bankId dataelement.BankId, hbciUrl string, clientId string) *pinTanDialog {
 	signatureProvider := NewPinTanSignatureProvider(nil, "")
 	encryptionProvider := NewPinTanEncryptionProvider(nil, "")
 	d := &pinTanDialog{
@@ -126,15 +128,15 @@ type pinTanDialog struct {
 	*dialog
 	pin           string
 	signingKey    Key
-	pinTanKeyName KeyName
+	pinTanKeyName dataelement.KeyName
 }
 
 func (d *pinTanDialog) SetPin(pin string) {
 	d.pin = pin
-	pinKey := NewPinKey(pin, NewPinTanKeyName(d.BankID, d.ClientID, "S"))
+	pinKey := NewPinKey(pin, dataelement.NewPinTanKeyName(d.BankID, d.ClientID, "S"))
 	d.signingKey = pinKey
 	d.signatureProvider = NewPinTanSignatureProvider(pinKey, d.ClientSystemID)
-	pinKey = NewPinKey(pin, NewPinTanKeyName(d.BankID, d.ClientID, "V"))
+	pinKey = NewPinKey(pin, dataelement.NewPinTanKeyName(d.BankID, d.ClientID, "V"))
 	d.encryptionProvider = NewPinTanEncryptionProvider(pinKey, d.ClientSystemID)
 }
 
@@ -331,12 +333,12 @@ func (d *pinTanDialog) Anonymous(fn func() (string, error)) (string, error) {
 	return string(response), nil
 }
 
-func NewRDHDialog(bankId BankId, hbciUrl string, clientId string) *rdhDialog {
-	key, err := GenerateSigningKey()
+func NewRDHDialog(bankId dataelement.BankId, hbciUrl string, clientId string) *rdhDialog {
+	key, err := dataelement.GenerateSigningKey()
 	if err != nil {
 		panic(err)
 	}
-	signingKey := NewRSAKey(key, NewInitialKeyName(bankId.CountryCode, bankId.ID, clientId, "S"))
+	signingKey := dataelement.NewRSAKey(key, dataelement.NewInitialKeyName(bankId.CountryCode, bankId.ID, clientId, "S"))
 	provider := NewRDHSignatureProvider(signingKey)
 	d := &rdhDialog{
 		dialog:      newDialog(bankId, hbciUrl, clientId, provider, nil),
@@ -414,7 +416,7 @@ type AnonymousDialogMessage struct {
 
 func NewDialogEndSegment(dialogId string) *DialogEndSegment {
 	d := &DialogEndSegment{
-		DialogID: NewIdentificationDataElement(dialogId),
+		DialogID: dataelement.NewIdentificationDataElement(dialogId),
 	}
 	d.Segment = NewBasicSegment("HKEND", 3, 1, d)
 	return d
@@ -422,22 +424,22 @@ func NewDialogEndSegment(dialogId string) *DialogEndSegment {
 
 type DialogEndSegment struct {
 	Segment
-	DialogID *IdentificationDataElement
+	DialogID *dataelement.IdentificationDataElement
 }
 
-func (d *DialogEndSegment) elements() []DataElement {
-	return []DataElement{
+func (d *DialogEndSegment) elements() []dataelement.DataElement {
+	return []dataelement.DataElement{
 		d.DialogID,
 	}
 }
 
 func NewProcessingPreparationSegment(bdpVersion int, udpVersion int, language int) *ProcessingPreparationSegment {
 	p := &ProcessingPreparationSegment{
-		BPDVersion:     NewNumberDataElement(bdpVersion, 3),
-		UPDVersion:     NewNumberDataElement(udpVersion, 3),
-		DialogLanguage: NewNumberDataElement(language, 3),
-		ProductName:    NewAlphaNumericDataElement(productName, 25),
-		ProductVersion: NewAlphaNumericDataElement(productVersion, 5),
+		BPDVersion:     dataelement.NewNumberDataElement(bdpVersion, 3),
+		UPDVersion:     dataelement.NewNumberDataElement(udpVersion, 3),
+		DialogLanguage: dataelement.NewNumberDataElement(language, 3),
+		ProductName:    dataelement.NewAlphaNumericDataElement(productName, 25),
+		ProductVersion: dataelement.NewAlphaNumericDataElement(productVersion, 5),
 	}
 	p.Segment = NewBasicSegment("HKVVB", 4, 2, p)
 	return p
@@ -445,21 +447,21 @@ func NewProcessingPreparationSegment(bdpVersion int, udpVersion int, language in
 
 type ProcessingPreparationSegment struct {
 	Segment
-	BPDVersion *NumberDataElement
-	UPDVersion *NumberDataElement
+	BPDVersion *dataelement.NumberDataElement
+	UPDVersion *dataelement.NumberDataElement
 	// 0 for undefined
 	// Sprachkennzeichen | Bedeutung   | Sprachencode ISO 639 | ISO 8859 Subset | ISO 8859- Codeset
 	// --------------------------------------------------------------------------------------------
 	// 1				 | Deutsch	   | de (German) ￼	      | Deutsch ￼ ￼		| 1 (Latin 1)
 	// 2				 | Englisch	   | en (English)		  | Englisch		| 1 (Latin 1)
 	// 3 				 | Französisch | fr (French)  		  | Französisch ￼	| 1 (Latin 1)
-	DialogLanguage *NumberDataElement
-	ProductName    *AlphaNumericDataElement
-	ProductVersion *AlphaNumericDataElement
+	DialogLanguage *dataelement.NumberDataElement
+	ProductName    *dataelement.AlphaNumericDataElement
+	ProductVersion *dataelement.AlphaNumericDataElement
 }
 
-func (p *ProcessingPreparationSegment) elements() []DataElement {
-	return []DataElement{
+func (p *ProcessingPreparationSegment) elements() []dataelement.DataElement {
+	return []dataelement.DataElement{
 		p.BPDVersion,
 		p.UPDVersion,
 		p.DialogLanguage,
@@ -470,8 +472,8 @@ func (p *ProcessingPreparationSegment) elements() []DataElement {
 
 func NewBankAnnouncementSegment(subject, body string) *BankAnnouncementSegment {
 	b := &BankAnnouncementSegment{
-		Subject: NewAlphaNumericDataElement(subject, 35),
-		Body:    NewTextDataElement(body, 2048),
+		Subject: dataelement.NewAlphaNumericDataElement(subject, 35),
+		Body:    dataelement.NewTextDataElement(body, 2048),
 	}
 	b.Segment = NewBasicSegment("HIKIM", 8, 2, b)
 	return b
@@ -479,12 +481,12 @@ func NewBankAnnouncementSegment(subject, body string) *BankAnnouncementSegment {
 
 type BankAnnouncementSegment struct {
 	Segment
-	Subject *AlphaNumericDataElement
-	Body    *TextDataElement
+	Subject *dataelement.AlphaNumericDataElement
+	Body    *dataelement.TextDataElement
 }
 
-func (b *BankAnnouncementSegment) elements() []DataElement {
-	return []DataElement{
+func (b *BankAnnouncementSegment) elements() []dataelement.DataElement {
+	return []dataelement.DataElement{
 		b.Subject,
 		b.Body,
 	}

@@ -1,17 +1,17 @@
 package hbci
 
-const defaultPinTan = "\x00\x00\x00\x00\x00\x00\x00\x00"
+import "github.com/mitch000001/go-hbci/dataelement"
 
-func NewPinKey(pin string, keyName *KeyName) *PinKey {
+func NewPinKey(pin string, keyName *dataelement.KeyName) *PinKey {
 	return &PinKey{pin: pin, keyName: keyName}
 }
 
 type PinKey struct {
 	pin     string
-	keyName *KeyName
+	keyName *dataelement.KeyName
 }
 
-func (p *PinKey) KeyName() KeyName {
+func (p *PinKey) KeyName() dataelement.KeyName {
 	return *p.keyName
 }
 
@@ -96,28 +96,4 @@ func (p *PinTanSignatureProvider) SignMessage(signedMessage SignedHBCIMessage) e
 
 func (p *PinTanSignatureProvider) NewSignatureHeader(controlReference string, signatureId int) *SignatureHeaderSegment {
 	return NewPinTanSignatureHeaderSegment(controlReference, p.clientSystemId, p.key.KeyName())
-}
-
-func NewPinTanDataElement(pin, tan string) *PinTanDataElement {
-	p := &PinTanDataElement{
-		PIN: NewAlphaNumericDataElement(pin, 6),
-	}
-	if tan != "" {
-		p.TAN = NewAlphaNumericDataElement(tan, 35)
-	}
-	p.DataElement = NewDataElementGroup(PinTanDEG, 2, p)
-	return p
-}
-
-type PinTanDataElement struct {
-	DataElement
-	PIN *AlphaNumericDataElement
-	TAN *AlphaNumericDataElement
-}
-
-func (p *PinTanDataElement) GroupDataElements() []DataElement {
-	return []DataElement{
-		p.PIN,
-		p.TAN,
-	}
 }
