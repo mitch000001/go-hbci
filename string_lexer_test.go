@@ -26,8 +26,6 @@ func TestStringLexer(t *testing.T) {
 		itemTypes = append(itemTypes, item.Type())
 	}
 	expectedItemTypes := []token.TokenType{
-		token.ALPHA_NUMERIC,
-		token.ESCAPE_SEQUENCE,
 		token.TEXT,
 		token.DATA_ELEMENT_SEPARATOR,
 		token.NUMERIC,
@@ -73,33 +71,9 @@ func TestLexAlphaNumeric(t *testing.T) {
 		{"ab!)'", token.ALPHA_NUMERIC, "ab!)"},
 		{"ab!):", token.ALPHA_NUMERIC, "ab!)"},
 		{"ab!)+", token.ALPHA_NUMERIC, "ab!)"},
-		{"ab?'", token.ALPHA_NUMERIC, "ab"},
+		{"ab?''", token.ALPHA_NUMERIC, "ab?'"},
+		{"ab?e", token.ERROR, "Unexpected escape character"},
 		{"ab", token.ERROR, "Unexpected end of input"},
-	}
-	for _, test := range tests {
-		l := NewStringLexer("", test.text)
-		item := l.Next()
-		if item.Type() != test.typ {
-			t.Logf("Input: %q\n", test.text)
-			t.Logf("Expected type to equal %s, got %s\n", test.typ, item.Type())
-			t.Fail()
-		}
-		if item.Value() != test.value {
-			t.Logf("Input: %q\n", test.text)
-			t.Logf("Expected val to equal %q, got %q\n", test.value, item.Value())
-			t.Fail()
-		}
-	}
-}
-
-func TestLexEscapeSequence(t *testing.T) {
-	tests := []testData{
-		{"?'", token.ESCAPE_SEQUENCE, "?'"},
-		{"?+", token.ESCAPE_SEQUENCE, "?+"},
-		{"?:", token.ESCAPE_SEQUENCE, "?:"},
-		{"??", token.ESCAPE_SEQUENCE, "??"},
-		{"?@", token.ESCAPE_SEQUENCE, "?@"},
-		{"?a", token.ERROR, "Malformed Escape Sequence"},
 	}
 	for _, test := range tests {
 		l := NewStringLexer("", test.text)

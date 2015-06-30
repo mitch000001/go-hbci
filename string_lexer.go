@@ -56,7 +56,7 @@ func (l *StringLexer) Next() token.Token {
 			if ok {
 				return item
 			} else {
-				panic("No items left")
+				panic(fmt.Errorf("No items left"))
 			}
 		default:
 			l.state = l.state(l)
@@ -144,9 +144,6 @@ func (l *StringLexer) errorf(format string, args ...interface{}) stringLexerStat
 
 func lexText(l *StringLexer) stringLexerStateFn {
 	switch r := l.next(); {
-	case r == escapeCharacter:
-		l.backup()
-		return lexEscapeSequence
 	case r == dataElementSeparator:
 		l.emit(token.DATA_ELEMENT_SEPARATOR)
 		return lexText
@@ -172,20 +169,16 @@ func lexText(l *StringLexer) stringLexerStateFn {
 	}
 }
 
-func lexEscapeSequence(l *StringLexer) stringLexerStateFn {
-	l.accept("?")
-	if l.accept("?:+'@") {
-		l.emit(token.ESCAPE_SEQUENCE)
-		return lexText
-	} else {
-		return l.errorf("Malformed Escape Sequence")
-	}
-}
-
 func lexAlphaNumeric(l *StringLexer) stringLexerStateFn {
 	text := false
 	for {
 		switch r := l.next(); {
+		case r == escapeCharacter:
+			if p := l.peek(); isSyntaxSymbol(p) {
+				l.next()
+			} else {
+				return l.errorf("Unexpected escape character")
+			}
 		case isSyntaxSymbol(r):
 			l.backup()
 			if text {
