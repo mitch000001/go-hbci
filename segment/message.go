@@ -14,10 +14,10 @@ func NewReferencingMessageHeaderSegment(size int, hbciVersion int, dialogId stri
 
 func NewMessageHeaderSegment(size int, hbciVersion int, dialogId string, number int) *MessageHeaderSegment {
 	m := &MessageHeaderSegment{
-		Size:        dataelement.NewDigitDataElement(size, 12),
-		HBCIVersion: dataelement.NewNumberDataElement(hbciVersion, 3),
-		DialogID:    dataelement.NewIdentificationDataElement(dialogId),
-		Number:      dataelement.NewNumberDataElement(number, 4),
+		Size:        dataelement.NewDigit(size, 12),
+		HBCIVersion: dataelement.NewNumber(hbciVersion, 3),
+		DialogID:    dataelement.NewIdentification(dialogId),
+		Number:      dataelement.NewNumber(number, 4),
 	}
 	m.Segment = NewBasicSegment("HNHBK", 1, 3, m)
 	return m
@@ -43,12 +43,12 @@ func (m *MessageHeaderSegment) elements() []dataelement.DataElement {
 }
 
 func (m *MessageHeaderSegment) SetSize(size int) {
-	m.Size = dataelement.NewDigitDataElement(size, 12)
+	m.Size = dataelement.NewDigit(size, 12)
 }
 
 func NewMessageEndSegment(segmentNumber, messageNumber int) *MessageEndSegment {
 	end := &MessageEndSegment{
-		Number: dataelement.NewNumberDataElement(messageNumber, 4),
+		Number: dataelement.NewNumber(messageNumber, 4),
 	}
 	end.Segment = NewBasicSegment("HNHBS", segmentNumber, 1, end)
 	return end

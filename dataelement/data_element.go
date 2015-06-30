@@ -133,7 +133,7 @@ func (d DataElementType) String() string {
 	return s
 }
 
-func NewDataElement(typ DataElementType, value interface{}, maxLength int) DataElement {
+func New(typ DataElementType, value interface{}, maxLength int) DataElement {
 	return &dataElement{value, typ, maxLength, false}
 }
 
@@ -285,7 +285,7 @@ func unescape(in string) string {
 	return replacer.Replace(in)
 }
 
-func NewAlphaNumericDataElement(val string, maxLength int) *AlphaNumericDataElement {
+func NewAlphaNumeric(val string, maxLength int) *AlphaNumericDataElement {
 	return &AlphaNumericDataElement{&dataElement{val, AlphaNumericDE, maxLength, false}}
 }
 
@@ -313,7 +313,7 @@ func (a *AlphaNumericDataElement) UnmarshalHBCI(value []byte) error {
 	return nil
 }
 
-func NewTextDataElement(val string, maxLength int) *TextDataElement {
+func NewText(val string, maxLength int) *TextDataElement {
 	return &TextDataElement{&dataElement{val, TextDE, maxLength, false}}
 }
 
@@ -332,7 +332,7 @@ func (a *TextDataElement) UnmarshalHBCI(value []byte) error {
 	return nil
 }
 
-func NewDigitDataElement(val, maxLength int) *DigitDataElement {
+func NewDigit(val, maxLength int) *DigitDataElement {
 	return &DigitDataElement{&dataElement{val, DigitDE, maxLength, false}}
 }
 
@@ -356,7 +356,7 @@ func (d *DigitDataElement) UnmarshalHBCI(value []byte) error {
 	return nil
 }
 
-func NewNumberDataElement(val, maxLength int) *NumberDataElement {
+func NewNumber(val, maxLength int) *NumberDataElement {
 	return &NumberDataElement{&dataElement{val, NumberDE, maxLength, false}}
 }
 
@@ -375,7 +375,7 @@ func (n *NumberDataElement) UnmarshalHBCI(value []byte) error {
 	return nil
 }
 
-func NewFloatDataElement(val float64, maxLength int) *FloatDataElement {
+func NewFloat(val float64, maxLength int) *FloatDataElement {
 	return &FloatDataElement{&dataElement{val, FloatDE, maxLength, false}}
 }
 
@@ -402,8 +402,8 @@ func (f *FloatDataElement) UnmarshalHBCI(value []byte) error {
 	return nil
 }
 
-func NewDtausCharsetDataElement(data []byte, maxLength int) *DtausCharsetDataElement {
-	b := NewBinaryDataElement(data, maxLength)
+func NewDtausCharset(data []byte, maxLength int) *DtausCharsetDataElement {
+	b := NewBinary(data, maxLength)
 	b.typ = DTAUSCharsetDE
 	return &DtausCharsetDataElement{b}
 }
@@ -422,12 +422,12 @@ func (d *DtausCharsetDataElement) UnmarshalHBCI(value []byte) error {
 	return nil
 }
 
-type BinaryDataElement struct {
-	*dataElement
+func NewBinary(data []byte, maxLength int) *BinaryDataElement {
+	return &BinaryDataElement{&dataElement{data, BinaryDE, maxLength, false}}
 }
 
-func NewBinaryDataElement(data []byte, maxLength int) *BinaryDataElement {
-	return &BinaryDataElement{&dataElement{data, BinaryDE, maxLength, false}}
+type BinaryDataElement struct {
+	*dataElement
 }
 
 func (b *BinaryDataElement) Val() []byte {
@@ -461,7 +461,7 @@ func (b *BinaryDataElement) UnmarshalHBCI(value []byte) error {
 	return nil
 }
 
-func NewBooleanDataElement(val bool) *BooleanDataElement {
+func NewBoolean(val bool) *BooleanDataElement {
 	return &BooleanDataElement{&dataElement{val, BooleanDE, 1, false}}
 }
 
@@ -493,7 +493,7 @@ func (b *BooleanDataElement) UnmarshalHBCI(value []byte) error {
 	return nil
 }
 
-func NewDateDataElement(date time.Time) *DateDataElement {
+func NewDate(date time.Time) *DateDataElement {
 	return &DateDataElement{&dataElement{date, DateDE, 8, false}}
 }
 
@@ -522,8 +522,8 @@ func (d *DateDataElement) IsValid() bool {
 	return !d.Val().IsZero()
 }
 
-func NewVirtualDateDataElement(date int) *VirtualDateDataElement {
-	n := NewNumberDataElement(date, 8)
+func NewVirtualDate(date int) *VirtualDateDataElement {
+	n := NewNumber(date, 8)
 	n.typ = VirtualDateDE
 	return &VirtualDateDataElement{n}
 }
@@ -537,7 +537,7 @@ func (v *VirtualDateDataElement) Valid() bool {
 	return v.Length() == 8
 }
 
-func NewTimeDataElement(date time.Time) *TimeDataElement {
+func NewTime(date time.Time) *TimeDataElement {
 	return &TimeDataElement{&dataElement{date, DateDE, 6, false}}
 }
 
@@ -566,8 +566,8 @@ func (t *TimeDataElement) IsValid() bool {
 	return !t.Val().IsZero()
 }
 
-func NewIdentificationDataElement(id string) *IdentificationDataElement {
-	an := NewAlphaNumericDataElement(id, 30)
+func NewIdentification(id string) *IdentificationDataElement {
+	an := NewAlphaNumeric(id, 30)
 	an.typ = IdentificationDE
 	return &IdentificationDataElement{an}
 }
@@ -590,8 +590,8 @@ func (i *IdentificationDataElement) UnmarshalHBCI(value []byte) error {
 	return nil
 }
 
-func NewCountryCodeDataElement(code int) *CountryCodeDataElement {
-	d := NewDigitDataElement(code, 3)
+func NewCountryCode(code int) *CountryCodeDataElement {
+	d := NewDigit(code, 3)
 	d.typ = CountryCodeDE
 	return &CountryCodeDataElement{d}
 }
@@ -614,8 +614,8 @@ func (c *CountryCodeDataElement) UnmarshalHBCI(value []byte) error {
 	return nil
 }
 
-func NewCurrencyDataElement(cur string) *CurrencyDataElement {
-	an := NewAlphaNumericDataElement(cur, 3)
+func NewCurrency(cur string) *CurrencyDataElement {
+	an := NewAlphaNumeric(cur, 3)
 	an.typ = CurrencyDE
 	return &CurrencyDataElement{an}
 }
@@ -642,8 +642,8 @@ func (c *CurrencyDataElement) UnmarshalHBCI(value []byte) error {
 	return nil
 }
 
-func NewValueDataElement(val float64) *ValueDataElement {
-	f := NewFloatDataElement(val, 15)
+func NewValue(val float64) *ValueDataElement {
+	f := NewFloat(val, 15)
 	f.typ = ValueDE
 	return &ValueDataElement{f}
 }
@@ -668,10 +668,10 @@ func (v *ValueDataElement) UnmarshalHBCI(value []byte) error {
 
 // GroupDataElementGroups
 
-func NewAmountDataElement(value float64, currency string) *AmountDataElement {
+func NewAmount(value float64, currency string) *AmountDataElement {
 	a := &AmountDataElement{
-		Amount:   NewValueDataElement(value),
-		Currency: NewCurrencyDataElement(currency),
+		Amount:   NewValue(value),
+		Currency: NewCurrency(currency),
 	}
 	a.DataElement = NewGroupDataElementGroup(AmountGDEG, 2, a)
 	return a
@@ -694,10 +694,10 @@ func (a *AmountDataElement) Val() (value float64, currency string) {
 	return a.Amount.Val(), a.Currency.Val()
 }
 
-func NewBankIndentificationDataElement(bankId domain.BankId) *BankIdentificationDataElement {
+func NewBankIndentification(bankId domain.BankId) *BankIdentificationDataElement {
 	b := &BankIdentificationDataElement{
-		CountryCode: NewCountryCodeDataElement(bankId.CountryCode),
-		BankID:      NewAlphaNumericDataElement(bankId.ID, 30),
+		CountryCode: NewCountryCode(bankId.CountryCode),
+		BankID:      NewAlphaNumeric(bankId.ID, 30),
 	}
 	b.DataElement = NewGroupDataElementGroup(BankIdentificationGDEG, 2, b)
 	return b
@@ -716,12 +716,12 @@ func (b *BankIdentificationDataElement) Elements() []DataElement {
 	}
 }
 
-func NewAccountConnectionDataElement(accountId string, subAccountCharacteristic string, countryCode int, bankId string) *AccountConnectionDataElement {
+func NewAccountConnection(accountId string, subAccountCharacteristic string, countryCode int, bankId string) *AccountConnectionDataElement {
 	a := &AccountConnectionDataElement{
-		AccountId:                 NewIdentificationDataElement(accountId),
-		SubAccountCharacteristics: NewIdentificationDataElement(subAccountCharacteristic),
-		CountryCode:               NewCountryCodeDataElement(countryCode),
-		BankId:                    NewAlphaNumericDataElement(bankId, 30),
+		AccountId:                 NewIdentification(accountId),
+		SubAccountCharacteristics: NewIdentification(subAccountCharacteristic),
+		CountryCode:               NewCountryCode(countryCode),
+		BankId:                    NewAlphaNumeric(bankId, 30),
 	}
 	a.DataElement = NewGroupDataElementGroup(AccountConnectionGDEG, 4, a)
 	return a
@@ -744,7 +744,7 @@ func (a *AccountConnectionDataElement) Elements() []DataElement {
 	}
 }
 
-func NewBalanceDataElement(balance domain.Balance, date time.Time) *BalanceDataElement {
+func NewBalance(balance domain.Balance, date time.Time) *BalanceDataElement {
 	var debitCredit string
 	if balance.Amount < 0 {
 		debitCredit = "D"
@@ -752,11 +752,11 @@ func NewBalanceDataElement(balance domain.Balance, date time.Time) *BalanceDataE
 		debitCredit = "C"
 	}
 	b := &BalanceDataElement{
-		DebitCreditIndicator: NewAlphaNumericDataElement(debitCredit, 1),
-		Amount:               NewValueDataElement(math.Abs(balance.Amount)),
-		Currency:             NewCurrencyDataElement(balance.Currency),
-		TransmissionDate:     NewDateDataElement(date),
-		TransmissionTime:     NewTimeDataElement(date),
+		DebitCreditIndicator: NewAlphaNumeric(debitCredit, 1),
+		Amount:               NewValue(math.Abs(balance.Amount)),
+		Currency:             NewCurrency(balance.Currency),
+		TransmissionDate:     NewDate(date),
+		TransmissionTime:     NewTime(date),
 	}
 	b.DataElement = NewGroupDataElementGroup(BalanceGDEG, 5, b)
 	return b
@@ -799,17 +799,17 @@ func (b *BalanceDataElement) Date() time.Time {
 	return b.TransmissionDate.Val()
 }
 
-func NewAddressDataElement(address domain.Address) *AddressDataElement {
+func NewAddress(address domain.Address) *AddressDataElement {
 	a := &AddressDataElement{
-		Name1:       NewAlphaNumericDataElement(address.Name1, 35),
-		Name2:       NewAlphaNumericDataElement(address.Name2, 35),
-		Street:      NewAlphaNumericDataElement(address.Street, 35),
-		PLZ:         NewAlphaNumericDataElement(address.PLZ, 10),
-		City:        NewAlphaNumericDataElement(address.City, 35),
-		CountryCode: NewCountryCodeDataElement(address.CountryCode),
-		Phone:       NewAlphaNumericDataElement(address.Phone, 35),
-		Fax:         NewAlphaNumericDataElement(address.Fax, 35),
-		Email:       NewAlphaNumericDataElement(address.Email, 35),
+		Name1:       NewAlphaNumeric(address.Name1, 35),
+		Name2:       NewAlphaNumeric(address.Name2, 35),
+		Street:      NewAlphaNumeric(address.Street, 35),
+		PLZ:         NewAlphaNumeric(address.PLZ, 10),
+		City:        NewAlphaNumeric(address.City, 35),
+		CountryCode: NewCountryCode(address.CountryCode),
+		Phone:       NewAlphaNumeric(address.Phone, 35),
+		Fax:         NewAlphaNumeric(address.Fax, 35),
+		Email:       NewAlphaNumeric(address.Email, 35),
 	}
 	a.DataElement = NewGroupDataElementGroup(AddressGDEG, 9, a)
 	return a

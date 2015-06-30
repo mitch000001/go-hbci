@@ -70,14 +70,14 @@ func (s *basicSegment) SetReference(ref int) {
 func NewIdentificationSegment(bankId domain.BankId, clientId string, clientSystemId string, systemIdRequired bool) *IdentificationSegment {
 	var clientSystemStatus *dataelement.NumberDataElement
 	if systemIdRequired {
-		clientSystemStatus = dataelement.NewNumberDataElement(1, 1)
+		clientSystemStatus = dataelement.NewNumber(1, 1)
 	} else {
-		clientSystemStatus = dataelement.NewNumberDataElement(0, 1)
+		clientSystemStatus = dataelement.NewNumber(0, 1)
 	}
 	id := &IdentificationSegment{
-		BankId:             dataelement.NewBankIndentificationDataElement(bankId),
-		ClientId:           dataelement.NewIdentificationDataElement(clientId),
-		ClientSystemId:     dataelement.NewIdentificationDataElement(clientSystemId),
+		BankId:             dataelement.NewBankIndentification(bankId),
+		ClientId:           dataelement.NewIdentification(clientId),
+		ClientSystemId:     dataelement.NewIdentification(clientSystemId),
 		ClientSystemStatus: clientSystemStatus,
 	}
 	id.Segment = NewBasicSegment("HKIDN", 3, 2, id)

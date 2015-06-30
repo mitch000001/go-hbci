@@ -2,8 +2,8 @@ package dataelement
 
 func NewReferenceMessage(dialogId string, messageNumber int) *ReferenceMessage {
 	r := &ReferenceMessage{
-		DialogID:      NewIdentificationDataElement(dialogId),
-		MessageNumber: NewNumberDataElement(messageNumber, 4),
+		DialogID:      NewIdentification(dialogId),
+		MessageNumber: NewNumber(messageNumber, 4),
 	}
 	r.DataElement = NewDataElementGroup(ReferenceMessageDEG, 2, r)
 	return r

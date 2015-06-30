@@ -2,7 +2,7 @@ package dataelement
 
 func NewSupportedSecurityMethodDataElement(methodCode string, versions ...int) *SupportedSecurityMethodDataElement {
 	s := &SupportedSecurityMethodDataElement{
-		MethodCode: NewAlphaNumericDataElement(methodCode, 3),
+		MethodCode: NewAlphaNumeric(methodCode, 3),
 		Versions:   NewSecurityMethodVersionDataElement(1, 9, versions...),
 	}
 	s.DataElement = NewDataElementGroup(SupportedSecurityMethodDEG, 2, s)
@@ -30,7 +30,7 @@ func (s *SupportedSecurityMethodDataElement) GroupDataElements() []DataElement {
 func NewSecurityMethodVersionDataElement(min, max int, versions ...int) *SecurityMethodVersionDataElement {
 	versionDEs := make([]DataElement, len(versions))
 	for i, version := range versions {
-		versionDEs[i] = NewNumberDataElement(version, 3)
+		versionDEs[i] = NewNumber(version, 3)
 	}
 	s := &SecurityMethodVersionDataElement{}
 	s.arrayElementGroup = NewArrayElementGroup(SecurityMethodVersionGDEG, min, max, versionDEs...)
@@ -56,7 +56,7 @@ func (s *SecurityMethodVersionDataElement) Versions() []*NumberDataElement {
 func NewSupportedHBCIVersionsDataElement(versions ...int) *SupportedHBCIVersionsDataElement {
 	versionDEs := make([]DataElement, len(versions))
 	for i, version := range versions {
-		versionDEs[i] = NewNumberDataElement(version, 3)
+		versionDEs[i] = NewNumber(version, 3)
 	}
 	s := &SupportedHBCIVersionsDataElement{}
 	s.arrayElementGroup = NewArrayElementGroup(SupportedHBCIVersionDEG, 1, 9, versionDEs...)
@@ -70,7 +70,7 @@ type SupportedHBCIVersionsDataElement struct {
 func NewSupportedLanguagesDataElement(languages ...int) *SupportedLanguagesDataElement {
 	languageDEs := make([]DataElement, len(languages))
 	for i, lang := range languages {
-		languageDEs[i] = NewNumberDataElement(lang, 3)
+		languageDEs[i] = NewNumber(lang, 3)
 	}
 	s := &SupportedLanguagesDataElement{}
 	s.arrayElementGroup = NewArrayElementGroup(SupportedLanguagesDEG, 1, 9, languageDEs...)

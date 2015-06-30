@@ -9,13 +9,13 @@ import (
 
 func NewPinTanEncryptionHeaderSegment(clientSystemId string, keyName domain.KeyName) *EncryptionHeaderSegment {
 	v2 := &EncryptionHeaderVersion2{
-		SecurityFunction:     dataelement.NewAlphaNumericDataElement("998", 3),
-		SecuritySupplierRole: dataelement.NewAlphaNumericDataElement("1", 3),
+		SecurityFunction:     dataelement.NewAlphaNumeric("998", 3),
+		SecuritySupplierRole: dataelement.NewAlphaNumeric("1", 3),
 		SecurityID:           dataelement.NewRDHSecurityIdentificationDataElement(dataelement.SecurityHolderMessageSender, clientSystemId),
 		SecurityDate:         dataelement.NewSecurityDateDataElement(dataelement.SecurityTimestamp, time.Now()),
 		EncryptionAlgorithm:  dataelement.NewPinTanEncryptionAlgorithmDataElement(),
 		KeyName:              dataelement.NewKeyNameDataElement(keyName),
-		CompressionFunction:  dataelement.NewAlphaNumericDataElement("0", 3),
+		CompressionFunction:  dataelement.NewAlphaNumeric("0", 3),
 	}
 	e := &EncryptionHeaderSegment{
 		version: v2,
@@ -26,13 +26,13 @@ func NewPinTanEncryptionHeaderSegment(clientSystemId string, keyName domain.KeyN
 
 func NewEncryptionHeaderSegment(clientSystemId string, keyName domain.KeyName, key []byte) *EncryptionHeaderSegment {
 	v2 := &EncryptionHeaderVersion2{
-		SecurityFunction:     dataelement.NewAlphaNumericDataElement("4", 3),
-		SecuritySupplierRole: dataelement.NewAlphaNumericDataElement("1", 3),
+		SecurityFunction:     dataelement.NewAlphaNumeric("4", 3),
+		SecuritySupplierRole: dataelement.NewAlphaNumeric("1", 3),
 		SecurityID:           dataelement.NewRDHSecurityIdentificationDataElement(dataelement.SecurityHolderMessageSender, clientSystemId),
 		SecurityDate:         dataelement.NewSecurityDateDataElement(dataelement.SecurityTimestamp, time.Now()),
 		EncryptionAlgorithm:  dataelement.NewRDHEncryptionAlgorithmDataElement(key),
 		KeyName:              dataelement.NewKeyNameDataElement(keyName),
-		CompressionFunction:  dataelement.NewAlphaNumericDataElement("0", 3),
+		CompressionFunction:  dataelement.NewAlphaNumeric("0", 3),
 	}
 	e := &EncryptionHeaderSegment{
 		version: v2,
@@ -85,7 +85,7 @@ func (e *EncryptionHeaderVersion2) versionedElements() []dataelement.DataElement
 
 func NewEncryptedDataSegment(encryptedData []byte) *EncryptedDataSegment {
 	e := &EncryptedDataSegment{
-		Data: dataelement.NewBinaryDataElement(encryptedData, -1),
+		Data: dataelement.NewBinary(encryptedData, -1),
 	}
 	e.Segment = NewBasicSegment("HNVSD", 999, 1, e)
 	return e

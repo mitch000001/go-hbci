@@ -2,15 +2,15 @@ package dataelement
 
 func NewReferencingSegmentHeader(id string, number, version, reference int) *SegmentHeader {
 	header := NewSegmentHeader(id, number, version)
-	header.Ref = NewNumberDataElement(reference, 3)
+	header.Ref = NewNumber(reference, 3)
 	return header
 }
 
 func NewSegmentHeader(id string, number, version int) *SegmentHeader {
 	header := &SegmentHeader{
-		ID:      NewAlphaNumericDataElement(id, 6),
-		Number:  NewNumberDataElement(number, 3),
-		Version: NewNumberDataElement(version, 3),
+		ID:      NewAlphaNumeric(id, 6),
+		Number:  NewNumber(number, 3),
+		Version: NewNumber(version, 3),
 	}
 	header.DataElement = NewDataElementGroup(SegmentHeaderDEG, 4, header)
 	return header
@@ -25,11 +25,11 @@ type SegmentHeader struct {
 }
 
 func (s *SegmentHeader) SetNumber(number int) {
-	*s.Number = *NewNumberDataElement(number, 3)
+	*s.Number = *NewNumber(number, 3)
 }
 
 func (s *SegmentHeader) SetReference(ref int) {
-	*s.Ref = *NewNumberDataElement(ref, 3)
+	*s.Ref = *NewNumber(ref, 3)
 }
 
 func (s *SegmentHeader) IsValid() bool {

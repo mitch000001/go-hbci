@@ -16,13 +16,13 @@ func NewCommonBankParameterSegment(
 	supportedHBCIVersions []int,
 	maxMessageSize int) *CommonBankParameterSegment {
 	c := &CommonBankParameterSegment{
-		BPDVersion:               dataelement.NewNumberDataElement(bpdVersion, 3),
-		BankID:                   dataelement.NewBankIndentificationDataElement(bankId),
-		BankName:                 dataelement.NewAlphaNumericDataElement(bankName, 60),
-		BusinessTransactionCount: dataelement.NewNumberDataElement(businessTransactionCount, 3),
+		BPDVersion:               dataelement.NewNumber(bpdVersion, 3),
+		BankID:                   dataelement.NewBankIndentification(bankId),
+		BankName:                 dataelement.NewAlphaNumeric(bankName, 60),
+		BusinessTransactionCount: dataelement.NewNumber(businessTransactionCount, 3),
 		SupportedLanguages:       dataelement.NewSupportedLanguagesDataElement(supportedLanguages...),
 		SupportedHBCIVersions:    dataelement.NewSupportedHBCIVersionsDataElement(supportedHBCIVersions...),
-		MaxMessageSize:           dataelement.NewNumberDataElement(maxMessageSize, 4),
+		MaxMessageSize:           dataelement.NewNumber(maxMessageSize, 4),
 	}
 	header := dataelement.NewReferencingSegmentHeader("HIBPA", 1, 2, HKVVBSegmentNumber)
 	c.Segment = NewBasicSegmentWithHeader(header, c)

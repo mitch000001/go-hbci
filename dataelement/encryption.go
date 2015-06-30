@@ -2,12 +2,12 @@ package dataelement
 
 func NewPinTanEncryptionAlgorithmDataElement() *EncryptionAlgorithmDataElement {
 	e := &EncryptionAlgorithmDataElement{
-		Usage:                      NewAlphaNumericDataElement("2", 3),
-		OperationMode:              NewAlphaNumericDataElement("2", 3),
-		Algorithm:                  NewAlphaNumericDataElement("13", 3),
-		Key:                        NewBinaryDataElement([]byte(defaultPinTan), 512),
-		KeyParamID:                 NewAlphaNumericDataElement("5", 3),
-		InitializationValueParamID: NewAlphaNumericDataElement("1", 3),
+		Usage:                      NewAlphaNumeric("2", 3),
+		OperationMode:              NewAlphaNumeric("2", 3),
+		Algorithm:                  NewAlphaNumeric("13", 3),
+		Key:                        NewBinary([]byte(defaultPinTan), 512),
+		KeyParamID:                 NewAlphaNumeric("5", 3),
+		InitializationValueParamID: NewAlphaNumeric("1", 3),
 	}
 	e.DataElement = NewDataElementGroup(EncryptionAlgorithmDEG, 7, e)
 	return e
@@ -15,12 +15,12 @@ func NewPinTanEncryptionAlgorithmDataElement() *EncryptionAlgorithmDataElement {
 
 func NewRDHEncryptionAlgorithmDataElement(pubKey []byte) *EncryptionAlgorithmDataElement {
 	e := &EncryptionAlgorithmDataElement{
-		Usage:                      NewAlphaNumericDataElement("2", 3),
-		OperationMode:              NewAlphaNumericDataElement("2", 3),
-		Algorithm:                  NewAlphaNumericDataElement("13", 3),
-		Key:                        NewBinaryDataElement(pubKey, 512),
-		KeyParamID:                 NewAlphaNumericDataElement("6", 3),
-		InitializationValueParamID: NewAlphaNumericDataElement("1", 3),
+		Usage:                      NewAlphaNumeric("2", 3),
+		OperationMode:              NewAlphaNumeric("2", 3),
+		Algorithm:                  NewAlphaNumeric("13", 3),
+		Key:                        NewBinary(pubKey, 512),
+		KeyParamID:                 NewAlphaNumeric("6", 3),
+		InitializationValueParamID: NewAlphaNumeric("1", 3),
 	}
 	e.DataElement = NewDataElementGroup(EncryptionAlgorithmDEG, 7, e)
 	return e

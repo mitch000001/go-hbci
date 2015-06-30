@@ -23,7 +23,7 @@ func TestNewDataElement(t *testing.T) {
 		{1234, NumberDE, 3, false, 1234, NumberDE, 4, "1234"},
 	}
 	for _, test := range tests {
-		d := NewDataElement(test.inType, test.inValue, test.inMaxLength)
+		d := New(test.inType, test.inValue, test.inMaxLength)
 
 		expectedOut := test.outValue
 
@@ -70,7 +70,7 @@ func TestNewDataElement(t *testing.T) {
 }
 
 func TestNewAlphaNumericDataElement(t *testing.T) {
-	dataElement := NewAlphaNumericDataElement("abc", 5)
+	dataElement := NewAlphaNumeric("abc", 5)
 
 	expectedType := AlphaNumericDE
 
@@ -117,7 +117,7 @@ func TestNewDigitDataElement(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		d := NewDigitDataElement(test.in, test.inMaxLength)
+		d := NewDigit(test.in, test.inMaxLength)
 		expectedLength := test.outLength
 
 		actualLength := d.Length()
@@ -154,7 +154,7 @@ func TestNewDigitDataElement(t *testing.T) {
 }
 
 func TestDigitDataElementValue(t *testing.T) {
-	d := NewDigitDataElement(1, 2)
+	d := NewDigit(1, 2)
 
 	var expected interface{} = 1
 
@@ -167,7 +167,7 @@ func TestDigitDataElementValue(t *testing.T) {
 }
 
 func TestDigitDataElementType(t *testing.T) {
-	d := NewDigitDataElement(1, 2)
+	d := NewDigit(1, 2)
 
 	expected := DigitDE
 
@@ -188,7 +188,7 @@ func TestNewNumberDataElement(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		d := NewNumberDataElement(test.in, test.inMaxLength)
+		d := NewNumber(test.in, test.inMaxLength)
 		expectedLength := test.outLength
 
 		actualLength := d.Length()
@@ -225,7 +225,7 @@ func TestNewNumberDataElement(t *testing.T) {
 }
 
 func TestNumberDataElementValue(t *testing.T) {
-	d := NewNumberDataElement(1, 2)
+	d := NewNumber(1, 2)
 
 	var expected interface{} = 1
 
@@ -238,7 +238,7 @@ func TestNumberDataElementValue(t *testing.T) {
 }
 
 func TestNumberDataElementType(t *testing.T) {
-	d := NewNumberDataElement(1, 2)
+	d := NewNumber(1, 2)
 
 	expected := NumberDE
 
@@ -251,7 +251,7 @@ func TestNumberDataElementType(t *testing.T) {
 }
 
 func TestBinaryDataElementString(t *testing.T) {
-	b := NewBinaryDataElement([]byte("test123"), 7)
+	b := NewBinary([]byte("test123"), 7)
 
 	expected := "@7@test123"
 
@@ -304,18 +304,18 @@ type testDataElementGroupData struct {
 func TestGroupDataElementGroupString(t *testing.T) {
 	tests := []testDataElementGroupData{
 		{
-			NewAlphaNumericDataElement("abc", 3),
-			NewNumberDataElement(123, 3),
+			NewAlphaNumeric("abc", 3),
+			NewNumber(123, 3),
 			"abc:123",
 		},
 		{
-			NewAlphaNumericDataElement("abc", 3),
+			NewAlphaNumeric("abc", 3),
 			nil,
 			"abc:",
 		},
 		{
 			nil,
-			NewNumberDataElement(123, 3),
+			NewNumber(123, 3),
 			":123",
 		},
 		{
@@ -353,18 +353,18 @@ func TestGroupDataElementGroupUnmarshalHBCI(t *testing.T) {
 	tests := []testDataElementGroupUnmarshalData{
 		{
 			"abc:123",
-			NewAlphaNumericDataElement("abc", 3),
-			NewNumberDataElement(123, 3),
+			NewAlphaNumeric("abc", 3),
+			NewNumber(123, 3),
 		},
 		{
 			"abc:",
-			NewAlphaNumericDataElement("abc", 3),
+			NewAlphaNumeric("abc", 3),
 			nil,
 		},
 		{
 			":123",
 			nil,
-			NewNumberDataElement(123, 3),
+			NewNumber(123, 3),
 		},
 		{
 			":",

@@ -7,9 +7,9 @@ import (
 
 func NewFINTS3CommunicationAccessRequestSegment(fromBank domain.BankId, toBank domain.BankId, maxEntries int) *CommunicationAccessRequestSegment {
 	c := &CommunicationAccessRequestSegment{
-		FromBankID: dataelement.NewBankIndentificationDataElement(fromBank),
-		ToBankID:   dataelement.NewBankIndentificationDataElement(toBank),
-		MaxEntries: dataelement.NewNumberDataElement(maxEntries, 4),
+		FromBankID: dataelement.NewBankIndentification(fromBank),
+		ToBankID:   dataelement.NewBankIndentification(toBank),
+		MaxEntries: dataelement.NewNumber(maxEntries, 4),
 	}
 	c.Segment = NewBasicSegment("HKKOM", 2, 4, c)
 	return c
@@ -17,10 +17,10 @@ func NewFINTS3CommunicationAccessRequestSegment(fromBank domain.BankId, toBank d
 
 func NewCommunicationAccessRequestSegment(fromBank domain.BankId, toBank domain.BankId, maxEntries int, aufsetzpunkt string) *CommunicationAccessRequestSegment {
 	c := &CommunicationAccessRequestSegment{
-		FromBankID:   dataelement.NewBankIndentificationDataElement(fromBank),
-		ToBankID:     dataelement.NewBankIndentificationDataElement(toBank),
-		MaxEntries:   dataelement.NewNumberDataElement(maxEntries, 4),
-		Aufsetzpunkt: dataelement.NewAlphaNumericDataElement(aufsetzpunkt, 35),
+		FromBankID:   dataelement.NewBankIndentification(fromBank),
+		ToBankID:     dataelement.NewBankIndentification(toBank),
+		MaxEntries:   dataelement.NewNumber(maxEntries, 4),
+		Aufsetzpunkt: dataelement.NewAlphaNumeric(aufsetzpunkt, 35),
 	}
 	c.Segment = NewBasicSegment("HKKOM", 2, 3, c)
 	return c
@@ -48,8 +48,8 @@ const HKKOMSegmentNumber = -1
 
 func NewCommunicationAccessResponseSegment(bankId domain.BankId, language int, params domain.CommunicationParameter) *CommunicationAccessResponseSegment {
 	c := &CommunicationAccessResponseSegment{
-		BankID:              dataelement.NewBankIndentificationDataElement(bankId),
-		StandardLanguage:    dataelement.NewNumberDataElement(language, 3),
+		BankID:              dataelement.NewBankIndentification(bankId),
+		StandardLanguage:    dataelement.NewNumber(language, 3),
 		CommunicationParams: dataelement.NewCommunicationParameterDataElement(params),
 	}
 	header := dataelement.NewReferencingSegmentHeader("HIKOM", 4, 3, HKKOMSegmentNumber)

@@ -4,13 +4,13 @@ func NewAcknowledgementDataElement(code int, referenceDataElement, text string, 
 	paramDataElements := make([]*AlphaNumericDataElement, len(params))
 	if params != nil {
 		for i, p := range params {
-			paramDataElements[i] = NewAlphaNumericDataElement(p, 35)
+			paramDataElements[i] = NewAlphaNumeric(p, 35)
 		}
 	}
 	a := &AcknowledgementDataElement{
-		Code:                 NewDigitDataElement(code, 4),
-		ReferenceDataElement: NewAlphaNumericDataElement(referenceDataElement, 7),
-		Text:                 NewAlphaNumericDataElement(text, 80),
+		Code:                 NewDigit(code, 4),
+		ReferenceDataElement: NewAlphaNumeric(referenceDataElement, 7),
+		Text:                 NewAlphaNumeric(text, 80),
 		Params:               NewParamsDataElement(10, 10, params...),
 	}
 	a.DataElement = NewDataElementGroup(AcknowledgementDEG, 4, a)
@@ -45,7 +45,7 @@ func (a *AcknowledgementDataElement) GroupDataElements() []DataElement {
 func NewParamsDataElement(min, max int, params ...string) *ParamsDataElement {
 	var paramDE []DataElement
 	for _, p := range params {
-		paramDE = append(paramDE, NewAlphaNumericDataElement(p, 35))
+		paramDE = append(paramDE, NewAlphaNumeric(p, 35))
 	}
 	return &ParamsDataElement{arrayElementGroup: NewArrayElementGroup(AcknowlegdementParamsGDEG, min, max, paramDE...)}
 }

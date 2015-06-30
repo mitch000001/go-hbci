@@ -4,7 +4,7 @@ import "github.com/mitch000001/go-hbci/dataelement"
 
 func NewSynchronisationSegment(modus int) *SynchronisationSegment {
 	s := &SynchronisationSegment{
-		SyncModus: dataelement.NewNumberDataElement(modus, 1),
+		SyncModus: dataelement.NewNumber(modus, 1),
 	}
 	s.Segment = NewBasicSegment("HKSYN", 5, 2, s)
 	return s

@@ -22,8 +22,8 @@ func NewRDHSecurityIdentificationDataElement(securityHolder, clientSystemId stri
 		panic(fmt.Errorf("SecurityHolder must be 'MS' or 'MR'"))
 	}
 	s := &SecurityIdentificationDataElement{
-		SecurityHolder: NewAlphaNumericDataElement(holder, 3),
-		ClientSystemID: NewIdentificationDataElement(clientSystemId),
+		SecurityHolder: NewAlphaNumeric(holder, 3),
+		ClientSystemID: NewIdentification(clientSystemId),
 	}
 	s.DataElement = NewDataElementGroup(SecurityIdentificationDEG, 3, s)
 	return s
@@ -60,9 +60,9 @@ func NewSecurityDateDataElement(dateId string, date time.Time) *SecurityDateData
 		panic(fmt.Errorf("DateIdentifier must be 'STS' or 'CRT'"))
 	}
 	s := &SecurityDateDataElement{
-		DateIdentifier: NewAlphaNumericDataElement(id, 3),
-		Date:           NewDateDataElement(date),
-		Time:           NewTimeDataElement(date),
+		DateIdentifier: NewAlphaNumeric(id, 3),
+		Date:           NewDate(date),
+		Time:           NewTime(date),
 	}
 	s.DataElement = NewDataElementGroup(SecurityDateDEG, 3, s)
 	return s
@@ -85,9 +85,9 @@ func (s *SecurityDateDataElement) GroupDataElements() []DataElement {
 
 func NewDefaultHashAlgorithmDataElement() *HashAlgorithmDataElement {
 	h := &HashAlgorithmDataElement{
-		Usage:            NewAlphaNumericDataElement("1", 3),
-		Algorithm:        NewAlphaNumericDataElement("999", 3),
-		AlgorithmParamId: NewAlphaNumericDataElement("1", 3),
+		Usage:            NewAlphaNumeric("1", 3),
+		Algorithm:        NewAlphaNumeric("999", 3),
+		AlgorithmParamId: NewAlphaNumeric("1", 3),
 	}
 	h.DataElement = NewDataElementGroup(HashAlgorithmDEG, 4, h)
 	return h
@@ -116,9 +116,9 @@ func (h *HashAlgorithmDataElement) GroupDataElements() []DataElement {
 
 func NewRDHSignatureAlgorithmDataElement() *SignatureAlgorithmDataElement {
 	s := &SignatureAlgorithmDataElement{
-		Usage:         NewAlphaNumericDataElement("6", 3),
-		Algorithm:     NewAlphaNumericDataElement("10", 3),
-		OperationMode: NewAlphaNumericDataElement("16", 3),
+		Usage:         NewAlphaNumeric("6", 3),
+		Algorithm:     NewAlphaNumeric("10", 3),
+		OperationMode: NewAlphaNumeric("16", 3),
 	}
 	s.DataElement = NewDataElementGroup(SignatureAlgorithmDEG, 3, s)
 	return s
@@ -146,11 +146,11 @@ func (s *SignatureAlgorithmDataElement) GroupDataElements() []DataElement {
 
 func NewKeyNameDataElement(keyName domain.KeyName) *KeyNameDataElement {
 	a := &KeyNameDataElement{
-		Bank:       NewBankIndentificationDataElement(keyName.BankID),
-		UserID:     NewIdentificationDataElement(keyName.UserID),
-		KeyType:    NewAlphaNumericDataElement(keyName.KeyType, 1),
-		KeyNumber:  NewNumberDataElement(keyName.KeyNumber, 3),
-		KeyVersion: NewNumberDataElement(keyName.KeyVersion, 3),
+		Bank:       NewBankIndentification(keyName.BankID),
+		UserID:     NewIdentification(keyName.UserID),
+		KeyType:    NewAlphaNumeric(keyName.KeyType, 1),
+		KeyNumber:  NewNumber(keyName.KeyNumber, 3),
+		KeyVersion: NewNumber(keyName.KeyVersion, 3),
 	}
 	a.DataElement = NewDataElementGroup(KeyNameDEG, 5, a)
 	return a
@@ -189,8 +189,8 @@ func (k *KeyNameDataElement) GroupDataElements() []DataElement {
 
 func NewCertificateDataElement(typ int, certificate []byte) *CertificateDataElement {
 	c := &CertificateDataElement{
-		CertificateType: NewNumberDataElement(typ, 1),
-		Content:         NewBinaryDataElement(certificate, 2048),
+		CertificateType: NewNumber(typ, 1),
+		Content:         NewBinary(certificate, 2048),
 	}
 	c.DataElement = NewDataElementGroup(CertificateDEG, 2, c)
 	return c

@@ -7,7 +7,7 @@ const productVersion = "0.0.1"
 
 func NewDialogEndSegment(dialogId string) *DialogEndSegment {
 	d := &DialogEndSegment{
-		DialogID: dataelement.NewIdentificationDataElement(dialogId),
+		DialogID: dataelement.NewIdentification(dialogId),
 	}
 	d.Segment = NewBasicSegment("HKEND", 3, 1, d)
 	return d
@@ -26,11 +26,11 @@ func (d *DialogEndSegment) elements() []dataelement.DataElement {
 
 func NewProcessingPreparationSegment(bdpVersion int, udpVersion int, language int) *ProcessingPreparationSegment {
 	p := &ProcessingPreparationSegment{
-		BPDVersion:     dataelement.NewNumberDataElement(bdpVersion, 3),
-		UPDVersion:     dataelement.NewNumberDataElement(udpVersion, 3),
-		DialogLanguage: dataelement.NewNumberDataElement(language, 3),
-		ProductName:    dataelement.NewAlphaNumericDataElement(productName, 25),
-		ProductVersion: dataelement.NewAlphaNumericDataElement(productVersion, 5),
+		BPDVersion:     dataelement.NewNumber(bdpVersion, 3),
+		UPDVersion:     dataelement.NewNumber(udpVersion, 3),
+		DialogLanguage: dataelement.NewNumber(language, 3),
+		ProductName:    dataelement.NewAlphaNumeric(productName, 25),
+		ProductVersion: dataelement.NewAlphaNumeric(productVersion, 5),
 	}
 	p.Segment = NewBasicSegment("HKVVB", 4, 2, p)
 	return p
@@ -63,8 +63,8 @@ func (p *ProcessingPreparationSegment) elements() []dataelement.DataElement {
 
 func NewBankAnnouncementSegment(subject, body string) *BankAnnouncementSegment {
 	b := &BankAnnouncementSegment{
-		Subject: dataelement.NewAlphaNumericDataElement(subject, 35),
-		Body:    dataelement.NewTextDataElement(body, 2048),
+		Subject: dataelement.NewAlphaNumeric(subject, 35),
+		Body:    dataelement.NewText(body, 2048),
 	}
 	b.Segment = NewBasicSegment("HIKIM", 8, 2, b)
 	return b

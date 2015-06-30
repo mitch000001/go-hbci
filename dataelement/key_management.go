@@ -12,13 +12,13 @@ func NewPublicKeyDataElement(pubKey *domain.PublicKey) *PublicKeyDataElement {
 		panic(fmt.Errorf("Exponent must equal 65537 (% X)", "65537"))
 	}
 	p := &PublicKeyDataElement{
-		Usage:         NewAlphaNumericDataElement(pubKey.Type, 3),
-		OperationMode: NewAlphaNumericDataElement("16", 3),
-		Cipher:        NewAlphaNumericDataElement("10", 3),
-		Modulus:       NewBinaryDataElement(pubKey.Modulus, 512),
-		ModulusID:     NewAlphaNumericDataElement("12", 3),
-		Exponent:      NewBinaryDataElement(pubKey.Exponent, 512),
-		ExponentID:    NewAlphaNumericDataElement("13", 3),
+		Usage:         NewAlphaNumeric(pubKey.Type, 3),
+		OperationMode: NewAlphaNumeric("16", 3),
+		Cipher:        NewAlphaNumeric("10", 3),
+		Modulus:       NewBinary(pubKey.Modulus, 512),
+		ModulusID:     NewAlphaNumeric("12", 3),
+		Exponent:      NewBinary(pubKey.Exponent, 512),
+		ExponentID:    NewAlphaNumeric("13", 3),
 	}
 	p.DataElement = NewDataElementGroup(PublicKeyDEG, 7, p)
 	return p

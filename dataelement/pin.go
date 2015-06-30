@@ -4,10 +4,10 @@ const defaultPinTan = "\x00\x00\x00\x00\x00\x00\x00\x00"
 
 func NewPinTanDataElement(pin, tan string) *PinTanDataElement {
 	p := &PinTanDataElement{
-		PIN: NewAlphaNumericDataElement(pin, 6),
+		PIN: NewAlphaNumeric(pin, 6),
 	}
 	if tan != "" {
-		p.TAN = NewAlphaNumericDataElement(tan, 35)
+		p.TAN = NewAlphaNumeric(tan, 35)
 	}
 	p.DataElement = NewDataElementGroup(PinTanDEG, 2, p)
 	return p

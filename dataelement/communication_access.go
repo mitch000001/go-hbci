@@ -4,11 +4,11 @@ import "github.com/mitch000001/go-hbci/domain"
 
 func NewCommunicationParameterDataElement(params domain.CommunicationParameter) *CommunicationParameterDataElement {
 	c := &CommunicationParameterDataElement{
-		Protocol:              NewNumberDataElement(params.Protocol, 2),
-		Address:               NewAlphaNumericDataElement(params.Address, 512),
-		AddressAddition:       NewAlphaNumericDataElement(params.AddressAddition, 512),
-		FilterFunction:        NewAlphaNumericDataElement(params.FilterFunction, 3),
-		FilterFunctionVersion: NewNumberDataElement(params.FilterFunctionVersion, 3),
+		Protocol:              NewNumber(params.Protocol, 2),
+		Address:               NewAlphaNumeric(params.Address, 512),
+		AddressAddition:       NewAlphaNumeric(params.AddressAddition, 512),
+		FilterFunction:        NewAlphaNumeric(params.FilterFunction, 3),
+		FilterFunctionVersion: NewNumber(params.FilterFunctionVersion, 3),
 	}
 	c.DataElement = NewDataElementGroup(CommunicationParameterDEG, 5, c)
 	return c

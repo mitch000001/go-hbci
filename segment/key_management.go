@@ -14,8 +14,8 @@ func NewPublicKeyRenewalSegment(number int, keyName domain.KeyName, pubKey *doma
 		panic(fmt.Errorf("KeyType may not be 'B'"))
 	}
 	p := &PublicKeyRenewalSegment{
-		MessageID:  dataelement.NewNumberDataElement(2, 1),
-		FunctionID: dataelement.NewNumberDataElement(112, 3),
+		MessageID:  dataelement.NewNumber(2, 1),
+		FunctionID: dataelement.NewNumber(112, 3),
 		KeyName:    dataelement.NewKeyNameDataElement(keyName),
 		PublicKey:  dataelement.NewPublicKeyDataElement(pubKey),
 	}
@@ -47,8 +47,8 @@ func (p *PublicKeyRenewalSegment) elements() []dataelement.DataElement {
 
 func NewPublicKeyRequestSegment(number int, keyName domain.KeyName) *PublicKeyRequestSegment {
 	p := &PublicKeyRequestSegment{
-		MessageID:  dataelement.NewNumberDataElement(2, 1),
-		FunctionID: dataelement.NewNumberDataElement(124, 3),
+		MessageID:  dataelement.NewNumber(2, 1),
+		FunctionID: dataelement.NewNumber(124, 3),
 		KeyName:    dataelement.NewKeyNameDataElement(keyName),
 	}
 	p.Segment = NewBasicSegment("HKISA", number, 2, p)
@@ -79,10 +79,10 @@ func NewPublicKeyTransmissionSegment(dialogId string, number int, messageReferen
 		panic(fmt.Errorf("Message Reference number must be greater 0"))
 	}
 	p := &PublicKeyTransmissionSegment{
-		MessageID:  dataelement.NewNumberDataElement(1, 1),
-		DialogID:   dataelement.NewIdentificationDataElement(dialogId),
-		MessageRef: dataelement.NewNumberDataElement(messageReference, 4),
-		FunctionID: dataelement.NewNumberDataElement(224, 3),
+		MessageID:  dataelement.NewNumber(1, 1),
+		DialogID:   dataelement.NewIdentification(dialogId),
+		MessageRef: dataelement.NewNumber(messageReference, 4),
+		FunctionID: dataelement.NewNumber(224, 3),
 		KeyName:    dataelement.NewKeyNameDataElement(keyName),
 		PublicKey:  dataelement.NewPublicKeyDataElement(pubKey),
 	}
@@ -133,10 +133,10 @@ func NewPublicKeyRevocationSegment(number int, keyName domain.KeyName, reason st
 		panic(fmt.Errorf("Reason must be one of %v", validRevocationReasons))
 	}
 	p := &PublicKeyRevocationSegment{
-		MessageID:        dataelement.NewNumberDataElement(2, 1),
-		FunctionID:       dataelement.NewNumberDataElement(130, 3),
+		MessageID:        dataelement.NewNumber(2, 1),
+		FunctionID:       dataelement.NewNumber(130, 3),
 		KeyName:          dataelement.NewKeyNameDataElement(keyName),
-		RevocationReason: dataelement.NewAlphaNumericDataElement(reason, 3),
+		RevocationReason: dataelement.NewAlphaNumeric(reason, 3),
 		Date:             dataelement.NewSecurityDateDataElement(dataelement.SecurityTimestamp, time.Now()),
 	}
 	p.Segment = NewBasicSegment("HKSSP", number, 2, p)
@@ -177,12 +177,12 @@ func NewPublicKeyRevocationConfirmationSegment(dialogId string, number int, mess
 		panic(fmt.Errorf("Reason must be one of %v", validRevocationReasons))
 	}
 	p := &PublicKeyRevocationConfirmationSegment{
-		MessageID:        dataelement.NewNumberDataElement(1, 1),
-		DialogID:         dataelement.NewIdentificationDataElement(dialogId),
-		MessageRef:       dataelement.NewNumberDataElement(messageReference, 4),
-		FunctionID:       dataelement.NewNumberDataElement(231, 3),
+		MessageID:        dataelement.NewNumber(1, 1),
+		DialogID:         dataelement.NewIdentification(dialogId),
+		MessageRef:       dataelement.NewNumber(messageReference, 4),
+		FunctionID:       dataelement.NewNumber(231, 3),
 		KeyName:          dataelement.NewKeyNameDataElement(keyName),
-		RevocationReason: dataelement.NewAlphaNumericDataElement(reason, 3),
+		RevocationReason: dataelement.NewAlphaNumeric(reason, 3),
 		Date:             dataelement.NewSecurityDateDataElement(dataelement.SecurityTimestamp, time.Now()),
 	}
 	header := dataelement.NewReferencingSegmentHeader("HISSP", number, 2, refSegment.Header().Number.Val())
