@@ -12,7 +12,7 @@ const (
 	SecurityHolderMessageReceiver = "MR"
 )
 
-func NewRDHSecurityIdentificationDataElement(securityHolder, clientSystemId string) *SecurityIdentificationDataElement {
+func NewRDHSecurityIdentification(securityHolder, clientSystemId string) *SecurityIdentificationDataElement {
 	var holder string
 	if securityHolder == SecurityHolderMessageSender {
 		holder = "1"
@@ -50,7 +50,7 @@ const (
 	CertificateRevocationTime = "CRT"
 )
 
-func NewSecurityDateDataElement(dateId string, date time.Time) *SecurityDateDataElement {
+func NewSecurityDate(dateId string, date time.Time) *SecurityDateDataElement {
 	var id string
 	if dateId == SecurityTimestamp {
 		id = "1"
@@ -83,7 +83,7 @@ func (s *SecurityDateDataElement) GroupDataElements() []DataElement {
 	}
 }
 
-func NewDefaultHashAlgorithmDataElement() *HashAlgorithmDataElement {
+func NewDefaultHashAlgorithm() *HashAlgorithmDataElement {
 	h := &HashAlgorithmDataElement{
 		Usage:            NewAlphaNumeric("1", 3),
 		Algorithm:        NewAlphaNumeric("999", 3),
@@ -114,7 +114,7 @@ func (h *HashAlgorithmDataElement) GroupDataElements() []DataElement {
 	}
 }
 
-func NewRDHSignatureAlgorithmDataElement() *SignatureAlgorithmDataElement {
+func NewRDHSignatureAlgorithm() *SignatureAlgorithmDataElement {
 	s := &SignatureAlgorithmDataElement{
 		Usage:         NewAlphaNumeric("6", 3),
 		Algorithm:     NewAlphaNumeric("10", 3),
@@ -144,7 +144,7 @@ func (s *SignatureAlgorithmDataElement) GroupDataElements() []DataElement {
 	}
 }
 
-func NewKeyNameDataElement(keyName domain.KeyName) *KeyNameDataElement {
+func NewKeyName(keyName domain.KeyName) *KeyNameDataElement {
 	a := &KeyNameDataElement{
 		Bank:       NewBankIndentification(keyName.BankID),
 		UserID:     NewIdentification(keyName.UserID),
@@ -187,7 +187,7 @@ func (k *KeyNameDataElement) GroupDataElements() []DataElement {
 	}
 }
 
-func NewCertificateDataElement(typ int, certificate []byte) *CertificateDataElement {
+func NewCertificate(typ int, certificate []byte) *CertificateDataElement {
 	c := &CertificateDataElement{
 		CertificateType: NewNumber(typ, 1),
 		Content:         NewBinary(certificate, 2048),

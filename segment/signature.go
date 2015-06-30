@@ -13,12 +13,12 @@ func NewPinTanSignatureHeaderSegment(controlReference string, clientSystemId str
 		SecurityControlRef:       dataelement.NewAlphaNumeric(controlReference, 14),
 		SecurityApplicationRange: dataelement.NewAlphaNumeric("1", 3),
 		SecuritySupplierRole:     dataelement.NewAlphaNumeric("1", 3),
-		SecurityID:               dataelement.NewRDHSecurityIdentificationDataElement(dataelement.SecurityHolderMessageSender, clientSystemId),
+		SecurityID:               dataelement.NewRDHSecurityIdentification(dataelement.SecurityHolderMessageSender, clientSystemId),
 		SecurityRefNumber:        dataelement.NewNumber(0, 16),
-		SecurityDate:             dataelement.NewSecurityDateDataElement(dataelement.SecurityTimestamp, time.Now()),
-		HashAlgorithm:            dataelement.NewDefaultHashAlgorithmDataElement(),
-		SignatureAlgorithm:       dataelement.NewRDHSignatureAlgorithmDataElement(),
-		KeyName:                  dataelement.NewKeyNameDataElement(keyName),
+		SecurityDate:             dataelement.NewSecurityDate(dataelement.SecurityTimestamp, time.Now()),
+		HashAlgorithm:            dataelement.NewDefaultHashAlgorithm(),
+		SignatureAlgorithm:       dataelement.NewRDHSignatureAlgorithm(),
+		KeyName:                  dataelement.NewKeyName(keyName),
 	}
 	s := &SignatureHeaderSegment{
 		version: v3,
@@ -33,12 +33,12 @@ func NewRDHSignatureHeaderSegment(controlReference string, signatureId int, clie
 		SecurityControlRef:       dataelement.NewAlphaNumeric(controlReference, 14),
 		SecurityApplicationRange: dataelement.NewAlphaNumeric("1", 3),
 		SecuritySupplierRole:     dataelement.NewAlphaNumeric("1", 3),
-		SecurityID:               dataelement.NewRDHSecurityIdentificationDataElement(dataelement.SecurityHolderMessageSender, clientSystemId),
+		SecurityID:               dataelement.NewRDHSecurityIdentification(dataelement.SecurityHolderMessageSender, clientSystemId),
 		SecurityRefNumber:        dataelement.NewNumber(signatureId, 16),
-		SecurityDate:             dataelement.NewSecurityDateDataElement(dataelement.SecurityTimestamp, time.Now()),
-		HashAlgorithm:            dataelement.NewDefaultHashAlgorithmDataElement(),
-		SignatureAlgorithm:       dataelement.NewRDHSignatureAlgorithmDataElement(),
-		KeyName:                  dataelement.NewKeyNameDataElement(keyName),
+		SecurityDate:             dataelement.NewSecurityDate(dataelement.SecurityTimestamp, time.Now()),
+		HashAlgorithm:            dataelement.NewDefaultHashAlgorithm(),
+		SignatureAlgorithm:       dataelement.NewRDHSignatureAlgorithm(),
+		KeyName:                  dataelement.NewKeyName(keyName),
 	}
 	s := &SignatureHeaderSegment{
 		version: v3,
@@ -126,5 +126,5 @@ func (s *SignatureEndSegment) SetSignature(signature []byte) {
 }
 
 func (s *SignatureEndSegment) SetPinTan(pin, tan string) {
-	s.PinTan = dataelement.NewPinTanDataElement(pin, tan)
+	s.PinTan = dataelement.NewPinTan(pin, tan)
 }

@@ -2,7 +2,7 @@ package dataelement
 
 const defaultPinTan = "\x00\x00\x00\x00\x00\x00\x00\x00"
 
-func NewPinTanDataElement(pin, tan string) *PinTanDataElement {
+func NewPinTan(pin, tan string) *PinTanDataElement {
 	p := &PinTanDataElement{
 		PIN: NewAlphaNumeric(pin, 6),
 	}

@@ -2,7 +2,7 @@ package dataelement
 
 import "github.com/mitch000001/go-hbci/domain"
 
-func NewCommunicationParameterDataElement(params domain.CommunicationParameter) *CommunicationParameterDataElement {
+func NewCommunicationParameter(params domain.CommunicationParameter) *CommunicationParameterDataElement {
 	c := &CommunicationParameterDataElement{
 		Protocol:              NewNumber(params.Protocol, 2),
 		Address:               NewAlphaNumeric(params.Address, 512),

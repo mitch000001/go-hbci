@@ -20,8 +20,8 @@ func NewCommonBankParameterSegment(
 		BankID:                   dataelement.NewBankIndentification(bankId),
 		BankName:                 dataelement.NewAlphaNumeric(bankName, 60),
 		BusinessTransactionCount: dataelement.NewNumber(businessTransactionCount, 3),
-		SupportedLanguages:       dataelement.NewSupportedLanguagesDataElement(supportedLanguages...),
-		SupportedHBCIVersions:    dataelement.NewSupportedHBCIVersionsDataElement(supportedHBCIVersions...),
+		SupportedLanguages:       dataelement.NewSupportedLanguages(supportedLanguages...),
+		SupportedHBCIVersions:    dataelement.NewSupportedHBCIVersions(supportedHBCIVersions...),
 		MaxMessageSize:           dataelement.NewNumber(maxMessageSize, 4),
 	}
 	header := dataelement.NewReferencingSegmentHeader("HIBPA", 1, 2, HKVVBSegmentNumber)
@@ -62,5 +62,16 @@ func (s *SecurityMethodSegment) elements() []dataelement.DataElement {
 	return []dataelement.DataElement{
 		s.MixAllowed,
 		s.SupportedMethods,
+	}
+}
+
+type CompressionMethodSegment struct {
+	Segment
+	SupportedCompressionMethods *dataelement.SupportedCompressionMethodsDataElement
+}
+
+func (c *CompressionMethodSegment) elements() []dataelement.DataElement {
+	return []dataelement.DataElement{
+		c.SupportedCompressionMethods,
 	}
 }

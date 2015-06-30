@@ -1,9 +1,9 @@
 package dataelement
 
-func NewSupportedSecurityMethodDataElement(methodCode string, versions ...int) *SupportedSecurityMethodDataElement {
+func NewSupportedSecurityMethod(methodCode string, versions ...int) *SupportedSecurityMethodDataElement {
 	s := &SupportedSecurityMethodDataElement{
 		MethodCode: NewAlphaNumeric(methodCode, 3),
-		Versions:   NewSecurityMethodVersionDataElement(1, 9, versions...),
+		Versions:   NewSecurityMethodVersions(1, 9, versions...),
 	}
 	s.DataElement = NewDataElementGroup(SupportedSecurityMethodDEG, 2, s)
 	return s
@@ -17,7 +17,7 @@ type SupportedSecurityMethodDataElement struct {
 	// RDH  | RSA-DES-Hybridverfahren
 	MethodCode *AlphaNumericDataElement
 	// At the moment only "1" is allowed
-	Versions *SecurityMethodVersionDataElement
+	Versions *SecurityMethodVersionsDataElement
 }
 
 func (s *SupportedSecurityMethodDataElement) GroupDataElements() []DataElement {
@@ -27,25 +27,25 @@ func (s *SupportedSecurityMethodDataElement) GroupDataElements() []DataElement {
 	}
 }
 
-func NewSecurityMethodVersionDataElement(min, max int, versions ...int) *SecurityMethodVersionDataElement {
+func NewSecurityMethodVersions(min, max int, versions ...int) *SecurityMethodVersionsDataElement {
 	versionDEs := make([]DataElement, len(versions))
 	for i, version := range versions {
 		versionDEs[i] = NewNumber(version, 3)
 	}
-	s := &SecurityMethodVersionDataElement{}
+	s := &SecurityMethodVersionsDataElement{}
 	s.arrayElementGroup = NewArrayElementGroup(SecurityMethodVersionGDEG, min, max, versionDEs...)
 	return s
 }
 
-type SecurityMethodVersionDataElement struct {
+type SecurityMethodVersionsDataElement struct {
 	*arrayElementGroup
 }
 
-func (s *SecurityMethodVersionDataElement) Elements() []DataElement {
+func (s *SecurityMethodVersionsDataElement) Elements() []DataElement {
 	return s.arrayElementGroup.array
 }
 
-func (s *SecurityMethodVersionDataElement) Versions() []*NumberDataElement {
+func (s *SecurityMethodVersionsDataElement) Versions() []*NumberDataElement {
 	versions := make([]*NumberDataElement, len(s.arrayElementGroup.array))
 	for i, version := range s.arrayElementGroup.array {
 		versions[i] = version.(*NumberDataElement)
@@ -53,7 +53,7 @@ func (s *SecurityMethodVersionDataElement) Versions() []*NumberDataElement {
 	return versions
 }
 
-func NewSupportedHBCIVersionsDataElement(versions ...int) *SupportedHBCIVersionsDataElement {
+func NewSupportedHBCIVersions(versions ...int) *SupportedHBCIVersionsDataElement {
 	versionDEs := make([]DataElement, len(versions))
 	for i, version := range versions {
 		versionDEs[i] = NewNumber(version, 3)
@@ -67,7 +67,7 @@ type SupportedHBCIVersionsDataElement struct {
 	*arrayElementGroup
 }
 
-func NewSupportedLanguagesDataElement(languages ...int) *SupportedLanguagesDataElement {
+func NewSupportedLanguages(languages ...int) *SupportedLanguagesDataElement {
 	languageDEs := make([]DataElement, len(languages))
 	for i, lang := range languages {
 		languageDEs[i] = NewNumber(lang, 3)
@@ -87,4 +87,8 @@ func (s *SupportedLanguagesDataElement) Languages() []*NumberDataElement {
 		languages[i] = lang.(*NumberDataElement)
 	}
 	return languages
+}
+
+type SupportedCompressionMethodsDataElement struct {
+	*arrayElementGroup
 }

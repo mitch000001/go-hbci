@@ -50,7 +50,7 @@ func NewCommunicationAccessResponseSegment(bankId domain.BankId, language int, p
 	c := &CommunicationAccessResponseSegment{
 		BankID:              dataelement.NewBankIndentification(bankId),
 		StandardLanguage:    dataelement.NewNumber(language, 3),
-		CommunicationParams: dataelement.NewCommunicationParameterDataElement(params),
+		CommunicationParams: dataelement.NewCommunicationParameter(params),
 	}
 	header := dataelement.NewReferencingSegmentHeader("HIKOM", 4, 3, HKKOMSegmentNumber)
 	c.Segment = NewBasicSegmentWithHeader(header, c)

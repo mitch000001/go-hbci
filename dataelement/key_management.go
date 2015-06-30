@@ -7,7 +7,7 @@ import (
 	"github.com/mitch000001/go-hbci/domain"
 )
 
-func NewPublicKeyDataElement(pubKey *domain.PublicKey) *PublicKeyDataElement {
+func NewPublicKey(pubKey *domain.PublicKey) *PublicKeyDataElement {
 	if !reflect.DeepEqual(pubKey.Exponent, []byte("65537")) {
 		panic(fmt.Errorf("Exponent must equal 65537 (% X)", "65537"))
 	}

@@ -11,10 +11,10 @@ func NewPinTanEncryptionHeaderSegment(clientSystemId string, keyName domain.KeyN
 	v2 := &EncryptionHeaderVersion2{
 		SecurityFunction:     dataelement.NewAlphaNumeric("998", 3),
 		SecuritySupplierRole: dataelement.NewAlphaNumeric("1", 3),
-		SecurityID:           dataelement.NewRDHSecurityIdentificationDataElement(dataelement.SecurityHolderMessageSender, clientSystemId),
-		SecurityDate:         dataelement.NewSecurityDateDataElement(dataelement.SecurityTimestamp, time.Now()),
-		EncryptionAlgorithm:  dataelement.NewPinTanEncryptionAlgorithmDataElement(),
-		KeyName:              dataelement.NewKeyNameDataElement(keyName),
+		SecurityID:           dataelement.NewRDHSecurityIdentification(dataelement.SecurityHolderMessageSender, clientSystemId),
+		SecurityDate:         dataelement.NewSecurityDate(dataelement.SecurityTimestamp, time.Now()),
+		EncryptionAlgorithm:  dataelement.NewPinTanEncryptionAlgorithm(),
+		KeyName:              dataelement.NewKeyName(keyName),
 		CompressionFunction:  dataelement.NewAlphaNumeric("0", 3),
 	}
 	e := &EncryptionHeaderSegment{
@@ -28,10 +28,10 @@ func NewEncryptionHeaderSegment(clientSystemId string, keyName domain.KeyName, k
 	v2 := &EncryptionHeaderVersion2{
 		SecurityFunction:     dataelement.NewAlphaNumeric("4", 3),
 		SecuritySupplierRole: dataelement.NewAlphaNumeric("1", 3),
-		SecurityID:           dataelement.NewRDHSecurityIdentificationDataElement(dataelement.SecurityHolderMessageSender, clientSystemId),
-		SecurityDate:         dataelement.NewSecurityDateDataElement(dataelement.SecurityTimestamp, time.Now()),
-		EncryptionAlgorithm:  dataelement.NewRDHEncryptionAlgorithmDataElement(key),
-		KeyName:              dataelement.NewKeyNameDataElement(keyName),
+		SecurityID:           dataelement.NewRDHSecurityIdentification(dataelement.SecurityHolderMessageSender, clientSystemId),
+		SecurityDate:         dataelement.NewSecurityDate(dataelement.SecurityTimestamp, time.Now()),
+		EncryptionAlgorithm:  dataelement.NewRDHEncryptionAlgorithm(key),
+		KeyName:              dataelement.NewKeyName(keyName),
 		CompressionFunction:  dataelement.NewAlphaNumeric("0", 3),
 	}
 	e := &EncryptionHeaderSegment{

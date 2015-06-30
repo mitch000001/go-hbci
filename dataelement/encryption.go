@@ -1,6 +1,6 @@
 package dataelement
 
-func NewPinTanEncryptionAlgorithmDataElement() *EncryptionAlgorithmDataElement {
+func NewPinTanEncryptionAlgorithm() *EncryptionAlgorithmDataElement {
 	e := &EncryptionAlgorithmDataElement{
 		Usage:                      NewAlphaNumeric("2", 3),
 		OperationMode:              NewAlphaNumeric("2", 3),
@@ -13,7 +13,7 @@ func NewPinTanEncryptionAlgorithmDataElement() *EncryptionAlgorithmDataElement {
 	return e
 }
 
-func NewRDHEncryptionAlgorithmDataElement(pubKey []byte) *EncryptionAlgorithmDataElement {
+func NewRDHEncryptionAlgorithm(pubKey []byte) *EncryptionAlgorithmDataElement {
 	e := &EncryptionAlgorithmDataElement{
 		Usage:                      NewAlphaNumeric("2", 3),
 		OperationMode:              NewAlphaNumeric("2", 3),
