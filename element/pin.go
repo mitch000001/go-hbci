@@ -1,4 +1,4 @@
-package dataelement
+package element
 
 const defaultPinTan = "\x00\x00\x00\x00\x00\x00\x00\x00"
 

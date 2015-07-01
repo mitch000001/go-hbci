@@ -1,4 +1,4 @@
-package dataelement
+package element
 
 func NewAcknowledgement(code int, referenceDataElement, text string, params []string) *AcknowledgementDataElement {
 	paramDataElements := make([]*AlphaNumericDataElement, len(params))

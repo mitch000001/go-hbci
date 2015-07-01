@@ -4,33 +4,33 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/mitch000001/go-hbci/dataelement"
 	"github.com/mitch000001/go-hbci/domain"
+	"github.com/mitch000001/go-hbci/element"
 )
 
 type Segment interface {
-	Header() *dataelement.SegmentHeader
+	Header() *element.SegmentHeader
 	SetNumber(int)
-	DataElements() []dataelement.DataElement
+	DataElements() []element.DataElement
 	String() string
 }
 
 type segment interface {
-	elements() []dataelement.DataElement
+	elements() []element.DataElement
 }
 
 func NewBasicSegment(id string, number int, version int, seg segment) Segment {
-	header := dataelement.NewSegmentHeader(id, number, version)
+	header := element.NewSegmentHeader(id, number, version)
 	return NewBasicSegmentWithHeader(header, seg)
 }
 
-func NewBasicSegmentWithHeader(header *dataelement.SegmentHeader, seg segment) Segment {
+func NewBasicSegmentWithHeader(header *element.SegmentHeader, seg segment) Segment {
 	return &basicSegment{header: header, segment: seg}
 }
 
 type basicSegment struct {
 	segment segment
-	header  *dataelement.SegmentHeader
+	header  *element.SegmentHeader
 }
 
 func (s *basicSegment) String() string {
@@ -44,14 +44,14 @@ func (s *basicSegment) String() string {
 	return strings.Join(elementStrings, "+") + "'"
 }
 
-func (s *basicSegment) DataElements() []dataelement.DataElement {
-	var dataElements []dataelement.DataElement
+func (s *basicSegment) DataElements() []element.DataElement {
+	var dataElements []element.DataElement
 	dataElements = append(dataElements, s.header)
 	dataElements = append(dataElements, s.segment.elements()...)
 	return dataElements
 }
 
-func (s *basicSegment) Header() *dataelement.SegmentHeader {
+func (s *basicSegment) Header() *element.SegmentHeader {
 	return s.header
 }
 
@@ -68,16 +68,16 @@ func (s *basicSegment) SetReference(ref int) {
 }
 
 func NewIdentificationSegment(bankId domain.BankId, clientId string, clientSystemId string, systemIdRequired bool) *IdentificationSegment {
-	var clientSystemStatus *dataelement.NumberDataElement
+	var clientSystemStatus *element.NumberDataElement
 	if systemIdRequired {
-		clientSystemStatus = dataelement.NewNumber(1, 1)
+		clientSystemStatus = element.NewNumber(1, 1)
 	} else {
-		clientSystemStatus = dataelement.NewNumber(0, 1)
+		clientSystemStatus = element.NewNumber(0, 1)
 	}
 	id := &IdentificationSegment{
-		BankId:             dataelement.NewBankIndentification(bankId),
-		ClientId:           dataelement.NewIdentification(clientId),
-		ClientSystemId:     dataelement.NewIdentification(clientSystemId),
+		BankId:             element.NewBankIndentification(bankId),
+		ClientId:           element.NewIdentification(clientId),
+		ClientSystemId:     element.NewIdentification(clientSystemId),
 		ClientSystemStatus: clientSystemStatus,
 	}
 	id.Segment = NewBasicSegment("HKIDN", 3, 2, id)
@@ -86,14 +86,14 @@ func NewIdentificationSegment(bankId domain.BankId, clientId string, clientSyste
 
 type IdentificationSegment struct {
 	Segment
-	BankId             *dataelement.BankIdentificationDataElement
-	ClientId           *dataelement.IdentificationDataElement
-	ClientSystemId     *dataelement.IdentificationDataElement
-	ClientSystemStatus *dataelement.NumberDataElement
+	BankId             *element.BankIdentificationDataElement
+	ClientId           *element.IdentificationDataElement
+	ClientSystemId     *element.IdentificationDataElement
+	ClientSystemStatus *element.NumberDataElement
 }
 
-func (i *IdentificationSegment) elements() []dataelement.DataElement {
-	return []dataelement.DataElement{
+func (i *IdentificationSegment) elements() []element.DataElement {
+	return []element.DataElement{
 		i.BankId,
 		i.ClientId,
 		i.ClientSystemId,

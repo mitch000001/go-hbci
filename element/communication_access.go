@@ -1,4 +1,4 @@
-package dataelement
+package element
 
 import "github.com/mitch000001/go-hbci/domain"
 

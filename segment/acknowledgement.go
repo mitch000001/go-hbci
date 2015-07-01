@@ -1,15 +1,15 @@
 package segment
 
-import "github.com/mitch000001/go-hbci/dataelement"
+import "github.com/mitch000001/go-hbci/element"
 
 type MessageAcknowledgement struct {
 	Segment
-	Acknowledgements []*dataelement.AcknowledgementDataElement
+	Acknowledgements []*element.AcknowledgementDataElement
 }
 
-func (m *MessageAcknowledgement) elements() []dataelement.DataElement {
-	m.Acknowledgements = make([]*dataelement.AcknowledgementDataElement, 99)
-	dataElements := make([]dataelement.DataElement, 99)
+func (m *MessageAcknowledgement) elements() []element.DataElement {
+	m.Acknowledgements = make([]*element.AcknowledgementDataElement, 99)
+	dataElements := make([]element.DataElement, 99)
 	for i, _ := range dataElements {
 		dataElements[i] = m.Acknowledgements[i]
 	}
@@ -18,12 +18,12 @@ func (m *MessageAcknowledgement) elements() []dataelement.DataElement {
 
 type SegmentAcknowledgement struct {
 	Segment
-	Acknowledgements []*dataelement.AcknowledgementDataElement
+	Acknowledgements []*element.AcknowledgementDataElement
 }
 
-func (s *SegmentAcknowledgement) elements() []dataelement.DataElement {
-	s.Acknowledgements = make([]*dataelement.AcknowledgementDataElement, 99)
-	dataElements := make([]dataelement.DataElement, 99)
+func (s *SegmentAcknowledgement) elements() []element.DataElement {
+	s.Acknowledgements = make([]*element.AcknowledgementDataElement, 99)
+	dataElements := make([]element.DataElement, 99)
 	for i, _ := range dataElements {
 		dataElements[i] = s.Acknowledgements[i]
 	}

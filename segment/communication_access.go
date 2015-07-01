@@ -1,15 +1,15 @@
 package segment
 
 import (
-	"github.com/mitch000001/go-hbci/dataelement"
 	"github.com/mitch000001/go-hbci/domain"
+	"github.com/mitch000001/go-hbci/element"
 )
 
 func NewFINTS3CommunicationAccessRequestSegment(fromBank domain.BankId, toBank domain.BankId, maxEntries int) *CommunicationAccessRequestSegment {
 	c := &CommunicationAccessRequestSegment{
-		FromBankID: dataelement.NewBankIndentification(fromBank),
-		ToBankID:   dataelement.NewBankIndentification(toBank),
-		MaxEntries: dataelement.NewNumber(maxEntries, 4),
+		FromBankID: element.NewBankIndentification(fromBank),
+		ToBankID:   element.NewBankIndentification(toBank),
+		MaxEntries: element.NewNumber(maxEntries, 4),
 	}
 	c.Segment = NewBasicSegment("HKKOM", 2, 4, c)
 	return c
@@ -17,10 +17,10 @@ func NewFINTS3CommunicationAccessRequestSegment(fromBank domain.BankId, toBank d
 
 func NewCommunicationAccessRequestSegment(fromBank domain.BankId, toBank domain.BankId, maxEntries int, aufsetzpunkt string) *CommunicationAccessRequestSegment {
 	c := &CommunicationAccessRequestSegment{
-		FromBankID:   dataelement.NewBankIndentification(fromBank),
-		ToBankID:     dataelement.NewBankIndentification(toBank),
-		MaxEntries:   dataelement.NewNumber(maxEntries, 4),
-		Aufsetzpunkt: dataelement.NewAlphaNumeric(aufsetzpunkt, 35),
+		FromBankID:   element.NewBankIndentification(fromBank),
+		ToBankID:     element.NewBankIndentification(toBank),
+		MaxEntries:   element.NewNumber(maxEntries, 4),
+		Aufsetzpunkt: element.NewAlphaNumeric(aufsetzpunkt, 35),
 	}
 	c.Segment = NewBasicSegment("HKKOM", 2, 3, c)
 	return c
@@ -28,15 +28,15 @@ func NewCommunicationAccessRequestSegment(fromBank domain.BankId, toBank domain.
 
 type CommunicationAccessRequestSegment struct {
 	Segment
-	FromBankID *dataelement.BankIdentificationDataElement
-	ToBankID   *dataelement.BankIdentificationDataElement
-	MaxEntries *dataelement.NumberDataElement
+	FromBankID *element.BankIdentificationDataElement
+	ToBankID   *element.BankIdentificationDataElement
+	MaxEntries *element.NumberDataElement
 	// TODO: find a fitting name
-	Aufsetzpunkt *dataelement.AlphaNumericDataElement
+	Aufsetzpunkt *element.AlphaNumericDataElement
 }
 
-func (c *CommunicationAccessRequestSegment) elements() []dataelement.DataElement {
-	return []dataelement.DataElement{
+func (c *CommunicationAccessRequestSegment) elements() []element.DataElement {
+	return []element.DataElement{
 		c.FromBankID,
 		c.ToBankID,
 		c.MaxEntries,
@@ -48,24 +48,24 @@ const HKKOMSegmentNumber = -1
 
 func NewCommunicationAccessResponseSegment(bankId domain.BankId, language int, params domain.CommunicationParameter) *CommunicationAccessResponseSegment {
 	c := &CommunicationAccessResponseSegment{
-		BankID:              dataelement.NewBankIndentification(bankId),
-		StandardLanguage:    dataelement.NewNumber(language, 3),
-		CommunicationParams: dataelement.NewCommunicationParameter(params),
+		BankID:              element.NewBankIndentification(bankId),
+		StandardLanguage:    element.NewNumber(language, 3),
+		CommunicationParams: element.NewCommunicationParameter(params),
 	}
-	header := dataelement.NewReferencingSegmentHeader("HIKOM", 4, 3, HKKOMSegmentNumber)
+	header := element.NewReferencingSegmentHeader("HIKOM", 4, 3, HKKOMSegmentNumber)
 	c.Segment = NewBasicSegmentWithHeader(header, c)
 	return c
 }
 
 type CommunicationAccessResponseSegment struct {
 	Segment
-	BankID              *dataelement.BankIdentificationDataElement
-	StandardLanguage    *dataelement.NumberDataElement
-	CommunicationParams *dataelement.CommunicationParameterDataElement
+	BankID              *element.BankIdentificationDataElement
+	StandardLanguage    *element.NumberDataElement
+	CommunicationParams *element.CommunicationParameterDataElement
 }
 
-func (c *CommunicationAccessResponseSegment) elements() []dataelement.DataElement {
-	return []dataelement.DataElement{
+func (c *CommunicationAccessResponseSegment) elements() []element.DataElement {
+	return []element.DataElement{
 		c.BankID,
 		c.StandardLanguage,
 		c.CommunicationParams,

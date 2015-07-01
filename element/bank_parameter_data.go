@@ -1,4 +1,4 @@
-package dataelement
+package element
 
 func NewSupportedSecurityMethod(methodCode string, versions ...int) *SupportedSecurityMethodDataElement {
 	s := &SupportedSecurityMethodDataElement{

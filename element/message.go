@@ -1,4 +1,4 @@
-package dataelement
+package element
 
 func NewReferenceMessage(dialogId string, messageNumber int) *ReferenceMessage {
 	r := &ReferenceMessage{

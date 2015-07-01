@@ -1,4 +1,4 @@
-package dataelement
+package element
 
 func NewReferencingSegmentHeader(id string, number, version, reference int) *SegmentHeader {
 	header := NewSegmentHeader(id, number, version)

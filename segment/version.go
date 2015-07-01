@@ -1,8 +1,8 @@
 package segment
 
-import "github.com/mitch000001/go-hbci/dataelement"
+import "github.com/mitch000001/go-hbci/element"
 
 type version interface {
 	version() int
-	versionedElements() []dataelement.DataElement
+	versionedElements() []element.DataElement
 }

@@ -1,13 +1,13 @@
 package segment
 
-import "github.com/mitch000001/go-hbci/dataelement"
+import "github.com/mitch000001/go-hbci/element"
 
 const productName = "go-hbci library"
 const productVersion = "0.0.1"
 
 func NewDialogEndSegment(dialogId string) *DialogEndSegment {
 	d := &DialogEndSegment{
-		DialogID: dataelement.NewIdentification(dialogId),
+		DialogID: element.NewIdentification(dialogId),
 	}
 	d.Segment = NewBasicSegment("HKEND", 3, 1, d)
 	return d
@@ -15,22 +15,22 @@ func NewDialogEndSegment(dialogId string) *DialogEndSegment {
 
 type DialogEndSegment struct {
 	Segment
-	DialogID *dataelement.IdentificationDataElement
+	DialogID *element.IdentificationDataElement
 }
 
-func (d *DialogEndSegment) elements() []dataelement.DataElement {
-	return []dataelement.DataElement{
+func (d *DialogEndSegment) elements() []element.DataElement {
+	return []element.DataElement{
 		d.DialogID,
 	}
 }
 
 func NewProcessingPreparationSegment(bdpVersion int, udpVersion int, language int) *ProcessingPreparationSegment {
 	p := &ProcessingPreparationSegment{
-		BPDVersion:     dataelement.NewNumber(bdpVersion, 3),
-		UPDVersion:     dataelement.NewNumber(udpVersion, 3),
-		DialogLanguage: dataelement.NewNumber(language, 3),
-		ProductName:    dataelement.NewAlphaNumeric(productName, 25),
-		ProductVersion: dataelement.NewAlphaNumeric(productVersion, 5),
+		BPDVersion:     element.NewNumber(bdpVersion, 3),
+		UPDVersion:     element.NewNumber(udpVersion, 3),
+		DialogLanguage: element.NewNumber(language, 3),
+		ProductName:    element.NewAlphaNumeric(productName, 25),
+		ProductVersion: element.NewAlphaNumeric(productVersion, 5),
 	}
 	p.Segment = NewBasicSegment("HKVVB", 4, 2, p)
 	return p
@@ -38,21 +38,21 @@ func NewProcessingPreparationSegment(bdpVersion int, udpVersion int, language in
 
 type ProcessingPreparationSegment struct {
 	Segment
-	BPDVersion *dataelement.NumberDataElement
-	UPDVersion *dataelement.NumberDataElement
+	BPDVersion *element.NumberDataElement
+	UPDVersion *element.NumberDataElement
 	// 0 for undefined
 	// Sprachkennzeichen | Bedeutung   | Sprachencode ISO 639 | ISO 8859 Subset | ISO 8859- Codeset
 	// --------------------------------------------------------------------------------------------
 	// 1				 | Deutsch	   | de (German) ￼	      | Deutsch ￼ ￼		| 1 (Latin 1)
 	// 2				 | Englisch	   | en (English)		  | Englisch		| 1 (Latin 1)
 	// 3 				 | Französisch | fr (French)  		  | Französisch ￼	| 1 (Latin 1)
-	DialogLanguage *dataelement.NumberDataElement
-	ProductName    *dataelement.AlphaNumericDataElement
-	ProductVersion *dataelement.AlphaNumericDataElement
+	DialogLanguage *element.NumberDataElement
+	ProductName    *element.AlphaNumericDataElement
+	ProductVersion *element.AlphaNumericDataElement
 }
 
-func (p *ProcessingPreparationSegment) elements() []dataelement.DataElement {
-	return []dataelement.DataElement{
+func (p *ProcessingPreparationSegment) elements() []element.DataElement {
+	return []element.DataElement{
 		p.BPDVersion,
 		p.UPDVersion,
 		p.DialogLanguage,
@@ -63,8 +63,8 @@ func (p *ProcessingPreparationSegment) elements() []dataelement.DataElement {
 
 func NewBankAnnouncementSegment(subject, body string) *BankAnnouncementSegment {
 	b := &BankAnnouncementSegment{
-		Subject: dataelement.NewAlphaNumeric(subject, 35),
-		Body:    dataelement.NewText(body, 2048),
+		Subject: element.NewAlphaNumeric(subject, 35),
+		Body:    element.NewText(body, 2048),
 	}
 	b.Segment = NewBasicSegment("HIKIM", 8, 2, b)
 	return b
@@ -72,12 +72,12 @@ func NewBankAnnouncementSegment(subject, body string) *BankAnnouncementSegment {
 
 type BankAnnouncementSegment struct {
 	Segment
-	Subject *dataelement.AlphaNumericDataElement
-	Body    *dataelement.TextDataElement
+	Subject *element.AlphaNumericDataElement
+	Body    *element.TextDataElement
 }
 
-func (b *BankAnnouncementSegment) elements() []dataelement.DataElement {
-	return []dataelement.DataElement{
+func (b *BankAnnouncementSegment) elements() []element.DataElement {
+	return []element.DataElement{
 		b.Subject,
 		b.Body,
 	}

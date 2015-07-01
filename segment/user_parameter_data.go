@@ -1,11 +1,11 @@
 package segment
 
-import "github.com/mitch000001/go-hbci/dataelement"
+import "github.com/mitch000001/go-hbci/element"
 
 type CommonUserParameterDataSegment struct {
 	Segment
-	UserId     *dataelement.IdentificationDataElement
-	UPDVersion *dataelement.NumberDataElement
+	UserId     *element.IdentificationDataElement
+	UPDVersion *element.NumberDataElement
 	// Status |￼Beschreibung
 	// -----------------------------------------------------------------
 	// 0	  | Die nicht aufgeführten Geschäftsvorfälle sind gesperrt
@@ -14,15 +14,15 @@ type CommonUserParameterDataSegment struct {
 	//        | der UPD keine Aussage darüber möglich, ob diese erlaubt
 	//        | oder gesperrt sind. Diese Prüfung kann nur online vom
 	//        | Kreditinstitutssystem vorgenommen werden.
-	UPDUsage *dataelement.NumberDataElement
+	UPDUsage *element.NumberDataElement
 }
 
 func (c *CommonUserParameterDataSegment) version() int         { return 2 }
 func (c *CommonUserParameterDataSegment) id() string           { return "HIUPA" }
 func (c *CommonUserParameterDataSegment) referencedId() string { return "HKVVB" }
 
-func (c *CommonUserParameterDataSegment) elements() []dataelement.DataElement {
-	return []dataelement.DataElement{
+func (c *CommonUserParameterDataSegment) elements() []element.DataElement {
+	return []element.DataElement{
 		c.UserId,
 		c.UPDVersion,
 		c.UPDUsage,
@@ -31,22 +31,22 @@ func (c *CommonUserParameterDataSegment) elements() []dataelement.DataElement {
 
 type AccountInformationSegment struct {
 	Segment
-	AccountConnection           *dataelement.AccountConnectionDataElement
-	UserID                      *dataelement.IdentificationDataElement
-	AccountCurrency             *dataelement.CurrencyDataElement
-	Name1                       *dataelement.AlphaNumericDataElement
-	Name2                       *dataelement.AlphaNumericDataElement
-	AccountProductId            *dataelement.AlphaNumericDataElement
-	AccountLimit                *dataelement.AccountLimitDataElement
-	AllowedBusinessTransactions *dataelement.AllowedBusinessTransactionsDataElement
+	AccountConnection           *element.AccountConnectionDataElement
+	UserID                      *element.IdentificationDataElement
+	AccountCurrency             *element.CurrencyDataElement
+	Name1                       *element.AlphaNumericDataElement
+	Name2                       *element.AlphaNumericDataElement
+	AccountProductID            *element.AlphaNumericDataElement
+	AccountLimit                *element.AccountLimitDataElement
+	AllowedBusinessTransactions *element.AllowedBusinessTransactionsDataElement
 }
 
 func (a *AccountInformationSegment) version() int         { return 4 }
 func (a *AccountInformationSegment) id() string           { return "HIUPD" }
 func (a *AccountInformationSegment) referencedId() string { return "HKVVB" }
 
-func (a *AccountInformationSegment) elements() []dataelement.DataElement {
-	return []dataelement.DataElement{
+func (a *AccountInformationSegment) elements() []element.DataElement {
+	return []element.DataElement{
 		a.AccountConnection,
 		a.UserID,
 		a.AccountCurrency,

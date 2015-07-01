@@ -5,8 +5,8 @@ import (
 	"sort"
 	"time"
 
-	"github.com/mitch000001/go-hbci/dataelement"
 	"github.com/mitch000001/go-hbci/domain"
+	"github.com/mitch000001/go-hbci/element"
 )
 
 func NewPublicKeyRenewalSegment(number int, keyName domain.KeyName, pubKey *domain.PublicKey) *PublicKeyRenewalSegment {
@@ -14,10 +14,10 @@ func NewPublicKeyRenewalSegment(number int, keyName domain.KeyName, pubKey *doma
 		panic(fmt.Errorf("KeyType may not be 'B'"))
 	}
 	p := &PublicKeyRenewalSegment{
-		MessageID:  dataelement.NewNumber(2, 1),
-		FunctionID: dataelement.NewNumber(112, 3),
-		KeyName:    dataelement.NewKeyName(keyName),
-		PublicKey:  dataelement.NewPublicKey(pubKey),
+		MessageID:  element.NewNumber(2, 1),
+		FunctionID: element.NewNumber(112, 3),
+		KeyName:    element.NewKeyName(keyName),
+		PublicKey:  element.NewPublicKey(pubKey),
 	}
 	p.Segment = NewBasicSegment("HKSAK", number, 2, p)
 	return p
@@ -26,17 +26,17 @@ func NewPublicKeyRenewalSegment(number int, keyName domain.KeyName, pubKey *doma
 type PublicKeyRenewalSegment struct {
 	Segment
 	// "2" für ‘Key-Management-Nachricht erwartet Antwort’
-	MessageID *dataelement.NumberDataElement
+	MessageID *element.NumberDataElement
 	// "112" für ‘Certificate Replacement’ (Ersatz des Zertifikats))
-	FunctionID *dataelement.NumberDataElement
+	FunctionID *element.NumberDataElement
 	// Key type may not equal 'B'
-	KeyName     *dataelement.KeyNameDataElement
-	PublicKey   *dataelement.PublicKeyDataElement
-	Certificate *dataelement.CertificateDataElement
+	KeyName     *element.KeyNameDataElement
+	PublicKey   *element.PublicKeyDataElement
+	Certificate *element.CertificateDataElement
 }
 
-func (p *PublicKeyRenewalSegment) elements() []dataelement.DataElement {
-	return []dataelement.DataElement{
+func (p *PublicKeyRenewalSegment) elements() []element.DataElement {
+	return []element.DataElement{
 		p.MessageID,
 		p.FunctionID,
 		p.KeyName,
@@ -47,9 +47,9 @@ func (p *PublicKeyRenewalSegment) elements() []dataelement.DataElement {
 
 func NewPublicKeyRequestSegment(number int, keyName domain.KeyName) *PublicKeyRequestSegment {
 	p := &PublicKeyRequestSegment{
-		MessageID:  dataelement.NewNumber(2, 1),
-		FunctionID: dataelement.NewNumber(124, 3),
-		KeyName:    dataelement.NewKeyName(keyName),
+		MessageID:  element.NewNumber(2, 1),
+		FunctionID: element.NewNumber(124, 3),
+		KeyName:    element.NewKeyName(keyName),
 	}
 	p.Segment = NewBasicSegment("HKISA", number, 2, p)
 	return p
@@ -58,15 +58,15 @@ func NewPublicKeyRequestSegment(number int, keyName domain.KeyName) *PublicKeyRe
 type PublicKeyRequestSegment struct {
 	Segment
 	// "2" für ‘Key-Management-Nachricht erwartet Antwort’
-	MessageID *dataelement.NumberDataElement
+	MessageID *element.NumberDataElement
 	// "124" für ‘Certificate Status Request’
-	FunctionID  *dataelement.NumberDataElement
-	KeyName     *dataelement.KeyNameDataElement
-	Certificate *dataelement.CertificateDataElement
+	FunctionID  *element.NumberDataElement
+	KeyName     *element.KeyNameDataElement
+	Certificate *element.CertificateDataElement
 }
 
-func (p *PublicKeyRequestSegment) elements() []dataelement.DataElement {
-	return []dataelement.DataElement{
+func (p *PublicKeyRequestSegment) elements() []element.DataElement {
+	return []element.DataElement{
 		p.MessageID,
 		p.FunctionID,
 		p.KeyName,
@@ -79,14 +79,14 @@ func NewPublicKeyTransmissionSegment(dialogId string, number int, messageReferen
 		panic(fmt.Errorf("Message Reference number must be greater 0"))
 	}
 	p := &PublicKeyTransmissionSegment{
-		MessageID:  dataelement.NewNumber(1, 1),
-		DialogID:   dataelement.NewIdentification(dialogId),
-		MessageRef: dataelement.NewNumber(messageReference, 4),
-		FunctionID: dataelement.NewNumber(224, 3),
-		KeyName:    dataelement.NewKeyName(keyName),
-		PublicKey:  dataelement.NewPublicKey(pubKey),
+		MessageID:  element.NewNumber(1, 1),
+		DialogID:   element.NewIdentification(dialogId),
+		MessageRef: element.NewNumber(messageReference, 4),
+		FunctionID: element.NewNumber(224, 3),
+		KeyName:    element.NewKeyName(keyName),
+		PublicKey:  element.NewPublicKey(pubKey),
 	}
-	header := dataelement.NewReferencingSegmentHeader("HIISA", number, 2, refSegment.Header().Number.Val())
+	header := element.NewReferencingSegmentHeader("HIISA", number, 2, refSegment.Header().Number.Val())
 	p.Segment = NewBasicSegmentWithHeader(header, p)
 	return p
 }
@@ -94,18 +94,18 @@ func NewPublicKeyTransmissionSegment(dialogId string, number int, messageReferen
 type PublicKeyTransmissionSegment struct {
 	Segment
 	// "1" für ‘Key-Management-Nachricht ist Antwort’
-	MessageID  *dataelement.NumberDataElement
-	DialogID   *dataelement.IdentificationDataElement
-	MessageRef *dataelement.NumberDataElement
+	MessageID  *element.NumberDataElement
+	DialogID   *element.IdentificationDataElement
+	MessageRef *element.NumberDataElement
 	// "224" für ‘Certificate Status Notice’
-	FunctionID  *dataelement.NumberDataElement
-	KeyName     *dataelement.KeyNameDataElement
-	PublicKey   *dataelement.PublicKeyDataElement
-	Certificate *dataelement.CertificateDataElement
+	FunctionID  *element.NumberDataElement
+	KeyName     *element.KeyNameDataElement
+	PublicKey   *element.PublicKeyDataElement
+	Certificate *element.CertificateDataElement
 }
 
-func (p *PublicKeyTransmissionSegment) elements() []dataelement.DataElement {
-	return []dataelement.DataElement{
+func (p *PublicKeyTransmissionSegment) elements() []element.DataElement {
+	return []element.DataElement{
 		p.MessageID,
 		p.DialogID,
 		p.MessageRef,
@@ -133,11 +133,11 @@ func NewPublicKeyRevocationSegment(number int, keyName domain.KeyName, reason st
 		panic(fmt.Errorf("Reason must be one of %v", validRevocationReasons))
 	}
 	p := &PublicKeyRevocationSegment{
-		MessageID:        dataelement.NewNumber(2, 1),
-		FunctionID:       dataelement.NewNumber(130, 3),
-		KeyName:          dataelement.NewKeyName(keyName),
-		RevocationReason: dataelement.NewAlphaNumeric(reason, 3),
-		Date:             dataelement.NewSecurityDate(dataelement.SecurityTimestamp, time.Now()),
+		MessageID:        element.NewNumber(2, 1),
+		FunctionID:       element.NewNumber(130, 3),
+		KeyName:          element.NewKeyName(keyName),
+		RevocationReason: element.NewAlphaNumeric(reason, 3),
+		Date:             element.NewSecurityDate(element.SecurityTimestamp, time.Now()),
 	}
 	p.Segment = NewBasicSegment("HKSSP", number, 2, p)
 	return p
@@ -146,20 +146,20 @@ func NewPublicKeyRevocationSegment(number int, keyName domain.KeyName, reason st
 type PublicKeyRevocationSegment struct {
 	Segment
 	// "2" für ‘Key-Management-Nachricht erwartet Antwort’
-	MessageID *dataelement.NumberDataElement
+	MessageID *element.NumberDataElement
 	// "130" für ‘Certificate Revocation’ (Zertifikatswiderruf)
-	FunctionID *dataelement.NumberDataElement
-	KeyName    *dataelement.KeyNameDataElement
+	FunctionID *element.NumberDataElement
+	KeyName    *element.KeyNameDataElement
 	// "1" für ‘Schlüssel des Zertifikatseigentümers kompromittiert’
 	// "501" für ‘Zertifikat ungültig wegen Verdacht auf Kompromittierung’
 	// "999" für ‘gesperrt aus sonstigen Gründen’
-	RevocationReason *dataelement.AlphaNumericDataElement
-	Date             *dataelement.SecurityDateDataElement
-	Certificate      *dataelement.CertificateDataElement
+	RevocationReason *element.AlphaNumericDataElement
+	Date             *element.SecurityDateDataElement
+	Certificate      *element.CertificateDataElement
 }
 
-func (p *PublicKeyRevocationSegment) elements() []dataelement.DataElement {
-	return []dataelement.DataElement{
+func (p *PublicKeyRevocationSegment) elements() []element.DataElement {
+	return []element.DataElement{
 		p.MessageID,
 		p.FunctionID,
 		p.KeyName,
@@ -177,15 +177,15 @@ func NewPublicKeyRevocationConfirmationSegment(dialogId string, number int, mess
 		panic(fmt.Errorf("Reason must be one of %v", validRevocationReasons))
 	}
 	p := &PublicKeyRevocationConfirmationSegment{
-		MessageID:        dataelement.NewNumber(1, 1),
-		DialogID:         dataelement.NewIdentification(dialogId),
-		MessageRef:       dataelement.NewNumber(messageReference, 4),
-		FunctionID:       dataelement.NewNumber(231, 3),
-		KeyName:          dataelement.NewKeyName(keyName),
-		RevocationReason: dataelement.NewAlphaNumeric(reason, 3),
-		Date:             dataelement.NewSecurityDate(dataelement.SecurityTimestamp, time.Now()),
+		MessageID:        element.NewNumber(1, 1),
+		DialogID:         element.NewIdentification(dialogId),
+		MessageRef:       element.NewNumber(messageReference, 4),
+		FunctionID:       element.NewNumber(231, 3),
+		KeyName:          element.NewKeyName(keyName),
+		RevocationReason: element.NewAlphaNumeric(reason, 3),
+		Date:             element.NewSecurityDate(element.SecurityTimestamp, time.Now()),
 	}
-	header := dataelement.NewReferencingSegmentHeader("HISSP", number, 2, refSegment.Header().Number.Val())
+	header := element.NewReferencingSegmentHeader("HISSP", number, 2, refSegment.Header().Number.Val())
 	p.Segment = NewBasicSegmentWithHeader(header, p)
 	return p
 }
@@ -193,22 +193,22 @@ func NewPublicKeyRevocationConfirmationSegment(dialogId string, number int, mess
 type PublicKeyRevocationConfirmationSegment struct {
 	Segment
 	// "1" für ‘Key-Management-Nachricht ist Antwort’
-	MessageID  *dataelement.NumberDataElement
-	DialogID   *dataelement.IdentificationDataElement
-	MessageRef *dataelement.NumberDataElement
+	MessageID  *element.NumberDataElement
+	DialogID   *element.IdentificationDataElement
+	MessageRef *element.NumberDataElement
 	// "231" für ‘Revocation Confirmation’ (Bestätigung des Zertifikatswiderrufs)
-	FunctionID *dataelement.NumberDataElement
-	KeyName    *dataelement.KeyNameDataElement
+	FunctionID *element.NumberDataElement
+	KeyName    *element.KeyNameDataElement
 	// "1" für ‘Schlüssel des Zertifikatseigentümers kompromittiert’
 	// "501" für ‘Zertifikat ungültig wegen Verdacht auf Kompromittierung’
 	// "999" für ‘gesperrt aus sonstigen Gründen’
-	RevocationReason *dataelement.AlphaNumericDataElement
-	Date             *dataelement.SecurityDateDataElement
-	Certificate      *dataelement.CertificateDataElement
+	RevocationReason *element.AlphaNumericDataElement
+	Date             *element.SecurityDateDataElement
+	Certificate      *element.CertificateDataElement
 }
 
-func (p *PublicKeyRevocationConfirmationSegment) elements() []dataelement.DataElement {
-	return []dataelement.DataElement{
+func (p *PublicKeyRevocationConfirmationSegment) elements() []element.DataElement {
+	return []element.DataElement{
 		p.MessageID,
 		p.DialogID,
 		p.MessageRef,

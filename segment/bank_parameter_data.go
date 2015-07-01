@@ -1,8 +1,8 @@
 package segment
 
 import (
-	"github.com/mitch000001/go-hbci/dataelement"
 	"github.com/mitch000001/go-hbci/domain"
+	"github.com/mitch000001/go-hbci/element"
 )
 
 var HKVVBSegmentNumber = -1
@@ -16,32 +16,32 @@ func NewCommonBankParameterSegment(
 	supportedHBCIVersions []int,
 	maxMessageSize int) *CommonBankParameterSegment {
 	c := &CommonBankParameterSegment{
-		BPDVersion:               dataelement.NewNumber(bpdVersion, 3),
-		BankID:                   dataelement.NewBankIndentification(bankId),
-		BankName:                 dataelement.NewAlphaNumeric(bankName, 60),
-		BusinessTransactionCount: dataelement.NewNumber(businessTransactionCount, 3),
-		SupportedLanguages:       dataelement.NewSupportedLanguages(supportedLanguages...),
-		SupportedHBCIVersions:    dataelement.NewSupportedHBCIVersions(supportedHBCIVersions...),
-		MaxMessageSize:           dataelement.NewNumber(maxMessageSize, 4),
+		BPDVersion:               element.NewNumber(bpdVersion, 3),
+		BankID:                   element.NewBankIndentification(bankId),
+		BankName:                 element.NewAlphaNumeric(bankName, 60),
+		BusinessTransactionCount: element.NewNumber(businessTransactionCount, 3),
+		SupportedLanguages:       element.NewSupportedLanguages(supportedLanguages...),
+		SupportedHBCIVersions:    element.NewSupportedHBCIVersions(supportedHBCIVersions...),
+		MaxMessageSize:           element.NewNumber(maxMessageSize, 4),
 	}
-	header := dataelement.NewReferencingSegmentHeader("HIBPA", 1, 2, HKVVBSegmentNumber)
+	header := element.NewReferencingSegmentHeader("HIBPA", 1, 2, HKVVBSegmentNumber)
 	c.Segment = NewBasicSegmentWithHeader(header, c)
 	return c
 }
 
 type CommonBankParameterSegment struct {
 	Segment
-	BPDVersion               *dataelement.NumberDataElement
-	BankID                   *dataelement.BankIdentificationDataElement
-	BankName                 *dataelement.AlphaNumericDataElement
-	BusinessTransactionCount *dataelement.NumberDataElement
-	SupportedLanguages       *dataelement.SupportedLanguagesDataElement
-	SupportedHBCIVersions    *dataelement.SupportedHBCIVersionsDataElement
-	MaxMessageSize           *dataelement.NumberDataElement
+	BPDVersion               *element.NumberDataElement
+	BankID                   *element.BankIdentificationDataElement
+	BankName                 *element.AlphaNumericDataElement
+	BusinessTransactionCount *element.NumberDataElement
+	SupportedLanguages       *element.SupportedLanguagesDataElement
+	SupportedHBCIVersions    *element.SupportedHBCIVersionsDataElement
+	MaxMessageSize           *element.NumberDataElement
 }
 
-func (c *CommonBankParameterSegment) elements() []dataelement.DataElement {
-	return []dataelement.DataElement{
+func (c *CommonBankParameterSegment) elements() []element.DataElement {
+	return []element.DataElement{
 		c.BPDVersion,
 		c.BankID,
 		c.BankName,
@@ -54,12 +54,12 @@ func (c *CommonBankParameterSegment) elements() []dataelement.DataElement {
 
 type SecurityMethodSegment struct {
 	Segment
-	MixAllowed       *dataelement.BooleanDataElement
-	SupportedMethods *dataelement.SupportedSecurityMethodDataElement
+	MixAllowed       *element.BooleanDataElement
+	SupportedMethods *element.SupportedSecurityMethodDataElement
 }
 
-func (s *SecurityMethodSegment) elements() []dataelement.DataElement {
-	return []dataelement.DataElement{
+func (s *SecurityMethodSegment) elements() []element.DataElement {
+	return []element.DataElement{
 		s.MixAllowed,
 		s.SupportedMethods,
 	}
@@ -67,11 +67,11 @@ func (s *SecurityMethodSegment) elements() []dataelement.DataElement {
 
 type CompressionMethodSegment struct {
 	Segment
-	SupportedCompressionMethods *dataelement.SupportedCompressionMethodsDataElement
+	SupportedCompressionMethods *element.SupportedCompressionMethodsDataElement
 }
 
-func (c *CompressionMethodSegment) elements() []dataelement.DataElement {
-	return []dataelement.DataElement{
+func (c *CompressionMethodSegment) elements() []element.DataElement {
+	return []element.DataElement{
 		c.SupportedCompressionMethods,
 	}
 }

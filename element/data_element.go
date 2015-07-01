@@ -1,4 +1,4 @@
-package dataelement
+package element
 
 import (
 	"bytes"
