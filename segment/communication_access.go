@@ -11,7 +11,7 @@ func NewFINTS3CommunicationAccessRequestSegment(fromBank domain.BankId, toBank d
 		ToBankID:   element.NewBankIndentification(toBank),
 		MaxEntries: element.NewNumber(maxEntries, 4),
 	}
-	c.Segment = NewBasicSegment("HKKOM", 2, 4, c)
+	c.Segment = NewBasicSegment(2, c)
 	return c
 }
 
@@ -22,7 +22,7 @@ func NewCommunicationAccessRequestSegment(fromBank domain.BankId, toBank domain.
 		MaxEntries:   element.NewNumber(maxEntries, 4),
 		Aufsetzpunkt: element.NewAlphaNumeric(aufsetzpunkt, 35),
 	}
-	c.Segment = NewBasicSegment("HKKOM", 2, 3, c)
+	c.Segment = NewBasicSegment(2, c)
 	return c
 }
 
@@ -34,6 +34,11 @@ type CommunicationAccessRequestSegment struct {
 	// TODO: find a fitting name
 	Aufsetzpunkt *element.AlphaNumericDataElement
 }
+
+func (c *CommunicationAccessRequestSegment) version() int         { return 3 }
+func (c *CommunicationAccessRequestSegment) id() string           { return "HKKOM" }
+func (c *CommunicationAccessRequestSegment) referencedId() string { return "" }
+func (c *CommunicationAccessRequestSegment) sender() string       { return senderUser }
 
 func (c *CommunicationAccessRequestSegment) elements() []element.DataElement {
 	return []element.DataElement{
@@ -63,6 +68,11 @@ type CommunicationAccessResponseSegment struct {
 	StandardLanguage    *element.NumberDataElement
 	CommunicationParams *element.CommunicationParameterDataElement
 }
+
+func (c *CommunicationAccessResponseSegment) version() int         { return 3 }
+func (c *CommunicationAccessResponseSegment) id() string           { return "HIKOM" }
+func (c *CommunicationAccessResponseSegment) referencedId() string { return "HKKOM" }
+func (c *CommunicationAccessResponseSegment) sender() string       { return senderBank }
 
 func (c *CommunicationAccessResponseSegment) elements() []element.DataElement {
 	return []element.DataElement{

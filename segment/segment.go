@@ -8,6 +8,12 @@ import (
 	"github.com/mitch000001/go-hbci/element"
 )
 
+const (
+	senderBank = "I"
+	senderUser = "K"
+	senderBoth = "K/I"
+)
+
 type Segment interface {
 	Header() *element.SegmentHeader
 	SetNumber(int)
@@ -16,11 +22,15 @@ type Segment interface {
 }
 
 type segment interface {
+	version() int
+	id() string
+	referencedId() string
+	sender() string
 	elements() []element.DataElement
 }
 
-func NewBasicSegment(id string, number int, version int, seg segment) Segment {
-	header := element.NewSegmentHeader(id, number, version)
+func NewBasicSegment(number int, seg segment) Segment {
+	header := element.NewSegmentHeader(seg.id(), number, seg.version())
 	return NewBasicSegmentWithHeader(header, seg)
 }
 
@@ -80,7 +90,7 @@ func NewIdentificationSegment(bankId domain.BankId, clientId string, clientSyste
 		ClientSystemId:     element.NewIdentification(clientSystemId),
 		ClientSystemStatus: clientSystemStatus,
 	}
-	id.Segment = NewBasicSegment("HKIDN", 3, 2, id)
+	id.Segment = NewBasicSegment(3, id)
 	return id
 }
 
@@ -91,6 +101,11 @@ type IdentificationSegment struct {
 	ClientSystemId     *element.IdentificationDataElement
 	ClientSystemStatus *element.NumberDataElement
 }
+
+func (i *IdentificationSegment) version() int         { return 2 }
+func (i *IdentificationSegment) id() string           { return "HKIDN" }
+func (i *IdentificationSegment) referencedId() string { return "" }
+func (i *IdentificationSegment) sender() string       { return senderUser }
 
 func (i *IdentificationSegment) elements() []element.DataElement {
 	return []element.DataElement{

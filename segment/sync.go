@@ -6,7 +6,7 @@ func NewSynchronisationSegment(modus int) *SynchronisationSegment {
 	s := &SynchronisationSegment{
 		SyncModus: element.NewNumber(modus, 1),
 	}
-	s.Segment = NewBasicSegment("HKSYN", 5, 2, s)
+	s.Segment = NewBasicSegment(5, s)
 	return s
 }
 
@@ -19,6 +19,11 @@ type SynchronisationSegment struct {
 	// 2 ￼ ￼| Signatur-ID zurückmelden
 	SyncModus *element.NumberDataElement
 }
+
+func (s *SynchronisationSegment) version() int         { return 2 }
+func (s *SynchronisationSegment) id() string           { return "HKSYN" }
+func (s *SynchronisationSegment) referencedId() string { return "" }
+func (s *SynchronisationSegment) sender() string       { return senderUser }
 
 func (s *SynchronisationSegment) elements() []element.DataElement {
 	return []element.DataElement{

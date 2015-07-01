@@ -19,7 +19,7 @@ func NewPublicKeyRenewalSegment(number int, keyName domain.KeyName, pubKey *doma
 		KeyName:    element.NewKeyName(keyName),
 		PublicKey:  element.NewPublicKey(pubKey),
 	}
-	p.Segment = NewBasicSegment("HKSAK", number, 2, p)
+	p.Segment = NewBasicSegment(number, p)
 	return p
 }
 
@@ -34,6 +34,11 @@ type PublicKeyRenewalSegment struct {
 	PublicKey   *element.PublicKeyDataElement
 	Certificate *element.CertificateDataElement
 }
+
+func (p *PublicKeyRenewalSegment) version() int         { return 2 }
+func (p *PublicKeyRenewalSegment) id() string           { return "HKSAK" }
+func (p *PublicKeyRenewalSegment) referencedId() string { return "" }
+func (p *PublicKeyRenewalSegment) sender() string       { return senderUser }
 
 func (p *PublicKeyRenewalSegment) elements() []element.DataElement {
 	return []element.DataElement{
@@ -51,7 +56,7 @@ func NewPublicKeyRequestSegment(number int, keyName domain.KeyName) *PublicKeyRe
 		FunctionID: element.NewNumber(124, 3),
 		KeyName:    element.NewKeyName(keyName),
 	}
-	p.Segment = NewBasicSegment("HKISA", number, 2, p)
+	p.Segment = NewBasicSegment(number, p)
 	return p
 }
 
@@ -64,6 +69,11 @@ type PublicKeyRequestSegment struct {
 	KeyName     *element.KeyNameDataElement
 	Certificate *element.CertificateDataElement
 }
+
+func (p *PublicKeyRequestSegment) version() int         { return 2 }
+func (p *PublicKeyRequestSegment) id() string           { return "HKISA" }
+func (p *PublicKeyRequestSegment) referencedId() string { return "" }
+func (p *PublicKeyRequestSegment) sender() string       { return senderUser }
 
 func (p *PublicKeyRequestSegment) elements() []element.DataElement {
 	return []element.DataElement{
@@ -104,6 +114,11 @@ type PublicKeyTransmissionSegment struct {
 	Certificate *element.CertificateDataElement
 }
 
+func (p *PublicKeyTransmissionSegment) version() int         { return 2 }
+func (p *PublicKeyTransmissionSegment) id() string           { return "HIISA" }
+func (p *PublicKeyTransmissionSegment) referencedId() string { return "HKISA" }
+func (p *PublicKeyTransmissionSegment) sender() string       { return senderBank }
+
 func (p *PublicKeyTransmissionSegment) elements() []element.DataElement {
 	return []element.DataElement{
 		p.MessageID,
@@ -139,7 +154,7 @@ func NewPublicKeyRevocationSegment(number int, keyName domain.KeyName, reason st
 		RevocationReason: element.NewAlphaNumeric(reason, 3),
 		Date:             element.NewSecurityDate(element.SecurityTimestamp, time.Now()),
 	}
-	p.Segment = NewBasicSegment("HKSSP", number, 2, p)
+	p.Segment = NewBasicSegment(number, p)
 	return p
 }
 
@@ -157,6 +172,11 @@ type PublicKeyRevocationSegment struct {
 	Date             *element.SecurityDateDataElement
 	Certificate      *element.CertificateDataElement
 }
+
+func (p *PublicKeyRevocationSegment) version() int         { return 2 }
+func (p *PublicKeyRevocationSegment) id() string           { return "HKSSP" }
+func (p *PublicKeyRevocationSegment) referencedId() string { return "" }
+func (p *PublicKeyRevocationSegment) sender() string       { return senderUser }
 
 func (p *PublicKeyRevocationSegment) elements() []element.DataElement {
 	return []element.DataElement{
@@ -206,6 +226,11 @@ type PublicKeyRevocationConfirmationSegment struct {
 	Date             *element.SecurityDateDataElement
 	Certificate      *element.CertificateDataElement
 }
+
+func (p *PublicKeyRevocationConfirmationSegment) version() int         { return 2 }
+func (p *PublicKeyRevocationConfirmationSegment) id() string           { return "HISSP" }
+func (p *PublicKeyRevocationConfirmationSegment) referencedId() string { return "HKSSP" }
+func (p *PublicKeyRevocationConfirmationSegment) sender() string       { return senderBank }
 
 func (p *PublicKeyRevocationConfirmationSegment) elements() []element.DataElement {
 	return []element.DataElement{

@@ -40,6 +40,11 @@ type CommonBankParameterSegment struct {
 	MaxMessageSize           *element.NumberDataElement
 }
 
+func (c *CommonBankParameterSegment) version() int         { return 2 }
+func (c *CommonBankParameterSegment) id() string           { return "HIBPA" }
+func (c *CommonBankParameterSegment) referencedId() string { return "HKVVB" }
+func (c *CommonBankParameterSegment) sender() string       { return senderBank }
+
 func (c *CommonBankParameterSegment) elements() []element.DataElement {
 	return []element.DataElement{
 		c.BPDVersion,
@@ -58,6 +63,11 @@ type SecurityMethodSegment struct {
 	SupportedMethods *element.SupportedSecurityMethodDataElement
 }
 
+func (s *SecurityMethodSegment) version() int         { return 2 }
+func (s *SecurityMethodSegment) id() string           { return "HISHV" }
+func (s *SecurityMethodSegment) referencedId() string { return "HKVVB" }
+func (s *SecurityMethodSegment) sender() string       { return senderBank }
+
 func (s *SecurityMethodSegment) elements() []element.DataElement {
 	return []element.DataElement{
 		s.MixAllowed,
@@ -69,6 +79,11 @@ type CompressionMethodSegment struct {
 	Segment
 	SupportedCompressionMethods *element.SupportedCompressionMethodsDataElement
 }
+
+func (c *CompressionMethodSegment) version() int         { return 1 }
+func (c *CompressionMethodSegment) id() string           { return "HIKPV" }
+func (c *CompressionMethodSegment) referencedId() string { return "HKVVB" }
+func (c *CompressionMethodSegment) sender() string       { return senderBank }
 
 func (c *CompressionMethodSegment) elements() []element.DataElement {
 	return []element.DataElement{

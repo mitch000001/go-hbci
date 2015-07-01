@@ -8,7 +8,7 @@ import (
 )
 
 func NewPinTanEncryptionHeaderSegment(clientSystemId string, keyName domain.KeyName) *EncryptionHeaderSegment {
-	v2 := &EncryptionHeaderVersion2{
+	e := &EncryptionHeaderSegment{
 		SecurityFunction:     element.NewAlphaNumeric("998", 3),
 		SecuritySupplierRole: element.NewAlphaNumeric("1", 3),
 		SecurityID:           element.NewRDHSecurityIdentification(element.SecurityHolderMessageSender, clientSystemId),
@@ -17,15 +17,12 @@ func NewPinTanEncryptionHeaderSegment(clientSystemId string, keyName domain.KeyN
 		KeyName:              element.NewKeyName(keyName),
 		CompressionFunction:  element.NewAlphaNumeric("0", 3),
 	}
-	e := &EncryptionHeaderSegment{
-		version: v2,
-	}
-	e.Segment = NewBasicSegment("HNVSK", 998, 2, e)
+	e.Segment = NewBasicSegment(998, e)
 	return e
 }
 
 func NewEncryptionHeaderSegment(clientSystemId string, keyName domain.KeyName, key []byte) *EncryptionHeaderSegment {
-	v2 := &EncryptionHeaderVersion2{
+	e := &EncryptionHeaderSegment{
 		SecurityFunction:     element.NewAlphaNumeric("4", 3),
 		SecuritySupplierRole: element.NewAlphaNumeric("1", 3),
 		SecurityID:           element.NewRDHSecurityIdentification(element.SecurityHolderMessageSender, clientSystemId),
@@ -34,23 +31,12 @@ func NewEncryptionHeaderSegment(clientSystemId string, keyName domain.KeyName, k
 		KeyName:              element.NewKeyName(keyName),
 		CompressionFunction:  element.NewAlphaNumeric("0", 3),
 	}
-	e := &EncryptionHeaderSegment{
-		version: v2,
-	}
-	e.Segment = NewBasicSegment("HNVSK", 998, 2, e)
+	e.Segment = NewBasicSegment(998, e)
 	return e
 }
 
 type EncryptionHeaderSegment struct {
 	Segment
-	version
-}
-
-func (e *EncryptionHeaderSegment) elements() []element.DataElement {
-	return e.version.versionedElements()
-}
-
-type EncryptionHeaderVersion2 struct {
 	// "4" for ENC, Encryption (encryption and eventually compression)
 	// "998" for Cleartext
 	SecurityFunction *element.AlphaNumericDataElement
@@ -66,11 +52,12 @@ type EncryptionHeaderVersion2 struct {
 	Certificate          *element.CertificateDataElement
 }
 
-func (e *EncryptionHeaderVersion2) version() int {
-	return 2
-}
+func (e *EncryptionHeaderSegment) version() int         { return 2 }
+func (e *EncryptionHeaderSegment) id() string           { return "HNVSK" }
+func (e *EncryptionHeaderSegment) referencedId() string { return "" }
+func (e *EncryptionHeaderSegment) sender() string       { return senderBoth }
 
-func (e *EncryptionHeaderVersion2) versionedElements() []element.DataElement {
+func (e *EncryptionHeaderSegment) elements() []element.DataElement {
 	return []element.DataElement{
 		e.SecurityFunction,
 		e.SecuritySupplierRole,
@@ -87,7 +74,7 @@ func NewEncryptedDataSegment(encryptedData []byte) *EncryptedDataSegment {
 	e := &EncryptedDataSegment{
 		Data: element.NewBinary(encryptedData, -1),
 	}
-	e.Segment = NewBasicSegment("HNVSD", 999, 1, e)
+	e.Segment = NewBasicSegment(999, e)
 	return e
 }
 
@@ -95,6 +82,11 @@ type EncryptedDataSegment struct {
 	Segment
 	Data *element.BinaryDataElement
 }
+
+func (e *EncryptedDataSegment) version() int         { return 1 }
+func (e *EncryptedDataSegment) id() string           { return "HNVSD" }
+func (e *EncryptedDataSegment) referencedId() string { return "" }
+func (e *EncryptedDataSegment) sender() string       { return senderBoth }
 
 func (e *EncryptedDataSegment) elements() []element.DataElement {
 	return []element.DataElement{

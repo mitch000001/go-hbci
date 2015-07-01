@@ -9,7 +9,7 @@ func NewDialogEndSegment(dialogId string) *DialogEndSegment {
 	d := &DialogEndSegment{
 		DialogID: element.NewIdentification(dialogId),
 	}
-	d.Segment = NewBasicSegment("HKEND", 3, 1, d)
+	d.Segment = NewBasicSegment(3, d)
 	return d
 }
 
@@ -17,6 +17,11 @@ type DialogEndSegment struct {
 	Segment
 	DialogID *element.IdentificationDataElement
 }
+
+func (d *DialogEndSegment) version() int         { return 1 }
+func (d *DialogEndSegment) id() string           { return "HKEND" }
+func (d *DialogEndSegment) referencedId() string { return "" }
+func (d *DialogEndSegment) sender() string       { return senderUser }
 
 func (d *DialogEndSegment) elements() []element.DataElement {
 	return []element.DataElement{
@@ -32,7 +37,7 @@ func NewProcessingPreparationSegment(bdpVersion int, udpVersion int, language in
 		ProductName:    element.NewAlphaNumeric(productName, 25),
 		ProductVersion: element.NewAlphaNumeric(productVersion, 5),
 	}
-	p.Segment = NewBasicSegment("HKVVB", 4, 2, p)
+	p.Segment = NewBasicSegment(4, p)
 	return p
 }
 
@@ -51,6 +56,11 @@ type ProcessingPreparationSegment struct {
 	ProductVersion *element.AlphaNumericDataElement
 }
 
+func (p *ProcessingPreparationSegment) version() int         { return 2 }
+func (p *ProcessingPreparationSegment) id() string           { return "HKVVB" }
+func (p *ProcessingPreparationSegment) referencedId() string { return "" }
+func (p *ProcessingPreparationSegment) sender() string       { return senderUser }
+
 func (p *ProcessingPreparationSegment) elements() []element.DataElement {
 	return []element.DataElement{
 		p.BPDVersion,
@@ -66,7 +76,7 @@ func NewBankAnnouncementSegment(subject, body string) *BankAnnouncementSegment {
 		Subject: element.NewAlphaNumeric(subject, 35),
 		Body:    element.NewText(body, 2048),
 	}
-	b.Segment = NewBasicSegment("HIKIM", 8, 2, b)
+	b.Segment = NewBasicSegment(8, b)
 	return b
 }
 
@@ -75,6 +85,11 @@ type BankAnnouncementSegment struct {
 	Subject *element.AlphaNumericDataElement
 	Body    *element.TextDataElement
 }
+
+func (b *BankAnnouncementSegment) version() int         { return 2 }
+func (b *BankAnnouncementSegment) id() string           { return "HIKIM" }
+func (b *BankAnnouncementSegment) referencedId() string { return "" }
+func (b *BankAnnouncementSegment) sender() string       { return senderBank }
 
 func (b *BankAnnouncementSegment) elements() []element.DataElement {
 	return []element.DataElement{

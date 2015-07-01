@@ -8,7 +8,7 @@ import (
 )
 
 func NewPinTanSignatureHeaderSegment(controlReference string, clientSystemId string, keyName domain.KeyName) *SignatureHeaderSegment {
-	v3 := &SignatureHeaderVersion3{
+	s := &SignatureHeaderSegment{
 		SecurityFunction:         element.NewAlphaNumeric("999", 3),
 		SecurityControlRef:       element.NewAlphaNumeric(controlReference, 14),
 		SecurityApplicationRange: element.NewAlphaNumeric("1", 3),
@@ -20,15 +20,12 @@ func NewPinTanSignatureHeaderSegment(controlReference string, clientSystemId str
 		SignatureAlgorithm:       element.NewRDHSignatureAlgorithm(),
 		KeyName:                  element.NewKeyName(keyName),
 	}
-	s := &SignatureHeaderSegment{
-		version: v3,
-	}
-	s.Segment = NewBasicSegment("HNSHK", 2, 3, s)
+	s.Segment = NewBasicSegment(2, s)
 	return s
 }
 
 func NewRDHSignatureHeaderSegment(controlReference string, signatureId int, clientSystemId string, keyName domain.KeyName) *SignatureHeaderSegment {
-	v3 := &SignatureHeaderVersion3{
+	s := &SignatureHeaderSegment{
 		SecurityFunction:         element.NewAlphaNumeric("1", 3),
 		SecurityControlRef:       element.NewAlphaNumeric(controlReference, 14),
 		SecurityApplicationRange: element.NewAlphaNumeric("1", 3),
@@ -40,23 +37,12 @@ func NewRDHSignatureHeaderSegment(controlReference string, signatureId int, clie
 		SignatureAlgorithm:       element.NewRDHSignatureAlgorithm(),
 		KeyName:                  element.NewKeyName(keyName),
 	}
-	s := &SignatureHeaderSegment{
-		version: v3,
-	}
-	s.Segment = NewBasicSegment("HNSHK", 2, 3, s)
+	s.Segment = NewBasicSegment(2, s)
 	return s
 }
 
 type SignatureHeaderSegment struct {
 	Segment
-	version
-}
-
-func (s *SignatureHeaderSegment) elements() []element.DataElement {
-	return s.version.versionedElements()
-}
-
-type SignatureHeaderVersion3 struct {
 	// "1" for NRO, Non-Repudiation of Origin (RDH)
 	// "2" for AUT, Message Origin Authentication (DDV)
 	// "999" for PIN/TAN
@@ -78,11 +64,12 @@ type SignatureHeaderVersion3 struct {
 	Certificate          *element.CertificateDataElement
 }
 
-func (s SignatureHeaderVersion3) version() int {
-	return 3
-}
+func (s *SignatureHeaderSegment) version() int         { return 3 }
+func (s *SignatureHeaderSegment) id() string           { return "HNSHK" }
+func (s *SignatureHeaderSegment) referencedId() string { return "" }
+func (s *SignatureHeaderSegment) sender() string       { return senderBoth }
 
-func (s *SignatureHeaderVersion3) versionedElements() []element.DataElement {
+func (s *SignatureHeaderSegment) elements() []element.DataElement {
 	return []element.DataElement{
 		s.SecurityFunction,
 		s.SecurityControlRef,
@@ -102,7 +89,7 @@ func NewSignatureEndSegment(number int, controlReference string) *SignatureEndSe
 	s := &SignatureEndSegment{
 		SecurityControlRef: element.NewAlphaNumeric(controlReference, 14),
 	}
-	s.Segment = NewBasicSegment("HNSHA", number, 1, s)
+	s.Segment = NewBasicSegment(number, s)
 	return s
 }
 
@@ -113,6 +100,11 @@ type SignatureEndSegment struct {
 	PinTan             *element.PinTanDataElement
 }
 
+func (s *SignatureEndSegment) version() int         { return 1 }
+func (s *SignatureEndSegment) id() string           { return "HNSHA" }
+func (s *SignatureEndSegment) referencedId() string { return "" }
+func (s *SignatureEndSegment) sender() string       { return senderBoth }
+
 func (s *SignatureEndSegment) elements() []element.DataElement {
 	return []element.DataElement{
 		s.SecurityControlRef,
@@ -122,9 +114,9 @@ func (s *SignatureEndSegment) elements() []element.DataElement {
 }
 
 func (s *SignatureEndSegment) SetSignature(signature []byte) {
-	s.Signature = element.NewBinary(signature, 512)
+	*s.Signature = *element.NewBinary(signature, 512)
 }
 
 func (s *SignatureEndSegment) SetPinTan(pin, tan string) {
-	s.PinTan = element.NewPinTan(pin, tan)
+	*s.PinTan = *element.NewPinTan(pin, tan)
 }

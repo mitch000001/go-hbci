@@ -19,7 +19,7 @@ func NewMessageHeaderSegment(size int, hbciVersion int, dialogId string, number 
 		DialogID:    element.NewIdentification(dialogId),
 		Number:      element.NewNumber(number, 4),
 	}
-	m.Segment = NewBasicSegment("HNHBK", 1, 3, m)
+	m.Segment = NewBasicSegment(1, m)
 	return m
 }
 
@@ -32,6 +32,11 @@ type MessageHeaderSegment struct {
 	Ref         *element.ReferenceMessage
 }
 
+func (m *MessageHeaderSegment) version() int         { return 3 }
+func (m *MessageHeaderSegment) id() string           { return "HNHBK" }
+func (m *MessageHeaderSegment) referencedId() string { return "" }
+func (m *MessageHeaderSegment) sender() string       { return senderBoth }
+
 func (m *MessageHeaderSegment) elements() []element.DataElement {
 	return []element.DataElement{
 		m.Size,
@@ -43,14 +48,14 @@ func (m *MessageHeaderSegment) elements() []element.DataElement {
 }
 
 func (m *MessageHeaderSegment) SetSize(size int) {
-	m.Size = element.NewDigit(size, 12)
+	*m.Size = *element.NewDigit(size, 12)
 }
 
 func NewMessageEndSegment(segmentNumber, messageNumber int) *MessageEndSegment {
 	end := &MessageEndSegment{
 		Number: element.NewNumber(messageNumber, 4),
 	}
-	end.Segment = NewBasicSegment("HNHBS", segmentNumber, 1, end)
+	end.Segment = NewBasicSegment(segmentNumber, end)
 	return end
 }
 
@@ -58,6 +63,11 @@ type MessageEndSegment struct {
 	Segment
 	Number *element.NumberDataElement
 }
+
+func (m *MessageEndSegment) version() int         { return 1 }
+func (m *MessageEndSegment) id() string           { return "HNHBS" }
+func (m *MessageEndSegment) referencedId() string { return "" }
+func (m *MessageEndSegment) sender() string       { return senderBoth }
 
 func (m *MessageEndSegment) elements() []element.DataElement {
 	return []element.DataElement{

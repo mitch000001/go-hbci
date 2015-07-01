@@ -20,6 +20,7 @@ type CommonUserParameterDataSegment struct {
 func (c *CommonUserParameterDataSegment) version() int         { return 2 }
 func (c *CommonUserParameterDataSegment) id() string           { return "HIUPA" }
 func (c *CommonUserParameterDataSegment) referencedId() string { return "HKVVB" }
+func (c *CommonUserParameterDataSegment) sender() string       { return senderBank }
 
 func (c *CommonUserParameterDataSegment) elements() []element.DataElement {
 	return []element.DataElement{
@@ -44,6 +45,7 @@ type AccountInformationSegment struct {
 func (a *AccountInformationSegment) version() int         { return 4 }
 func (a *AccountInformationSegment) id() string           { return "HIUPD" }
 func (a *AccountInformationSegment) referencedId() string { return "HKVVB" }
+func (a *AccountInformationSegment) sender() string       { return senderBank }
 
 func (a *AccountInformationSegment) elements() []element.DataElement {
 	return []element.DataElement{
