@@ -80,6 +80,8 @@ const (
 	CommunicationParameterDEG
 	SupportedSecurityMethodDEG
 	PinTanDEG
+	AccountLimitDEG
+	AllowedBusinessTransactionDEG
 )
 
 var typeName = map[DataElementType]string{
@@ -108,21 +110,23 @@ var typeName = map[DataElementType]string{
 	SecurityMethodVersionGDEG: "Unterstützte Sicherheitsverfahren",
 	AcknowlegdementParamsGDEG: "Rückmeldungsparameter",
 	// DataElementGroups
-	SegmentHeaderDEG:          "Segmentkopf",
-	ReferenceMessageDEG:       "Bezugsnachricht",
-	AcknowledgementDEG:        "Rückmeldung",
-	SecurityIdentificationDEG: "Sicherheitsidentifikation, Details",
-	SecurityDateDEG:           "Sicherheitsdatum und -uhrzeit",
-	HashAlgorithmDEG:          "Hashalgorithmus",
-	SignatureAlgorithmDEG:     "Signaturalgorithmus",
-	EncryptionAlgorithmDEG:    "Verschlüsselungsalgorithmus",
-	KeyNameDEG:                "Schlüsselname",
-	CertificateDEG:            "Zertifikat",
-	PublicKeyDEG:              "Öffentlicher Schlüssel",
-	SupportedLanguagesDEG:     "Unterstützte Sprachen",
-	SupportedHBCIVersionDEG:   "Unterstützte HBCI-Versionen",
-	CommunicationParameterDEG: "Kommunikationsparameter",
-	PinTanDEG:                 "PIN-TAN",
+	SegmentHeaderDEG:              "Segmentkopf",
+	ReferenceMessageDEG:           "Bezugsnachricht",
+	AcknowledgementDEG:            "Rückmeldung",
+	SecurityIdentificationDEG:     "Sicherheitsidentifikation, Details",
+	SecurityDateDEG:               "Sicherheitsdatum und -uhrzeit",
+	HashAlgorithmDEG:              "Hashalgorithmus",
+	SignatureAlgorithmDEG:         "Signaturalgorithmus",
+	EncryptionAlgorithmDEG:        "Verschlüsselungsalgorithmus",
+	KeyNameDEG:                    "Schlüsselname",
+	CertificateDEG:                "Zertifikat",
+	PublicKeyDEG:                  "Öffentlicher Schlüssel",
+	SupportedLanguagesDEG:         "Unterstützte Sprachen",
+	SupportedHBCIVersionDEG:       "Unterstützte HBCI-Versionen",
+	CommunicationParameterDEG:     "Kommunikationsparameter",
+	PinTanDEG:                     "PIN-TAN",
+	AccountLimitDEG:               "Kontolimit",
+	AllowedBusinessTransactionDEG: "Erlaubte Geschäftsvorfälle",
 }
 
 func (d DataElementType) String() string {
