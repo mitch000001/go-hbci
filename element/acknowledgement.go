@@ -1,17 +1,28 @@
 package element
 
-func NewAcknowledgement(code int, referenceDataElement, text string, params []string) *AcknowledgementDataElement {
-	paramDataElements := make([]*AlphaNumericDataElement, len(params))
-	if params != nil {
-		for i, p := range params {
-			paramDataElements[i] = NewAlphaNumeric(p, 35)
-		}
+import "github.com/mitch000001/go-hbci/domain"
+
+func NewAcknowledgements(acknowledgements []domain.Acknowledgement) *AcknowledgementsDataElement {
+	ackDEs := make([]DataElement, len(acknowledgements))
+	for i, acknowledgement := range acknowledgements {
+		ackDEs[i] = NewAcknowledgement(acknowledgement)
 	}
+	a := &AcknowledgementsDataElement{
+		arrayElementGroup: NewArrayElementGroup(AcknowledgementDEG, 1, 99, ackDEs...),
+	}
+	return a
+}
+
+type AcknowledgementsDataElement struct {
+	*arrayElementGroup
+}
+
+func NewAcknowledgement(acknowledgement domain.Acknowledgement) *AcknowledgementDataElement {
 	a := &AcknowledgementDataElement{
-		Code:                 NewDigit(code, 4),
-		ReferenceDataElement: NewAlphaNumeric(referenceDataElement, 7),
-		Text:                 NewAlphaNumeric(text, 80),
-		Params:               NewParams(10, 10, params...),
+		Code:                 NewDigit(acknowledgement.Code, 4),
+		ReferenceDataElement: NewAlphaNumeric(acknowledgement.ReferenceDataElement, 7),
+		Text:                 NewAlphaNumeric(acknowledgement.Text, 80),
+		Params:               NewParams(10, 10, acknowledgement.Params...),
 	}
 	a.DataElement = NewDataElementGroup(AcknowledgementDEG, 4, a)
 	return a
