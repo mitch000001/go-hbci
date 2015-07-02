@@ -32,6 +32,13 @@ type MessageHeaderSegment struct {
 	Ref         *element.ReferenceMessage
 }
 
+func (m *MessageHeaderSegment) init() {
+	*m.Size = *new(element.DigitDataElement)
+	*m.HBCIVersion = *new(element.NumberDataElement)
+	*m.DialogID = *new(element.IdentificationDataElement)
+	*m.Number = *new(element.NumberDataElement)
+	*m.Ref = *new(element.ReferenceMessage)
+}
 func (m *MessageHeaderSegment) version() int         { return 3 }
 func (m *MessageHeaderSegment) id() string           { return "HNHBK" }
 func (m *MessageHeaderSegment) referencedId() string { return "" }
@@ -64,6 +71,9 @@ type MessageEndSegment struct {
 	Number *element.NumberDataElement
 }
 
+func (m *MessageEndSegment) init() {
+	*m.Number = *new(element.NumberDataElement)
+}
 func (m *MessageEndSegment) version() int         { return 1 }
 func (m *MessageEndSegment) id() string           { return "HNHBS" }
 func (m *MessageEndSegment) referencedId() string { return "" }

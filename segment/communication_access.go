@@ -35,6 +35,12 @@ type CommunicationAccessRequestSegment struct {
 	Aufsetzpunkt *element.AlphaNumericDataElement
 }
 
+func (c *CommunicationAccessRequestSegment) init() {
+	*c.FromBankID = *new(element.BankIdentificationDataElement)
+	*c.ToBankID = *new(element.BankIdentificationDataElement)
+	*c.MaxEntries = *new(element.NumberDataElement)
+	*c.Aufsetzpunkt = *new(element.AlphaNumericDataElement)
+}
 func (c *CommunicationAccessRequestSegment) version() int         { return 3 }
 func (c *CommunicationAccessRequestSegment) id() string           { return "HKKOM" }
 func (c *CommunicationAccessRequestSegment) referencedId() string { return "" }
@@ -69,6 +75,11 @@ type CommunicationAccessResponseSegment struct {
 	CommunicationParams *element.CommunicationParameterDataElement
 }
 
+func (c *CommunicationAccessResponseSegment) init() {
+	*c.BankID = *new(element.BankIdentificationDataElement)
+	*c.StandardLanguage = *new(element.NumberDataElement)
+	*c.CommunicationParams = *new(element.CommunicationParameterDataElement)
+}
 func (c *CommunicationAccessResponseSegment) version() int         { return 3 }
 func (c *CommunicationAccessResponseSegment) id() string           { return "HIKOM" }
 func (c *CommunicationAccessResponseSegment) referencedId() string { return "HKKOM" }

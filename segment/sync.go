@@ -20,6 +20,9 @@ type SynchronisationSegment struct {
 	SyncModus *element.NumberDataElement
 }
 
+func (s *SynchronisationSegment) init() {
+	*s.SyncModus = *new(element.NumberDataElement)
+}
 func (s *SynchronisationSegment) version() int         { return 2 }
 func (s *SynchronisationSegment) id() string           { return "HKSYN" }
 func (s *SynchronisationSegment) referencedId() string { return "" }

@@ -35,6 +35,13 @@ type PublicKeyRenewalSegment struct {
 	Certificate *element.CertificateDataElement
 }
 
+func (p *PublicKeyRenewalSegment) init() {
+	*p.MessageID = *new(element.NumberDataElement)
+	*p.FunctionID = *new(element.NumberDataElement)
+	*p.KeyName = *new(element.KeyNameDataElement)
+	*p.PublicKey = *new(element.PublicKeyDataElement)
+	*p.Certificate = *new(element.CertificateDataElement)
+}
 func (p *PublicKeyRenewalSegment) version() int         { return 2 }
 func (p *PublicKeyRenewalSegment) id() string           { return "HKSAK" }
 func (p *PublicKeyRenewalSegment) referencedId() string { return "" }
@@ -70,6 +77,12 @@ type PublicKeyRequestSegment struct {
 	Certificate *element.CertificateDataElement
 }
 
+func (p *PublicKeyRequestSegment) init() {
+	*p.MessageID = *new(element.NumberDataElement)
+	*p.FunctionID = *new(element.NumberDataElement)
+	*p.KeyName = *new(element.KeyNameDataElement)
+	*p.Certificate = *new(element.CertificateDataElement)
+}
 func (p *PublicKeyRequestSegment) version() int         { return 2 }
 func (p *PublicKeyRequestSegment) id() string           { return "HKISA" }
 func (p *PublicKeyRequestSegment) referencedId() string { return "" }
@@ -114,6 +127,15 @@ type PublicKeyTransmissionSegment struct {
 	Certificate *element.CertificateDataElement
 }
 
+func (p *PublicKeyTransmissionSegment) init() {
+	*p.MessageID = *new(element.NumberDataElement)
+	*p.DialogID = *new(element.IdentificationDataElement)
+	*p.MessageRef = *new(element.NumberDataElement)
+	*p.FunctionID = *new(element.NumberDataElement)
+	*p.KeyName = *new(element.KeyNameDataElement)
+	*p.PublicKey = *new(element.PublicKeyDataElement)
+	*p.Certificate = *new(element.CertificateDataElement)
+}
 func (p *PublicKeyTransmissionSegment) version() int         { return 2 }
 func (p *PublicKeyTransmissionSegment) id() string           { return "HIISA" }
 func (p *PublicKeyTransmissionSegment) referencedId() string { return "HKISA" }
@@ -173,6 +195,14 @@ type PublicKeyRevocationSegment struct {
 	Certificate      *element.CertificateDataElement
 }
 
+func (p *PublicKeyRevocationSegment) init() {
+	*p.MessageID = *new(element.NumberDataElement)
+	*p.FunctionID = *new(element.NumberDataElement)
+	*p.KeyName = *new(element.KeyNameDataElement)
+	*p.RevocationReason = *new(element.AlphaNumericDataElement)
+	*p.Date = *new(element.SecurityDateDataElement)
+	*p.Certificate = *new(element.CertificateDataElement)
+}
 func (p *PublicKeyRevocationSegment) version() int         { return 2 }
 func (p *PublicKeyRevocationSegment) id() string           { return "HKSSP" }
 func (p *PublicKeyRevocationSegment) referencedId() string { return "" }
@@ -227,6 +257,16 @@ type PublicKeyRevocationConfirmationSegment struct {
 	Certificate      *element.CertificateDataElement
 }
 
+func (p *PublicKeyRevocationConfirmationSegment) init() {
+	*p.MessageID = *new(element.NumberDataElement)
+	*p.DialogID = *new(element.IdentificationDataElement)
+	*p.MessageRef = *new(element.NumberDataElement)
+	*p.FunctionID = *new(element.NumberDataElement)
+	*p.KeyName = *new(element.KeyNameDataElement)
+	*p.RevocationReason = *new(element.AlphaNumericDataElement)
+	*p.Date = *new(element.SecurityDateDataElement)
+	*p.Certificate = *new(element.CertificateDataElement)
+}
 func (p *PublicKeyRevocationConfirmationSegment) version() int         { return 2 }
 func (p *PublicKeyRevocationConfirmationSegment) id() string           { return "HISSP" }
 func (p *PublicKeyRevocationConfirmationSegment) referencedId() string { return "HKSSP" }

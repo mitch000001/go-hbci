@@ -7,6 +7,9 @@ type MessageAcknowledgement struct {
 	Acknowledgements *element.AcknowledgementsDataElement
 }
 
+func (m *MessageAcknowledgement) init() {
+	*m.Acknowledgements = *new(element.AcknowledgementsDataElement)
+}
 func (m *MessageAcknowledgement) version() int         { return 2 }
 func (m *MessageAcknowledgement) id() string           { return "HIRMG" }
 func (m *MessageAcknowledgement) referencedId() string { return "" }
@@ -23,6 +26,9 @@ type SegmentAcknowledgement struct {
 	Acknowledgements *element.AcknowledgementsDataElement
 }
 
+func (s *SegmentAcknowledgement) init() {
+	*s.Acknowledgements = *new(element.AcknowledgementsDataElement)
+}
 func (m *SegmentAcknowledgement) version() int         { return 2 }
 func (m *SegmentAcknowledgement) id() string           { return "HIRMS" }
 func (m *SegmentAcknowledgement) referencedId() string { return "" }

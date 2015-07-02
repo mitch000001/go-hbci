@@ -17,6 +17,11 @@ type CommonUserParameterDataSegment struct {
 	UPDUsage *element.NumberDataElement
 }
 
+func (c *CommonUserParameterDataSegment) init() {
+	*c.UserId = *new(element.IdentificationDataElement)
+	*c.UPDVersion = *new(element.NumberDataElement)
+	*c.UPDUsage = *new(element.NumberDataElement)
+}
 func (c *CommonUserParameterDataSegment) version() int         { return 2 }
 func (c *CommonUserParameterDataSegment) id() string           { return "HIUPA" }
 func (c *CommonUserParameterDataSegment) referencedId() string { return "HKVVB" }
@@ -42,6 +47,16 @@ type AccountInformationSegment struct {
 	AllowedBusinessTransactions *element.AllowedBusinessTransactionsDataElement
 }
 
+func (a *AccountInformationSegment) init() {
+	*a.AccountConnection = *new(element.AccountConnectionDataElement)
+	*a.UserID = *new(element.IdentificationDataElement)
+	*a.AccountCurrency = *new(element.CurrencyDataElement)
+	*a.Name1 = *new(element.AlphaNumericDataElement)
+	*a.Name2 = *new(element.AlphaNumericDataElement)
+	*a.AccountProductID = *new(element.AlphaNumericDataElement)
+	*a.AccountLimit = *new(element.AccountLimitDataElement)
+	*a.AllowedBusinessTransactions = *new(element.AllowedBusinessTransactionsDataElement)
+}
 func (a *AccountInformationSegment) version() int         { return 4 }
 func (a *AccountInformationSegment) id() string           { return "HIUPD" }
 func (a *AccountInformationSegment) referencedId() string { return "HKVVB" }
