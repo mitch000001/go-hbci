@@ -1,21 +1,12 @@
 package element
 
-import "github.com/mitch000001/go-hbci/domain"
+import (
+	"bytes"
+	"fmt"
+	"strconv"
 
-func NewAcknowledgements(acknowledgements []domain.Acknowledgement) *AcknowledgementsDataElement {
-	ackDEs := make([]DataElement, len(acknowledgements))
-	for i, acknowledgement := range acknowledgements {
-		ackDEs[i] = NewAcknowledgement(acknowledgement)
-	}
-	a := &AcknowledgementsDataElement{
-		arrayElementGroup: NewArrayElementGroup(AcknowledgementDEG, 1, 99, ackDEs...),
-	}
-	return a
-}
-
-type AcknowledgementsDataElement struct {
-	*arrayElementGroup
-}
+	"github.com/mitch000001/go-hbci/domain"
+)
 
 func NewAcknowledgement(acknowledgement domain.Acknowledgement) *AcknowledgementDataElement {
 	a := &AcknowledgementDataElement{
@@ -53,6 +44,30 @@ func (a *AcknowledgementDataElement) GroupDataElements() []DataElement {
 	}
 }
 
+func (a *AcknowledgementDataElement) UnmarshalHBCI(value []byte) error {
+	acknowledgement := domain.Acknowledgement{}
+	chunks := bytes.Split(value, []byte(":"))
+	if len(chunks) < 3 {
+		return fmt.Errorf("Malformed acknowledgment to unmarshal")
+	}
+	code, err := strconv.Atoi(string(chunks[0]))
+	if err != nil {
+		return fmt.Errorf("%T: Malformed code", a)
+	}
+	acknowledgement.Code = code
+	acknowledgement.ReferenceDataElement = string(chunks[1])
+	acknowledgement.Text = string(chunks[2])
+	if len(chunks) > 3 {
+		params := make([]string, len(chunks[3:]))
+		for i, chunk := range chunks[3:] {
+			params[i] = string(chunk)
+		}
+		acknowledgement.Params = params
+	}
+	*a = *NewAcknowledgement(acknowledgement)
+	return nil
+}
+
 func NewParams(min, max int, params ...string) *ParamsDataElement {
 	var paramDE []DataElement
 	for _, p := range params {
@@ -63,4 +78,17 @@ func NewParams(min, max int, params ...string) *ParamsDataElement {
 
 type ParamsDataElement struct {
 	*arrayElementGroup
+}
+
+func (p *ParamsDataElement) UnmarshalHBCI(value []byte) error {
+	elements := bytes.Split(value, []byte(":"))
+	if len(elements) > 10 {
+		return fmt.Errorf("Malformed params")
+	}
+	dataElements := make([]DataElement, len(elements))
+	for i, elem := range elements {
+		dataElements[i] = NewAlphaNumeric(string(elem), 35)
+	}
+	p.arrayElementGroup = NewArrayElementGroup(AcknowlegdementParamsGDEG, 10, 10, dataElements...)
+	return nil
 }

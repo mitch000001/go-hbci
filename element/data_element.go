@@ -214,7 +214,7 @@ func (g *elementGroup) Length() int {
 }
 
 func (g *elementGroup) String() string {
-	elementStrings := make([]string, g.elementCount)
+	elementStrings := make([]string, len(g.elements))
 	for i, e := range g.elements {
 		if !reflect.ValueOf(e).IsNil() {
 			elementStrings[i] = e.String()
@@ -231,11 +231,11 @@ func (g *elementGroup) UnmarshalHBCI(value []byte) error {
 			continue
 		}
 		elemToMarshal := reflect.New(reflect.TypeOf(g.elements[i]).Elem())
-		err := elemToMarshal.MethodByName("UnmarshalHBCI").Call([]reflect.Value{reflect.ValueOf(elem)})[0]
-		if err.IsNil() {
+		err := elemToMarshal.Interface().(DataElement).UnmarshalHBCI(elem)
+		if err == nil {
 			g.elements[i] = elemToMarshal.Interface().(DataElement)
 		} else {
-			errors = append(errors, fmt.Sprintf("%v:%q", err.Type(), err.MethodByName("Error").Call([]reflect.Value{})[0]))
+			errors = append(errors, fmt.Sprintf("%T:%q", err, err))
 		}
 	}
 	if len(errors) != 0 {
@@ -252,11 +252,13 @@ func (g *elementGroup) SetOptional() {
 	g.optional = true
 }
 
-func NewArrayElementGroup(typ DataElementType, min, max int, elem ...DataElement) *arrayElementGroup {
+func NewArrayElementGroup(typ DataElementType, min, max int, elems ...DataElement) *arrayElementGroup {
 	e := &arrayElementGroup{
-		array: elem,
+		array:     elems,
+		minLength: min,
+		maxLength: max,
 	}
-	e.DataElement = NewDataElementGroup(typ, max, e)
+	e.DataElement = NewDataElementGroup(typ, len(elems), e)
 	return e
 }
 
