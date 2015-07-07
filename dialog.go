@@ -129,14 +129,12 @@ func NewPinTanDialog(bankId domain.BankId, hbciUrl string, clientId string) *pin
 type pinTanDialog struct {
 	*dialog
 	pin           string
-	signingKey    domain.Key
 	pinTanKeyName domain.KeyName
 }
 
 func (d *pinTanDialog) SetPin(pin string) {
 	d.pin = pin
 	pinKey := domain.NewPinKey(pin, domain.NewPinTanKeyName(d.BankID, d.ClientID, "S"))
-	d.signingKey = pinKey
 	d.signatureProvider = message.NewPinTanSignatureProvider(pinKey, d.ClientSystemID)
 	pinKey = domain.NewPinKey(pin, domain.NewPinTanKeyName(d.BankID, d.ClientID, "V"))
 	d.encryptionProvider = message.NewPinTanEncryptionProvider(pinKey, d.ClientSystemID)
