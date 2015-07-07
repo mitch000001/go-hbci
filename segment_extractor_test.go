@@ -21,6 +21,14 @@ func TestSegmentExtratorExtract(t *testing.T) {
 			},
 			nil,
 		},
+		{
+			"HNHBK:1:3+abc'HNDGC:2:3+de?'f'",
+			[]string{
+				"HNHBK:1:3+abc",
+				"HNDGC:2:3+de?'f",
+			},
+			nil,
+		},
 	}
 
 	for _, test := range tests {
