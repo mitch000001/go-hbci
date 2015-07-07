@@ -1,7 +1,5 @@
 package hbci
 
-import "crypto/rsa"
-
 type Marshaler interface {
 	MarshalHBCI() ([]byte, error)
 }
@@ -18,5 +16,5 @@ func MakeCall() string {
 }
 
 type Client struct {
-	rsaKey *rsa.PublicKey
+	clientSystemID string
 }

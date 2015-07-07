@@ -36,9 +36,8 @@ func NewEncryptedPinTanMessage(clientSystemId string, keyName domain.KeyName, en
 }
 
 func NewEncryptedMessage(header *segment.MessageHeaderSegment, end *segment.MessageEndSegment) *EncryptedMessage {
-	e := &EncryptedMessage{
-		Message: NewBasicXMessage(header, end),
-	}
+	e := &EncryptedMessage{}
+	e.Message = NewBasicMessageWithHeaderAndEnd(header, end, e)
 	return e
 }
 
@@ -88,5 +87,5 @@ func (p *PinTanEncryptionProvider) EncryptWithInitialKeyName(message []byte) (*E
 }
 
 func (p *PinTanEncryptionProvider) WriteEncryptionHeader(message *EncryptedMessage) {
-	*message.EncryptionHeader = *segment.NewPinTanEncryptionHeaderSegment(p.clientSystemId, p.key.KeyName())
+	message.EncryptionHeader = segment.NewPinTanEncryptionHeaderSegment(p.clientSystemId, p.key.KeyName())
 }

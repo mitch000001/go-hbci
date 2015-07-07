@@ -750,6 +750,15 @@ func (a *AccountConnectionDataElement) Elements() []DataElement {
 	}
 }
 
+func (a *AccountConnectionDataElement) Val() domain.AccountConnection {
+	return domain.AccountConnection{
+		AccountID:                 a.AccountId.Val(),
+		SubAccountCharacteristics: a.SubAccountCharacteristics.Val(),
+		CountryCode:               a.CountryCode.Val(),
+		BankID:                    a.BankId.Val(),
+	}
+}
+
 func NewBalance(balance domain.Balance, date time.Time) *BalanceDataElement {
 	var debitCredit string
 	if balance.Amount < 0 {

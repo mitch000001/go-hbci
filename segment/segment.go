@@ -20,6 +20,8 @@ type Segment interface {
 	String() string
 }
 
+type Segments map[string]Segment
+
 type segment interface {
 	init()
 	version() int

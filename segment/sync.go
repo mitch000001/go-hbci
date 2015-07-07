@@ -1,6 +1,10 @@
 package segment
 
-import "github.com/mitch000001/go-hbci/element"
+import (
+	"fmt"
+
+	"github.com/mitch000001/go-hbci/element"
+)
 
 func NewSynchronisationSegment(modus int) *SynchronisationSegment {
 	s := &SynchronisationSegment{
@@ -32,4 +36,8 @@ func (s *SynchronisationSegment) elements() []element.DataElement {
 	return []element.DataElement{
 		s.SyncModus,
 	}
+}
+
+func (s *SynchronisationSegment) UnmarshalHBCI(value []byte) error {
+	return fmt.Errorf("NOT IMPLEMENTED")
 }

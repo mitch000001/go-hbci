@@ -231,7 +231,11 @@ func (d *pinTanDialog) SyncClientSystemID() (string, error) {
 	}
 	fmt.Printf("Response: \n%s\n", bytes.Join(bytes.Split(response, []byte("'")), []byte("'\n")))
 
-	result := bytes.Split(response, []byte("'"))
+	segmentExtractor := NewSegmentExtractor(response)
+	result, err := segmentExtractor.Extract()
+	if err != nil {
+		return "", err
+	}
 	i := sort.Search(len(result), func(i int) bool {
 		return bytes.HasPrefix(result[i], []byte("HISYN"))
 	})

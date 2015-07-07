@@ -29,10 +29,11 @@ type SignedHBCIMessage interface {
 	SignatureEndSegment() *segment.SignatureEndSegment
 }
 
-func NewBasicXMessage(header *segment.MessageHeaderSegment, end *segment.MessageEndSegment) Message {
+func NewBasicMessageWithHeaderAndEnd(header *segment.MessageHeaderSegment, end *segment.MessageEndSegment, message HBCIMessage) Message {
 	b := &BasicMessage{
-		Header: header,
-		End:    end,
+		Header:      header,
+		End:         end,
+		HBCIMessage: message,
 	}
 	return b
 }
@@ -159,7 +160,7 @@ func (b *BasicMessage) Encrypt(provider EncryptionProvider) (*EncryptedMessage, 
 	}
 	encryptionMessage := NewEncryptedMessage(b.Header, b.End)
 	provider.WriteEncryptionHeader(encryptionMessage)
-	*encryptionMessage.EncryptedData = *segment.NewEncryptedDataSegment(encryptedMessage)
+	encryptionMessage.EncryptedData = segment.NewEncryptedDataSegment(encryptedMessage)
 	return encryptionMessage, nil
 }
 

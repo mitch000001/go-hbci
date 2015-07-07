@@ -132,9 +132,9 @@ func (s *SignatureEndSegment) elements() []element.DataElement {
 }
 
 func (s *SignatureEndSegment) SetSignature(signature []byte) {
-	*s.Signature = *element.NewBinary(signature, 512)
+	s.Signature = element.NewBinary(signature, 512)
 }
 
 func (s *SignatureEndSegment) SetPinTan(pin, tan string) {
-	*s.PinTan = *element.NewPinTan(pin, tan)
+	s.PinTan = element.NewPinTan(pin, tan)
 }
