@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/mitch000001/go-hbci/domain"
 	"github.com/mitch000001/go-hbci/element"
 )
 
@@ -53,6 +54,14 @@ func (m *MessageAcknowledgement) elements() []element.DataElement {
 		dataElements[i] = ack
 	}
 	return dataElements
+}
+
+func (m *MessageAcknowledgement) Value() []domain.Acknowledgement {
+	acks := make([]domain.Acknowledgement, len(m.Acknowledgements))
+	for i, de := range m.Acknowledgements {
+		acks[i] = de.Val()
+	}
+	return acks
 }
 
 type SegmentAcknowledgement struct {

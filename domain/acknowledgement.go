@@ -15,3 +15,11 @@ type Acknowledgement struct {
 	Text                 string
 	Params               []string
 }
+
+func (a Acknowledgement) IsError() bool {
+	return a.Code >= 9000
+}
+
+func (a Acknowledgement) IsWarning() bool {
+	return a.Code >= 3000 && a.Code < 4000
+}

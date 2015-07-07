@@ -27,6 +27,15 @@ type AcknowledgementDataElement struct {
 	Params               *ParamsDataElement
 }
 
+func (a *AcknowledgementDataElement) Val() domain.Acknowledgement {
+	return domain.Acknowledgement{
+		Code:                 a.Code.Val(),
+		ReferenceDataElement: a.ReferenceDataElement.Val(),
+		Text:                 a.Text.Val(),
+		Params:               a.Params.Val(),
+	}
+}
+
 func (a *AcknowledgementDataElement) IsValid() bool {
 	if a.Code == nil || a.Text == nil {
 		return false
@@ -78,6 +87,14 @@ func NewParams(min, max int, params ...string) *ParamsDataElement {
 
 type ParamsDataElement struct {
 	*arrayElementGroup
+}
+
+func (p *ParamsDataElement) Val() []string {
+	params := make([]string, len(p.array))
+	for i, de := range p.array {
+		params[i] = de.Value().(string)
+	}
+	return params
 }
 
 func (p *ParamsDataElement) UnmarshalHBCI(value []byte) error {
