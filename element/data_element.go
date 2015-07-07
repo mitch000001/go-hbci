@@ -722,12 +722,12 @@ func (b *BankIdentificationDataElement) Elements() []DataElement {
 	}
 }
 
-func NewAccountConnection(accountId string, subAccountCharacteristic string, countryCode int, bankId string) *AccountConnectionDataElement {
+func NewAccountConnection(conn domain.AccountConnection) *AccountConnectionDataElement {
 	a := &AccountConnectionDataElement{
-		AccountId:                 NewIdentification(accountId),
-		SubAccountCharacteristics: NewIdentification(subAccountCharacteristic),
-		CountryCode:               NewCountryCode(countryCode),
-		BankId:                    NewAlphaNumeric(bankId, 30),
+		AccountId:                 NewIdentification(conn.AccountID),
+		SubAccountCharacteristics: NewIdentification(conn.SubAccountCharacteristics),
+		CountryCode:               NewCountryCode(conn.CountryCode),
+		BankId:                    NewAlphaNumeric(conn.BankID, 30),
 	}
 	a.DataElement = NewGroupDataElementGroup(AccountConnectionGDEG, 4, a)
 	return a
@@ -748,6 +748,25 @@ func (a *AccountConnectionDataElement) Elements() []DataElement {
 		a.CountryCode,
 		a.BankId,
 	}
+}
+
+func (a *AccountConnectionDataElement) UnmarshalHBCI(value []byte) error {
+	elements := bytes.Split(value, []byte(":"))
+	if len(elements) < 4 {
+		return fmt.Errorf("Malformed AccountConnection")
+	}
+	countryCode, err := strconv.Atoi(string(elements[2]))
+	if err != nil {
+		return fmt.Errorf("%T: Malformed CountryCode: %q", a, elements[2])
+	}
+	accountConnection := domain.AccountConnection{
+		AccountID:                 string(elements[0]),
+		SubAccountCharacteristics: string(elements[1]),
+		CountryCode:               countryCode,
+		BankID:                    string(elements[3]),
+	}
+	*a = *NewAccountConnection(accountConnection)
+	return nil
 }
 
 func (a *AccountConnectionDataElement) Val() domain.AccountConnection {
