@@ -9,7 +9,6 @@ import (
 	"io/ioutil"
 	"net"
 	"net/http"
-	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -231,27 +230,26 @@ func (d *pinTanDialog) SyncClientSystemID() (string, error) {
 	}
 	fmt.Printf("Response: \n%s\n", bytes.Join(bytes.Split(response, []byte("'")), []byte("'\n")))
 
-	segmentExtractor := NewSegmentExtractor(response)
-	result, err := segmentExtractor.Extract()
+	extractor := NewSegmentExtractor(response)
+	_, err = extractor.Extract()
 	if err != nil {
 		return "", err
 	}
-	i := sort.Search(len(result), func(i int) bool {
-		return bytes.HasPrefix(result[i], []byte("HISYN"))
-	})
-	if i < len(result) {
-		syncResponse := result[i]
+	messageHeader := extractor.FindSegment("HNHBK")
+	if messageHeader == nil {
+		return "", fmt.Errorf("Malformed response: %q", response)
+	}
+	dataElements := bytes.Split(messageHeader, []byte("+"))
+	newDialogId := string(dataElements[3])
+
+	syncResponse := extractor.FindSegment("HISYN")
+	if syncResponse != nil {
 		dataElements := bytes.Split(syncResponse, []byte("+"))
 		newClientSystemId := dataElements[1]
-		fmt.Printf("SyncResponse: %s\n", syncResponse)
 		d.ClientSystemID = string(newClientSystemId)
 		d.signatureProvider.SetClientSystemID(d.ClientSystemID)
 		d.encryptionProvider.SetClientSystemID(d.ClientSystemID)
 	}
-	messageHeader := result[0]
-	dataElements := bytes.Split(messageHeader, []byte("+"))
-	newDialogId := string(dataElements[3])
-	fmt.Printf("New dialogID: %s\n", newDialogId)
 
 	dialogEnd := d.dialogEnd(newDialogId)
 	dialogEnd.SignatureBegin = d.signatureProvider.NewSignatureHeader(controlRef, 0)
