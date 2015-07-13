@@ -1,5 +1,6 @@
 # go-hbci
 [![Build Status](https://travis-ci.org/mitch000001/go-hbci.svg)](https://travis-ci.org/mitch000001/go-hbci)
+
 A client library to use the [Home Banking Computer Interface](https://de.wikipedia.org/wiki/Homebanking_Computer_Interface) (german only)
 
 For an exhausted reference of HBCI visit the website of [The German Banking Industry](https://www.hbci-zka.de/)
