@@ -1,7 +1,6 @@
 package element
 
 import (
-	"reflect"
 	"testing"
 
 	"github.com/mitch000001/go-hbci/domain"
@@ -19,10 +18,11 @@ func TestAcknowledgementDataElementUnmarshalHBCI(t *testing.T) {
 		t.Fail()
 	}
 
-	expected := NewAcknowledgement(domain.Acknowledgement{300, "7,2", "Syntaxerror", []string{"test1"}})
+	expected := NewAcknowledgement(domain.Acknowledgement{300, "7,2", "Syntaxerror", []string{"test1"}}).String()
+	actual := acknowledgement.String()
 
-	if !reflect.DeepEqual(expected, acknowledgement) {
-		t.Logf("Expected\n%q\n\tgot\n%q\n", expected, acknowledgement)
+	if expected != actual {
+		t.Logf("Expected\n%q\n\tgot\n%q\n", expected, actual)
 		t.Fail()
 	}
 }
@@ -39,10 +39,11 @@ func TestParamsDataElementUnmarshalHBCI(t *testing.T) {
 		t.Fail()
 	}
 
-	expected := NewParams(10, 10, "test1", "test2", "test3")
+	expected := NewParams(10, 10, "test1", "test2", "test3").String()
+	actual := params.String()
 
-	if !reflect.DeepEqual(expected, params) {
-		t.Logf("Expected\n%q\n\tgot\n%q\n", expected, params)
+	if expected != actual {
+		t.Logf("Expected\n%q\n\tgot\n%q\n", expected, actual)
 		t.Fail()
 	}
 }

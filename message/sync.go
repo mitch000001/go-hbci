@@ -16,7 +16,7 @@ type SynchronisationMessage struct {
 	ProcessingPreparation      *segment.ProcessingPreparationSegment
 	PublicSigningKeyRequest    *segment.PublicKeyRequestSegment
 	PublicEncryptionKeyRequest *segment.PublicKeyRequestSegment
-	Sync                       *segment.SynchronisationSegment
+	Sync                       *segment.SynchronisationRequestSegment
 }
 
 func (s *SynchronisationMessage) Jobs() segment.SegmentSequence {

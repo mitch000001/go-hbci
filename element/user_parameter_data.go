@@ -1,6 +1,12 @@
 package element
 
-import "github.com/mitch000001/go-hbci/domain"
+import (
+	"bytes"
+	"fmt"
+	"strconv"
+
+	"github.com/mitch000001/go-hbci/domain"
+)
 
 func NewAccountLimit(kind string, amount float64, currency string, days int) *AccountLimitDataElement {
 	a := &AccountLimitDataElement{
@@ -34,7 +40,7 @@ func (a *AccountLimitDataElement) GroupDataElements() []DataElement {
 	}
 }
 
-func AllowedBusinessTransactions(transactions ...domain.BusinessTransaction) *AllowedBusinessTransactionsDataElement {
+func NewAllowedBusinessTransactions(transactions ...domain.BusinessTransaction) *AllowedBusinessTransactionsDataElement {
 	var transactionDEs []DataElement
 	for _, tr := range transactions {
 		transactionDEs = append(transactionDEs, NewAllowedBusinessTransaction(tr))
@@ -47,6 +53,23 @@ func AllowedBusinessTransactions(transactions ...domain.BusinessTransaction) *Al
 
 type AllowedBusinessTransactionsDataElement struct {
 	*arrayElementGroup
+}
+
+func (a *AllowedBusinessTransactionsDataElement) UnmarshalHBCI(value []byte) error {
+	elements := bytes.Split(value, []byte("+"))
+	transactions := make([]DataElement, len(elements))
+	for i, elem := range elements {
+		tr := &AllowedBusinessTransactionDataElement{}
+		err := tr.UnmarshalHBCI(elem)
+		if err != nil {
+			return err
+		}
+		transactions[i] = tr
+	}
+	*a = AllowedBusinessTransactionsDataElement{
+		arrayElementGroup: NewArrayElementGroup(AllowedBusinessTransactionDEG, 0, 999, transactions...),
+	}
+	return nil
 }
 
 func (a *AllowedBusinessTransactionsDataElement) AllowedBusinessTransactions() []domain.BusinessTransaction {
@@ -83,6 +106,37 @@ type AllowedBusinessTransactionDataElement struct {
 	Kind   *AlphaNumericDataElement
 	Amount *AmountDataElement
 	Days   *NumberDataElement
+}
+
+func (a *AllowedBusinessTransactionDataElement) UnmarshalHBCI(value []byte) error {
+	elements := bytes.Split(value, []byte(":"))
+	businessTransaction := domain.BusinessTransaction{}
+	businessTransaction.ID = string(elements[0])
+	neededSignatures, err := strconv.Atoi(string(elements[1]))
+	if err != nil {
+		return fmt.Errorf("%T: Error while unmarshaling NeededSignatures: %T:%v", a, err, err)
+	}
+	businessTransaction.NeededSignatures = neededSignatures
+	if len(elements) >= 3 {
+		businessTransaction.LimitKind = string(elements[2])
+	}
+	if len(elements) >= 5 {
+		amountVal, err := strconv.ParseFloat(string(elements[3]), 64)
+		if err != nil {
+			return fmt.Errorf("%T: Error while unmarshaling Amount: %T:%v", a, err, err)
+		}
+		currency := string(elements[4])
+		businessTransaction.LimitAmount = domain.Amount{amountVal, currency}
+	}
+	if len(elements) == 6 {
+		days, err := strconv.Atoi(string(elements[5]))
+		if err != nil {
+			return fmt.Errorf("%T: Error while unmarshaling LimitDays: %T:%v", a, err, err)
+		}
+		businessTransaction.LimitDays = days
+	}
+	*a = *NewAllowedBusinessTransaction(businessTransaction)
+	return nil
 }
 
 func (a *AllowedBusinessTransactionDataElement) GroupDataElements() []DataElement {

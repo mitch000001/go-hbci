@@ -31,6 +31,11 @@ type segment interface {
 	elements() []element.DataElement
 }
 
+func NewReferencingBasicSegment(number int, ref int, seg segment) Segment {
+	header := element.NewReferencingSegmentHeader(seg.id(), number, seg.version(), ref)
+	return NewBasicSegmentWithHeader(header, seg)
+}
+
 func NewBasicSegment(number int, seg segment) Segment {
 	header := element.NewSegmentHeader(seg.id(), number, seg.version())
 	return NewBasicSegmentWithHeader(header, seg)

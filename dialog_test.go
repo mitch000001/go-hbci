@@ -146,7 +146,7 @@ func TestDialogSyncClientID(t *testing.T) {
 	dialog.SetPin("abcde")
 	dialog.httpClient = httpClient
 
-	syncResponseMessage := "HNHBK:1:3++220+abcde+1+'HNVSK:998:2:+998+1+1::0+1:20150713:173634+2:2:13:@8@\x00\x00\x00\x00\x00\x00\x00\x00:5:1:+280:10000000:12345:V:0:0+0+'HNVSD:999:1:+@30@HISYN:3:3:8+newClientSystemID''HNHBS:4:1:+1'"
+	syncResponseMessage := "HNHBK:1:3++220+abcde+1+'HNVSK:998:2:+998+1+1::0+1:20150713:173634+2:2:13:@8@\x00\x00\x00\x00\x00\x00\x00\x00:5:1:+280:10000000:12345:V:0:0+0+'HNVSD:999:1:+@30@HISYN:2:3:8+newClientSystemID''HNHBS:3:1:+1'"
 
 	transport.SetResponsePayloads([][]byte{
 		[]byte(syncResponseMessage),
@@ -173,5 +173,4 @@ func TestDialogSyncClientID(t *testing.T) {
 		t.Logf("Expected response to equal\n%q\n\tgot\n%q\n", expected, res)
 		t.Fail()
 	}
-
 }

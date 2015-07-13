@@ -1,6 +1,12 @@
 package segment
 
-import "github.com/mitch000001/go-hbci/element"
+import (
+	"bytes"
+	"fmt"
+	"strconv"
+
+	"github.com/mitch000001/go-hbci/element"
+)
 
 type CommonUserParameterDataSegment struct {
 	Segment
@@ -61,6 +67,53 @@ func (a *AccountInformationSegment) version() int         { return 4 }
 func (a *AccountInformationSegment) id() string           { return "HIUPD" }
 func (a *AccountInformationSegment) referencedId() string { return "HKVVB" }
 func (a *AccountInformationSegment) sender() string       { return senderBank }
+
+func (a *AccountInformationSegment) UnmarshalHBCI(value []byte) error {
+	elements := bytes.Split(value, []byte("+"))
+	header := elements[0]
+	headerElems := bytes.Split(header, []byte(":"))
+	num, err := strconv.Atoi(string(headerElems[1]))
+	if err != nil {
+		return fmt.Errorf("Malformed segment header")
+	}
+	if len(headerElems) == 4 {
+		ref, err := strconv.Atoi(string(headerElems[3]))
+		if err != nil {
+			return fmt.Errorf("Malformed segment header reference: %v", err)
+		}
+		a.Segment = NewReferencingBasicSegment(num, ref, a)
+	} else {
+		a.Segment = NewBasicSegment(num, a)
+	}
+	elements = elements[1:]
+	a.AccountConnection = &element.AccountConnectionDataElement{}
+	err = a.AccountConnection.UnmarshalHBCI(elements[0])
+	if err != nil {
+		return fmt.Errorf("%T: Unmarshaling AccountConnection failed: %T:%v", a, err, err)
+	}
+	a.UserID = element.NewIdentification(string(elements[1]))
+	a.AccountCurrency = element.NewCurrency(string(elements[2]))
+	a.Name1 = element.NewAlphaNumeric(string(elements[3]), 27)
+	a.Name2 = element.NewAlphaNumeric(string(elements[4]), 27)
+	a.AccountProductID = element.NewAlphaNumeric(string(elements[5]), 30)
+	accountLimit := elements[6]
+	if len(accountLimit) > 0 {
+		a.AccountLimit = &element.AccountLimitDataElement{}
+		err = a.AccountLimit.UnmarshalHBCI(accountLimit)
+		if err != nil {
+			return fmt.Errorf("%T: Unmarshaling AccountLimit failed: %T:%v", a, err, err)
+		}
+	}
+	allowedBusinessTransactions := elements[7]
+	if len(allowedBusinessTransactions) > 0 {
+		a.AllowedBusinessTransactions = &element.AllowedBusinessTransactionsDataElement{}
+		err = a.AllowedBusinessTransactions.UnmarshalHBCI(allowedBusinessTransactions)
+		if err != nil {
+			return fmt.Errorf("%T: Unmarshaling AllowedBusinessTransactions failed: %T:%v", a, err, err)
+		}
+	}
+	return nil
+}
 
 func (a *AccountInformationSegment) elements() []element.DataElement {
 	return []element.DataElement{

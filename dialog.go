@@ -14,7 +14,6 @@ import (
 	"time"
 
 	"github.com/mitch000001/go-hbci/domain"
-	"github.com/mitch000001/go-hbci/element"
 	"github.com/mitch000001/go-hbci/message"
 	"github.com/mitch000001/go-hbci/segment"
 )
@@ -228,7 +227,7 @@ func (d *pinTanDialog) SyncClientSystemID() (string, error) {
 	}
 
 	response, err := d.post(marshaledMessage)
-	if err != nil && err != io.EOF {
+	if err != nil {
 		return "", err
 	}
 
@@ -237,7 +236,7 @@ func (d *pinTanDialog) SyncClientSystemID() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	fmt.Printf("Response: \n%s\n", bytes.Join(segments, []byte("'\n")))
+	fmt.Printf("Response: \n%s\n", bytes.Join(segments, []byte("\n")))
 
 	messageHeader := extractor.FindSegment("HNHBK")
 	if messageHeader == nil {
@@ -246,27 +245,36 @@ func (d *pinTanDialog) SyncClientSystemID() (string, error) {
 	dataElements := bytes.Split(messageHeader, []byte("+"))
 	newDialogId := string(dataElements[3])
 
-	encData := extractor.FindSegment("HNVSD")
-	encDataElements := bytes.SplitN(encData, []byte("+"), 2)
-	dataBytes := encDataElements[1]
-	binData := &element.BinaryDataElement{}
-	err = binData.UnmarshalHBCI(dataBytes)
-	if err != nil {
-		return "", fmt.Errorf("Error while unpacking encrypted data: %v", err)
-	}
-	binExtractor := NewSegmentExtractor(binData.Val())
-	_, err = binExtractor.Extract()
-	if err != nil {
-		return "", fmt.Errorf("Error while extracting encrypted segments: %v", err)
-	}
+	encryptedData := extractor.FindSegment("HNVSD")
+	if encryptedData != nil {
+		encSegment := &segment.EncryptedDataSegment{}
+		err = encSegment.UnmarshalHBCI(encryptedData)
+		if err != nil {
+			return "", fmt.Errorf("Error while unmarshaling encrypted data: %v", err)
+		}
+		encExtractor := NewSegmentExtractor(encSegment.Data.Val())
+		_, err = encExtractor.Extract()
+		if err != nil {
+			return "", fmt.Errorf("Error while decrypting message: %v", err)
+		}
+		syncResponse := encExtractor.FindSegment("HISYN")
+		if syncResponse != nil {
+			syncSegment := &segment.SynchronisationResponseSegment{}
+			err = syncSegment.UnmarshalHBCI(syncResponse)
+			if err != nil {
+				return "", fmt.Errorf("Error while unmarshaling sync response: %v", err)
+			}
+			d.ClientSystemID = syncSegment.ClientSystemID.Val()
+			d.signatureProvider.SetClientSystemID(d.ClientSystemID)
+			d.encryptionProvider.SetClientSystemID(d.ClientSystemID)
+		}
 
-	syncResponse := binExtractor.FindSegment("HISYN")
-	if syncResponse != nil {
-		dataElements := bytes.Split(syncResponse, []byte("+"))
-		newClientSystemId := dataElements[1]
-		d.ClientSystemID = string(newClientSystemId)
-		d.signatureProvider.SetClientSystemID(d.ClientSystemID)
-		d.encryptionProvider.SetClientSystemID(d.ClientSystemID)
+		accountData := encExtractor.FindSegments("HIUPD")
+		if accountData != nil {
+
+		}
+	} else {
+		return "", fmt.Errorf("Expected encrypted message, but was not:\n%q", response)
 	}
 
 	dialogEnd := d.dialogEnd(newDialogId)
@@ -287,7 +295,7 @@ func (d *pinTanDialog) SyncClientSystemID() (string, error) {
 		return "", err
 	}
 	response, err = d.post(marshaledEndMessage)
-	if err != nil && err != io.EOF {
+	if err != nil {
 		return "", err
 	}
 

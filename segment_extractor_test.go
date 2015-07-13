@@ -16,16 +16,16 @@ func TestSegmentExtratorExtract(t *testing.T) {
 		{
 			"HNHBK:1:3+abc'HNDGC:2:3+def'",
 			[]string{
-				"HNHBK:1:3+abc",
-				"HNDGC:2:3+def",
+				"HNHBK:1:3+abc'",
+				"HNDGC:2:3+def'",
 			},
 			nil,
 		},
 		{
 			"HNHBK:1:3+abc'HNDGC:2:3+de?'f'",
 			[]string{
-				"HNHBK:1:3+abc",
-				"HNDGC:2:3+de?'f",
+				"HNHBK:1:3+abc'",
+				"HNDGC:2:3+de?'f'",
 			},
 			nil,
 		},
@@ -72,10 +72,45 @@ func TestSegmentExtratorFindSegment(t *testing.T) {
 		t.Fail()
 	}
 
-	expected := []byte("HNHBK:1:3+abc")
+	expected := []byte("HNHBK:1:3+abc'")
 
 	if !reflect.DeepEqual(expected, segment) {
 		t.Logf("Expected segment to equal\n%q\n\tgot\n%q\n", expected, segment)
+		t.Fail()
+	}
+
+	segment = extractor.FindSegment("HNDGC")
+
+	if segment == nil {
+		t.Logf("Expected segment not to be nil")
+		t.Fail()
+	}
+
+	expected = []byte("HNDGC:2:3+def'")
+
+	if !reflect.DeepEqual(expected, segment) {
+		t.Logf("Expected segment to equal\n%q\n\tgot\n%q\n", expected, segment)
+		t.Fail()
+	}
+}
+
+func TestSegmentExtratorFindSegments(t *testing.T) {
+	test := "HNHBK:1:3+abc'HNDGC:2:3+def'HNDGC:3:3+xyz'"
+
+	extractor := NewSegmentExtractor([]byte(test))
+	extractor.Extract()
+
+	segments := extractor.FindSegments("HNDGC")
+
+	if segments == nil {
+		t.Logf("Expected segment not to be nil")
+		t.Fail()
+	}
+
+	expected := [][]byte{[]byte("HNDGC:2:3+def'"), []byte("HNDGC:3:3+xyz'")}
+
+	if !reflect.DeepEqual(expected, segments) {
+		t.Logf("Expected segment to equal\n%q\n\tgot\n%q\n", expected, segments)
 		t.Fail()
 	}
 }

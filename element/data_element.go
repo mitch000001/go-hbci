@@ -160,17 +160,17 @@ func (d *dataElement) UnmarshalHBCI(value []byte) error {
 }
 
 func NewDataElementGroup(typ DataElementType, elementCount int, group DataElementGroup) DataElement {
-	return &elementGroup{elements: group.GroupDataElements(), elementCount: elementCount, typ: typ}
+	return &elementGroup{elements: group.GroupDataElements, elementCount: elementCount, typ: typ}
 }
 
 func NewGroupDataElementGroup(typ DataElementType, elementCount int, group GroupDataElementGroup) DataElement {
-	return &elementGroup{elements: group.Elements(), elementCount: elementCount, typ: typ}
+	return &elementGroup{elements: group.Elements, elementCount: elementCount, typ: typ}
 }
 
 // groupDataElementGroup defines a group of GroupDataElements.
 // It implements the DataElement and the DataElementGroup interface
 type elementGroup struct {
-	elements     []DataElement
+	elements     func() []DataElement
 	typ          DataElementType
 	elementCount int
 	optional     bool
@@ -178,8 +178,8 @@ type elementGroup struct {
 
 // Value returns the values of all GroupDataElements as []interface{}
 func (g *elementGroup) Value() interface{} {
-	values := make([]interface{}, len(g.elements))
-	for i, elem := range g.elements {
+	values := make([]interface{}, len(g.elements()))
+	for i, elem := range g.elements() {
 		if !reflect.ValueOf(elem).IsNil() {
 			values[i] = elem.Value()
 		}
@@ -190,10 +190,10 @@ func (g *elementGroup) Value() interface{} {
 func (g *elementGroup) Type() DataElementType { return g.typ }
 
 func (g *elementGroup) IsValid() bool {
-	if g.elementCount != len(g.elements) {
+	if g.elementCount != len(g.elements()) {
 		return false
 	}
-	for _, elem := range g.elements {
+	for _, elem := range g.elements() {
 		if !reflect.ValueOf(elem).IsNil() {
 			if !elem.IsValid() {
 				return false
@@ -205,7 +205,7 @@ func (g *elementGroup) IsValid() bool {
 
 func (g *elementGroup) Length() int {
 	length := 0
-	for _, elem := range g.elements {
+	for _, elem := range g.elements() {
 		if !reflect.ValueOf(elem).IsNil() {
 			length += elem.Length()
 		}
@@ -214,8 +214,8 @@ func (g *elementGroup) Length() int {
 }
 
 func (g *elementGroup) String() string {
-	elementStrings := make([]string, len(g.elements))
-	for i, e := range g.elements {
+	elementStrings := make([]string, len(g.elements()))
+	for i, e := range g.elements() {
 		if !reflect.ValueOf(e).IsNil() {
 			elementStrings[i] = e.String()
 		}
@@ -226,14 +226,15 @@ func (g *elementGroup) String() string {
 func (g *elementGroup) UnmarshalHBCI(value []byte) error {
 	marshaledElements := bytes.Split(value, []byte(":"))
 	var errors []string
+	elements := g.elements()
 	for i, elem := range marshaledElements {
 		if len(elem) == 0 {
 			continue
 		}
-		elemToMarshal := reflect.New(reflect.TypeOf(g.elements[i]).Elem())
+		elemToMarshal := reflect.New(reflect.TypeOf(elements[i]).Elem())
 		err := elemToMarshal.Interface().(DataElement).UnmarshalHBCI(elem)
 		if err == nil {
-			g.elements[i] = elemToMarshal.Interface().(DataElement)
+			elements[i] = elemToMarshal.Interface().(DataElement)
 		} else {
 			errors = append(errors, fmt.Sprintf("%T:%q", err, err))
 		}

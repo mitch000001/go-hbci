@@ -1,6 +1,9 @@
 package segment
 
 import (
+	"bytes"
+	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/mitch000001/go-hbci/domain"
@@ -100,6 +103,24 @@ func (e *EncryptedDataSegment) version() int         { return 1 }
 func (e *EncryptedDataSegment) id() string           { return "HNVSD" }
 func (e *EncryptedDataSegment) referencedId() string { return "" }
 func (e *EncryptedDataSegment) sender() string       { return senderBoth }
+
+func (e *EncryptedDataSegment) UnmarshalHBCI(value []byte) error {
+	elements := bytes.SplitN(value, []byte("+"), 2)
+	header := elements[0]
+	headerElems := bytes.Split(header, []byte(":"))
+	num, err := strconv.Atoi(string(headerElems[1]))
+	if err != nil {
+		return fmt.Errorf("Malformed segment header")
+	}
+	e.Segment = NewBasicSegment(num, e)
+	encryptedData := elements[1]
+	e.Data = &element.BinaryDataElement{}
+	err = e.Data.UnmarshalHBCI(encryptedData)
+	if err != nil {
+		return fmt.Errorf("Error while unmarshaling encrypted data: %v", err)
+	}
+	return nil
+}
 
 func (e *EncryptedDataSegment) elements() []element.DataElement {
 	return []element.DataElement{
