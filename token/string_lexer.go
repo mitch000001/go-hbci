@@ -234,7 +234,7 @@ func lexDigit(l *StringLexer) stringLexerStateFn {
 				l.emit(FLOAT)
 				return lexText
 			} else {
-				return l.errorf("Malformed float")
+				return lexAlphaNumeric
 			}
 		}
 		digits := "0123456789"
@@ -246,7 +246,7 @@ func lexDigit(l *StringLexer) stringLexerStateFn {
 			l.emit(DIGIT)
 			return lexText
 		} else {
-			return l.errorf("Malformed digit")
+			return lexAlphaNumeric
 		}
 	} else {
 		digits := "0123456789"
@@ -258,14 +258,14 @@ func lexDigit(l *StringLexer) stringLexerStateFn {
 				l.emit(FLOAT)
 				return lexText
 			} else {
-				return l.errorf("Malformed float")
+				return lexAlphaNumeric
 			}
 		}
 		if p := l.peek(); isSyntaxSymbol(p) {
 			l.emit(NUMERIC)
 			return lexText
 		} else {
-			return l.errorf("Malformed numeric: %s", l.input[l.start:l.pos+1])
+			return lexAlphaNumeric
 		}
 	}
 }

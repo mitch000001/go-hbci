@@ -145,10 +145,10 @@ func TestLexDigit(t *testing.T) {
 		{"0'", NUMERIC, "0"},
 		{"0,'", FLOAT, "0,"},
 		{"01,23'", ERROR, "Malformed float"},
-		{"0,12a'", ERROR, "Malformed float"},
-		{"1,23a'", ERROR, "Malformed float"},
-		{"012a'", ERROR, "Malformed digit"},
-		{"12a'", ERROR, "Malformed numeric: 12a"},
+		{"0,12a'", ALPHA_NUMERIC, "0,12a"},
+		{"1,23a'", ALPHA_NUMERIC, "1,23a"},
+		{"012a'", ALPHA_NUMERIC, "012a"},
+		{"12a'", ALPHA_NUMERIC, "12a"},
 	}
 	for _, test := range tests {
 		l := NewStringLexer("", test.text)
