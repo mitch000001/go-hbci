@@ -28,6 +28,7 @@ type Dialog interface {
 
 func newDialog(bankId domain.BankId, hbciUrl string, clientId string, signatureProvider message.SignatureProvider, encryptionProvider message.EncryptionProvider) *dialog {
 	return &dialog{
+		httpClient:         http.DefaultClient,
 		hbciUrl:            hbciUrl,
 		BankID:             bankId,
 		ClientID:           clientId,
@@ -38,6 +39,7 @@ func newDialog(bankId domain.BankId, hbciUrl string, clientId string, signatureP
 }
 
 type dialog struct {
+	httpClient         *http.Client
 	hbciUrl            string
 	BankID             domain.BankId
 	ClientID           string
@@ -64,7 +66,7 @@ func (d *dialog) dialogEnd(dialogId string) *message.DialogFinishingMessage {
 
 func (d *dialog) post(message []byte) ([]byte, error) {
 	encodedMessage := base64.StdEncoding.EncodeToString(message)
-	response, err := http.Post(d.hbciUrl, "application/vnd.hbci", strings.NewReader(encodedMessage))
+	response, err := d.httpClient.Post(d.hbciUrl, "application/vnd.hbci", strings.NewReader(encodedMessage))
 	if err != nil {
 		return nil, err
 	}
