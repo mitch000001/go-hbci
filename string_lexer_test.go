@@ -150,7 +150,7 @@ func TestLexDigit(t *testing.T) {
 		{"0,12a'", token.ERROR, "Malformed float"},
 		{"1,23a'", token.ERROR, "Malformed float"},
 		{"012a'", token.ERROR, "Malformed digit"},
-		{"12a'", token.ERROR, "Malformed numeric"},
+		{"12a'", token.ERROR, "Malformed numeric: 12a"},
 	}
 	for _, test := range tests {
 		l := NewStringLexer("", test.text)

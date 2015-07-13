@@ -22,7 +22,7 @@ func (s *SegmentExtractor) Extract() ([][]byte, error) {
 	for lexer.HasNext() {
 		t := lexer.Next()
 		if t.Type() == token.ERROR {
-			return nil, fmt.Errorf("%T: SyntaxError: %q", s, t.Value())
+			return nil, fmt.Errorf("%T: SyntaxError at position %d: %q\n(%q)", s, t.Pos(), t.Value(), s.rawMessage)
 		}
 		if t.Type() == token.SEGMENT_END_MARKER {
 			s.segments = append(s.segments, []byte(current))

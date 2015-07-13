@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/mitch000001/go-hbci/domain"
+	"github.com/mitch000001/go-hbci/element"
 	"github.com/mitch000001/go-hbci/message"
 	"github.com/mitch000001/go-hbci/segment"
 )
@@ -245,7 +246,21 @@ func (d *pinTanDialog) SyncClientSystemID() (string, error) {
 	dataElements := bytes.Split(messageHeader, []byte("+"))
 	newDialogId := string(dataElements[3])
 
-	syncResponse := extractor.FindSegment("HISYN")
+	encData := extractor.FindSegment("HNVSD")
+	encDataElements := bytes.SplitN(encData, []byte("+"), 2)
+	dataBytes := encDataElements[1]
+	binData := &element.BinaryDataElement{}
+	err = binData.UnmarshalHBCI(dataBytes)
+	if err != nil {
+		return "", fmt.Errorf("Error while unpacking encrypted data: %v", err)
+	}
+	binExtractor := NewSegmentExtractor(binData.Val())
+	_, err = binExtractor.Extract()
+	if err != nil {
+		return "", fmt.Errorf("Error while extracting encrypted segments: %v", err)
+	}
+
+	syncResponse := binExtractor.FindSegment("HISYN")
 	if syncResponse != nil {
 		dataElements := bytes.Split(syncResponse, []byte("+"))
 		newClientSystemId := dataElements[1]

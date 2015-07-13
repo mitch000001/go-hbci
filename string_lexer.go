@@ -267,7 +267,7 @@ func lexDigit(l *StringLexer) stringLexerStateFn {
 			l.emit(token.NUMERIC)
 			return lexText
 		} else {
-			return l.errorf("Malformed numeric")
+			return l.errorf("Malformed numeric: %s", l.input[l.start:l.pos+1])
 		}
 	}
 }
