@@ -1,4 +1,4 @@
-package hbci
+package dialog
 
 import (
 	"bufio"
@@ -231,7 +231,7 @@ func (d *pinTanDialog) SyncClientSystemID() (string, error) {
 		return "", err
 	}
 
-	extractor := NewSegmentExtractor(response)
+	extractor := segment.NewSegmentExtractor(response)
 	segments, err := extractor.Extract()
 	if err != nil {
 		return "", err
@@ -252,7 +252,7 @@ func (d *pinTanDialog) SyncClientSystemID() (string, error) {
 		if err != nil {
 			return "", fmt.Errorf("Error while unmarshaling encrypted data: %v", err)
 		}
-		encExtractor := NewSegmentExtractor(encSegment.Data.Val())
+		encExtractor := segment.NewSegmentExtractor(encSegment.Data.Val())
 		_, err = encExtractor.Extract()
 		if err != nil {
 			return "", fmt.Errorf("Error while decrypting message: %v", err)

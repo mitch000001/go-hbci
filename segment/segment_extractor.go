@@ -1,4 +1,4 @@
-package hbci
+package segment
 
 import (
 	"bytes"
@@ -18,7 +18,7 @@ type SegmentExtractor struct {
 
 func (s *SegmentExtractor) Extract() ([][]byte, error) {
 	var current string
-	lexer := NewStringLexer("SegmentExtractor", string(s.rawMessage))
+	lexer := token.NewStringLexer("SegmentExtractor", string(s.rawMessage))
 	for lexer.HasNext() {
 		t := lexer.Next()
 		if t.Type() == token.ERROR {

@@ -1,4 +1,4 @@
-package hbci
+package dialog
 
 import (
 	"encoding/base64"

@@ -1,4 +1,4 @@
-package hbci
+package segment
 
 import (
 	"reflect"
