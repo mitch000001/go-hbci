@@ -230,13 +230,14 @@ func (d *pinTanDialog) SyncClientSystemID() (string, error) {
 	if err != nil && err != io.EOF {
 		return "", err
 	}
-	fmt.Printf("Response: \n%s\n", bytes.Join(bytes.Split(response, []byte("'")), []byte("'\n")))
 
 	extractor := NewSegmentExtractor(response)
-	_, err = extractor.Extract()
+	segments, err := extractor.Extract()
 	if err != nil {
 		return "", err
 	}
+	fmt.Printf("Response: \n%s\n", bytes.Join(segments, []byte("'\n")))
+
 	messageHeader := extractor.FindSegment("HNHBK")
 	if messageHeader == nil {
 		return "", fmt.Errorf("Malformed response: %q", response)

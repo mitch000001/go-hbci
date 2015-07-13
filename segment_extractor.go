@@ -3,7 +3,6 @@ package hbci
 import (
 	"bytes"
 	"fmt"
-	"sort"
 
 	"github.com/mitch000001/go-hbci/token"
 )
@@ -36,18 +35,13 @@ func (s *SegmentExtractor) Extract() ([][]byte, error) {
 }
 
 func (s *SegmentExtractor) FindSegment(id string) []byte {
-	sortedSegments := make(sortedByteArrays, len(s.segments))
-	copy(sortedSegments, s.segments)
-	sort.Sort(sortedSegments)
-
-	i := sort.Search(len(sortedSegments), func(i int) bool {
-		return bytes.HasPrefix(sortedSegments[i], []byte(id))
-	})
-	if i < len(sortedSegments) {
-		return sortedSegments[i]
-	} else {
-		return nil
+	byteId := []byte(id)
+	for _, segment := range s.segments {
+		if bytes.HasPrefix(segment, byteId) {
+			return segment
+		}
 	}
+	return nil
 }
 
 type sortedByteArrays [][]byte

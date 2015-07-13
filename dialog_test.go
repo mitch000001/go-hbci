@@ -46,7 +46,7 @@ func TestDialogSyncClientID(t *testing.T) {
 	dialog.SetPin("abcde")
 	dialog.httpClient = httpClient
 
-	transport.setResponsePayload([]byte("HNHBK:1:3+++abcde'"))
+	transport.setResponsePayload([]byte("HNHBK:1:3++220+abcde+1+'HNVSK:998:2:+998+1+1::0+1:20150713:173634+2:2:13:@8@\x00\x00\x00\x00\x00\x00\x00\x00:5:1:+280:10000000:12345:V:0:0+0+'HNVSD:999:1:+@14@HISYN:3:3:8+2''HNHBS:4:1:+1'"))
 
 	res, err := dialog.SyncClientSystemID()
 
