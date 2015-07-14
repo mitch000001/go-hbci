@@ -146,10 +146,11 @@ func (d *pinTanDialog) SyncClientSystemID() (string, error) {
 			return "", fmt.Errorf("Error while unmarshaling encrypted data: %v", err)
 		}
 		encExtractor := segment.NewSegmentExtractor(encSegment.Data.Val())
-		_, err = encExtractor.Extract()
+		data, err := encExtractor.Extract()
 		if err != nil {
 			return "", fmt.Errorf("Error while decrypting message: %v", err)
 		}
+		fmt.Printf("Encrypted data: \n%s\n", bytes.Join(data, []byte("\n")))
 		syncResponse := encExtractor.FindSegment("HISYN")
 		if syncResponse != nil {
 			syncSegment := &segment.SynchronisationResponseSegment{}
@@ -164,7 +165,14 @@ func (d *pinTanDialog) SyncClientSystemID() (string, error) {
 
 		accountData := encExtractor.FindSegments("HIUPD")
 		if accountData != nil {
-
+			for _, acc := range accountData {
+				infoSegment := &segment.AccountInformationSegment{}
+				err = infoSegment.UnmarshalHBCI(acc)
+				if err != nil {
+					return "", fmt.Errorf("Error while unmarshaling Accounts: %v", err)
+				}
+				d.Accounts = append(d.Accounts, infoSegment.Account())
+			}
 		}
 	} else {
 		return "", fmt.Errorf("Expected encrypted message, but was not:\n%q", response)

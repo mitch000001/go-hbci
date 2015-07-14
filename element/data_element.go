@@ -697,8 +697,11 @@ func (a *AmountDataElement) Elements() []DataElement {
 	}
 }
 
-func (a *AmountDataElement) Val() (value float64, currency string) {
-	return a.Amount.Val(), a.Currency.Val()
+func (a *AmountDataElement) Val() domain.Amount {
+	return domain.Amount{
+		Amount:   a.Amount.Val(),
+		Currency: a.Currency.Val(),
+	}
 }
 
 func NewBankIndentification(bankId domain.BankId) *BankIdentificationDataElement {

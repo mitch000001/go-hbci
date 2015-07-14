@@ -32,6 +32,14 @@ type AccountLimitDataElement struct {
 	Days   *NumberDataElement
 }
 
+func (a *AccountLimitDataElement) Val() domain.AccountLimit {
+	return domain.AccountLimit{
+		Kind:   a.Kind.Val(),
+		Amount: a.Amount.Val(),
+		Days:   a.Days.Val(),
+	}
+}
+
 func (a *AccountLimitDataElement) GroupDataElements() []DataElement {
 	return []DataElement{
 		a.Kind,
@@ -75,7 +83,7 @@ func (a *AllowedBusinessTransactionsDataElement) UnmarshalHBCI(value []byte) err
 func (a *AllowedBusinessTransactionsDataElement) AllowedBusinessTransactions() []domain.BusinessTransaction {
 	businessTransactions := make([]domain.BusinessTransaction, len(a.array))
 	for i, de := range a.array {
-		businessTransactions[i] = de.Value().(domain.BusinessTransaction)
+		businessTransactions[i] = de.(*AllowedBusinessTransactionDataElement).Val()
 	}
 	return businessTransactions
 }
@@ -137,6 +145,23 @@ func (a *AllowedBusinessTransactionDataElement) UnmarshalHBCI(value []byte) erro
 	}
 	*a = *NewAllowedBusinessTransaction(businessTransaction)
 	return nil
+}
+
+func (a *AllowedBusinessTransactionDataElement) Val() domain.BusinessTransaction {
+	tr := domain.BusinessTransaction{
+		ID:               a.BusinessTransactionID.Val(),
+		NeededSignatures: a.NeededSignatures.Val(),
+	}
+	if a.Kind != nil {
+		tr.LimitKind = a.Kind.Val()
+	}
+	if a.Amount != nil {
+		tr.LimitAmount = a.Amount.Val()
+	}
+	if a.Days != nil {
+		tr.LimitDays = a.Days.Val()
+	}
+	return tr
 }
 
 func (a *AllowedBusinessTransactionDataElement) GroupDataElements() []DataElement {
