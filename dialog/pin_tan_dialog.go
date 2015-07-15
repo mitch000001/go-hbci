@@ -124,28 +124,20 @@ func (d *pinTanDialog) SyncClientSystemID() (string, error) {
 		return "", err
 	}
 
-	extractor := segment.NewSegmentExtractor(response)
-	segments, err := extractor.Extract()
+	encMessage, err := extractEncryptedMessage(response)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("Error while extracting encrypted message: %v", err)
 	}
-	fmt.Printf("Response: \n%s\n", bytes.Join(segments, []byte("\n")))
 
-	messageHeader := extractor.FindSegment("HNHBK")
+	messageHeader := encMessage.MessageHeader()
 	if messageHeader == nil {
 		return "", fmt.Errorf("Malformed response: %q", response)
 	}
-	dataElements := bytes.Split(messageHeader, []byte("+"))
-	newDialogId := string(dataElements[3])
+	newDialogId := messageHeader.DialogID.Val()
 
-	encryptedData := extractor.FindSegment("HNVSD")
+	encryptedData := encMessage.EncryptedData
 	if encryptedData != nil {
-		encSegment := &segment.EncryptedDataSegment{}
-		err = encSegment.UnmarshalHBCI(encryptedData)
-		if err != nil {
-			return "", fmt.Errorf("Error while unmarshaling encrypted data: %v", err)
-		}
-		encExtractor := segment.NewSegmentExtractor(encSegment.Data.Val())
+		encExtractor := segment.NewSegmentExtractor(encryptedData.Data.Val())
 		data, err := encExtractor.Extract()
 		if err != nil {
 			return "", fmt.Errorf("Error while decrypting message: %v", err)
@@ -201,6 +193,40 @@ func (d *pinTanDialog) SyncClientSystemID() (string, error) {
 	}
 
 	return string(response), nil
+}
+
+func extractEncryptedMessage(response []byte) (*message.EncryptedMessage, error) {
+	extractor := segment.NewSegmentExtractor(response)
+	_, err := extractor.Extract()
+	if err != nil {
+		return nil, err
+	}
+
+	messageHeader := extractor.FindSegment("HNHBK")
+	if messageHeader == nil {
+		return nil, fmt.Errorf("Malformed response: missing Message Header")
+	}
+	header := &segment.MessageHeaderSegment{}
+	err = header.UnmarshalHBCI(messageHeader)
+	if err != nil {
+		return nil, fmt.Errorf("Error while unmarshaling message header: %v", err)
+	}
+	// TODO: parse messageEnd
+
+	encMessage := message.NewEncryptedMessage(header, nil)
+
+	encryptedData := extractor.FindSegment("HNVSD")
+	if encryptedData != nil {
+		encSegment := &segment.EncryptedDataSegment{}
+		err = encSegment.UnmarshalHBCI(encryptedData)
+		if err != nil {
+			return nil, fmt.Errorf("Error while unmarshaling encrypted data: %v", err)
+		}
+		encMessage.EncryptedData = encSegment
+	} else {
+		return nil, fmt.Errorf("Malformed response: missing encrypted data")
+	}
+	return encMessage, nil
 }
 
 func (d *pinTanDialog) CommunicationAccess() (string, error) {

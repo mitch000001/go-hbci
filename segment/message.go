@@ -1,6 +1,12 @@
 package segment
 
-import "github.com/mitch000001/go-hbci/element"
+import (
+	"bytes"
+	"fmt"
+	"strconv"
+
+	"github.com/mitch000001/go-hbci/element"
+)
 
 type SegmentSequence []Segment
 
@@ -43,6 +49,40 @@ func (m *MessageHeaderSegment) version() int         { return 3 }
 func (m *MessageHeaderSegment) id() string           { return "HNHBK" }
 func (m *MessageHeaderSegment) referencedId() string { return "" }
 func (m *MessageHeaderSegment) sender() string       { return senderBoth }
+
+func (m *MessageHeaderSegment) UnmarshalHBCI(value []byte) error {
+	value = bytes.TrimSuffix(value, []byte("'"))
+	elements := bytes.Split(value, []byte("+"))
+	elementsLen := len(elements)
+	if elementsLen == 0 || elementsLen < 5 {
+		return fmt.Errorf("Malformed marshaled value")
+	}
+	header := elements[0]
+	numStr := bytes.Split(header, []byte(":"))[1]
+	num, err := strconv.Atoi(string(numStr))
+	if err != nil {
+		return fmt.Errorf("Malformed segment header")
+	}
+	m.Segment = NewBasicSegment(num, m)
+	size, err := strconv.Atoi(string(elements[1]))
+	if err != nil {
+		return fmt.Errorf("Error while unmarshaling size: %v", err)
+	}
+	hbciVersion, err := strconv.Atoi(string(elements[2]))
+	if err != nil {
+		return fmt.Errorf("Error while unmarshaling hbci version: %v", err)
+	}
+	dialogId := string(elements[3])
+	messageNum, err := strconv.Atoi(string(elements[4]))
+	if err != nil {
+		return fmt.Errorf("Error while unmarshaling message number: %v", err)
+	}
+	m.Size = element.NewDigit(size, 12)
+	m.HBCIVersion = element.NewNumber(hbciVersion, 3)
+	m.DialogID = element.NewIdentification(dialogId)
+	m.Number = element.NewNumber(messageNum, 4)
+	return nil
+}
 
 func (m *MessageHeaderSegment) elements() []element.DataElement {
 	return []element.DataElement{

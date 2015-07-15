@@ -13,6 +13,8 @@ var bankSegments = map[string]segment.Segment{
 }
 
 type Message interface {
+	MessageHeader() *segment.MessageHeaderSegment
+	MessageEnd() *segment.MessageEndSegment
 	MarshalHBCI() ([]byte, error)
 	SetNumbers()
 	SetSize()
@@ -162,6 +164,14 @@ func (b *BasicMessage) Encrypt(provider EncryptionProvider) (*EncryptedMessage, 
 	provider.WriteEncryptionHeader(encryptionMessage)
 	encryptionMessage.EncryptedData = segment.NewEncryptedDataSegment(encryptedMessage)
 	return encryptionMessage, nil
+}
+
+func (b *BasicMessage) MessageHeader() *segment.MessageHeaderSegment {
+	return b.Header
+}
+
+func (b *BasicMessage) MessageEnd() *segment.MessageEndSegment {
+	return b.End
 }
 
 func newBasicSignedMessage(message HBCIMessage) *basicSignedMessage {
