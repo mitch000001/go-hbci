@@ -10,7 +10,7 @@ import (
 	"github.com/mitch000001/go-hbci/domain"
 )
 
-func TestDialogSyncClientSystemID(t *testing.T) {
+func TestPinTanDialogSyncClientSystemID(t *testing.T) {
 	transport := &MockHttpTransport{}
 	httpClient := &http.Client{Transport: transport}
 
@@ -49,10 +49,15 @@ func TestDialogSyncClientSystemID(t *testing.T) {
 		t.Fail()
 	}
 
-	expectedClientSystemID := "newClientSystemID"
+	expected := "newClientSystemID"
 
-	if dialog.ClientSystemID != expectedClientSystemID {
-		t.Logf("Expected ClientSystemID to equal %q, got %q\n", expectedClientSystemID, dialog.ClientSystemID)
+	if res != expected {
+		t.Logf("Expected response to equal\n%q\n\tgot\n%q\n", expected, res)
+		t.Fail()
+	}
+
+	if dialog.ClientSystemID != expected {
+		t.Logf("Expected ClientSystemID to equal %q, got %q\n", expected, dialog.ClientSystemID)
 		t.Fail()
 	}
 
@@ -80,12 +85,5 @@ func TestDialogSyncClientSystemID(t *testing.T) {
 			t.Logf("Expected account to eqaul\n%+#v\n\tgot\n%+#v\n", expected, account)
 			t.Fail()
 		}
-	}
-
-	expected := ""
-
-	if res != expected {
-		t.Logf("Expected response to equal\n%q\n\tgot\n%q\n", expected, res)
-		t.Fail()
 	}
 }

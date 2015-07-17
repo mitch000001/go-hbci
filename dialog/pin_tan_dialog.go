@@ -192,7 +192,7 @@ func (d *pinTanDialog) SyncClientSystemID() (string, error) {
 		return "", err
 	}
 
-	return string(response), nil
+	return d.ClientSystemID, nil
 }
 
 func extractEncryptedMessage(response []byte) (*message.EncryptedMessage, error) {
@@ -212,6 +212,7 @@ func extractEncryptedMessage(response []byte) (*message.EncryptedMessage, error)
 		return nil, fmt.Errorf("Error while unmarshaling message header: %v", err)
 	}
 	// TODO: parse messageEnd
+	// TODO: parse encryptionHeader
 
 	encMessage := message.NewEncryptedMessage(header, nil)
 
