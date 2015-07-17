@@ -22,6 +22,7 @@ func TestPinTanDialogSyncClientSystemID(t *testing.T) {
 	dialog.httpClient = httpClient
 
 	encryptedData := []string{
+		"HIRMG:2:2:1+0020::Auftrag entgegengenommen'",
 		"HISYN:2:3:8+newClientSystemID'",
 		"HIUPD:3:4:8+12345::280:1000000+54321+EUR+Muster+Max+++HKTAN:1+HKKAZ:1'",
 	}
@@ -83,6 +84,38 @@ func TestPinTanDialogSyncClientSystemID(t *testing.T) {
 		}
 		if !reflect.DeepEqual(expected, account) {
 			t.Logf("Expected account to eqaul\n%+#v\n\tgot\n%+#v\n", expected, account)
+			t.Fail()
+		}
+	}
+
+	// message errors
+	encryptedData = []string{
+		"HIRMG:2:2:1+9000::Nachricht enthält Fehler'",
+	}
+	syncResponseMessage = []string{
+		"HNHBK:1:3+000000000123+220+abcde+1+'",
+		"HNVSK:998:2:+998+1+1::0+1:20150713:173634+2:2:13:@8@\x00\x00\x00\x00\x00\x00\x00\x00:5:1:+280:10000000:12345:V:0:0+0+'",
+		fmt.Sprintf("HNVSD:999:1:+@%d@%s'", len(strings.Join(encryptedData, "")), strings.Join(encryptedData, "")),
+		"HNHBS:3:1:+1'",
+	}
+
+	transport.SetResponsePayloads([][]byte{
+		[]byte(strings.Join(syncResponseMessage, "")),
+		[]byte(""),
+	})
+
+	res, err = dialog.SyncClientSystemID()
+
+	if err == nil {
+		t.Logf("Expected error, got nil\n")
+		t.Fail()
+	}
+
+	if err != nil {
+		errMessage := err.Error()
+		expectedMessage := "Institute returned errors:\nCode: 9000, Position: , Text: Nachricht enthält Fehler, Parameter: "
+		if expectedMessage != errMessage {
+			t.Logf("Expected error to equal\n%q\n\tgot\n%q\n", expectedMessage, errMessage)
 			t.Fail()
 		}
 	}

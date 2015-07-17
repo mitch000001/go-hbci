@@ -21,6 +21,10 @@ type Acknowledgement struct {
 	Params               []string
 }
 
+func (a Acknowledgement) String() string {
+	return fmt.Sprintf("Code: %d, Position: %s, Text: %s, Parameter: %s", a.Code, a.ReferenceDataElement, a.Text, strings.Join(a.Params, ", "))
+}
+
 func (a Acknowledgement) IsError() bool {
 	return a.Code >= 9000
 }

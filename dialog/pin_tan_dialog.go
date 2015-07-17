@@ -139,6 +139,45 @@ func (d *pinTanDialog) SyncClientSystemID() (string, error) {
 		return "", fmt.Errorf("Error while decrypting message: %v", err)
 	}
 
+	var errors []string
+	messageAcknowledgementBytes := decryptedMessage.FindSegment("HIRMG")
+	if messageAcknowledgementBytes != nil {
+		messageAcknowledgement := &segment.MessageAcknowledgement{}
+		err = messageAcknowledgement.UnmarshalHBCI(messageAcknowledgementBytes)
+		if err != nil {
+			return "", fmt.Errorf("Error while unmarshaling MessageAcknowledgement: %v", err)
+		}
+		acknowledgements := messageAcknowledgement.Acknowledgements()
+		for _, ack := range acknowledgements {
+			if ack.IsError() {
+				errors = append(errors, ack.String())
+			}
+		}
+	} else {
+		return "", fmt.Errorf("Malformed message: missing MessageAcknowledgement")
+	}
+
+	segmentAcknowledgementBytes := decryptedMessage.FindSegment("HIRMS")
+	if segmentAcknowledgementBytes != nil {
+		segmentAcknowledgement := &segment.SegmentAcknowledgement{}
+		err = segmentAcknowledgement.UnmarshalHBCI(segmentAcknowledgementBytes)
+		if err != nil {
+			return "", fmt.Errorf("Error while unmarshaling MessageAcknowledgement: %v", err)
+		}
+		acknowledgements := segmentAcknowledgement.Acknowledgements()
+		for _, ack := range acknowledgements {
+			if ack.IsError() {
+				errors = append(errors, ack.String())
+			}
+		}
+		if len(errors) > 0 {
+			return "", fmt.Errorf("Institute returned errors:\n%s", strings.Join(errors, "\n"))
+		}
+	}
+	if len(errors) > 0 {
+		return "", fmt.Errorf("Institute returned errors:\n%s", strings.Join(errors, "\n"))
+	}
+
 	syncResponse := decryptedMessage.FindSegment("HISYN")
 	if syncResponse != nil {
 		syncSegment := &segment.SynchronisationResponseSegment{}

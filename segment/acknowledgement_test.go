@@ -3,7 +3,7 @@ package segment
 import "testing"
 
 func TestMessageAcknowledgementUnmarshalHBCI(t *testing.T) {
-	test := "HIRMG:1:2:+0010:1:Nachricht entgegengenommen:+0010:1:Nachricht entgegengenommen:"
+	test := "HIRMG:1:2:+0010:1:Nachricht entgegengenommen:+0010:1:Nachricht entgegengenommen:'"
 
 	messageAcknowledgement := &MessageAcknowledgement{}
 
@@ -15,7 +15,6 @@ func TestMessageAcknowledgementUnmarshalHBCI(t *testing.T) {
 	}
 
 	marshaled := messageAcknowledgement.String()
-	marshaled = marshaled[:len(marshaled)-1]
 
 	if marshaled != test {
 		t.Logf("Expected unmarshaled value to equal\n%q\n\tgot\n%q\n", test, marshaled)
@@ -24,7 +23,7 @@ func TestMessageAcknowledgementUnmarshalHBCI(t *testing.T) {
 }
 
 func TestSegmentAcknowledgementUnmarshalHBCI(t *testing.T) {
-	test := "HIRMS:1:2:+0010:1:Nachricht entgegengenommen:+0010:1:Nachricht entgegengenommen:"
+	test := "HIRMS:1:2:+0010:1:Nachricht entgegengenommen:+0010:1:Nachricht entgegengenommen:'"
 
 	segmentAcknowledgement := &SegmentAcknowledgement{}
 
@@ -36,7 +35,6 @@ func TestSegmentAcknowledgementUnmarshalHBCI(t *testing.T) {
 	}
 
 	marshaled := segmentAcknowledgement.String()
-	marshaled = marshaled[:len(marshaled)-1]
 
 	if marshaled != test {
 		t.Logf("Expected unmarshaled value to equal\n%q\n\tgot\n%q\n", test, marshaled)

@@ -11,11 +11,11 @@ import (
 
 type MessageAcknowledgement struct {
 	Segment
-	Acknowledgements []*element.AcknowledgementDataElement
+	acknowledgements []*element.AcknowledgementDataElement
 }
 
 func (m *MessageAcknowledgement) init() {
-	m.Acknowledgements = make([]*element.AcknowledgementDataElement, 99)
+	m.acknowledgements = make([]*element.AcknowledgementDataElement, 99)
 }
 func (m *MessageAcknowledgement) version() int         { return 2 }
 func (m *MessageAcknowledgement) id() string           { return "HIRMG" }
@@ -23,6 +23,7 @@ func (m *MessageAcknowledgement) referencedId() string { return "" }
 func (m *MessageAcknowledgement) sender() string       { return senderBank }
 
 func (m *MessageAcknowledgement) UnmarshalHBCI(value []byte) error {
+	value = bytes.TrimSuffix(value, []byte("'"))
 	elements := bytes.Split(value, []byte("+"))
 	if len(elements) == 0 {
 		return fmt.Errorf("Malformed marshaled value")
@@ -44,21 +45,29 @@ func (m *MessageAcknowledgement) UnmarshalHBCI(value []byte) error {
 		}
 		acknowledgements[i] = ack
 	}
-	m.Acknowledgements = acknowledgements
+	m.acknowledgements = acknowledgements
 	return nil
 }
 
+func (m *MessageAcknowledgement) Acknowledgements() []domain.Acknowledgement {
+	acknowledgements := make([]domain.Acknowledgement, len(m.acknowledgements))
+	for i, ackDe := range m.acknowledgements {
+		acknowledgements[i] = ackDe.Val()
+	}
+	return acknowledgements
+}
+
 func (m *MessageAcknowledgement) elements() []element.DataElement {
-	dataElements := make([]element.DataElement, len(m.Acknowledgements))
-	for i, ack := range m.Acknowledgements {
+	dataElements := make([]element.DataElement, len(m.acknowledgements))
+	for i, ack := range m.acknowledgements {
 		dataElements[i] = ack
 	}
 	return dataElements
 }
 
 func (m *MessageAcknowledgement) Value() []domain.Acknowledgement {
-	acks := make([]domain.Acknowledgement, len(m.Acknowledgements))
-	for i, de := range m.Acknowledgements {
+	acks := make([]domain.Acknowledgement, len(m.acknowledgements))
+	for i, de := range m.acknowledgements {
 		acks[i] = de.Val()
 	}
 	return acks
@@ -66,11 +75,11 @@ func (m *MessageAcknowledgement) Value() []domain.Acknowledgement {
 
 type SegmentAcknowledgement struct {
 	Segment
-	Acknowledgements []*element.AcknowledgementDataElement
+	acknowledgements []*element.AcknowledgementDataElement
 }
 
 func (s *SegmentAcknowledgement) init() {
-	s.Acknowledgements = make([]*element.AcknowledgementDataElement, 99)
+	s.acknowledgements = make([]*element.AcknowledgementDataElement, 99)
 }
 func (s *SegmentAcknowledgement) version() int         { return 2 }
 func (s *SegmentAcknowledgement) id() string           { return "HIRMS" }
@@ -78,6 +87,7 @@ func (s *SegmentAcknowledgement) referencedId() string { return "" }
 func (s *SegmentAcknowledgement) sender() string       { return senderBank }
 
 func (s *SegmentAcknowledgement) UnmarshalHBCI(value []byte) error {
+	value = bytes.TrimSuffix(value, []byte("'"))
 	elements := bytes.Split(value, []byte("+"))
 	if len(elements) == 0 {
 		return fmt.Errorf("Malformed marshaled value")
@@ -99,13 +109,21 @@ func (s *SegmentAcknowledgement) UnmarshalHBCI(value []byte) error {
 		}
 		acknowledgements[i] = ack
 	}
-	s.Acknowledgements = acknowledgements
+	s.acknowledgements = acknowledgements
 	return nil
 }
 
+func (s *SegmentAcknowledgement) Acknowledgements() []domain.Acknowledgement {
+	acknowledgements := make([]domain.Acknowledgement, len(s.acknowledgements))
+	for i, ackDe := range s.acknowledgements {
+		acknowledgements[i] = ackDe.Val()
+	}
+	return acknowledgements
+}
+
 func (s *SegmentAcknowledgement) elements() []element.DataElement {
-	dataElements := make([]element.DataElement, len(s.Acknowledgements))
-	for i, ack := range s.Acknowledgements {
+	dataElements := make([]element.DataElement, len(s.acknowledgements))
+	for i, ack := range s.acknowledgements {
 		dataElements[i] = ack
 	}
 	return dataElements
