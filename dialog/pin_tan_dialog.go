@@ -1,7 +1,6 @@
 package dialog
 
 import (
-	"bytes"
 	"fmt"
 	"io"
 	"strings"
@@ -13,7 +12,7 @@ import (
 
 func NewPinTanDialog(bankId domain.BankId, hbciUrl string, clientId string) *pinTanDialog {
 	signatureProvider := message.NewPinTanSignatureProvider(nil, "")
-	encryptionProvider := message.NewPinTanEncryptionProvider(nil, "")
+	encryptionProvider := message.NewPinTanCryptoProvider(nil, "")
 	d := &pinTanDialog{
 		dialog: newDialog(bankId, hbciUrl, clientId, signatureProvider, encryptionProvider),
 	}
@@ -31,7 +30,7 @@ func (d *pinTanDialog) SetPin(pin string) {
 	pinKey := domain.NewPinKey(pin, domain.NewPinTanKeyName(d.BankID, d.ClientID, "S"))
 	d.signatureProvider = message.NewPinTanSignatureProvider(pinKey, d.ClientSystemID)
 	pinKey = domain.NewPinKey(pin, domain.NewPinTanKeyName(d.BankID, d.ClientID, "V"))
-	d.encryptionProvider = message.NewPinTanEncryptionProvider(pinKey, d.ClientSystemID)
+	d.cryptoProvider = message.NewPinTanCryptoProvider(pinKey, d.ClientSystemID)
 }
 
 func (d *pinTanDialog) Init() (string, error) {
@@ -49,7 +48,7 @@ func (d *pinTanDialog) Init() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	encryptedInitMessage, err := initMessage.Encrypt(d.encryptionProvider)
+	encryptedInitMessage, err := initMessage.Encrypt(d.cryptoProvider)
 	if err != nil {
 		return "", err
 	}
@@ -75,7 +74,7 @@ func (d *pinTanDialog) Init() (string, error) {
 		return "", err
 	}
 	dialogEnd.SetSize()
-	encryptedDialogEnd, err := dialogEnd.Encrypt(d.encryptionProvider)
+	encryptedDialogEnd, err := dialogEnd.Encrypt(d.cryptoProvider)
 	if err != nil {
 		return "", err
 	}
@@ -108,8 +107,8 @@ func (d *pinTanDialog) SyncClientSystemID() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	d.encryptionProvider.SetClientSystemID(initialClientSystemID)
-	encryptedSyncMessage, err := syncMessage.Encrypt(d.encryptionProvider)
+	d.cryptoProvider.SetClientSystemID(initialClientSystemID)
+	encryptedSyncMessage, err := syncMessage.Encrypt(d.cryptoProvider)
 	if err != nil {
 		return "", err
 	}
@@ -135,39 +134,35 @@ func (d *pinTanDialog) SyncClientSystemID() (string, error) {
 	}
 	newDialogId := messageHeader.DialogID.Val()
 
-	encryptedData := encMessage.EncryptedData
-	if encryptedData != nil {
-		encExtractor := segment.NewSegmentExtractor(encryptedData.Data.Val())
-		data, err := encExtractor.Extract()
-		if err != nil {
-			return "", fmt.Errorf("Error while decrypting message: %v", err)
-		}
-		fmt.Printf("Encrypted data: \n%s\n", bytes.Join(data, []byte("\n")))
-		syncResponse := encExtractor.FindSegment("HISYN")
-		if syncResponse != nil {
-			syncSegment := &segment.SynchronisationResponseSegment{}
-			err = syncSegment.UnmarshalHBCI(syncResponse)
-			if err != nil {
-				return "", fmt.Errorf("Error while unmarshaling sync response: %v", err)
-			}
-			d.ClientSystemID = syncSegment.ClientSystemID.Val()
-			d.signatureProvider.SetClientSystemID(d.ClientSystemID)
-			d.encryptionProvider.SetClientSystemID(d.ClientSystemID)
-		}
+	decryptedMessage, err := encMessage.Decrypt(d.cryptoProvider)
+	if err != nil {
+		return "", fmt.Errorf("Error while decrypting message: %v", err)
+	}
 
-		accountData := encExtractor.FindSegments("HIUPD")
-		if accountData != nil {
-			for _, acc := range accountData {
-				infoSegment := &segment.AccountInformationSegment{}
-				err = infoSegment.UnmarshalHBCI(acc)
-				if err != nil {
-					return "", fmt.Errorf("Error while unmarshaling Accounts: %v", err)
-				}
-				d.Accounts = append(d.Accounts, infoSegment.Account())
-			}
+	syncResponse := decryptedMessage.FindSegment("HISYN")
+	if syncResponse != nil {
+		syncSegment := &segment.SynchronisationResponseSegment{}
+		err = syncSegment.UnmarshalHBCI(syncResponse)
+		if err != nil {
+			return "", fmt.Errorf("Error while unmarshaling sync response: %v", err)
 		}
+		d.ClientSystemID = syncSegment.ClientSystemID.Val()
+		d.signatureProvider.SetClientSystemID(d.ClientSystemID)
+		d.cryptoProvider.SetClientSystemID(d.ClientSystemID)
 	} else {
-		return "", fmt.Errorf("Expected encrypted message, but was not:\n%q", response)
+		return "", fmt.Errorf("Malformed message: missing SynchronisationResponse")
+	}
+
+	accountData := decryptedMessage.FindSegments("HIUPD")
+	if accountData != nil {
+		for _, acc := range accountData {
+			infoSegment := &segment.AccountInformationSegment{}
+			err = infoSegment.UnmarshalHBCI(acc)
+			if err != nil {
+				return "", fmt.Errorf("Error while unmarshaling Accounts: %v", err)
+			}
+			d.Accounts = append(d.Accounts, infoSegment.Account())
+		}
 	}
 
 	dialogEnd := d.dialogEnd(newDialogId)
@@ -179,7 +174,7 @@ func (d *pinTanDialog) SyncClientSystemID() (string, error) {
 		return "", err
 	}
 	dialogEnd.SetSize()
-	encryptedDialogEnd, err := dialogEnd.Encrypt(d.encryptionProvider)
+	encryptedDialogEnd, err := dialogEnd.Encrypt(d.cryptoProvider)
 	if err != nil {
 		return "", err
 	}

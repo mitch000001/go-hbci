@@ -25,29 +25,29 @@ type Dialog interface {
 	Init() (string, error)
 }
 
-func newDialog(bankId domain.BankId, hbciUrl string, clientId string, signatureProvider message.SignatureProvider, encryptionProvider message.EncryptionProvider) *dialog {
+func newDialog(bankId domain.BankId, hbciUrl string, clientId string, signatureProvider message.SignatureProvider, cryptoProvider message.CryptoProvider) *dialog {
 	return &dialog{
-		httpClient:         http.DefaultClient,
-		hbciUrl:            hbciUrl,
-		BankID:             bankId,
-		ClientID:           clientId,
-		ClientSystemID:     initialClientSystemID,
-		Accounts:           make([]domain.AccountInformation, 0),
-		signatureProvider:  signatureProvider,
-		encryptionProvider: encryptionProvider,
+		httpClient:        http.DefaultClient,
+		hbciUrl:           hbciUrl,
+		BankID:            bankId,
+		ClientID:          clientId,
+		ClientSystemID:    initialClientSystemID,
+		Accounts:          make([]domain.AccountInformation, 0),
+		signatureProvider: signatureProvider,
+		cryptoProvider:    cryptoProvider,
 	}
 }
 
 type dialog struct {
-	httpClient         *http.Client
-	hbciUrl            string
-	BankID             domain.BankId
-	ClientID           string
-	ClientSystemID     string
-	Accounts           []domain.AccountInformation
-	messageCount       int
-	signatureProvider  message.SignatureProvider
-	encryptionProvider message.EncryptionProvider
+	httpClient        *http.Client
+	hbciUrl           string
+	BankID            domain.BankId
+	ClientID          string
+	ClientSystemID    string
+	Accounts          []domain.AccountInformation
+	messageCount      int
+	signatureProvider message.SignatureProvider
+	cryptoProvider    message.CryptoProvider
 }
 
 func (d *dialog) nextMessageNumber() int {
@@ -94,7 +94,7 @@ func (d *dialog) dial(message []byte) ([]byte, error) {
 		return nil, err
 	}
 	defer conn.Close()
-	conn.SetReadDeadline(time.Now().Add(15 * time.Second))
+	conn.SetReadDeadline(time.Now().Add(2 * time.Second))
 	fmt.Fprintf(conn, "%s\r\n\r\n", string(message))
 	buf := bufio.NewReader(conn)
 	// read answer header

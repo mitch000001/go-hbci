@@ -8,9 +8,10 @@ import (
 	"github.com/mitch000001/go-hbci/segment"
 )
 
-type EncryptionProvider interface {
+type CryptoProvider interface {
 	SetClientSystemID(clientSystemId string)
 	Encrypt(message []byte) ([]byte, error)
+	Decrypt(encryptedMessage []byte) ([]byte, error)
 	WriteEncryptionHeader(message *EncryptedMessage)
 	EncryptWithInitialKeyName(message []byte) (*EncryptedMessage, error)
 }
@@ -58,27 +59,87 @@ func (e *EncryptedMessage) SetNumbers() {
 	panic(fmt.Errorf("SetNumbers: Operation not allowed on encrypted messages"))
 }
 
-func NewPinTanEncryptionProvider(key *domain.PinKey, clientSystemId string) *PinTanEncryptionProvider {
-	return &PinTanEncryptionProvider{
+func (e *EncryptedMessage) Decrypt(provider CryptoProvider) (*DecryptedMessage, error) {
+	decryptedMessageBytes, err := provider.Decrypt(e.EncryptedData.Data.Val())
+	if err != nil {
+		return nil, err
+	}
+	decryptedMessage, err := NewDecryptedMessage(e.MessageHeader(), e.MessageEnd(), decryptedMessageBytes)
+	if err != nil {
+		return nil, err
+	}
+	return decryptedMessage, nil
+}
+
+func NewDecryptedMessage(header *segment.MessageHeaderSegment, end *segment.MessageEndSegment, rawMessage []byte) (*DecryptedMessage, error) {
+	segmentExtractor := segment.NewSegmentExtractor(rawMessage)
+	_, err := segmentExtractor.Extract()
+	if err != nil {
+		return nil, fmt.Errorf("Malformed decrypted message bytes: %v", err)
+	}
+	decryptedMessage := &DecryptedMessage{
+		rawMessage:       rawMessage,
+		segmentExtractor: segmentExtractor,
+	}
+	// TODO: set hbci message appropriate
+	decryptedMessage.message = NewBasicMessageWithHeaderAndEnd(header, end, nil)
+	return decryptedMessage, nil
+}
+
+type DecryptedMessage struct {
+	rawMessage       []byte
+	message          Message
+	segmentExtractor *segment.SegmentExtractor
+}
+
+func (d *DecryptedMessage) MarshalHBCI() ([]byte, error) {
+	return d.rawMessage, nil
+}
+func (d *DecryptedMessage) MessageHeader() *segment.MessageHeaderSegment {
+	return d.message.MessageHeader()
+}
+func (d *DecryptedMessage) MessageEnd() *segment.MessageEndSegment {
+	return d.message.MessageEnd()
+}
+func (d *DecryptedMessage) SetNumbers() {}
+func (d *DecryptedMessage) SetSize()    {}
+func (d *DecryptedMessage) Encrypt(provider CryptoProvider) (*EncryptedMessage, error) {
+	return d.message.Encrypt(provider)
+}
+
+func (d *DecryptedMessage) FindSegment(segmentID string) []byte {
+	return d.segmentExtractor.FindSegment(segmentID)
+}
+
+func (d *DecryptedMessage) FindSegments(segmentID string) [][]byte {
+	return d.segmentExtractor.FindSegments(segmentID)
+}
+
+func NewPinTanCryptoProvider(key *domain.PinKey, clientSystemId string) *PinTanCryptoProvider {
+	return &PinTanCryptoProvider{
 		key:            key,
 		clientSystemId: clientSystemId,
 	}
 }
 
-type PinTanEncryptionProvider struct {
+type PinTanCryptoProvider struct {
 	key            *domain.PinKey
 	clientSystemId string
 }
 
-func (p *PinTanEncryptionProvider) SetClientSystemID(clientSystemId string) {
+func (p *PinTanCryptoProvider) SetClientSystemID(clientSystemId string) {
 	p.clientSystemId = clientSystemId
 }
 
-func (p *PinTanEncryptionProvider) Encrypt(message []byte) ([]byte, error) {
+func (p *PinTanCryptoProvider) Encrypt(message []byte) ([]byte, error) {
 	return p.key.Encrypt(message)
 }
 
-func (p *PinTanEncryptionProvider) EncryptWithInitialKeyName(message []byte) (*EncryptedMessage, error) {
+func (p *PinTanCryptoProvider) Decrypt(encryptedMessage []byte) ([]byte, error) {
+	return p.key.Decrypt(encryptedMessage)
+}
+
+func (p *PinTanCryptoProvider) EncryptWithInitialKeyName(message []byte) (*EncryptedMessage, error) {
 	keyName := p.key.KeyName()
 	keyName.SetInitial()
 	encryptedBytes, _ := p.key.Encrypt(message)
@@ -86,6 +147,6 @@ func (p *PinTanEncryptionProvider) EncryptWithInitialKeyName(message []byte) (*E
 	return encryptedMessage, nil
 }
 
-func (p *PinTanEncryptionProvider) WriteEncryptionHeader(message *EncryptedMessage) {
+func (p *PinTanCryptoProvider) WriteEncryptionHeader(message *EncryptedMessage) {
 	message.EncryptionHeader = segment.NewPinTanEncryptionHeaderSegment(p.clientSystemId, p.key.KeyName())
 }

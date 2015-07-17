@@ -1,5 +1,10 @@
 package domain
 
+import (
+	"fmt"
+	"strings"
+)
+
 func NewAcknowledgement(code int, referenceDataElement, text string, params []string) Acknowledgement {
 	return Acknowledgement{
 		Code:                 code,

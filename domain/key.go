@@ -99,6 +99,13 @@ func (p *PinKey) Encrypt(message []byte) ([]byte, error) {
 	return encMessage, nil
 }
 
+func (p *PinKey) Decrypt(encryptedMessage []byte) ([]byte, error) {
+	decMessage := make([]byte, len(encryptedMessage))
+	// Make a deep copy, just in case
+	copy(decMessage, encryptedMessage)
+	return decMessage, nil
+}
+
 func GenerateSigningKey() (*PublicKey, error) {
 	rsaKey, err := rsa.GenerateKey(rand.Reader, 768)
 	if err != nil {

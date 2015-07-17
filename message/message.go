@@ -18,7 +18,9 @@ type Message interface {
 	MarshalHBCI() ([]byte, error)
 	SetNumbers()
 	SetSize()
-	Encrypt(provider EncryptionProvider) (*EncryptedMessage, error)
+	Encrypt(provider CryptoProvider) (*EncryptedMessage, error)
+	FindSegment(segmentID string) []byte
+	FindSegments(segmentID string) [][]byte
 }
 
 type HBCIMessage interface {
@@ -138,7 +140,7 @@ func (b *BasicMessage) MarshalHBCI() ([]byte, error) {
 	return b.marshaledContent, nil
 }
 
-func (b *BasicMessage) Encrypt(provider EncryptionProvider) (*EncryptedMessage, error) {
+func (b *BasicMessage) Encrypt(provider CryptoProvider) (*EncryptedMessage, error) {
 	var buffer bytes.Buffer
 	switch msg := b.HBCIMessage.(type) {
 	case SignedHBCIMessage:
@@ -172,6 +174,25 @@ func (b *BasicMessage) MessageHeader() *segment.MessageHeaderSegment {
 
 func (b *BasicMessage) MessageEnd() *segment.MessageEndSegment {
 	return b.End
+}
+
+func (b *BasicMessage) FindSegment(segmentID string) []byte {
+	for _, segment := range b.HBCIMessage.HBCISegments() {
+		if segment.Header().ID.Val() == segmentID {
+			return []byte(segment.String())
+		}
+	}
+	return nil
+}
+
+func (b *BasicMessage) FindSegments(segmentID string) [][]byte {
+	var segments [][]byte
+	for _, segment := range b.HBCIMessage.HBCISegments() {
+		if segment.Header().ID.Val() == segmentID {
+			segments = append(segments, []byte(segment.String()))
+		}
+	}
+	return segments
 }
 
 func newBasicSignedMessage(message HBCIMessage) *basicSignedMessage {
