@@ -19,7 +19,7 @@ type SynchronisationMessage struct {
 	Sync                       *segment.SynchronisationRequestSegment
 }
 
-func (s *SynchronisationMessage) Jobs() segment.SegmentSequence {
+func (s *SynchronisationMessage) jobs() segment.SegmentSequence {
 	return segment.SegmentSequence{
 		s.Identification,
 		s.ProcessingPreparation,

@@ -113,48 +113,24 @@ func (d *pinTanDialog) SyncClientSystemID() (string, error) {
 		return "", err
 	}
 	encryptedSyncMessage.SetSize()
-	marshaledMessage, err := encryptedSyncMessage.MarshalHBCI()
-	if err != nil {
-		return "", err
-	}
 
-	response, err := d.post(marshaledMessage)
-	if err != nil {
-		return "", err
-	}
-
-	encMessage, err := extractEncryptedMessage(response)
+	decryptedMessage, err := d.Request(encryptedSyncMessage)
 	if err != nil {
 		return "", fmt.Errorf("Error while extracting encrypted message: %v", err)
 	}
 
-	messageHeader := encMessage.MessageHeader()
+	messageHeader := decryptedMessage.MessageHeader()
 	if messageHeader == nil {
-		return "", fmt.Errorf("Malformed response: %q", response)
+		return "", fmt.Errorf("Malformed response message: %q", decryptedMessage)
 	}
 	newDialogId := messageHeader.DialogID.Val()
 
-	decryptedMessage, err := encMessage.Decrypt(d.cryptoProvider)
-	if err != nil {
-		return "", fmt.Errorf("Error while decrypting message: %v", err)
-	}
-
 	var errors []string
-	messageAcknowledgementBytes := decryptedMessage.FindSegment("HIRMG")
-	if messageAcknowledgementBytes != nil {
-		messageAcknowledgement := &segment.MessageAcknowledgement{}
-		err = messageAcknowledgement.UnmarshalHBCI(messageAcknowledgementBytes)
-		if err != nil {
-			return "", fmt.Errorf("Error while unmarshaling MessageAcknowledgement: %v", err)
+	acknowledgements := decryptedMessage.Acknowledgements()
+	for _, ack := range acknowledgements {
+		if ack.IsError() {
+			errors = append(errors, ack.String())
 		}
-		acknowledgements := messageAcknowledgement.Acknowledgements()
-		for _, ack := range acknowledgements {
-			if ack.IsError() {
-				errors = append(errors, ack.String())
-			}
-		}
-	} else {
-		return "", fmt.Errorf("Malformed message: missing MessageAcknowledgement")
 	}
 
 	segmentAcknowledgementBytes := decryptedMessage.FindSegment("HIRMS")
@@ -217,16 +193,54 @@ func (d *pinTanDialog) SyncClientSystemID() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	marshaledEndMessage, err := encryptedDialogEnd.MarshalHBCI()
-	if err != nil {
-		return "", err
-	}
-	response, err = d.post(marshaledEndMessage)
+	decryptedMessage, err = d.Request(encryptedDialogEnd)
 	if err != nil {
 		return "", err
 	}
 
+	errors = make([]string, 0)
+	messageAcknowledgementBytes := decryptedMessage.FindSegment("HIRMG")
+	if messageAcknowledgementBytes != nil {
+		messageAcknowledgement := &segment.MessageAcknowledgement{}
+		err = messageAcknowledgement.UnmarshalHBCI(messageAcknowledgementBytes)
+		if err != nil {
+			return "", fmt.Errorf("Error while unmarshaling MessageAcknowledgement: %v", err)
+		}
+		acknowledgements := messageAcknowledgement.Acknowledgements()
+		for _, ack := range acknowledgements {
+			if ack.IsError() {
+				errors = append(errors, ack.String())
+			}
+		}
+	} else {
+		return "", fmt.Errorf("Malformed message: missing MessageAcknowledgement")
+	}
+
 	return d.ClientSystemID, nil
+}
+
+func (d *pinTanDialog) Request(message message.ClientMessage) (message.BankMessage, error) {
+	marshaledMessage, err := message.MarshalHBCI()
+	if err != nil {
+		return nil, err
+	}
+
+	response, err := d.post(marshaledMessage)
+	if err != nil {
+		return nil, err
+	}
+
+	encMessage, err := extractEncryptedMessage(response)
+	if err != nil {
+		return nil, err
+	}
+
+	decryptedMessage, err := encMessage.Decrypt(d.cryptoProvider)
+	if err != nil {
+		return nil, fmt.Errorf("Error while decrypting message: %v", err)
+	}
+
+	return decryptedMessage, err
 }
 
 func extractEncryptedMessage(response []byte) (*message.EncryptedMessage, error) {

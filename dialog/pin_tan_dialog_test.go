@@ -1,10 +1,8 @@
 package dialog
 
 import (
-	"fmt"
 	"net/http"
 	"reflect"
-	"strings"
 	"testing"
 
 	"github.com/mitch000001/go-hbci/domain"
@@ -21,21 +19,17 @@ func TestPinTanDialogSyncClientSystemID(t *testing.T) {
 	dialog.SetPin("abcde")
 	dialog.httpClient = httpClient
 
-	encryptedData := []string{
-		"HIRMG:2:2:1+0020::Auftrag entgegengenommen'",
+	syncResponseMessage := encryptedTestMessage(
+		"HIRMG:2:2:1+0100::Dialog beendet'",
 		"HISYN:2:3:8+newClientSystemID'",
 		"HIUPD:3:4:8+12345::280:1000000+54321+EUR+Muster+Max+++HKTAN:1+HKKAZ:1'",
-	}
-	syncResponseMessage := []string{
-		"HNHBK:1:3+000000000123+220+abcde+1+'",
-		"HNVSK:998:2:+998+1+1::0+1:20150713:173634+2:2:13:@8@\x00\x00\x00\x00\x00\x00\x00\x00:5:1:+280:10000000:12345:V:0:0+0+'",
-		fmt.Sprintf("HNVSD:999:1:+@%d@%s'", len(strings.Join(encryptedData, "")), strings.Join(encryptedData, "")),
-		"HNHBS:3:1:+1'",
-	}
+	)
+
+	dialogEndResponseMessage := encryptedTestMessage("HIRMG:2:2:1+0020::Auftrag entgegengenommen'")
 
 	transport.SetResponsePayloads([][]byte{
-		[]byte(strings.Join(syncResponseMessage, "")),
-		[]byte(""),
+		syncResponseMessage,
+		dialogEndResponseMessage,
 	})
 
 	if len(dialog.Accounts) != 0 {
@@ -89,18 +83,10 @@ func TestPinTanDialogSyncClientSystemID(t *testing.T) {
 	}
 
 	// message errors
-	encryptedData = []string{
-		"HIRMG:2:2:1+9000::Nachricht enthält Fehler'",
-	}
-	syncResponseMessage = []string{
-		"HNHBK:1:3+000000000123+220+abcde+1+'",
-		"HNVSK:998:2:+998+1+1::0+1:20150713:173634+2:2:13:@8@\x00\x00\x00\x00\x00\x00\x00\x00:5:1:+280:10000000:12345:V:0:0+0+'",
-		fmt.Sprintf("HNVSD:999:1:+@%d@%s'", len(strings.Join(encryptedData, "")), strings.Join(encryptedData, "")),
-		"HNHBS:3:1:+1'",
-	}
+	syncResponseMessage = encryptedTestMessage("HIRMG:2:2:1+9000::Nachricht enthält Fehler'")
 
 	transport.SetResponsePayloads([][]byte{
-		[]byte(strings.Join(syncResponseMessage, "")),
+		syncResponseMessage,
 		[]byte(""),
 	})
 

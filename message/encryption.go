@@ -32,18 +32,18 @@ func NewEncryptedPinTanMessage(clientSystemId string, keyName domain.KeyName, en
 		EncryptionHeader: segment.NewPinTanEncryptionHeaderSegment(clientSystemId, keyName),
 		EncryptedData:    segment.NewEncryptedDataSegment(encryptedMessage),
 	}
-	e.Message = NewBasicMessage(e)
+	e.ClientMessage = NewBasicMessage(e)
 	return e
 }
 
 func NewEncryptedMessage(header *segment.MessageHeaderSegment, end *segment.MessageEndSegment) *EncryptedMessage {
 	e := &EncryptedMessage{}
-	e.Message = NewBasicMessageWithHeaderAndEnd(header, end, e)
+	e.ClientMessage = NewBasicMessageWithHeaderAndEnd(header, end, e)
 	return e
 }
 
 type EncryptedMessage struct {
-	Message
+	ClientMessage
 	EncryptionHeader *segment.EncryptionHeaderSegment
 	EncryptedData    *segment.EncryptedDataSegment
 }
@@ -77,9 +77,19 @@ func NewDecryptedMessage(header *segment.MessageHeaderSegment, end *segment.Mess
 	if err != nil {
 		return nil, fmt.Errorf("Malformed decrypted message bytes: %v", err)
 	}
+	messageAcknowledgementBytes := segmentExtractor.FindSegment("HIRMG")
+	if messageAcknowledgementBytes == nil {
+		return nil, fmt.Errorf("Malformed decrypted message: missing MessageAcknowledgement")
+	}
+	messageAcknowledgement := &segment.MessageAcknowledgement{}
+	err = messageAcknowledgement.UnmarshalHBCI(messageAcknowledgementBytes)
+	if err != nil {
+		return nil, fmt.Errorf("Error while unmarshaling MessageAcknowledgement: %v", err)
+	}
 	decryptedMessage := &DecryptedMessage{
-		rawMessage:       rawMessage,
-		segmentExtractor: segmentExtractor,
+		rawMessage:              rawMessage,
+		messageAcknowledgements: messageAcknowledgement.Acknowledgements(),
+		segmentExtractor:        segmentExtractor,
 	}
 	// TODO: set hbci message appropriate
 	decryptedMessage.message = NewBasicMessageWithHeaderAndEnd(header, end, nil)
@@ -87,9 +97,10 @@ func NewDecryptedMessage(header *segment.MessageHeaderSegment, end *segment.Mess
 }
 
 type DecryptedMessage struct {
-	rawMessage       []byte
-	message          Message
-	segmentExtractor *segment.SegmentExtractor
+	rawMessage              []byte
+	message                 Message
+	messageAcknowledgements []domain.Acknowledgement
+	segmentExtractor        *segment.SegmentExtractor
 }
 
 func (d *DecryptedMessage) MarshalHBCI() ([]byte, error) {
@@ -103,9 +114,6 @@ func (d *DecryptedMessage) MessageEnd() *segment.MessageEndSegment {
 }
 func (d *DecryptedMessage) SetNumbers() {}
 func (d *DecryptedMessage) SetSize()    {}
-func (d *DecryptedMessage) Encrypt(provider CryptoProvider) (*EncryptedMessage, error) {
-	return d.message.Encrypt(provider)
-}
 
 func (d *DecryptedMessage) FindSegment(segmentID string) []byte {
 	return d.segmentExtractor.FindSegment(segmentID)
@@ -113,6 +121,10 @@ func (d *DecryptedMessage) FindSegment(segmentID string) []byte {
 
 func (d *DecryptedMessage) FindSegments(segmentID string) [][]byte {
 	return d.segmentExtractor.FindSegments(segmentID)
+}
+
+func (d *DecryptedMessage) Acknowledgements() []domain.Acknowledgement {
+	return d.messageAcknowledgements
 }
 
 func NewPinTanCryptoProvider(key *domain.PinKey, clientSystemId string) *PinTanCryptoProvider {

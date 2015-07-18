@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"reflect"
 
+	"github.com/mitch000001/go-hbci/domain"
 	"github.com/mitch000001/go-hbci/segment"
 )
 
@@ -15,12 +16,21 @@ var bankSegments = map[string]segment.Segment{
 type Message interface {
 	MessageHeader() *segment.MessageHeaderSegment
 	MessageEnd() *segment.MessageEndSegment
-	MarshalHBCI() ([]byte, error)
-	SetNumbers()
-	SetSize()
-	Encrypt(provider CryptoProvider) (*EncryptedMessage, error)
 	FindSegment(segmentID string) []byte
 	FindSegments(segmentID string) [][]byte
+}
+
+type ClientMessage interface {
+	Message
+	SetNumbers()
+	SetSize()
+	MarshalHBCI() ([]byte, error)
+	Encrypt(provider CryptoProvider) (*EncryptedMessage, error)
+}
+
+type BankMessage interface {
+	Message
+	Acknowledgements() []domain.Acknowledgement
 }
 
 type HBCIMessage interface {
@@ -33,7 +43,7 @@ type SignedHBCIMessage interface {
 	SignatureEndSegment() *segment.SignatureEndSegment
 }
 
-func NewBasicMessageWithHeaderAndEnd(header *segment.MessageHeaderSegment, end *segment.MessageEndSegment, message HBCIMessage) Message {
+func NewBasicMessageWithHeaderAndEnd(header *segment.MessageHeaderSegment, end *segment.MessageEndSegment, message HBCIMessage) *BasicMessage {
 	b := &BasicMessage{
 		Header:      header,
 		End:         end,
@@ -236,24 +246,24 @@ func (b *basicSignedMessage) Sign(provider SignatureProvider) error {
 	return provider.SignMessage(b)
 }
 
-type ClientMessage interface {
-	Jobs() segment.SegmentSequence
+type clientMessage interface {
+	jobs() segment.SegmentSequence
 }
 
-type BankMessage interface {
-	DataSegments() segment.SegmentSequence
+type bankMessage interface {
+	dataSegments() segment.SegmentSequence
 }
 
 type basicBankMessage struct {
 	*basicSignedMessage
-	BankMessage
+	bankMessage
 	MessageAcknowledgements *segment.MessageAcknowledgement
 	SegmentAcknowledgements *segment.SegmentAcknowledgement
 }
 
-func NewBasicClientMessage(clientMessage ClientMessage) *BasicClientMessage {
+func NewBasicClientMessage(clientMessage clientMessage) *BasicClientMessage {
 	b := &BasicClientMessage{
-		ClientMessage: clientMessage,
+		clientMessage: clientMessage,
 	}
 	b.basicSignedMessage = newBasicSignedMessage(b)
 	return b
@@ -261,9 +271,9 @@ func NewBasicClientMessage(clientMessage ClientMessage) *BasicClientMessage {
 
 type BasicClientMessage struct {
 	*basicSignedMessage
-	ClientMessage
+	clientMessage
 }
 
 func (b *BasicClientMessage) HBCISegments() []segment.Segment {
-	return b.ClientMessage.Jobs()
+	return b.clientMessage.jobs()
 }

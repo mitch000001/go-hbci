@@ -32,3 +32,7 @@ func (a Acknowledgement) IsError() bool {
 func (a Acknowledgement) IsWarning() bool {
 	return a.Code >= 3000 && a.Code < 4000
 }
+
+func (a Acknowledgement) IsSuccess() bool {
+	return a.Code > 0 && a.Code < 1000
+}

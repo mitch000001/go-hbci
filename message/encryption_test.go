@@ -1,6 +1,7 @@
 package message
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/mitch000001/go-hbci/domain"
@@ -12,9 +13,12 @@ func TestEncryptedPinTanMessageDecrypt(t *testing.T) {
 
 	provider := NewPinTanCryptoProvider(pinKey, "clientSystemID")
 
-	encMessage := "HISYN:2:3:8+newClientSystemID'"
+	syncSegment := "HISYN:2:3:8+newClientSystemID'"
+	acknowledgement := "HIRMG:2:2:1+0100::Dialog beendet'"
 
-	encryptedMessage := NewEncryptedPinTanMessage("clientSystemID", *keyName, []byte(encMessage))
+	body := fmt.Sprintf("%s%s", acknowledgement, syncSegment)
+
+	encryptedMessage := NewEncryptedPinTanMessage("clientSystemID", *keyName, []byte(body))
 
 	decryptedMessage, err := encryptedMessage.Decrypt(provider)
 
@@ -23,9 +27,9 @@ func TestEncryptedPinTanMessageDecrypt(t *testing.T) {
 		t.Fail()
 	}
 
-	syncSegment := decryptedMessage.FindSegment("HISYN")
+	actualSyncSegment := decryptedMessage.FindSegment("HISYN")
 
-	if string(syncSegment) != encMessage {
+	if syncSegment != string(actualSyncSegment) {
 		t.Logf("Expected decrypted message to include SynchronisationResponse, but had not\n")
 		t.Fail()
 	}
