@@ -55,16 +55,6 @@ type EncryptionHeaderSegment struct {
 	Certificate          *element.CertificateDataElement
 }
 
-func (e *EncryptionHeaderSegment) init() {
-	*e.SecurityFunction = *new(element.AlphaNumericDataElement)
-	*e.SecuritySupplierRole = *new(element.AlphaNumericDataElement)
-	*e.SecurityID = *new(element.SecurityIdentificationDataElement)
-	*e.SecurityDate = *new(element.SecurityDateDataElement)
-	*e.EncryptionAlgorithm = *new(element.EncryptionAlgorithmDataElement)
-	*e.KeyName = *new(element.KeyNameDataElement)
-	*e.CompressionFunction = *new(element.AlphaNumericDataElement)
-	*e.Certificate = *new(element.CertificateDataElement)
-}
 func (e *EncryptionHeaderSegment) version() int         { return 2 }
 func (e *EncryptionHeaderSegment) id() string           { return "HNVSK" }
 func (e *EncryptionHeaderSegment) referencedId() string { return "" }
@@ -96,9 +86,6 @@ type EncryptedDataSegment struct {
 	Data *element.BinaryDataElement
 }
 
-func (e *EncryptedDataSegment) init() {
-	*e.Data = *new(element.BinaryDataElement)
-}
 func (e *EncryptedDataSegment) version() int         { return 1 }
 func (e *EncryptedDataSegment) id() string           { return "HNVSD" }
 func (e *EncryptedDataSegment) referencedId() string { return "" }

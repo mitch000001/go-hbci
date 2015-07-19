@@ -14,9 +14,6 @@ type MessageAcknowledgement struct {
 	acknowledgements []*element.AcknowledgementDataElement
 }
 
-func (m *MessageAcknowledgement) init() {
-	m.acknowledgements = make([]*element.AcknowledgementDataElement, 99)
-}
 func (m *MessageAcknowledgement) version() int         { return 2 }
 func (m *MessageAcknowledgement) id() string           { return "HIRMG" }
 func (m *MessageAcknowledgement) referencedId() string { return "" }
@@ -78,9 +75,6 @@ type SegmentAcknowledgement struct {
 	acknowledgements []*element.AcknowledgementDataElement
 }
 
-func (s *SegmentAcknowledgement) init() {
-	s.acknowledgements = make([]*element.AcknowledgementDataElement, 99)
-}
 func (s *SegmentAcknowledgement) version() int         { return 2 }
 func (s *SegmentAcknowledgement) id() string           { return "HIRMS" }
 func (s *SegmentAcknowledgement) referencedId() string { return "" }

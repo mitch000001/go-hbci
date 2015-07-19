@@ -30,12 +30,6 @@ type IdentificationSegment struct {
 	ClientSystemStatus *element.NumberDataElement
 }
 
-func (i *IdentificationSegment) init() {
-	*i.BankId = *new(element.BankIdentificationDataElement)
-	*i.ClientId = *new(element.IdentificationDataElement)
-	*i.ClientSystemId = *new(element.IdentificationDataElement)
-	*i.ClientSystemStatus = *new(element.NumberDataElement)
-}
 func (i *IdentificationSegment) version() int         { return 2 }
 func (i *IdentificationSegment) id() string           { return "HKIDN" }
 func (i *IdentificationSegment) referencedId() string { return "" }

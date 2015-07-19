@@ -64,19 +64,6 @@ type SignatureHeaderSegment struct {
 	Certificate          *element.CertificateDataElement
 }
 
-func (s *SignatureHeaderSegment) init() {
-	*s.SecurityFunction = *new(element.AlphaNumericDataElement)
-	*s.SecurityControlRef = *new(element.AlphaNumericDataElement)
-	*s.SecurityApplicationRange = *new(element.AlphaNumericDataElement)
-	*s.SecuritySupplierRole = *new(element.AlphaNumericDataElement)
-	*s.SecurityID = *new(element.SecurityIdentificationDataElement)
-	*s.SecurityRefNumber = *new(element.NumberDataElement)
-	*s.SecurityDate = *new(element.SecurityDateDataElement)
-	*s.HashAlgorithm = *new(element.HashAlgorithmDataElement)
-	*s.SignatureAlgorithm = *new(element.SignatureAlgorithmDataElement)
-	*s.KeyName = *new(element.KeyNameDataElement)
-	*s.Certificate = *new(element.CertificateDataElement)
-}
 func (s *SignatureHeaderSegment) version() int         { return 3 }
 func (s *SignatureHeaderSegment) id() string           { return "HNSHK" }
 func (s *SignatureHeaderSegment) referencedId() string { return "" }
@@ -113,11 +100,6 @@ type SignatureEndSegment struct {
 	PinTan             *element.PinTanDataElement
 }
 
-func (s *SignatureEndSegment) init() {
-	*s.SecurityControlRef = *new(element.AlphaNumericDataElement)
-	*s.Signature = *new(element.BinaryDataElement)
-	*s.PinTan = *new(element.PinTanDataElement)
-}
 func (s *SignatureEndSegment) version() int         { return 1 }
 func (s *SignatureEndSegment) id() string           { return "HNSHA" }
 func (s *SignatureEndSegment) referencedId() string { return "" }

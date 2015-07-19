@@ -23,7 +23,6 @@ type Segment interface {
 type Segments map[string]Segment
 
 type segment interface {
-	init()
 	version() int
 	id() string
 	referencedId() string

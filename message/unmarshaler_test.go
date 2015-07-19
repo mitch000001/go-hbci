@@ -75,4 +75,23 @@ func TestUnmarshalerUnmarshal(t *testing.T) {
 			t.Fail()
 		}
 	}
+
+	// Test known but not included segment
+	test = "HXXXX:1:3+abcde++'"
+
+	unmarshaler = NewUnmarshaler([]byte(test))
+
+	seg, err = unmarshaler.Unmarshal("HXXXX")
+
+	if err == nil {
+		t.Logf("Expected error, got nil\n")
+		t.Fail()
+	} else {
+		errMessage := err.Error()
+		expectedMessage := "Unknown segment: \"HXXXX\""
+		if expectedMessage != errMessage {
+			t.Logf("Expected message to equal %q, got %q\n")
+			t.Fail()
+		}
+	}
 }

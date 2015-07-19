@@ -18,9 +18,6 @@ type DialogEndSegment struct {
 	DialogID *element.IdentificationDataElement
 }
 
-func (d *DialogEndSegment) init() {
-	*d.DialogID = *new(element.IdentificationDataElement)
-}
 func (d *DialogEndSegment) version() int         { return 1 }
 func (d *DialogEndSegment) id() string           { return "HKEND" }
 func (d *DialogEndSegment) referencedId() string { return "" }
@@ -59,13 +56,6 @@ type ProcessingPreparationSegment struct {
 	ProductVersion *element.AlphaNumericDataElement
 }
 
-func (p *ProcessingPreparationSegment) init() {
-	*p.BPDVersion = *new(element.NumberDataElement)
-	*p.UPDVersion = *new(element.NumberDataElement)
-	*p.DialogLanguage = *new(element.NumberDataElement)
-	*p.ProductName = *new(element.AlphaNumericDataElement)
-	*p.ProductVersion = *new(element.AlphaNumericDataElement)
-}
 func (p *ProcessingPreparationSegment) version() int         { return 2 }
 func (p *ProcessingPreparationSegment) id() string           { return "HKVVB" }
 func (p *ProcessingPreparationSegment) referencedId() string { return "" }
@@ -96,10 +86,6 @@ type BankAnnouncementSegment struct {
 	Body    *element.TextDataElement
 }
 
-func (b *BankAnnouncementSegment) init() {
-	*b.Subject = *new(element.AlphaNumericDataElement)
-	*b.Body = *new(element.TextDataElement)
-}
 func (b *BankAnnouncementSegment) version() int         { return 2 }
 func (b *BankAnnouncementSegment) id() string           { return "HIKIM" }
 func (b *BankAnnouncementSegment) referencedId() string { return "" }

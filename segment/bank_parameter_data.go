@@ -40,15 +40,6 @@ type CommonBankParameterSegment struct {
 	MaxMessageSize           *element.NumberDataElement
 }
 
-func (c *CommonBankParameterSegment) init() {
-	*c.BPDVersion = *new(element.NumberDataElement)
-	*c.BankID = *new(element.BankIdentificationDataElement)
-	*c.BankName = *new(element.AlphaNumericDataElement)
-	*c.BusinessTransactionCount = *new(element.NumberDataElement)
-	*c.SupportedLanguages = *new(element.SupportedLanguagesDataElement)
-	*c.SupportedHBCIVersions = *new(element.SupportedHBCIVersionsDataElement)
-	*c.MaxMessageSize = *new(element.NumberDataElement)
-}
 func (c *CommonBankParameterSegment) version() int         { return 2 }
 func (c *CommonBankParameterSegment) id() string           { return "HIBPA" }
 func (c *CommonBankParameterSegment) referencedId() string { return "HKVVB" }
@@ -72,10 +63,6 @@ type SecurityMethodSegment struct {
 	SupportedMethods *element.SupportedSecurityMethodDataElement
 }
 
-func (s *SecurityMethodSegment) init() {
-	*s.MixAllowed = *new(element.BooleanDataElement)
-	*s.SupportedMethods = *new(element.SupportedSecurityMethodDataElement)
-}
 func (s *SecurityMethodSegment) version() int         { return 2 }
 func (s *SecurityMethodSegment) id() string           { return "HISHV" }
 func (s *SecurityMethodSegment) referencedId() string { return "HKVVB" }
@@ -93,9 +80,6 @@ type CompressionMethodSegment struct {
 	SupportedCompressionMethods *element.SupportedCompressionMethodsDataElement
 }
 
-func (c *CompressionMethodSegment) init() {
-	*c.SupportedCompressionMethods = *new(element.SupportedCompressionMethodsDataElement)
-}
 func (c *CompressionMethodSegment) version() int         { return 1 }
 func (c *CompressionMethodSegment) id() string           { return "HIKPV" }
 func (c *CompressionMethodSegment) referencedId() string { return "HKVVB" }
