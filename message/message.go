@@ -22,8 +22,6 @@ type Message interface {
 
 type ClientMessage interface {
 	Message
-	SetNumbers()
-	SetSize()
 	MarshalHBCI() ([]byte, error)
 	Encrypt(provider CryptoProvider) (*EncryptedMessage, error)
 }
@@ -39,8 +37,9 @@ type HBCIMessage interface {
 
 type SignedHBCIMessage interface {
 	HBCIMessage
-	SignatureBeginSegment() *segment.SignatureHeaderSegment
-	SignatureEndSegment() *segment.SignatureEndSegment
+	SetNumbers()
+	SetSignatureHeader(*segment.SignatureHeaderSegment)
+	SetSignatureEnd(*segment.SignatureEndSegment)
 }
 
 func NewBasicMessageWithHeaderAndEnd(header *segment.MessageHeaderSegment, end *segment.MessageEndSegment, message HBCIMessage) *BasicMessage {
@@ -60,8 +59,10 @@ func NewBasicMessage(message HBCIMessage) *BasicMessage {
 }
 
 type BasicMessage struct {
-	Header *segment.MessageHeaderSegment
-	End    *segment.MessageEndSegment
+	Header         *segment.MessageHeaderSegment
+	End            *segment.MessageEndSegment
+	SignatureBegin *segment.SignatureHeaderSegment
+	SignatureEnd   *segment.SignatureEndSegment
 	HBCIMessage
 	marshaledContent []byte
 }
@@ -76,21 +77,16 @@ func (b *BasicMessage) SetNumbers() {
 		return n
 	}
 	b.Header.SetNumber(num())
-	switch msg := b.HBCIMessage.(type) {
-	case SignedHBCIMessage:
-		msg.SignatureBeginSegment().SetNumber(num())
-		for _, segment := range msg.HBCISegments() {
-			if !reflect.ValueOf(segment).IsNil() {
-				segment.SetNumber(num())
-			}
+	if b.SignatureBegin != nil {
+		b.SignatureBegin.SetNumber(num())
+	}
+	for _, segment := range b.HBCIMessage.HBCISegments() {
+		if !reflect.ValueOf(segment).IsNil() {
+			segment.SetNumber(num())
 		}
-		msg.SignatureEndSegment().SetNumber(num())
-	default:
-		for _, segment := range b.HBCIMessage.HBCISegments() {
-			if !reflect.ValueOf(segment).IsNil() {
-				segment.SetNumber(num())
-			}
-		}
+	}
+	if b.SignatureEnd != nil {
+		b.SignatureEnd.SetNumber(num())
 	}
 	b.End.SetNumber(num())
 }
@@ -101,21 +97,16 @@ func (b *BasicMessage) SetSize() {
 	}
 	var buffer bytes.Buffer
 	buffer.WriteString(b.Header.String())
-	switch msg := b.HBCIMessage.(type) {
-	case SignedHBCIMessage:
-		buffer.WriteString(msg.SignatureBeginSegment().String())
-		for _, segment := range msg.HBCISegments() {
-			if !reflect.ValueOf(segment).IsNil() {
-				buffer.WriteString(segment.String())
-			}
+	if b.SignatureBegin != nil {
+		buffer.WriteString(b.SignatureBegin.String())
+	}
+	for _, segment := range b.HBCIMessage.HBCISegments() {
+		if !reflect.ValueOf(segment).IsNil() {
+			buffer.WriteString(segment.String())
 		}
-		buffer.WriteString(msg.SignatureEndSegment().String())
-	default:
-		for _, segment := range b.HBCIMessage.HBCISegments() {
-			if !reflect.ValueOf(segment).IsNil() {
-				buffer.WriteString(segment.String())
-			}
-		}
+	}
+	if b.SignatureEnd != nil {
+		buffer.WriteString(b.SignatureEnd.String())
 	}
 	buffer.WriteString(b.End.String())
 	b.Header.SetSize(buffer.Len())
@@ -125,24 +116,20 @@ func (b *BasicMessage) MarshalHBCI() ([]byte, error) {
 	if b.HBCIMessage == nil {
 		panic(fmt.Errorf("HBCIMessage must be set"))
 	}
+	b.SetSize()
 	if len(b.marshaledContent) == 0 {
 		var buffer bytes.Buffer
 		buffer.WriteString(b.Header.String())
-		switch msg := b.HBCIMessage.(type) {
-		case SignedHBCIMessage:
-			buffer.WriteString(msg.SignatureBeginSegment().String())
-			for _, segment := range msg.HBCISegments() {
-				if !reflect.ValueOf(segment).IsNil() {
-					buffer.WriteString(segment.String())
-				}
+		if b.SignatureBegin != nil {
+			buffer.WriteString(b.SignatureBegin.String())
+		}
+		for _, segment := range b.HBCIMessage.HBCISegments() {
+			if !reflect.ValueOf(segment).IsNil() {
+				buffer.WriteString(segment.String())
 			}
-			buffer.WriteString(msg.SignatureEndSegment().String())
-		default:
-			for _, segment := range b.HBCIMessage.HBCISegments() {
-				if !reflect.ValueOf(segment).IsNil() {
-					buffer.WriteString(segment.String())
-				}
-			}
+		}
+		if b.SignatureEnd != nil {
+			buffer.WriteString(b.SignatureEnd.String())
 		}
 		buffer.WriteString(b.End.String())
 		b.marshaledContent = buffer.Bytes()
@@ -150,23 +137,33 @@ func (b *BasicMessage) MarshalHBCI() ([]byte, error) {
 	return b.marshaledContent, nil
 }
 
+func (b *BasicMessage) Sign(provider SignatureProvider) (*BasicSignedMessage, error) {
+	if b.HBCIMessage == nil {
+		panic(fmt.Errorf("HBCIMessage must be set"))
+	}
+	signedMessage := NewBasicSignedMessage(b)
+	err := provider.SignMessage(signedMessage)
+	if err != nil {
+		return nil, err
+	}
+	return signedMessage, nil
+}
+
 func (b *BasicMessage) Encrypt(provider CryptoProvider) (*EncryptedMessage, error) {
+	if b.HBCIMessage == nil {
+		panic(fmt.Errorf("HBCIMessage must be set"))
+	}
 	var buffer bytes.Buffer
-	switch msg := b.HBCIMessage.(type) {
-	case SignedHBCIMessage:
-		buffer.WriteString(msg.SignatureBeginSegment().String())
-		for _, segment := range msg.HBCISegments() {
-			if !reflect.ValueOf(segment).IsNil() {
-				buffer.WriteString(segment.String())
-			}
+	if b.SignatureBegin != nil {
+		buffer.WriteString(b.SignatureBegin.String())
+	}
+	for _, segment := range b.HBCIMessage.HBCISegments() {
+		if !reflect.ValueOf(segment).IsNil() {
+			buffer.WriteString(segment.String())
 		}
-		buffer.WriteString(msg.SignatureEndSegment().String())
-	default:
-		for _, segment := range b.HBCIMessage.HBCISegments() {
-			if !reflect.ValueOf(segment).IsNil() {
-				buffer.WriteString(segment.String())
-			}
-		}
+	}
+	if b.SignatureEnd != nil {
+		buffer.WriteString(b.SignatureEnd.String())
 	}
 	encryptedMessage, err := provider.Encrypt(buffer.Bytes())
 	if err != nil {
@@ -205,45 +202,42 @@ func (b *BasicMessage) FindSegments(segmentID string) [][]byte {
 	return segments
 }
 
-func newBasicSignedMessage(message HBCIMessage) *basicSignedMessage {
-	b := &basicSignedMessage{
-		HBCIMessage: message,
+func NewBasicSignedMessage(message *BasicMessage) *BasicSignedMessage {
+	b := &BasicSignedMessage{
+		message: message,
 	}
-	b.BasicMessage = NewBasicMessage(b)
 	return b
 }
 
-type basicSignedMessage struct {
-	*BasicMessage
-	SignatureBegin *segment.SignatureHeaderSegment
-	SignatureEnd   *segment.SignatureEndSegment
-	HBCIMessage
+type BasicSignedMessage struct {
+	message *BasicMessage
 }
 
-func (b *basicSignedMessage) SetSignatureBeginSegment(sigBegin *segment.SignatureHeaderSegment) {
-	b.SignatureBegin = sigBegin
-}
-
-func (b *basicSignedMessage) SetSignatureEndSegment(sigEnd *segment.SignatureEndSegment) {
-	b.SignatureEnd = sigEnd
-}
-
-func (b *basicSignedMessage) SignatureBeginSegment() *segment.SignatureHeaderSegment {
-	return b.SignatureBegin
-}
-
-func (b *basicSignedMessage) SignatureEndSegment() *segment.SignatureEndSegment {
-	return b.SignatureEnd
-}
-
-func (b *basicSignedMessage) Sign(provider SignatureProvider) error {
-	if b.BasicMessage == nil {
-		panic(fmt.Errorf("BasicMessage must be set"))
+func (b *BasicSignedMessage) SetNumbers() {
+	if b.message.SignatureBegin == nil || b.message.SignatureEnd == nil {
+		panic(fmt.Errorf("Cannot call set Numbers when signature is not set"))
 	}
-	if b.HBCIMessage == nil {
-		panic(fmt.Errorf("HBCIMessage must be set"))
-	}
-	return provider.SignMessage(b)
+	b.message.SetNumbers()
+}
+
+func (b *BasicSignedMessage) SetSignatureHeader(sigBegin *segment.SignatureHeaderSegment) {
+	b.message.SignatureBegin = sigBegin
+}
+
+func (b *BasicSignedMessage) SetSignatureEnd(sigEnd *segment.SignatureEndSegment) {
+	b.message.SignatureEnd = sigEnd
+}
+
+func (b *BasicSignedMessage) HBCISegments() []segment.Segment {
+	return b.message.HBCISegments()
+}
+
+func (b *BasicSignedMessage) MarshalHBCI() ([]byte, error) {
+	return b.message.MarshalHBCI()
+}
+
+func (b *BasicSignedMessage) Encrypt(provider CryptoProvider) (*EncryptedMessage, error) {
+	return b.message.Encrypt(provider)
 }
 
 type clientMessage interface {
@@ -255,7 +249,7 @@ type bankMessage interface {
 }
 
 type basicBankMessage struct {
-	*basicSignedMessage
+	*BasicMessage
 	bankMessage
 	MessageAcknowledgements *segment.MessageAcknowledgement
 	SegmentAcknowledgements *segment.SegmentAcknowledgement
@@ -265,12 +259,12 @@ func NewBasicClientMessage(clientMessage clientMessage) *BasicClientMessage {
 	b := &BasicClientMessage{
 		clientMessage: clientMessage,
 	}
-	b.basicSignedMessage = newBasicSignedMessage(b)
+	b.BasicMessage = NewBasicMessage(b)
 	return b
 }
 
 type BasicClientMessage struct {
-	*basicSignedMessage
+	*BasicMessage
 	clientMessage
 }
 

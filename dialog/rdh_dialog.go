@@ -11,17 +11,13 @@ func NewRDHDialog(bankId domain.BankId, hbciUrl string, clientId string) *rdhDia
 		panic(err)
 	}
 	signingKey := domain.NewRSAKey(key, domain.NewInitialKeyName(bankId.CountryCode, bankId.ID, clientId, "S"))
-	provider := message.NewRDHSignatureProvider(signingKey)
+	provider := message.NewRDHSignatureProvider(signingKey, 12345)
 	d := &rdhDialog{
-		dialog:      newDialog(bankId, hbciUrl, clientId, provider, nil),
-		SigningKey:  signingKey,
-		SignatureID: 12345,
+		dialog: newDialog(bankId, hbciUrl, clientId, provider, nil),
 	}
 	return d
 }
 
 type rdhDialog struct {
 	*dialog
-	SignatureID int
-	SigningKey  domain.Key
 }

@@ -11,18 +11,15 @@ import (
 )
 
 func NewPinTanDialog(bankId domain.BankId, hbciUrl string, clientId string) *pinTanDialog {
-	signatureProvider := message.NewPinTanSignatureProvider(nil, "")
-	encryptionProvider := message.NewPinTanCryptoProvider(nil, "")
 	d := &pinTanDialog{
-		dialog: newDialog(bankId, hbciUrl, clientId, signatureProvider, encryptionProvider),
+		dialog: newDialog(bankId, hbciUrl, clientId, nil, nil),
 	}
 	return d
 }
 
 type pinTanDialog struct {
 	*dialog
-	pin           string
-	pinTanKeyName domain.KeyName
+	pin string
 }
 
 func (d *pinTanDialog) SetPin(pin string) {
@@ -40,19 +37,14 @@ func (d *pinTanDialog) Init() (string, error) {
 	initMessage.End = segment.NewMessageEndSegment(8, messageNum)
 	initMessage.Identification = segment.NewIdentificationSegment(d.BankID, d.ClientID, initialClientSystemID, true)
 	initMessage.ProcessingPreparation = segment.NewProcessingPreparationSegment(0, 0, 1)
-	controlRef := "1"
-	initMessage.SignatureBegin = d.signatureProvider.NewSignatureHeader(controlRef, 0)
-	initMessage.SignatureEnd = segment.NewSignatureEndSegment(7, controlRef)
-	initMessage.SetNumbers()
-	err := initMessage.Sign(d.signatureProvider)
+	signedInitMessage, err := initMessage.Sign(d.signatureProvider)
 	if err != nil {
 		return "", err
 	}
-	encryptedInitMessage, err := initMessage.Encrypt(d.cryptoProvider)
+	encryptedInitMessage, err := signedInitMessage.Encrypt(d.cryptoProvider)
 	if err != nil {
 		return "", err
 	}
-	encryptedInitMessage.SetSize()
 	marshaledMessage, err := encryptedInitMessage.MarshalHBCI()
 	if err != nil {
 		return "", err
@@ -66,15 +58,11 @@ func (d *pinTanDialog) Init() (string, error) {
 	fmt.Printf("Response: %q\n", strings.Split(string(response), "'"))
 
 	dialogEnd := d.dialogEnd(initialDialogID)
-	dialogEnd.SignatureBegin = d.signatureProvider.NewSignatureHeader(controlRef, 0)
-	dialogEnd.SignatureEnd = segment.NewSignatureEndSegment(7, controlRef)
-	dialogEnd.SetNumbers()
-	err = dialogEnd.Sign(d.signatureProvider)
+	signedDialogEnd, err := dialogEnd.Sign(d.signatureProvider)
 	if err != nil {
 		return "", err
 	}
-	dialogEnd.SetSize()
-	encryptedDialogEnd, err := dialogEnd.Encrypt(d.cryptoProvider)
+	encryptedDialogEnd, err := signedDialogEnd.Encrypt(d.cryptoProvider)
 	if err != nil {
 		return "", err
 	}
@@ -99,20 +87,15 @@ func (d *pinTanDialog) SyncClientSystemID() (string, error) {
 	syncMessage.Identification = segment.NewIdentificationSegment(d.BankID, d.ClientID, initialClientSystemID, true)
 	syncMessage.ProcessingPreparation = segment.NewProcessingPreparationSegment(0, 0, 1)
 	syncMessage.Sync = segment.NewSynchronisationSegment(0)
-	controlRef := "1"
-	syncMessage.SignatureBegin = d.signatureProvider.NewSignatureHeader(controlRef, 0)
-	syncMessage.SignatureEnd = segment.NewSignatureEndSegment(7, controlRef)
-	syncMessage.SetNumbers()
-	err := syncMessage.Sign(d.signatureProvider)
+	signedSyncMessage, err := syncMessage.Sign(d.signatureProvider)
 	if err != nil {
 		return "", err
 	}
 	d.cryptoProvider.SetClientSystemID(initialClientSystemID)
-	encryptedSyncMessage, err := syncMessage.Encrypt(d.cryptoProvider)
+	encryptedSyncMessage, err := signedSyncMessage.Encrypt(d.cryptoProvider)
 	if err != nil {
 		return "", err
 	}
-	encryptedSyncMessage.SetSize()
 
 	decryptedMessage, err := d.Request(encryptedSyncMessage)
 	if err != nil {
@@ -181,39 +164,28 @@ func (d *pinTanDialog) SyncClientSystemID() (string, error) {
 	}
 
 	dialogEnd := d.dialogEnd(newDialogId)
-	dialogEnd.SignatureBegin = d.signatureProvider.NewSignatureHeader(controlRef, 0)
-	dialogEnd.SignatureEnd = segment.NewSignatureEndSegment(7, controlRef)
-	dialogEnd.SetNumbers()
-	err = dialogEnd.Sign(d.signatureProvider)
+	signedDialogEnd, err := dialogEnd.Sign(d.signatureProvider)
 	if err != nil {
 		return "", err
 	}
-	dialogEnd.SetSize()
-	encryptedDialogEnd, err := dialogEnd.Encrypt(d.cryptoProvider)
+	encryptedDialogEnd, err := signedDialogEnd.Encrypt(d.cryptoProvider)
 	if err != nil {
 		return "", err
 	}
 	decryptedMessage, err = d.Request(encryptedDialogEnd)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("Error while ending dialog: %v", err)
 	}
 
 	errors = make([]string, 0)
-	messageAcknowledgementBytes := decryptedMessage.FindSegment("HIRMG")
-	if messageAcknowledgementBytes != nil {
-		messageAcknowledgement := &segment.MessageAcknowledgement{}
-		err = messageAcknowledgement.UnmarshalHBCI(messageAcknowledgementBytes)
-		if err != nil {
-			return "", fmt.Errorf("Error while unmarshaling MessageAcknowledgement: %v", err)
+	acknowledgements = decryptedMessage.Acknowledgements()
+	for _, ack := range acknowledgements {
+		if ack.IsError() {
+			errors = append(errors, ack.String())
 		}
-		acknowledgements := messageAcknowledgement.Acknowledgements()
-		for _, ack := range acknowledgements {
-			if ack.IsError() {
-				errors = append(errors, ack.String())
-			}
-		}
-	} else {
-		return "", fmt.Errorf("Malformed message: missing MessageAcknowledgement")
+	}
+	if len(errors) > 0 {
+		return "", fmt.Errorf("DialogEnd: Institute returned errors:\n%s", strings.Join(errors, "\n"))
 	}
 
 	return d.ClientSystemID, nil
@@ -331,7 +303,7 @@ func (d *pinTanDialog) Anonymous(fn func() (string, error)) (string, error) {
 	}
 	response, err = d.post(marshaledEndMessage)
 	if err != nil && err != io.EOF {
-		return "", err
+		return "", fmt.Errorf("Error while ending dialog: %v", err)
 	}
 
 	return string(response), nil

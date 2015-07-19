@@ -55,10 +55,6 @@ func (e *EncryptedMessage) HBCISegments() []segment.Segment {
 	}
 }
 
-func (e *EncryptedMessage) SetNumbers() {
-	panic(fmt.Errorf("SetNumbers: Operation not allowed on encrypted messages"))
-}
-
 func (e *EncryptedMessage) Decrypt(provider CryptoProvider) (*DecryptedMessage, error) {
 	decryptedMessageBytes, err := provider.Decrypt(e.EncryptedData.Data.Val())
 	if err != nil {
@@ -91,7 +87,7 @@ func NewDecryptedMessage(header *segment.MessageHeaderSegment, end *segment.Mess
 		messageAcknowledgements: messageAcknowledgement.Acknowledgements(),
 		segmentExtractor:        segmentExtractor,
 	}
-	// TODO: set hbci message appropriate
+	// TODO: set hbci message appropriate, if possible
 	decryptedMessage.message = NewBasicMessageWithHeaderAndEnd(header, end, nil)
 	return decryptedMessage, nil
 }
@@ -112,8 +108,6 @@ func (d *DecryptedMessage) MessageHeader() *segment.MessageHeaderSegment {
 func (d *DecryptedMessage) MessageEnd() *segment.MessageEndSegment {
 	return d.message.MessageEnd()
 }
-func (d *DecryptedMessage) SetNumbers() {}
-func (d *DecryptedMessage) SetSize()    {}
 
 func (d *DecryptedMessage) FindSegment(segmentID string) []byte {
 	return d.segmentExtractor.FindSegment(segmentID)

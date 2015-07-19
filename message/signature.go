@@ -1,9 +1,13 @@
 package message
 
 import (
+	"bytes"
 	"crypto/rand"
 	"crypto/rsa"
+	"fmt"
+	"hash/crc32"
 	"io"
+	"reflect"
 
 	"github.com/mitch000001/go-hbci/domain"
 	"github.com/mitch000001/go-hbci/segment"
@@ -13,7 +17,6 @@ import (
 type SignatureProvider interface {
 	SetClientSystemID(clientSystemId string)
 	SignMessage(SignedHBCIMessage) error
-	NewSignatureHeader(controlReference string, signatureId int) *segment.SignatureHeaderSegment
 }
 
 func MessageHashSum(message string) []byte {
@@ -27,13 +30,27 @@ func SignMessageHash(messageHash []byte, key *rsa.PrivateKey) ([]byte, error) {
 	return rsa.SignPKCS1v15(rand.Reader, key, 0, messageHash)
 }
 
+func generateControlReference(key domain.Key) string {
+	h := crc32.NewIEEE()
+	keyName := key.KeyName()
+	io.WriteString(h, fmt.Sprintf("%d", keyName.BankID.CountryCode))
+	io.WriteString(h, keyName.BankID.ID)
+	io.WriteString(h, keyName.UserID)
+	io.WriteString(h, keyName.KeyType)
+	io.WriteString(h, fmt.Sprintf("%d", keyName.KeyNumber))
+	io.WriteString(h, fmt.Sprintf("%d", keyName.KeyVersion))
+	return fmt.Sprintf("%x", h.Sum(nil))
+}
+
 func NewPinTanSignatureProvider(key *domain.PinKey, clientSystemId string) SignatureProvider {
-	return &PinTanSignatureProvider{key: key, clientSystemId: clientSystemId}
+	controlReference := generateControlReference(key)
+	return &PinTanSignatureProvider{key: key, clientSystemId: clientSystemId, controlReference: controlReference}
 }
 
 type PinTanSignatureProvider struct {
-	key            *domain.PinKey
-	clientSystemId string
+	key              *domain.PinKey
+	clientSystemId   string
+	controlReference string
 }
 
 func (p *PinTanSignatureProvider) SetClientSystemID(clientSystemId string) {
@@ -41,21 +58,25 @@ func (p *PinTanSignatureProvider) SetClientSystemID(clientSystemId string) {
 }
 
 func (p *PinTanSignatureProvider) SignMessage(signedMessage SignedHBCIMessage) error {
-	signedMessage.SignatureEndSegment().SetPinTan(p.key.Pin(), "")
+	signatureHeader := segment.NewPinTanSignatureHeaderSegment(p.controlReference, p.clientSystemId, p.key.KeyName())
+	signatureEnd := segment.NewSignatureEndSegment(0, p.controlReference)
+	signatureEnd.SetPinTan(p.key.Pin(), "")
+	signedMessage.SetSignatureHeader(signatureHeader)
+	signedMessage.SetSignatureEnd(signatureEnd)
+	signedMessage.SetNumbers()
 	return nil
 }
 
-func (p *PinTanSignatureProvider) NewSignatureHeader(controlReference string, signatureId int) *segment.SignatureHeaderSegment {
-	return segment.NewPinTanSignatureHeaderSegment(controlReference, p.clientSystemId, p.key.KeyName())
-}
-
-func NewRDHSignatureProvider(signingKey *domain.RSAKey) SignatureProvider {
-	return &RDHSignatureProvider{signingKey: signingKey}
+func NewRDHSignatureProvider(signingKey *domain.RSAKey, signatureId int) SignatureProvider {
+	controlReference := generateControlReference(signingKey)
+	return &RDHSignatureProvider{signingKey: signingKey, controlReference: controlReference, signatureId: signatureId}
 }
 
 type RDHSignatureProvider struct {
-	signingKey     *domain.RSAKey
-	clientSystemId string
+	signingKey       *domain.RSAKey
+	clientSystemId   string
+	controlReference string
+	signatureId      int
 }
 
 func (r *RDHSignatureProvider) SetClientSystemID(clientSystemId string) {
@@ -63,19 +84,24 @@ func (r *RDHSignatureProvider) SetClientSystemID(clientSystemId string) {
 }
 
 func (r *RDHSignatureProvider) SignMessage(message SignedHBCIMessage) error {
-	marshaledMessage := message.SignatureBeginSegment().String()
+	signatureHeader := segment.NewRDHSignatureHeaderSegment(r.controlReference, r.signatureId, r.clientSystemId, r.signingKey.KeyName())
+	signatureEnd := segment.NewSignatureEndSegment(0, r.controlReference)
+	message.SetSignatureHeader(signatureHeader)
+	message.SetSignatureEnd(signatureEnd)
+	message.SetNumbers()
+	var buffer bytes.Buffer
+	buffer.WriteString(signatureHeader.String())
 	for _, segment := range message.HBCISegments() {
-		marshaledMessage += segment.String()
+		if !reflect.ValueOf(segment).IsNil() {
+			buffer.WriteString(segment.String())
+		}
 	}
-	hashSum := MessageHashSum(marshaledMessage)
+	hashSum := MessageHashSum(buffer.String())
 	sig, err := r.signingKey.Sign(hashSum)
 	if err != nil {
 		return err
 	}
-	message.SignatureEndSegment().SetSignature(sig)
+	// TODO: clean up the pointer chaos
+	signatureEnd.SetSignature(sig)
 	return nil
-}
-
-func (p *RDHSignatureProvider) NewSignatureHeader(controlReference string, signatureId int) *segment.SignatureHeaderSegment {
-	return segment.NewRDHSignatureHeaderSegment(controlReference, signatureId, p.clientSystemId, p.signingKey.KeyName())
 }
