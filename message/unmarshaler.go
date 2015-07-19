@@ -8,7 +8,7 @@ import (
 )
 
 func RegisterUnmarshaler(segmentId string, unmarshalerFn func() hbci.Unmarshaler) {
-	knownUnmarshaler[segmentId] = unmarshalerFn
+	knownUnmarshalers[segmentId] = unmarshalerFn
 }
 
 type unmarshalerIndex map[string]func() hbci.Unmarshaler
@@ -22,7 +22,7 @@ func (u unmarshalerIndex) Unmarshaler(segmentId string) (hbci.Unmarshaler, bool)
 	}
 }
 
-var knownUnmarshaler = unmarshalerIndex{
+var knownUnmarshalers = unmarshalerIndex{
 	"HNHBK": func() hbci.Unmarshaler { return &segment.MessageHeaderSegment{} },
 	"HIRMG": func() hbci.Unmarshaler { return &segment.MessageAcknowledgement{} },
 	"HIRMS": func() hbci.Unmarshaler { return &segment.SegmentAcknowledgement{} },
@@ -43,8 +43,13 @@ type Unmarshaler struct {
 	segmentExtractor *segment.SegmentExtractor
 }
 
+func (u *Unmarshaler) CanUnmarshal(segmentId string) bool {
+	_, ok := knownUnmarshalers[segmentId]
+	return ok
+}
+
 func (u *Unmarshaler) Unmarshal(segmentId string) (segment.Segment, error) {
-	unmarshaler, ok := knownUnmarshaler.Unmarshaler(segmentId)
+	unmarshaler, ok := knownUnmarshalers.Unmarshaler(segmentId)
 	if !ok {
 		return nil, fmt.Errorf("Unknown segment: %q", segmentId)
 	}
