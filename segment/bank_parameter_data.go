@@ -1,6 +1,8 @@
 package segment
 
 import (
+	"bytes"
+
 	"github.com/mitch000001/go-hbci/domain"
 	"github.com/mitch000001/go-hbci/element"
 )
@@ -54,6 +56,20 @@ func (c *CommonBankParameterSegment) elements() []element.DataElement {
 		c.SupportedLanguages,
 		c.SupportedHBCIVersions,
 		c.MaxMessageSize,
+	}
+}
+
+func (c *CommonBankParameterSegment) UnmarshalHBCI(value []byte) error {
+	value = bytes.TrimSuffix(value, []byte("'"))
+	return nil
+}
+
+func (c *CommonBankParameterSegment) BankParameterData() domain.BankParameterData {
+	return domain.BankParameterData{
+		Version:                   c.BPDVersion.Val(),
+		BankID:                    c.BankID.Val(),
+		BankName:                  c.BankName.Val(),
+		MaxTransactionsPerMessage: c.BusinessTransactionCount.Val(),
 	}
 }
 

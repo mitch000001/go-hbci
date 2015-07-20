@@ -32,9 +32,11 @@ func newDialog(bankId domain.BankId, hbciUrl string, clientId string, signatureP
 		BankID:            bankId,
 		ClientID:          clientId,
 		ClientSystemID:    initialClientSystemID,
+		UserParameterData: *new(domain.UserParameterData),
 		Accounts:          make([]domain.AccountInformation, 0),
 		signatureProvider: signatureProvider,
 		cryptoProvider:    cryptoProvider,
+		dialogID:          initialDialogID,
 	}
 }
 
@@ -44,10 +46,21 @@ type dialog struct {
 	BankID            domain.BankId
 	ClientID          string
 	ClientSystemID    string
+	UserParameterData domain.UserParameterData
 	Accounts          []domain.AccountInformation
 	messageCount      int
+	dialogID          string
 	signatureProvider message.SignatureProvider
 	cryptoProvider    message.CryptoProvider
+	BankParameterData domain.BankParameterData
+}
+
+func (d *dialog) UserParameterDataVersion() int {
+	return d.UserParameterData.Version
+}
+
+func (d *dialog) BankParameterDataVersion() int {
+	return d.BankParameterData.Version
 }
 
 func (d *dialog) nextMessageNumber() int {
@@ -55,13 +68,13 @@ func (d *dialog) nextMessageNumber() int {
 	return d.messageCount
 }
 
-func (d *dialog) dialogEnd(dialogId string) *message.DialogFinishingMessage {
+func (d *dialog) dialogEnd() *message.DialogFinishingMessage {
 	dialogEnd := new(message.DialogFinishingMessage)
 	messageNum := d.nextMessageNumber()
 	dialogEnd.BasicClientMessage = message.NewBasicClientMessage(dialogEnd)
-	dialogEnd.Header = segment.NewMessageHeaderSegment(0, 220, dialogId, messageNum)
+	dialogEnd.Header = segment.NewMessageHeaderSegment(0, 220, d.dialogID, messageNum)
 	dialogEnd.End = segment.NewMessageEndSegment(8, messageNum)
-	dialogEnd.DialogEnd = segment.NewDialogEndSegment(dialogId)
+	dialogEnd.DialogEnd = segment.NewDialogEndSegment(d.dialogID)
 	return dialogEnd
 }
 

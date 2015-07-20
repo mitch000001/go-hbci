@@ -37,6 +37,11 @@ func TestPinTanDialogSyncClientSystemID(t *testing.T) {
 		t.Fail()
 	}
 
+	dialogID := dialog.dialogID
+	if dialogID != initialDialogID {
+		t.Logf("Expected dialogID to equal\n%q\n\tgot\n%q\n", initialDialogID, dialogID)
+	}
+
 	res, err := dialog.SyncClientSystemID()
 
 	if err != nil {
@@ -99,7 +104,7 @@ func TestPinTanDialogSyncClientSystemID(t *testing.T) {
 
 	if err != nil {
 		errMessage := err.Error()
-		expectedMessage := "Institute returned errors:\nCode: 9000, Position: , Text: Nachricht enthält Fehler, Parameter: "
+		expectedMessage := "Institute returned errors:\nMessageAcknowledgement: Code: 9000, Position: , Text: Nachricht enthält Fehler, Parameter: "
 		if expectedMessage != errMessage {
 			t.Logf("Expected error to equal\n%q\n\tgot\n%q\n", expectedMessage, errMessage)
 			t.Fail()

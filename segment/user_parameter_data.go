@@ -11,7 +11,7 @@ import (
 
 type CommonUserParameterDataSegment struct {
 	Segment
-	UserId     *element.IdentificationDataElement
+	UserID     *element.IdentificationDataElement
 	UPDVersion *element.NumberDataElement
 	// Status |￼Beschreibung
 	// -----------------------------------------------------------------
@@ -31,9 +31,17 @@ func (c *CommonUserParameterDataSegment) sender() string       { return senderBa
 
 func (c *CommonUserParameterDataSegment) elements() []element.DataElement {
 	return []element.DataElement{
-		c.UserId,
+		c.UserID,
 		c.UPDVersion,
 		c.UPDUsage,
+	}
+}
+
+func (c *CommonUserParameterDataSegment) UserParameterData() domain.UserParameterData {
+	return domain.UserParameterData{
+		UserID:  c.UserID.Val(),
+		Version: c.UPDVersion.Val(),
+		Usage:   c.UPDUsage.Val(),
 	}
 }
 

@@ -18,7 +18,7 @@ func TestAcknowledgementDataElementUnmarshalHBCI(t *testing.T) {
 		t.Fail()
 	}
 
-	expected := NewAcknowledgement(domain.Acknowledgement{300, "7,2", "Syntaxerror", []string{"test1"}}).String()
+	expected := NewAcknowledgement(domain.Acknowledgement{"MessageAcknowledgement", 300, "7,2", "Syntaxerror", []string{"test1"}}).String()
 	actual := acknowledgement.String()
 
 	if expected != actual {

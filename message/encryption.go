@@ -82,10 +82,21 @@ func NewDecryptedMessage(header *segment.MessageHeaderSegment, end *segment.Mess
 	if err != nil {
 		return nil, fmt.Errorf("Error while unmarshaling MessageAcknowledgement: %v", err)
 	}
+	acknowledgements := messageAcknowledgement.Acknowledgements()
+	rawSegmentAcknowledgements := segmentExtractor.FindSegments("HIRMS")
+	for _, segmentAcknowledgementBytes := range rawSegmentAcknowledgements {
+		segmentAcknowledgement := &segment.SegmentAcknowledgement{}
+		err = segmentAcknowledgement.UnmarshalHBCI(segmentAcknowledgementBytes)
+		if err != nil {
+			return nil, fmt.Errorf("Error while unmarshaling SegmentAcknowledgement: %v", err)
+		}
+		acknowledgements = append(acknowledgements, segmentAcknowledgement.Acknowledgements()...)
+	}
 	decryptedMessage := &DecryptedMessage{
-		rawMessage:              rawMessage,
-		messageAcknowledgements: messageAcknowledgement.Acknowledgements(),
-		segmentExtractor:        segmentExtractor,
+		rawMessage:       rawMessage,
+		acknowledgements: acknowledgements,
+		segmentExtractor: segmentExtractor,
+		unmarshaler:      NewUnmarshaler(rawMessage),
 	}
 	// TODO: set hbci message appropriate, if possible
 	decryptedMessage.message = NewBasicMessageWithHeaderAndEnd(header, end, nil)
@@ -93,10 +104,11 @@ func NewDecryptedMessage(header *segment.MessageHeaderSegment, end *segment.Mess
 }
 
 type DecryptedMessage struct {
-	rawMessage              []byte
-	message                 Message
-	messageAcknowledgements []domain.Acknowledgement
-	segmentExtractor        *segment.SegmentExtractor
+	rawMessage       []byte
+	message          Message
+	acknowledgements []domain.Acknowledgement
+	segmentExtractor *segment.SegmentExtractor
+	unmarshaler      *Unmarshaler
 }
 
 func (d *DecryptedMessage) MarshalHBCI() ([]byte, error) {
@@ -118,7 +130,7 @@ func (d *DecryptedMessage) FindSegments(segmentID string) [][]byte {
 }
 
 func (d *DecryptedMessage) Acknowledgements() []domain.Acknowledgement {
-	return d.messageAcknowledgements
+	return d.acknowledgements
 }
 
 func NewPinTanCryptoProvider(key *domain.PinKey, clientSystemId string) *PinTanCryptoProvider {

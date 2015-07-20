@@ -5,8 +5,9 @@ import (
 	"strings"
 )
 
-func NewAcknowledgement(code int, referenceDataElement, text string, params []string) Acknowledgement {
+func NewMessageAcknowledgement(code int, referenceDataElement, text string, params []string) Acknowledgement {
 	return Acknowledgement{
+		Type:                 MessageAcknowledgement,
 		Code:                 code,
 		ReferenceDataElement: referenceDataElement,
 		Text:                 text,
@@ -14,7 +15,23 @@ func NewAcknowledgement(code int, referenceDataElement, text string, params []st
 	}
 }
 
+func NewSegmentAcknowledgement(code int, referenceDataElement, text string, params []string) Acknowledgement {
+	return Acknowledgement{
+		Type:                 SegmentAcknowledgement,
+		Code:                 code,
+		ReferenceDataElement: referenceDataElement,
+		Text:                 text,
+		Params:               params,
+	}
+}
+
+const (
+	MessageAcknowledgement = "MessageAcknowledgement"
+	SegmentAcknowledgement = "SegmentAcknowledgement"
+)
+
 type Acknowledgement struct {
+	Type                 string
 	Code                 int
 	ReferenceDataElement string
 	Text                 string
@@ -22,7 +39,15 @@ type Acknowledgement struct {
 }
 
 func (a Acknowledgement) String() string {
-	return fmt.Sprintf("Code: %d, Position: %s, Text: %s, Parameter: %s", a.Code, a.ReferenceDataElement, a.Text, strings.Join(a.Params, ", "))
+	return fmt.Sprintf("%s: Code: %d, Position: %s, Text: %s, Parameter: %s", a.Type, a.Code, a.ReferenceDataElement, a.Text, strings.Join(a.Params, ", "))
+}
+
+func (a Acknowledgement) IsMessageAcknowledgement() bool {
+	return a.Type == MessageAcknowledgement
+}
+
+func (a Acknowledgement) IsSegmentAcknowledgement() bool {
+	return a.Type == SegmentAcknowledgement
 }
 
 func (a Acknowledgement) IsError() bool {

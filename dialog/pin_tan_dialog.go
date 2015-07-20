@@ -30,52 +30,80 @@ func (d *pinTanDialog) SetPin(pin string) {
 	d.cryptoProvider = message.NewPinTanCryptoProvider(pinKey, d.ClientSystemID)
 }
 
-func (d *pinTanDialog) Init() (string, error) {
+func (d *pinTanDialog) Init() error {
+	d.dialogID = initialDialogID
+	d.messageCount = 0
 	initMessage := message.NewDialogInitializationClientMessage()
 	messageNum := d.nextMessageNumber()
-	initMessage.Header = segment.NewMessageHeaderSegment(-1, 220, initialDialogID, messageNum)
+	initMessage.Header = segment.NewMessageHeaderSegment(-1, 220, d.dialogID, messageNum)
 	initMessage.End = segment.NewMessageEndSegment(8, messageNum)
-	initMessage.Identification = segment.NewIdentificationSegment(d.BankID, d.ClientID, initialClientSystemID, true)
+	initMessage.Identification = segment.NewIdentificationSegment(d.BankID, d.ClientID, d.ClientSystemID, true)
 	initMessage.ProcessingPreparation = segment.NewProcessingPreparationSegment(0, 0, 1)
 	signedInitMessage, err := initMessage.Sign(d.signatureProvider)
 	if err != nil {
-		return "", err
+		return err
 	}
 	encryptedInitMessage, err := signedInitMessage.Encrypt(d.cryptoProvider)
 	if err != nil {
-		return "", err
+		return err
 	}
-	marshaledMessage, err := encryptedInitMessage.MarshalHBCI()
+
+	decryptedMessage, err := d.Request(encryptedInitMessage)
 	if err != nil {
-		return "", err
+		return fmt.Errorf("Error while initializing dialog: %v", err)
+	}
+	messageHeader := decryptedMessage.MessageHeader()
+	if messageHeader == nil {
+		return fmt.Errorf("Malformed response message: %q", decryptedMessage)
+	}
+	d.dialogID = messageHeader.DialogID.Val()
+
+	bankInfoMessageBytes := decryptedMessage.FindSegment("HIKIM")
+	fmt.Printf("INFO:\n%q\n", bankInfoMessageBytes)
+
+	errors := make([]string, 0)
+	acknowledgements := decryptedMessage.Acknowledgements()
+	for _, ack := range acknowledgements {
+		if ack.IsError() {
+			errors = append(errors, ack.String())
+		}
+	}
+	if len(errors) > 0 {
+		return fmt.Errorf("DialogEnd: Institute returned errors:\n%s", strings.Join(errors, "\n"))
 	}
 
-	response, err := d.post(marshaledMessage)
-	if err != nil && err != io.EOF {
-		return "", err
-	}
+	return nil
+}
 
-	fmt.Printf("Response: %q\n", strings.Split(string(response), "'"))
-
-	dialogEnd := d.dialogEnd(initialDialogID)
+func (d *pinTanDialog) End() error {
+	d.dialogID = "0463446321020270"
+	dialogEnd := d.dialogEnd()
 	signedDialogEnd, err := dialogEnd.Sign(d.signatureProvider)
 	if err != nil {
-		return "", err
+		return err
 	}
 	encryptedDialogEnd, err := signedDialogEnd.Encrypt(d.cryptoProvider)
 	if err != nil {
-		return "", err
-	}
-	marshaledEndMessage, err := encryptedDialogEnd.MarshalHBCI()
-	if err != nil {
-		return "", err
-	}
-	response, err = d.post(marshaledEndMessage)
-	if err != nil && err != io.EOF {
-		return "", err
+		return err
 	}
 
-	return string(response), nil
+	decryptedMessage, err := d.Request(encryptedDialogEnd)
+	if err != nil {
+		return fmt.Errorf("Error while ending dialog: %v", err)
+	}
+
+	errors := make([]string, 0)
+	acknowledgements := decryptedMessage.Acknowledgements()
+	for _, ack := range acknowledgements {
+		if ack.IsError() {
+			errors = append(errors, ack.String())
+		}
+	}
+	if len(errors) > 0 {
+		return fmt.Errorf("DialogEnd: Institute returned errors:\n%s", strings.Join(errors, "\n"))
+	}
+
+	return nil
 }
 
 func (d *pinTanDialog) SyncClientSystemID() (string, error) {
@@ -106,31 +134,16 @@ func (d *pinTanDialog) SyncClientSystemID() (string, error) {
 	if messageHeader == nil {
 		return "", fmt.Errorf("Malformed response message: %q", decryptedMessage)
 	}
-	newDialogId := messageHeader.DialogID.Val()
+	d.dialogID = messageHeader.DialogID.Val()
 
 	var errors []string
 	acknowledgements := decryptedMessage.Acknowledgements()
 	for _, ack := range acknowledgements {
+		if ack.IsWarning() {
+			fmt.Printf("%v\n", ack)
+		}
 		if ack.IsError() {
 			errors = append(errors, ack.String())
-		}
-	}
-
-	segmentAcknowledgementBytes := decryptedMessage.FindSegment("HIRMS")
-	if segmentAcknowledgementBytes != nil {
-		segmentAcknowledgement := &segment.SegmentAcknowledgement{}
-		err = segmentAcknowledgement.UnmarshalHBCI(segmentAcknowledgementBytes)
-		if err != nil {
-			return "", fmt.Errorf("Error while unmarshaling MessageAcknowledgement: %v", err)
-		}
-		acknowledgements := segmentAcknowledgement.Acknowledgements()
-		for _, ack := range acknowledgements {
-			if ack.IsError() {
-				errors = append(errors, ack.String())
-			}
-		}
-		if len(errors) > 0 {
-			return "", fmt.Errorf("Institute returned errors:\n%s", strings.Join(errors, "\n"))
 		}
 	}
 	if len(errors) > 0 {
@@ -163,29 +176,9 @@ func (d *pinTanDialog) SyncClientSystemID() (string, error) {
 		}
 	}
 
-	dialogEnd := d.dialogEnd(newDialogId)
-	signedDialogEnd, err := dialogEnd.Sign(d.signatureProvider)
+	err = d.End()
 	if err != nil {
 		return "", err
-	}
-	encryptedDialogEnd, err := signedDialogEnd.Encrypt(d.cryptoProvider)
-	if err != nil {
-		return "", err
-	}
-	decryptedMessage, err = d.Request(encryptedDialogEnd)
-	if err != nil {
-		return "", fmt.Errorf("Error while ending dialog: %v", err)
-	}
-
-	errors = make([]string, 0)
-	acknowledgements = decryptedMessage.Acknowledgements()
-	for _, ack := range acknowledgements {
-		if ack.IsError() {
-			errors = append(errors, ack.String())
-		}
-	}
-	if len(errors) > 0 {
-		return "", fmt.Errorf("DialogEnd: Institute returned errors:\n%s", strings.Join(errors, "\n"))
 	}
 
 	return d.ClientSystemID, nil
@@ -294,7 +287,7 @@ func (d *pinTanDialog) Anonymous(fn func() (string, error)) (string, error) {
 	}
 	fmt.Printf("Response: %q\n", strings.Split(res, "'"))
 
-	dialogEnd := d.dialogEnd("0")
+	dialogEnd := d.dialogEnd()
 	dialogEnd.SetNumbers()
 	dialogEnd.SetSize()
 	marshaledEndMessage, err := dialogEnd.MarshalHBCI()

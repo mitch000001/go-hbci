@@ -719,6 +719,13 @@ type BankIdentificationDataElement struct {
 	BankID      *AlphaNumericDataElement
 }
 
+func (b *BankIdentificationDataElement) Val() domain.BankId {
+	return domain.BankId{
+		CountryCode: b.CountryCode.Val(),
+		ID:          b.BankID.Val(),
+	}
+}
+
 func (b *BankIdentificationDataElement) Elements() []DataElement {
 	return []DataElement{
 		b.CountryCode,

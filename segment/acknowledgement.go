@@ -49,7 +49,9 @@ func (m *MessageAcknowledgement) UnmarshalHBCI(value []byte) error {
 func (m *MessageAcknowledgement) Acknowledgements() []domain.Acknowledgement {
 	acknowledgements := make([]domain.Acknowledgement, len(m.acknowledgements))
 	for i, ackDe := range m.acknowledgements {
-		acknowledgements[i] = ackDe.Val()
+		ack := ackDe.Val()
+		ack.Type = domain.MessageAcknowledgement
+		acknowledgements[i] = ack
 	}
 	return acknowledgements
 }
@@ -110,7 +112,9 @@ func (s *SegmentAcknowledgement) UnmarshalHBCI(value []byte) error {
 func (s *SegmentAcknowledgement) Acknowledgements() []domain.Acknowledgement {
 	acknowledgements := make([]domain.Acknowledgement, len(s.acknowledgements))
 	for i, ackDe := range s.acknowledgements {
-		acknowledgements[i] = ackDe.Val()
+		ack := ackDe.Val()
+		ack.Type = domain.SegmentAcknowledgement
+		acknowledgements[i] = ack
 	}
 	return acknowledgements
 }
