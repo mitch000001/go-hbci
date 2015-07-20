@@ -12,7 +12,7 @@ func TestUnmarshalerUnmarshal(t *testing.T) {
 
 	unmarshaler := NewUnmarshaler([]byte(test))
 
-	seg, err := unmarshaler.Unmarshal("HNHBK")
+	seg, err := unmarshaler.UnmarshalSegment("HNHBK")
 
 	if err != nil {
 		t.Logf("Expected no error, got %T:%v\n", err, err)
@@ -34,7 +34,7 @@ func TestUnmarshalerUnmarshal(t *testing.T) {
 	}
 
 	// Test another segment
-	seg, err = unmarshaler.Unmarshal("HISYN")
+	seg, err = unmarshaler.UnmarshalSegment("HISYN")
 
 	if err != nil {
 		t.Logf("Expected no error, got %T:%v\n", err, err)
@@ -62,7 +62,7 @@ func TestUnmarshalerUnmarshal(t *testing.T) {
 
 	unmarshaler = NewUnmarshaler([]byte(test))
 
-	seg, err = unmarshaler.Unmarshal("HXXXX")
+	seg, err = unmarshaler.UnmarshalSegment("HXXXX")
 
 	if err == nil {
 		t.Logf("Expected error, got nil\n")
@@ -81,7 +81,7 @@ func TestUnmarshalerUnmarshal(t *testing.T) {
 
 	unmarshaler = NewUnmarshaler([]byte(test))
 
-	seg, err = unmarshaler.Unmarshal("HXXXX")
+	seg, err = unmarshaler.UnmarshalSegment("HXXXX")
 
 	if err == nil {
 		t.Logf("Expected error, got nil\n")

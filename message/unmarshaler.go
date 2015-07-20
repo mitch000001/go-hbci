@@ -5,6 +5,7 @@ import (
 
 	"github.com/mitch000001/go-hbci"
 	"github.com/mitch000001/go-hbci/segment"
+	"github.com/mitch000001/go-hbci/token"
 )
 
 func RegisterUnmarshaler(segmentId string, unmarshalerFn func() hbci.Unmarshaler) {
@@ -41,6 +42,7 @@ func NewUnmarshaler(message []byte) *Unmarshaler {
 type Unmarshaler struct {
 	rawMessage       []byte
 	segmentExtractor *segment.SegmentExtractor
+	segments         map[string][]segment.Segment
 }
 
 func (u *Unmarshaler) CanUnmarshal(segmentId string) bool {
@@ -48,7 +50,34 @@ func (u *Unmarshaler) CanUnmarshal(segmentId string) bool {
 	return ok
 }
 
-func (u *Unmarshaler) Unmarshal(segmentId string) (segment.Segment, error) {
+func (u *Unmarshaler) Unmarshal() error {
+	rawSegments, err := u.segmentExtractor.Extract()
+	if err != nil {
+		return err
+	}
+	for _, seg := range rawSegments {
+		segmentId, err := extractSegmentID(seg)
+		if err != nil {
+			return err
+		}
+		unmarshaler, ok := knownUnmarshalers.Unmarshaler(segmentId)
+		if ok {
+			err = unmarshaler.UnmarshalHBCI(seg)
+			if err != nil {
+				return err
+			}
+			segments, ok := u.segments[segmentId]
+			if !ok {
+				segments = make([]segment.Segment, 0)
+			}
+			segments = append(segments, unmarshaler.(segment.Segment))
+			u.segments[segmentId] = segments
+		}
+	}
+	return nil
+}
+
+func (u *Unmarshaler) UnmarshalSegment(segmentId string) (segment.Segment, error) {
 	unmarshaler, ok := knownUnmarshalers.Unmarshaler(segmentId)
 	if !ok {
 		return nil, fmt.Errorf("Unknown segment: %q", segmentId)
@@ -74,4 +103,30 @@ func (u *Unmarshaler) extractSegment(segmentId string) ([]byte, error) {
 		return nil, fmt.Errorf("Segment not found in message: %q", segmentId)
 	}
 	return segmentBytes, nil
+}
+
+func (u *Unmarshaler) SegmentsById(segmentId string) []segment.Segment {
+	return u.segments[segmentId]
+}
+
+func (u *Unmarshaler) SegmentById(segmentId string) segment.Segment {
+	segments, ok := u.segments[segmentId]
+	if ok {
+		return segments[0]
+	}
+	return nil
+}
+
+func extractSegmentID(segment []byte) (string, error) {
+	lexer := token.NewStringLexer("SegmentIdExtractor", string(segment))
+	if lexer.HasNext() {
+		idToken := lexer.Next()
+		if idToken.Type() != token.ALPHA_NUMERIC {
+			return "", fmt.Errorf("Malformed segment: segment ID not alphanumeric")
+		} else {
+			return idToken.Value(), nil
+		}
+	} else {
+		return "", fmt.Errorf("Malformed segment: empty")
+	}
 }
