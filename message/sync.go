@@ -19,8 +19,8 @@ type SynchronisationMessage struct {
 	Sync                       *segment.SynchronisationRequestSegment
 }
 
-func (s *SynchronisationMessage) jobs() segment.SegmentSequence {
-	return segment.SegmentSequence{
+func (s *SynchronisationMessage) jobs() []segment.Segment {
+	return []segment.Segment{
 		s.Identification,
 		s.ProcessingPreparation,
 		s.PublicSigningKeyRequest,

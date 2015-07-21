@@ -76,19 +76,19 @@ func (b *BasicMessage) SetNumbers() {
 		n += 1
 		return n
 	}
-	b.Header.SetNumber(num())
+	b.Header.SetNumber(num)
 	if b.SignatureBegin != nil {
-		b.SignatureBegin.SetNumber(num())
+		b.SignatureBegin.SetNumber(num)
 	}
 	for _, segment := range b.HBCIMessage.HBCISegments() {
 		if !reflect.ValueOf(segment).IsNil() {
-			segment.SetNumber(num())
+			segment.SetNumber(num)
 		}
 	}
 	if b.SignatureEnd != nil {
-		b.SignatureEnd.SetNumber(num())
+		b.SignatureEnd.SetNumber(num)
 	}
-	b.End.SetNumber(num())
+	b.End.SetNumber(num)
 }
 
 func (b *BasicMessage) SetSize() {
@@ -241,11 +241,11 @@ func (b *BasicSignedMessage) Encrypt(provider CryptoProvider) (*EncryptedMessage
 }
 
 type clientMessage interface {
-	jobs() segment.SegmentSequence
+	jobs() []segment.Segment
 }
 
 type bankMessage interface {
-	dataSegments() segment.SegmentSequence
+	dataSegments() []segment.Segment
 }
 
 type basicBankMessage struct {

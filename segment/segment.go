@@ -15,7 +15,7 @@ const (
 
 type Segment interface {
 	Header() *element.SegmentHeader
-	SetNumber(int)
+	SetNumber(func() int)
 	DataElements() []element.DataElement
 	String() string
 }
@@ -75,8 +75,8 @@ func (s *basicSegment) ID() string {
 	return s.header.ID.Val()
 }
 
-func (s *basicSegment) SetNumber(number int) {
-	s.header.SetNumber(number)
+func (s *basicSegment) SetNumber(numberFn func() int) {
+	s.header.SetNumber(numberFn())
 }
 
 func (s *basicSegment) SetReference(ref int) {

@@ -16,8 +16,8 @@ type DialogInitializationClientMessage struct {
 	PublicEncryptionKeyRequest *segment.PublicKeyRequestSegment
 }
 
-func (d *DialogInitializationClientMessage) jobs() segment.SegmentSequence {
-	return segment.SegmentSequence{
+func (d *DialogInitializationClientMessage) jobs() []segment.Segment {
+	return []segment.Segment{
 		d.Identification,
 		d.ProcessingPreparation,
 		d.PublicSigningKeyRequest,
@@ -38,8 +38,8 @@ type DialogFinishingMessage struct {
 	DialogEnd *segment.DialogEndSegment
 }
 
-func (d *DialogFinishingMessage) jobs() segment.SegmentSequence {
-	return segment.SegmentSequence{
+func (d *DialogFinishingMessage) jobs() []segment.Segment {
+	return []segment.Segment{
 		d.DialogEnd,
 	}
 }

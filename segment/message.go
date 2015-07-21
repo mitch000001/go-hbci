@@ -3,12 +3,43 @@ package segment
 import (
 	"bytes"
 	"fmt"
+	"reflect"
 	"strconv"
 
 	"github.com/mitch000001/go-hbci/element"
 )
 
-type SegmentSequence []Segment
+type SegmentSequence map[string]Segment
+
+func (s SegmentSequence) Header() *element.SegmentHeader { return nil }
+
+func (s SegmentSequence) SetNumber(numberFn func() int) {
+	for _, segment := range s {
+		if !reflect.ValueOf(segment).IsNil() {
+			segment.SetNumber(numberFn)
+		}
+	}
+}
+
+func (s SegmentSequence) DataElements() []element.DataElement {
+	var elements []element.DataElement
+	for _, segment := range s {
+		if !reflect.ValueOf(segment).IsNil() {
+			elements = append(elements, segment.DataElements()...)
+		}
+	}
+	return elements
+}
+
+func (s SegmentSequence) String() string {
+	var buf bytes.Buffer
+	for _, segment := range s {
+		if !reflect.ValueOf(segment).IsNil() {
+			buf.WriteString(segment.String())
+		}
+	}
+	return buf.String()
+}
 
 var validHBCIVersions = []int{201, 210, 220}
 
