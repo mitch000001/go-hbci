@@ -41,8 +41,6 @@ func (s SegmentSequence) String() string {
 	return buf.String()
 }
 
-var validHBCIVersions = []int{201, 210, 220}
-
 func NewReferencingMessageHeaderSegment(size int, hbciVersion int, dialogId string, number int, referencedMessage *element.ReferenceMessage) *MessageHeaderSegment {
 	m := NewMessageHeaderSegment(size, hbciVersion, dialogId, number)
 	m.Ref = referencedMessage

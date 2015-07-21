@@ -10,19 +10,19 @@ import (
 	"github.com/mitch000001/go-hbci/segment"
 )
 
-func NewPinTanDialog(bankId domain.BankId, hbciUrl string, clientId string) *pinTanDialog {
-	d := &pinTanDialog{
+func NewPinTanDialog(bankId domain.BankId, hbciUrl string, clientId string) *PinTanDialog {
+	d := &PinTanDialog{
 		dialog: newDialog(bankId, hbciUrl, clientId, nil, nil),
 	}
 	return d
 }
 
-type pinTanDialog struct {
+type PinTanDialog struct {
 	*dialog
 	pin string
 }
 
-func (d *pinTanDialog) SetPin(pin string) {
+func (d *PinTanDialog) SetPin(pin string) {
 	d.pin = pin
 	pinKey := domain.NewPinKey(pin, domain.NewPinTanKeyName(d.BankID, d.ClientID, "S"))
 	d.signatureProvider = message.NewPinTanSignatureProvider(pinKey, d.ClientSystemID)
@@ -30,7 +30,7 @@ func (d *pinTanDialog) SetPin(pin string) {
 	d.cryptoProvider = message.NewPinTanCryptoProvider(pinKey, d.ClientSystemID)
 }
 
-func (d *pinTanDialog) Init() error {
+func (d *PinTanDialog) Init() error {
 	d.dialogID = initialDialogID
 	d.messageCount = 0
 	initMessage := message.NewDialogInitializationClientMessage()
@@ -38,7 +38,7 @@ func (d *pinTanDialog) Init() error {
 	initMessage.Header = segment.NewMessageHeaderSegment(-1, 220, d.dialogID, messageNum)
 	initMessage.End = segment.NewMessageEndSegment(8, messageNum)
 	initMessage.Identification = segment.NewIdentificationSegment(d.BankID, d.ClientID, d.ClientSystemID, true)
-	initMessage.ProcessingPreparation = segment.NewProcessingPreparationSegment(0, 0, 1)
+	initMessage.ProcessingPreparation = segment.NewProcessingPreparationSegment(d.BankParameterDataVersion(), d.UserParameterDataVersion(), d.Language)
 	signedInitMessage, err := initMessage.Sign(d.signatureProvider)
 	if err != nil {
 		return err
@@ -75,8 +75,7 @@ func (d *pinTanDialog) Init() error {
 	return nil
 }
 
-func (d *pinTanDialog) End() error {
-	d.dialogID = "0463446321020270"
+func (d *PinTanDialog) End() error {
 	dialogEnd := d.dialogEnd()
 	signedDialogEnd, err := dialogEnd.Sign(d.signatureProvider)
 	if err != nil {
@@ -106,7 +105,7 @@ func (d *pinTanDialog) End() error {
 	return nil
 }
 
-func (d *pinTanDialog) SyncClientSystemID() (string, error) {
+func (d *PinTanDialog) SyncClientSystemID() (string, error) {
 	syncMessage := new(message.SynchronisationMessage)
 	messageNum := d.nextMessageNumber()
 	syncMessage.BasicClientMessage = message.NewBasicClientMessage(syncMessage)
@@ -184,7 +183,7 @@ func (d *pinTanDialog) SyncClientSystemID() (string, error) {
 	return d.ClientSystemID, nil
 }
 
-func (d *pinTanDialog) Request(message message.ClientMessage) (message.BankMessage, error) {
+func (d *PinTanDialog) Request(message message.ClientMessage) (message.BankMessage, error) {
 	marshaledMessage, err := message.MarshalHBCI()
 	if err != nil {
 		return nil, err
@@ -243,7 +242,7 @@ func extractEncryptedMessage(response []byte) (*message.EncryptedMessage, error)
 	return encMessage, nil
 }
 
-func (d *pinTanDialog) CommunicationAccess() (string, error) {
+func (d *PinTanDialog) CommunicationAccess() (string, error) {
 	comm := message.NewCommunicationAccessMessage(d.BankID, d.BankID, 5, "")
 	comm.Header = segment.NewMessageHeaderSegment(0, 220, initialDialogID, 1)
 	comm.End = segment.NewMessageEndSegment(3, 1)
@@ -260,7 +259,7 @@ func (d *pinTanDialog) CommunicationAccess() (string, error) {
 	return string(response), nil
 }
 
-func (d *pinTanDialog) Anonymous(fn func() (string, error)) (string, error) {
+func (d *PinTanDialog) Anonymous(fn func() (string, error)) (string, error) {
 	initMessage := message.NewDialogInitializationClientMessage()
 	messageNum := d.nextMessageNumber()
 	initMessage.Header = segment.NewMessageHeaderSegment(-1, 220, initialDialogID, messageNum)

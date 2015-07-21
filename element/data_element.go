@@ -733,6 +733,21 @@ func (b *BankIdentificationDataElement) Elements() []DataElement {
 	}
 }
 
+func (b *BankIdentificationDataElement) UnmarshalHBCI(value []byte) error {
+	elements := bytes.Split(value, []byte(":"))
+	if len(elements) < 2 {
+		return fmt.Errorf("Malformed marshaled value")
+	}
+	countryCode := &CountryCodeDataElement{}
+	err := countryCode.UnmarshalHBCI(elements[0])
+	if err != nil {
+		return err
+	}
+	b.CountryCode = countryCode
+	b.BankID = NewAlphaNumeric(string(elements[1]), 30)
+	return nil
+}
+
 func NewAccountConnection(conn domain.AccountConnection) *AccountConnectionDataElement {
 	a := &AccountConnectionDataElement{
 		AccountId:                 NewIdentification(conn.AccountID),

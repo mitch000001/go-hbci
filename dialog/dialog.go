@@ -32,6 +32,7 @@ func newDialog(bankId domain.BankId, hbciUrl string, clientId string, signatureP
 		BankID:            bankId,
 		ClientID:          clientId,
 		ClientSystemID:    initialClientSystemID,
+		Language:          domain.German,
 		UserParameterData: *new(domain.UserParameterData),
 		Accounts:          make([]domain.AccountInformation, 0),
 		signatureProvider: signatureProvider,
@@ -46,6 +47,7 @@ type dialog struct {
 	BankID            domain.BankId
 	ClientID          string
 	ClientSystemID    string
+	Language          domain.Language
 	UserParameterData domain.UserParameterData
 	Accounts          []domain.AccountInformation
 	messageCount      int

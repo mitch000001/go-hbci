@@ -1,4 +1,4 @@
-package element
+package segment
 
 import (
 	"reflect"

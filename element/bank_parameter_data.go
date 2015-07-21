@@ -1,5 +1,12 @@
 package element
 
+import (
+	"bytes"
+	"fmt"
+	"sort"
+	"strconv"
+)
+
 func NewSupportedSecurityMethod(methodCode string, versions ...int) *SupportedSecurityMethodDataElement {
 	s := &SupportedSecurityMethodDataElement{
 		MethodCode: NewAlphaNumeric(methodCode, 3),
@@ -63,8 +70,30 @@ func NewSupportedHBCIVersions(versions ...int) *SupportedHBCIVersionsDataElement
 	return s
 }
 
+var validHBCIVersions = []int{201, 210, 220}
+
 type SupportedHBCIVersionsDataElement struct {
 	*arrayElementGroup
+}
+
+func (s *SupportedHBCIVersionsDataElement) UnmarshalHBCI(value []byte) error {
+	elements := bytes.Split(value, []byte(":"))
+	if len(elements) == 0 || len(elements) > 9 {
+		return fmt.Errorf("Malformed marshaled value")
+	}
+	versions := make([]DataElement, len(elements))
+	for i, elem := range elements {
+		version, err := strconv.Atoi(string(elem))
+		if err != nil {
+			return err
+		}
+		if sort.SearchInts(validHBCIVersions, version) >= len(validHBCIVersions) {
+			return fmt.Errorf("Unsupported HBCI version: %d", version)
+		}
+		versions[i] = NewNumber(version, 3)
+	}
+	s.arrayElementGroup = NewArrayElementGroup(SupportedHBCIVersionDEG, 1, 9, versions...)
+	return nil
 }
 
 func NewSupportedLanguages(languages ...int) *SupportedLanguagesDataElement {
@@ -77,6 +106,8 @@ func NewSupportedLanguages(languages ...int) *SupportedLanguagesDataElement {
 	return s
 }
 
+var validLanguages = []int{1, 2, 3}
+
 type SupportedLanguagesDataElement struct {
 	*arrayElementGroup
 }
@@ -87,6 +118,26 @@ func (s *SupportedLanguagesDataElement) Languages() []*NumberDataElement {
 		languages[i] = lang.(*NumberDataElement)
 	}
 	return languages
+}
+
+func (s *SupportedLanguagesDataElement) UnmarshalHBCI(value []byte) error {
+	elements := bytes.Split(value, []byte(":"))
+	if len(elements) == 0 || len(elements) > 9 {
+		return fmt.Errorf("Malformed marshaled value")
+	}
+	languages := make([]DataElement, len(elements))
+	for i, elem := range elements {
+		lang, err := strconv.Atoi(string(elem))
+		if err != nil {
+			return err
+		}
+		if sort.SearchInts(validLanguages, lang) >= len(validLanguages) {
+			return fmt.Errorf("Unsupported language code: %d", lang)
+		}
+		languages[i] = NewNumber(lang, 3)
+	}
+	s.arrayElementGroup = NewArrayElementGroup(SupportedLanguagesDEG, 1, 9, languages...)
+	return nil
 }
 
 type SupportedCompressionMethodsDataElement struct {

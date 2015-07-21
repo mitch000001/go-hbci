@@ -1,10 +1,15 @@
-package element
+package segment
 
 import (
 	"fmt"
 
 	"github.com/mitch000001/go-hbci/token"
 )
+
+func ExtractElements(segment []byte) ([][]byte, error) {
+	extractor := NewElementExtractor(segment)
+	return extractor.Extract()
+}
 
 func NewElementExtractor(segment []byte) *ElementExtractor {
 	return &ElementExtractor{

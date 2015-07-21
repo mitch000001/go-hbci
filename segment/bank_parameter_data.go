@@ -1,7 +1,8 @@
 package segment
 
 import (
-	"bytes"
+	"fmt"
+	"strconv"
 
 	"github.com/mitch000001/go-hbci/domain"
 	"github.com/mitch000001/go-hbci/element"
@@ -60,7 +61,54 @@ func (c *CommonBankParameterSegment) elements() []element.DataElement {
 }
 
 func (c *CommonBankParameterSegment) UnmarshalHBCI(value []byte) error {
-	value = bytes.TrimSuffix(value, []byte("'"))
+	elements, err := ExtractElements(value)
+	if err != nil {
+		return err
+	}
+	if len(elements) == 0 || len(elements) < 7 {
+		return fmt.Errorf("Malformed marshaled value")
+	}
+	segment, err := SegmentFromHeaderBytes(elements[0], c)
+	if err != nil {
+		return err
+	}
+	c.Segment = segment
+	version, err := strconv.Atoi(string(elements[1]))
+	if err != nil {
+		return err
+	}
+	c.BPDVersion = element.NewNumber(version, 3)
+	bankId := &element.BankIdentificationDataElement{}
+	err = bankId.UnmarshalHBCI(elements[2])
+	if err != nil {
+		return err
+	}
+	c.BankID = bankId
+	c.BankName = element.NewAlphaNumeric(string(elements[3]), 60)
+	transactionCount, err := strconv.Atoi(string(elements[4]))
+	if err != nil {
+		return err
+	}
+	c.BusinessTransactionCount = element.NewNumber(transactionCount, 3)
+	languages := &element.SupportedLanguagesDataElement{}
+	err = languages.UnmarshalHBCI(elements[5])
+	if err != nil {
+		return err
+	}
+	c.SupportedLanguages = languages
+	versions := &element.SupportedHBCIVersionsDataElement{}
+	err = versions.UnmarshalHBCI(elements[6])
+	if err != nil {
+		return err
+	}
+	c.SupportedHBCIVersions = versions
+	if len(elements) == 8 {
+		maxSize, err := strconv.Atoi(string(elements[7]))
+		if err != nil {
+			return err
+		}
+		c.MaxMessageSize = element.NewNumber(maxSize, 4)
+	}
 	return nil
 }
 

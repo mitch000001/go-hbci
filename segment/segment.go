@@ -1,7 +1,10 @@
 package segment
 
 import (
+	"bytes"
+	"fmt"
 	"reflect"
+	"strconv"
 	"strings"
 
 	"github.com/mitch000001/go-hbci/element"
@@ -28,6 +31,15 @@ type segment interface {
 	referencedId() string
 	sender() string
 	elements() []element.DataElement
+}
+
+func SegmentFromHeaderBytes(headerBytes []byte, seg segment) (Segment, error) {
+	numStr := bytes.Split(headerBytes, []byte(":"))[1]
+	num, err := strconv.Atoi(string(numStr))
+	if err != nil {
+		return nil, fmt.Errorf("Malformed segment header")
+	}
+	return NewBasicSegment(num, seg), nil
 }
 
 func NewReferencingBasicSegment(number int, ref int, seg segment) Segment {

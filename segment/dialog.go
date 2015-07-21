@@ -1,6 +1,9 @@
 package segment
 
-import "github.com/mitch000001/go-hbci/element"
+import (
+	"github.com/mitch000001/go-hbci/domain"
+	"github.com/mitch000001/go-hbci/element"
+)
 
 const productName = "go-hbci library"
 const productVersion = "0.0.1"
@@ -29,11 +32,11 @@ func (d *DialogEndSegment) elements() []element.DataElement {
 	}
 }
 
-func NewProcessingPreparationSegment(bdpVersion int, udpVersion int, language int) *ProcessingPreparationSegment {
+func NewProcessingPreparationSegment(bdpVersion int, udpVersion int, language domain.Language) *ProcessingPreparationSegment {
 	p := &ProcessingPreparationSegment{
 		BPDVersion:     element.NewNumber(bdpVersion, 3),
 		UPDVersion:     element.NewNumber(udpVersion, 3),
-		DialogLanguage: element.NewNumber(language, 3),
+		DialogLanguage: element.NewNumber(int(language), 3),
 		ProductName:    element.NewAlphaNumeric(productName, 25),
 		ProductVersion: element.NewAlphaNumeric(productVersion, 5),
 	}
