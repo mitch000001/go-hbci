@@ -92,3 +92,12 @@ func (s *SupportedLanguagesDataElement) Languages() []*NumberDataElement {
 type SupportedCompressionMethodsDataElement struct {
 	*arrayElementGroup
 }
+
+type BusinessTransactionParameter struct {
+	*elementGroup
+	DataElements []DataElement
+}
+
+func (b *BusinessTransactionParameter) GroupDataElements() []DataElement {
+	return b.DataElements
+}

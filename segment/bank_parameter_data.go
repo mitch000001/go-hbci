@@ -106,3 +106,25 @@ func (c *CompressionMethodSegment) elements() []element.DataElement {
 		c.SupportedCompressionMethods,
 	}
 }
+
+type BusinessTransactionParamsSegment struct {
+	Segment
+	ID            string
+	Version       int
+	MaxJobs       *element.NumberDataElement
+	MinSignatures *element.NumberDataElement
+	Params        *element.BusinessTransactionParameter
+}
+
+func (b *BusinessTransactionParamsSegment) version() int         { return b.Version }
+func (b *BusinessTransactionParamsSegment) id() string           { return b.ID }
+func (b *BusinessTransactionParamsSegment) referencedId() string { return "HKVVB" }
+func (b *BusinessTransactionParamsSegment) sender() string       { return senderBank }
+
+func (b *BusinessTransactionParamsSegment) elements() []element.DataElement {
+	return []element.DataElement{
+		b.MaxJobs,
+		b.MinSignatures,
+		b.Params,
+	}
+}
