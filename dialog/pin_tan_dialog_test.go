@@ -21,8 +21,10 @@ func TestPinTanDialogSyncClientSystemID(t *testing.T) {
 
 	syncResponseMessage := encryptedTestMessage(
 		"HIRMG:2:2:1+0100::Dialog beendet'",
-		"HISYN:2:3:8+newClientSystemID'",
-		"HIUPD:3:4:8+12345::280:1000000+54321+EUR+Muster+Max+++HKTAN:1+HKKAZ:1'",
+		"HIBPA:3:2:+12+280:10000000+Bank Name+3+1+201:210:220+0'",
+		"HISYN:4:3:8+newClientSystemID'",
+		"HIUPA:5:2:7+12345+4+0'",
+		"HIUPD:6:4:8+12345::280:1000000+54321+EUR+Muster+Max+++HKTAN:1+HKKAZ:1'",
 	)
 
 	dialogEndResponseMessage := encryptedTestMessage("HIRMG:2:2:1+0020::Auftrag entgegengenommen'")
@@ -40,6 +42,19 @@ func TestPinTanDialogSyncClientSystemID(t *testing.T) {
 	dialogID := dialog.dialogID
 	if dialogID != initialDialogID {
 		t.Logf("Expected dialogID to equal\n%q\n\tgot\n%q\n", initialDialogID, dialogID)
+		t.Fail()
+	}
+
+	bankParamData := dialog.BankParameterData
+	if bankParamData.Version != 0 {
+		t.Logf("Expected BPD version to equal 0, was %d\n", bankParamData.Version)
+		t.Fail()
+	}
+
+	userParamData := dialog.UserParameterData
+	if userParamData.Version != 0 {
+		t.Logf("Expected UPD version to equal 0, was %d\n", userParamData.Version)
+		t.Fail()
 	}
 
 	res, err := dialog.SyncClientSystemID()
@@ -58,6 +73,18 @@ func TestPinTanDialogSyncClientSystemID(t *testing.T) {
 
 	if dialog.ClientSystemID != expected {
 		t.Logf("Expected ClientSystemID to equal %q, got %q\n", expected, dialog.ClientSystemID)
+		t.Fail()
+	}
+
+	bankParamData = dialog.BankParameterData
+	if bankParamData.Version != 12 {
+		t.Logf("Expected BankParameterData version to equal 12, was %d\n", bankParamData.Version)
+		t.Fail()
+	}
+
+	userParamData = dialog.UserParameterData
+	if userParamData.Version != 4 {
+		t.Logf("Expected UPD version to equal 4, was %d\n", userParamData.Version)
 		t.Fail()
 	}
 

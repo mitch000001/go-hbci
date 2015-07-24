@@ -163,6 +163,26 @@ func (d *PinTanDialog) SyncClientSystemID() (string, error) {
 		return "", fmt.Errorf("Malformed message: missing SynchronisationResponse")
 	}
 
+	bankParamData := decryptedMessage.FindSegment("HIBPA")
+	if bankParamData != nil {
+		paramSegment := &segment.CommonBankParameterSegment{}
+		err = paramSegment.UnmarshalHBCI(bankParamData)
+		if err != nil {
+			return "", fmt.Errorf("Error while unmarshaling Bank Parameter Data: %v", err)
+		}
+		d.BankParameterData = paramSegment.BankParameterData()
+	}
+
+	userParamData := decryptedMessage.FindSegment("HIUPA")
+	if userParamData != nil {
+		paramSegment := &segment.CommonUserParameterDataSegment{}
+		err = paramSegment.UnmarshalHBCI(userParamData)
+		if err != nil {
+			return "", fmt.Errorf("Error while unmarshaling User Parameter Data: %v", err)
+		}
+		d.UserParameterData = paramSegment.UserParameterData()
+	}
+
 	accountData := decryptedMessage.FindSegments("HIUPD")
 	if accountData != nil {
 		for _, acc := range accountData {

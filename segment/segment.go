@@ -34,10 +34,18 @@ type segment interface {
 }
 
 func SegmentFromHeaderBytes(headerBytes []byte, seg segment) (Segment, error) {
-	numStr := bytes.Split(headerBytes, []byte(":"))[1]
+	elements := bytes.Split(headerBytes, []byte(":"))
+	numStr := elements[1]
 	num, err := strconv.Atoi(string(numStr))
 	if err != nil {
 		return nil, fmt.Errorf("Malformed segment header")
+	}
+	if len(elements) == 4 && len(elements[3]) > 0 {
+		ref, err := strconv.Atoi(string(elements[3]))
+		if err != nil {
+			return nil, fmt.Errorf("Malformed segment header")
+		}
+		return NewReferencingBasicSegment(num, ref, seg), nil
 	}
 	return NewBasicSegment(num, seg), nil
 }

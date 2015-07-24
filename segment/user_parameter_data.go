@@ -37,6 +37,36 @@ func (c *CommonUserParameterDataSegment) elements() []element.DataElement {
 	}
 }
 
+func (c *CommonUserParameterDataSegment) UnmarshalHBCI(value []byte) error {
+	elements, err := ExtractElements(value)
+	if err != nil {
+		return err
+	}
+	seg, err := SegmentFromHeaderBytes(elements[0], c)
+	if err != nil {
+		return err
+	}
+	c.Segment = seg
+	if len(elements) != 4 {
+		return fmt.Errorf("%T: Malformed marshaled value", c)
+	}
+	c.UserID = element.NewIdentification(string(elements[1]))
+	version, err := strconv.Atoi(string(elements[2]))
+	if err != nil {
+		return fmt.Errorf("%T: Malformed BPD version: %v", c, err)
+	}
+	c.UPDVersion = element.NewNumber(version, 3)
+	usage, err := strconv.Atoi(string(elements[3]))
+	if err != nil {
+		return fmt.Errorf("%T: Malformed BPD usage: %v", c, err)
+	}
+	if usage != 0 && usage != 1 {
+		return fmt.Errorf("%T: Malformed BPD usage: must be 0 or 1", c)
+	}
+	c.UPDUsage = element.NewNumber(usage, 1)
+	return nil
+}
+
 func (c *CommonUserParameterDataSegment) UserParameterData() domain.UserParameterData {
 	return domain.UserParameterData{
 		UserID:  c.UserID.Val(),
