@@ -15,6 +15,7 @@ import (
 	"github.com/mitch000001/go-hbci/domain"
 	"github.com/mitch000001/go-hbci/message"
 	"github.com/mitch000001/go-hbci/segment"
+	"github.com/mitch000001/go-hbci/transport"
 )
 
 const initialDialogID = "0"
@@ -23,6 +24,8 @@ const anonymousClientID = "9999999999"
 
 type Dialog interface {
 	Init() (string, error)
+	SyncClientSystemID() (string, error)
+	End() error
 }
 
 func newDialog(bankId domain.BankId, hbciUrl string, clientId string, signatureProvider message.SignatureProvider, cryptoProvider message.CryptoProvider) *dialog {
@@ -33,7 +36,6 @@ func newDialog(bankId domain.BankId, hbciUrl string, clientId string, signatureP
 		ClientID:          clientId,
 		ClientSystemID:    initialClientSystemID,
 		Language:          domain.German,
-		UserParameterData: *new(domain.UserParameterData),
 		Accounts:          make([]domain.AccountInformation, 0),
 		signatureProvider: signatureProvider,
 		cryptoProvider:    cryptoProvider,
@@ -42,6 +44,7 @@ func newDialog(bankId domain.BankId, hbciUrl string, clientId string, signatureP
 }
 
 type dialog struct {
+	transport         transport.Transport
 	httpClient        *http.Client
 	hbciUrl           string
 	BankID            domain.BankId
@@ -63,6 +66,12 @@ func (d *dialog) UserParameterDataVersion() int {
 
 func (d *dialog) BankParameterDataVersion() int {
 	return d.BankParameterData.Version
+}
+
+func (d *dialog) SetClientSystemID(clientSystemID string) {
+	d.ClientSystemID = clientSystemID
+	d.signatureProvider.SetClientSystemID(d.ClientSystemID)
+	d.cryptoProvider.SetClientSystemID(d.ClientSystemID)
 }
 
 func (d *dialog) nextMessageNumber() int {

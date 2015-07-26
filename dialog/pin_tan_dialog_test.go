@@ -1,7 +1,6 @@
 package dialog
 
 import (
-	"net/http"
 	"reflect"
 	"testing"
 
@@ -9,15 +8,14 @@ import (
 )
 
 func TestPinTanDialogSyncClientSystemID(t *testing.T) {
-	transport := &MockHttpTransport{}
-	httpClient := &http.Client{Transport: transport}
+	transport := &MockHttpsTransport{}
 
 	url := "http://localhost"
 	clientID := "12345"
 	bankID := domain.BankId{280, "10000000"}
 	dialog := NewPinTanDialog(bankID, url, clientID)
 	dialog.SetPin("abcde")
-	dialog.httpClient = httpClient
+	dialog.transport = transport
 
 	syncResponseMessage := encryptedTestMessage(
 		"HIRMG:2:2:1+0100::Dialog beendet'",
@@ -29,7 +27,7 @@ func TestPinTanDialogSyncClientSystemID(t *testing.T) {
 
 	dialogEndResponseMessage := encryptedTestMessage("HIRMG:2:2:1+0020::Auftrag entgegengenommen'")
 
-	transport.SetResponsePayloads([][]byte{
+	transport.SetResponseMessages([][]byte{
 		syncResponseMessage,
 		dialogEndResponseMessage,
 	})
@@ -117,7 +115,7 @@ func TestPinTanDialogSyncClientSystemID(t *testing.T) {
 	// message errors
 	syncResponseMessage = encryptedTestMessage("HIRMG:2:2:1+9000::Nachricht enthält Fehler'")
 
-	transport.SetResponsePayloads([][]byte{
+	transport.SetResponseMessages([][]byte{
 		syncResponseMessage,
 		[]byte(""),
 	})

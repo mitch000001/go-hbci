@@ -8,12 +8,14 @@ import (
 	"github.com/mitch000001/go-hbci/domain"
 	"github.com/mitch000001/go-hbci/message"
 	"github.com/mitch000001/go-hbci/segment"
+	"github.com/mitch000001/go-hbci/transport"
 )
 
 func NewPinTanDialog(bankId domain.BankId, hbciUrl string, clientId string) *PinTanDialog {
 	d := &PinTanDialog{
 		dialog: newDialog(bankId, hbciUrl, clientId, nil, nil),
 	}
+	d.transport = transport.NewHttpsTransport()
 	return d
 }
 
@@ -48,7 +50,7 @@ func (d *PinTanDialog) Init() error {
 		return err
 	}
 
-	decryptedMessage, err := d.Request(encryptedInitMessage)
+	decryptedMessage, err := d.request(encryptedInitMessage)
 	if err != nil {
 		return fmt.Errorf("Error while initializing dialog: %v", err)
 	}
@@ -86,7 +88,7 @@ func (d *PinTanDialog) End() error {
 		return err
 	}
 
-	decryptedMessage, err := d.Request(encryptedDialogEnd)
+	decryptedMessage, err := d.request(encryptedDialogEnd)
 	if err != nil {
 		return fmt.Errorf("Error while ending dialog: %v", err)
 	}
@@ -124,7 +126,7 @@ func (d *PinTanDialog) SyncClientSystemID() (string, error) {
 		return "", err
 	}
 
-	decryptedMessage, err := d.Request(encryptedSyncMessage)
+	decryptedMessage, err := d.request(encryptedSyncMessage)
 	if err != nil {
 		return "", fmt.Errorf("Error while extracting encrypted message: %v", err)
 	}
@@ -156,9 +158,7 @@ func (d *PinTanDialog) SyncClientSystemID() (string, error) {
 		if err != nil {
 			return "", fmt.Errorf("Error while unmarshaling sync response: %v", err)
 		}
-		d.ClientSystemID = syncSegment.ClientSystemID.Val()
-		d.signatureProvider.SetClientSystemID(d.ClientSystemID)
-		d.cryptoProvider.SetClientSystemID(d.ClientSystemID)
+		d.SetClientSystemID(syncSegment.ClientSystemID.Val())
 	} else {
 		return "", fmt.Errorf("Malformed message: missing SynchronisationResponse")
 	}
@@ -203,13 +203,18 @@ func (d *PinTanDialog) SyncClientSystemID() (string, error) {
 	return d.ClientSystemID, nil
 }
 
-func (d *PinTanDialog) Request(message message.ClientMessage) (message.BankMessage, error) {
+func (d *PinTanDialog) request(message message.ClientMessage) (message.BankMessage, error) {
 	marshaledMessage, err := message.MarshalHBCI()
 	if err != nil {
 		return nil, err
 	}
 
-	response, err := d.post(marshaledMessage)
+	request := &transport.Request{
+		URL:              d.hbciUrl,
+		MarshaledMessage: marshaledMessage,
+	}
+
+	response, err := d.transport.Do(request)
 	if err != nil {
 		return nil, err
 	}
@@ -227,19 +232,13 @@ func (d *PinTanDialog) Request(message message.ClientMessage) (message.BankMessa
 	return decryptedMessage, err
 }
 
-func extractEncryptedMessage(response []byte) (*message.EncryptedMessage, error) {
-	extractor := segment.NewSegmentExtractor(response)
-	_, err := extractor.Extract()
-	if err != nil {
-		return nil, err
-	}
-
-	messageHeader := extractor.FindSegment("HNHBK")
+func extractEncryptedMessage(response *transport.Response) (*message.EncryptedMessage, error) {
+	messageHeader := response.FindSegment("HNHBK")
 	if messageHeader == nil {
 		return nil, fmt.Errorf("Malformed response: missing Message Header")
 	}
 	header := &segment.MessageHeaderSegment{}
-	err = header.UnmarshalHBCI(messageHeader)
+	err := header.UnmarshalHBCI(messageHeader)
 	if err != nil {
 		return nil, fmt.Errorf("Error while unmarshaling message header: %v", err)
 	}
@@ -248,7 +247,7 @@ func extractEncryptedMessage(response []byte) (*message.EncryptedMessage, error)
 
 	encMessage := message.NewEncryptedMessage(header, nil)
 
-	encryptedData := extractor.FindSegment("HNVSD")
+	encryptedData := response.FindSegment("HNVSD")
 	if encryptedData != nil {
 		encSegment := &segment.EncryptedDataSegment{}
 		err = encSegment.UnmarshalHBCI(encryptedData)
@@ -267,16 +266,17 @@ func (d *PinTanDialog) CommunicationAccess() (string, error) {
 	comm.Header = segment.NewMessageHeaderSegment(0, 220, initialDialogID, 1)
 	comm.End = segment.NewMessageEndSegment(3, 1)
 	comm.SetSize()
-	marshaled, err := comm.MarshalHBCI()
-	if err != nil {
-		return "", err
-	}
-	fmt.Printf("Marshaled: %q\n", string(marshaled))
-	response, err := d.post(marshaled)
+
+	response, err := d.request(comm)
 	if err != nil && err != io.EOF {
 		return "", err
 	}
-	return string(response), nil
+
+	responseBytes, err := response.(*message.DecryptedMessage).MarshalHBCI()
+	if err != nil {
+		return "", err
+	}
+	return string(responseBytes), nil
 }
 
 func (d *PinTanDialog) Anonymous(fn func() (string, error)) (string, error) {

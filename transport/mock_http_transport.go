@@ -1,4 +1,4 @@
-package dialog
+package transport
 
 import (
 	"encoding/base64"
