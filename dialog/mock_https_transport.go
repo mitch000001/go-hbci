@@ -61,6 +61,7 @@ func (m *MockHttpsTransport) SetResponseMessage(message []byte) {
 	}
 	m.init()
 	m.responses = append(m.responses, response)
+	m.errors = append(m.errors, nil)
 }
 
 func (m *MockHttpsTransport) SetResponseMessages(responses [][]byte) {

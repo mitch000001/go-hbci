@@ -18,6 +18,7 @@ func TestPinTanDialogSyncClientSystemID(t *testing.T) {
 	dialog.transport = transport
 
 	syncResponseMessage := encryptedTestMessage(
+		"newDialogID",
 		"HIRMG:2:2:1+0100::Dialog beendet'",
 		"HIBPA:3:2:+12+280:10000000+Bank Name+3+1+201:210:220+0'",
 		"HISYN:4:3:8+newClientSystemID'",
@@ -25,7 +26,7 @@ func TestPinTanDialogSyncClientSystemID(t *testing.T) {
 		"HIUPD:6:4:8+12345::280:1000000+54321+EUR+Muster+Max+++HKTAN:1+HKKAZ:1'",
 	)
 
-	dialogEndResponseMessage := encryptedTestMessage("HIRMG:2:2:1+0020::Auftrag entgegengenommen'")
+	dialogEndResponseMessage := encryptedTestMessage("newDialogID", "HIRMG:2:2:1+0020::Auftrag entgegengenommen'")
 
 	transport.SetResponseMessages([][]byte{
 		syncResponseMessage,
@@ -86,6 +87,12 @@ func TestPinTanDialogSyncClientSystemID(t *testing.T) {
 		t.Fail()
 	}
 
+	dialogID = dialog.dialogID
+	if dialogID != "newDialogID" {
+		t.Logf("Expected dialogID to equal\n%q\n\tgot\n%q\n", "newDialogID", dialogID)
+		t.Fail()
+	}
+
 	accounts := dialog.Accounts
 
 	if len(accounts) == 0 {
@@ -113,7 +120,7 @@ func TestPinTanDialogSyncClientSystemID(t *testing.T) {
 	}
 
 	// message errors
-	syncResponseMessage = encryptedTestMessage("HIRMG:2:2:1+9000::Nachricht enthält Fehler'")
+	syncResponseMessage = encryptedTestMessage("ABCDE", "HIRMG:2:2:1+9000::Nachricht enthält Fehler'")
 
 	transport.SetResponseMessages([][]byte{
 		syncResponseMessage,
@@ -134,5 +141,42 @@ func TestPinTanDialogSyncClientSystemID(t *testing.T) {
 			t.Logf("Expected error to equal\n%q\n\tgot\n%q\n", expectedMessage, errMessage)
 			t.Fail()
 		}
+	}
+}
+
+func TestPinTanDialogInit(t *testing.T) {
+	transport := &MockHttpsTransport{}
+
+	url := "http://localhost"
+	clientID := "12345"
+	bankID := domain.BankId{280, "10000000"}
+	dialog := NewPinTanDialog(bankID, url, clientID)
+	dialog.SetPin("abcde")
+	dialog.transport = transport
+
+	dialogID := dialog.dialogID
+	if dialogID != initialDialogID {
+		t.Logf("Expected dialogID to equal\n%q\n\tgot\n%q\n", initialDialogID, dialogID)
+		t.Fail()
+	}
+
+	initResponse := encryptedTestMessage(
+		"newDialogID",
+		"HIRMG:2:2:1+0020::Auftrag entgegengenommen'",
+		"HIKIM:10:2+ec-Karte+Ihre neue ec-Karte liegt zur Abholung bereit.'",
+	)
+	transport.SetResponseMessage(initResponse)
+
+	err := dialog.Init()
+
+	if err != nil {
+		t.Logf("Expected no error, got %T:%v\n", err, err)
+		t.Fail()
+	}
+
+	dialogID = dialog.dialogID
+	if dialogID != "newDialogID" {
+		t.Logf("Expected dialogID to equal\n%q\n\tgot\n%q\n", "newDialogID", dialogID)
+		t.Fail()
 	}
 }

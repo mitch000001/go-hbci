@@ -1,6 +1,8 @@
 package segment
 
 import (
+	"fmt"
+
 	"github.com/mitch000001/go-hbci/domain"
 	"github.com/mitch000001/go-hbci/element"
 )
@@ -99,4 +101,22 @@ func (b *BankAnnouncementSegment) elements() []element.DataElement {
 		b.Subject,
 		b.Body,
 	}
+}
+
+func (b *BankAnnouncementSegment) UnmarshalHBCI(value []byte) error {
+	elements, err := ExtractElements(value)
+	if err != nil {
+		return err
+	}
+	if len(elements) != 3 {
+		return fmt.Errorf("Malformed marshaled value")
+	}
+	segment, err := SegmentFromHeaderBytes(elements[0], b)
+	if err != nil {
+		return err
+	}
+	b.Segment = segment
+	b.Subject = element.NewAlphaNumeric(string(elements[1]), 35)
+	b.Body = element.NewText(string(elements[2]), 2048)
+	return nil
 }
