@@ -1,8 +1,10 @@
 package message
 
 import (
+	"bytes"
 	"crypto/rand"
 	"fmt"
+	"strconv"
 
 	"github.com/mitch000001/go-hbci/domain"
 	"github.com/mitch000001/go-hbci/segment"
@@ -127,6 +129,27 @@ func (d *DecryptedMessage) FindSegment(segmentID string) []byte {
 
 func (d *DecryptedMessage) FindSegments(segmentID string) [][]byte {
 	return d.segmentExtractor.FindSegments(segmentID)
+}
+
+func (d *DecryptedMessage) SegmentNumber(segmentID string) int {
+	segmentBytes := d.segmentExtractor.FindSegment(segmentID)
+	if segmentBytes == nil {
+		return -1
+	}
+	elements, err := segment.ExtractElements(segmentBytes)
+	if err != nil {
+		return -1
+	}
+	if len(elements) < 1 {
+		return -1
+	}
+	header := bytes.Split(elements[0], []byte(":"))
+	numStr := header[1]
+	num, err := strconv.Atoi(string(numStr))
+	if err != nil {
+		return -1
+	}
+	return num
 }
 
 func (d *DecryptedMessage) Acknowledgements() []domain.Acknowledgement {

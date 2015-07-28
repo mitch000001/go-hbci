@@ -18,6 +18,7 @@ type Message interface {
 	MessageEnd() *segment.MessageEndSegment
 	FindSegment(segmentID string) []byte
 	FindSegments(segmentID string) [][]byte
+	SegmentNumber(segmentID string) int
 }
 
 type ClientMessage interface {
@@ -202,6 +203,14 @@ func (b *BasicMessage) FindSegments(segmentID string) [][]byte {
 	return segments
 }
 
+func (b *BasicMessage) SegmentNumber(segmentID string) int {
+	idx := -1
+	//for i, segment := range b.HBCIMessage.HBCISegments() {
+	//if
+	//}
+	return idx
+}
+
 func NewBasicSignedMessage(message *BasicMessage) *BasicSignedMessage {
 	b := &BasicSignedMessage{
 		message: message,
@@ -240,10 +249,6 @@ func (b *BasicSignedMessage) Encrypt(provider CryptoProvider) (*EncryptedMessage
 	return b.message.Encrypt(provider)
 }
 
-type clientMessage interface {
-	jobs() []segment.Segment
-}
-
 type bankMessage interface {
 	dataSegments() []segment.Segment
 }
@@ -253,6 +258,10 @@ type basicBankMessage struct {
 	bankMessage
 	MessageAcknowledgements *segment.MessageAcknowledgement
 	SegmentAcknowledgements *segment.SegmentAcknowledgement
+}
+
+type clientMessage interface {
+	jobs() []segment.Segment
 }
 
 func NewBasicClientMessage(clientMessage clientMessage) *BasicClientMessage {
