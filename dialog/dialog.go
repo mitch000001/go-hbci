@@ -74,6 +74,14 @@ func (d *dialog) SetClientSystemID(clientSystemID string) {
 	d.cryptoProvider.SetClientSystemID(d.ClientSystemID)
 }
 
+func (d *dialog) Balances(allAccounts bool) ([]domain.AccountBalance, error) {
+	err := d.init()
+	if err != nil {
+		return nil, err
+	}
+	return nil, fmt.Errorf("TODO")
+}
+
 func (d *dialog) SyncClientSystemID() (string, error) {
 	syncMessage := new(message.SynchronisationMessage)
 	messageNum := d.nextMessageNumber()
@@ -242,6 +250,17 @@ func (d *dialog) End() error {
 		return fmt.Errorf("DialogEnd: Institute returned errors:\n%s", strings.Join(errors, "\n"))
 	}
 
+	return nil
+}
+
+func (d *dialog) init() error {
+	if d.ClientSystemID == initialClientSystemID {
+		id, err := d.SyncClientSystemID()
+		if err != nil {
+			return err
+		}
+		d.ClientSystemID = id
+	}
 	return nil
 }
 
