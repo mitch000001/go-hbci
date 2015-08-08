@@ -79,6 +79,50 @@ func (d *dialog) Balances(allAccounts bool) ([]domain.AccountBalance, error) {
 	if err != nil {
 		return nil, err
 	}
+	err = d.Init()
+	if err != nil {
+		return nil, err
+	}
+	messageNum := d.nextMessageNumber()
+	defer d.End()
+	account := *d.Accounts[len(d.Accounts)-1].AccountConnection
+	fmt.Printf("Account: %q\n", account)
+	accountBalanceRequest := segment.NewAccountBalanceRequestSegment(account, allAccounts)
+	clientMessage := message.NewHBCIClientMessage(accountBalanceRequest)
+	clientMessage.Header = segment.NewMessageHeaderSegment(-1, 220, d.dialogID, messageNum)
+	clientMessage.End = segment.NewMessageEndSegment(8, messageNum)
+	signedMessage, err := clientMessage.Sign(d.signatureProvider)
+	if err != nil {
+		return nil, err
+	}
+	encMessage, err := signedMessage.Encrypt(d.cryptoProvider)
+	if err != nil {
+		return nil, err
+	}
+	decryptedMessage, err := d.request(encMessage)
+	if err != nil {
+		return nil, err
+	}
+	var errors []string
+	acknowledgements := decryptedMessage.Acknowledgements()
+	for _, ack := range acknowledgements {
+		if ack.IsWarning() {
+			fmt.Printf("%v\n", ack)
+		}
+		if ack.IsError() {
+			errors = append(errors, ack.String())
+		}
+	}
+	if len(errors) > 0 {
+		return nil, fmt.Errorf("Institute returned errors:\n%s", strings.Join(errors, "\n"))
+	}
+	balanceResponse := decryptedMessage.FindSegment("HISAL")
+	if balanceResponse != nil {
+		return nil, nil
+	} else {
+		return nil, fmt.Errorf("Malformed response: expected HISAL segment")
+	}
+
 	return nil, fmt.Errorf("TODO")
 }
 
@@ -206,6 +250,38 @@ func (d *dialog) Init() error {
 	}
 	d.dialogID = messageHeader.DialogID.Val()
 
+	bankParamData := decryptedMessage.FindSegment("HIBPA")
+	if bankParamData != nil {
+		paramSegment := &segment.CommonBankParameterSegment{}
+		err = paramSegment.UnmarshalHBCI(bankParamData)
+		if err != nil {
+			return fmt.Errorf("Error while unmarshaling Bank Parameter Data: %v", err)
+		}
+		d.BankParameterData = paramSegment.BankParameterData()
+	}
+
+	userParamData := decryptedMessage.FindSegment("HIUPA")
+	if userParamData != nil {
+		paramSegment := &segment.CommonUserParameterDataSegment{}
+		err = paramSegment.UnmarshalHBCI(userParamData)
+		if err != nil {
+			return fmt.Errorf("Error while unmarshaling User Parameter Data: %v", err)
+		}
+		d.UserParameterData = paramSegment.UserParameterData()
+	}
+
+	accountData := decryptedMessage.FindSegments("HIUPD")
+	if accountData != nil {
+		for _, acc := range accountData {
+			infoSegment := &segment.AccountInformationSegment{}
+			err = infoSegment.UnmarshalHBCI(acc)
+			if err != nil {
+				return fmt.Errorf("Error while unmarshaling Accounts: %v", err)
+			}
+			d.Accounts = append(d.Accounts, infoSegment.Account())
+		}
+	}
+
 	bankInfoMessageBytes := decryptedMessage.FindSegment("HIKIM")
 	fmt.Printf("INFO:\n%q\n", bankInfoMessageBytes)
 
@@ -264,8 +340,8 @@ func (d *dialog) init() error {
 	return nil
 }
 
-func (d *dialog) request(message message.ClientMessage) (message.BankMessage, error) {
-	marshaledMessage, err := message.MarshalHBCI()
+func (d *dialog) request(clientMessage message.ClientMessage) (message.BankMessage, error) {
+	marshaledMessage, err := clientMessage.MarshalHBCI()
 	if err != nil {
 		return nil, err
 	}
@@ -279,18 +355,30 @@ func (d *dialog) request(message message.ClientMessage) (message.BankMessage, er
 	if err != nil {
 		return nil, err
 	}
+	fmt.Printf("Request: %q\n", request.MarshaledMessage)
+	fmt.Printf("Response: %q\n", response.MarshaledResponse)
 
-	encMessage, err := extractEncryptedMessage(response)
-	if err != nil {
-		return nil, err
+	var bankMessage message.BankMessage
+	if response.IsEncrypted() {
+		encMessage, err := extractEncryptedMessage(response)
+		if err != nil {
+			return nil, err
+		}
+
+		decryptedMessage, err := encMessage.Decrypt(d.cryptoProvider)
+		if err != nil {
+			return nil, fmt.Errorf("Error while decrypting message: %v", err)
+		}
+		bankMessage = decryptedMessage
+	} else {
+		decryptedMessage, err := extractUnencryptedMessage(response)
+		if err != nil {
+			return nil, err
+		}
+		bankMessage = decryptedMessage
 	}
 
-	decryptedMessage, err := encMessage.Decrypt(d.cryptoProvider)
-	if err != nil {
-		return nil, fmt.Errorf("Error while decrypting message: %v", err)
-	}
-
-	return decryptedMessage, err
+	return bankMessage, err
 }
 
 func extractEncryptedMessage(response *transport.Response) (*message.EncryptedMessage, error) {
@@ -317,9 +405,27 @@ func extractEncryptedMessage(response *transport.Response) (*message.EncryptedMe
 		}
 		encMessage.EncryptedData = encSegment
 	} else {
-		return nil, fmt.Errorf("Malformed response: missing encrypted data")
+		return nil, fmt.Errorf("Malformed response: missing encrypted data: \n%q", response)
 	}
 	return encMessage, nil
+}
+
+func extractUnencryptedMessage(response *transport.Response) (*message.DecryptedMessage, error) {
+	messageHeader := response.FindSegment("HNHBK")
+	if messageHeader == nil {
+		return nil, fmt.Errorf("Malformed response: missing Message Header")
+	}
+	header := &segment.MessageHeaderSegment{}
+	err := header.UnmarshalHBCI(messageHeader)
+	if err != nil {
+		return nil, fmt.Errorf("Error while unmarshaling message header: %v", err)
+	}
+	// TODO: parse messageEnd
+	decryptedMessage, err := message.NewDecryptedMessage(header, nil, response.MarshaledResponse)
+	if err != nil {
+		return nil, fmt.Errorf("Error while unmarshaling unencrypted data: %v", err)
+	}
+	return decryptedMessage, nil
 }
 
 func (d *dialog) nextMessageNumber() int {

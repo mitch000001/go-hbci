@@ -43,6 +43,26 @@ type SignedHBCIMessage interface {
 	SetSignatureEnd(*segment.SignatureEndSegment)
 }
 
+func NewHBCIMessage(segments ...segment.Segment) HBCIMessage {
+	return hbciSegments(segments)
+}
+
+type hbciSegments []segment.Segment
+
+func (h hbciSegments) HBCISegments() []segment.Segment {
+	return h
+}
+
+func NewHBCIClientMessage(segments ...segment.Segment) *BasicClientMessage {
+	return NewBasicClientMessage(hbciSegmentClientMessage(segments))
+}
+
+type hbciSegmentClientMessage []segment.Segment
+
+func (h hbciSegmentClientMessage) jobs() []segment.Segment {
+	return h
+}
+
 func NewBasicMessageWithHeaderAndEnd(header *segment.MessageHeaderSegment, end *segment.MessageEndSegment, message HBCIMessage) *BasicMessage {
 	b := &BasicMessage{
 		Header:      header,

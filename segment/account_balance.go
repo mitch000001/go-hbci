@@ -7,6 +7,15 @@ import (
 	"github.com/mitch000001/go-hbci/element"
 )
 
+func NewAccountBalanceRequestSegment(account domain.AccountConnection, allAccounts bool) *AccountBalanceRequestSegment {
+	a := &AccountBalanceRequestSegment{
+		AccountConnection: element.NewAccountConnection(account),
+		AllAccounts:       element.NewBoolean(allAccounts),
+	}
+	a.Segment = NewBasicSegment(1, a)
+	return a
+}
+
 type AccountBalanceRequestSegment struct {
 	Segment
 	AccountConnection *element.AccountConnectionDataElement

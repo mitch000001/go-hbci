@@ -63,7 +63,7 @@ func ReadResponse(marshaledMessage []byte, request *Request) (*Response, error) 
 	}
 	response := &Response{
 		Request:           request,
-		marshaledResponse: marshaledMessage,
+		MarshaledResponse: marshaledMessage,
 		SegmentExtractor:  extractor,
 	}
 	return response, nil
@@ -72,9 +72,9 @@ func ReadResponse(marshaledMessage []byte, request *Request) (*Response, error) 
 type Response struct {
 	*segment.SegmentExtractor
 	Request           *Request
-	marshaledResponse []byte
+	MarshaledResponse []byte
 }
 
 func (h *Response) IsEncrypted() bool {
-	return false
+	return h.FindSegment("HNVSK") != nil
 }
