@@ -1,7 +1,6 @@
 package element
 
 import (
-	"bytes"
 	"fmt"
 	"strconv"
 
@@ -55,7 +54,10 @@ func (a *AcknowledgementDataElement) GroupDataElements() []DataElement {
 
 func (a *AcknowledgementDataElement) UnmarshalHBCI(value []byte) error {
 	acknowledgement := domain.Acknowledgement{}
-	chunks := bytes.Split(value, []byte(":"))
+	chunks, err := ExtractElements(value)
+	if err != nil {
+		return err
+	}
 	if len(chunks) < 3 {
 		return fmt.Errorf("Malformed acknowledgment to unmarshal")
 	}
@@ -64,12 +66,12 @@ func (a *AcknowledgementDataElement) UnmarshalHBCI(value []byte) error {
 		return fmt.Errorf("%T: Malformed code", a)
 	}
 	acknowledgement.Code = code
-	acknowledgement.ReferenceDataElement = string(chunks[1])
-	acknowledgement.Text = string(chunks[2])
+	acknowledgement.ReferenceDataElement = toUtf8(chunks[1])
+	acknowledgement.Text = toUtf8(chunks[2])
 	if len(chunks) > 3 {
 		params := make([]string, len(chunks[3:]))
 		for i, chunk := range chunks[3:] {
-			params[i] = string(chunk)
+			params[i] = toUtf8(chunk)
 		}
 		acknowledgement.Params = params
 	}
@@ -98,13 +100,16 @@ func (p *ParamsDataElement) Val() []string {
 }
 
 func (p *ParamsDataElement) UnmarshalHBCI(value []byte) error {
-	elements := bytes.Split(value, []byte(":"))
+	elements, err := ExtractElements(value)
+	if err != nil {
+		return nil
+	}
 	if len(elements) > 10 {
 		return fmt.Errorf("Malformed params")
 	}
 	dataElements := make([]DataElement, len(elements))
 	for i, elem := range elements {
-		dataElements[i] = NewAlphaNumeric(string(elem), 35)
+		dataElements[i] = NewAlphaNumeric(toUtf8(elem), 35)
 	}
 	p.arrayElementGroup = NewArrayElementGroup(AcknowlegdementParamsGDEG, 10, 10, dataElements...)
 	return nil

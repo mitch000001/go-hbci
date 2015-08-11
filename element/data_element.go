@@ -18,6 +18,7 @@ type DataElement interface {
 	IsValid() bool
 	Length() int
 	String() string
+	MarshalHBCI() ([]byte, error)
 	UnmarshalHBCI([]byte) error
 }
 
@@ -155,6 +156,9 @@ func (d *dataElement) Length() int           { return len(d.String()) }
 func (d *dataElement) String() string        { return fmt.Sprintf("%v", d.val) }
 func (d *dataElement) Optional() bool        { return d.optional }
 func (d *dataElement) SetOptional()          { d.optional = true }
+func (d *dataElement) MarshalHBCI() ([]byte, error) {
+	return toIso8859_1(d.String()), nil
+}
 func (d *dataElement) UnmarshalHBCI(value []byte) error {
 	return fmt.Errorf("Not implemented")
 }
@@ -221,6 +225,20 @@ func (g *elementGroup) String() string {
 		}
 	}
 	return strings.Join(elementStrings, ":")
+}
+
+func (g *elementGroup) MarshalHBCI() ([]byte, error) {
+	elementBytes := make([][]byte, len(g.elements()))
+	for i, e := range g.elements() {
+		if !reflect.ValueOf(e).IsNil() {
+			marshaled, err := e.MarshalHBCI()
+			if err != nil {
+				return nil, err
+			}
+			elementBytes[i] = marshaled
+		}
+	}
+	return bytes.Join(elementBytes, []byte(":")), nil
 }
 
 func (g *elementGroup) UnmarshalHBCI(value []byte) error {
@@ -292,6 +310,23 @@ func unescape(in string) string {
 	return replacer.Replace(in)
 }
 
+func toUtf8(iso8859_1_buf []byte) string {
+	buf := make([]rune, len(iso8859_1_buf))
+	for i, b := range iso8859_1_buf {
+		buf[i] = rune(b)
+	}
+	return string(buf)
+}
+
+func toIso8859_1(utf8String string) []byte {
+	buf := make([]byte, 0)
+	runes := bytes.Runes([]byte(utf8String))
+	for _, r := range runes {
+		buf = append(buf, byte(r))
+	}
+	return buf
+}
+
 func NewAlphaNumeric(val string, maxLength int) *AlphaNumericDataElement {
 	return &AlphaNumericDataElement{&dataElement{val, AlphaNumericDE, maxLength, false}}
 }
@@ -314,8 +349,14 @@ func (a *AlphaNumericDataElement) String() string {
 	return escape(a.dataElement.String())
 }
 
+func (a *AlphaNumericDataElement) MarshalHBCI() ([]byte, error) {
+	val := toIso8859_1(escape(a.dataElement.String()))
+	return val, nil
+}
+
 func (a *AlphaNumericDataElement) UnmarshalHBCI(value []byte) error {
-	unescaped := unescape(string(value))
+	decoded := toUtf8(value)
+	unescaped := unescape(decoded)
 	*a = AlphaNumericDataElement{&dataElement{unescaped, AlphaNumericDE, len(unescaped), false}}
 	return nil
 }
@@ -333,8 +374,14 @@ func (a *TextDataElement) String() string {
 	return escape(a.dataElement.String())
 }
 
+func (a *TextDataElement) MarshalHBCI() ([]byte, error) {
+	val := toIso8859_1(escape(a.dataElement.String()))
+	return val, nil
+}
+
 func (a *TextDataElement) UnmarshalHBCI(value []byte) error {
-	unescaped := unescape(string(value))
+	decoded := toUtf8(value)
+	unescaped := unescape(string(decoded))
 	*a = TextDataElement{&dataElement{unescaped, TextDE, len(unescaped), false}}
 	return nil
 }
@@ -352,6 +399,10 @@ func (d *DigitDataElement) Val() int { return d.val.(int) }
 func (d *DigitDataElement) String() string {
 	fmtString := fmt.Sprintf("%%0%dd", d.maxLength)
 	return fmt.Sprintf(fmtString, d.Val())
+}
+
+func (d *DigitDataElement) MarshalHBCI() ([]byte, error) {
+	return toIso8859_1(d.String()), nil
 }
 
 func (d *DigitDataElement) UnmarshalHBCI(value []byte) error {
@@ -373,6 +424,10 @@ type NumberDataElement struct {
 
 func (n *NumberDataElement) Val() int { return n.val.(int) }
 
+func (n *NumberDataElement) MarshalHBCI() ([]byte, error) {
+	return toIso8859_1(n.String()), nil
+}
+
 func (n *NumberDataElement) UnmarshalHBCI(value []byte) error {
 	val, err := strconv.Atoi(string(value))
 	if err != nil {
@@ -391,6 +446,7 @@ type FloatDataElement struct {
 }
 
 func (f *FloatDataElement) Val() float64 { return f.val.(float64) }
+
 func (f *FloatDataElement) String() string {
 	str := strconv.FormatFloat(f.Val(), 'f', -1, 64)
 	str = strings.Replace(str, ".", ",", 1)
@@ -399,6 +455,11 @@ func (f *FloatDataElement) String() string {
 	}
 	return str
 }
+
+func (f *FloatDataElement) MarshalHBCI() ([]byte, error) {
+	return toIso8859_1(f.String()), nil
+}
+
 func (f *FloatDataElement) UnmarshalHBCI(value []byte) error {
 	str := strings.Replace(string(value), ",", ".", 1)
 	val, err := strconv.ParseFloat(str, 64)
@@ -445,6 +506,14 @@ func (b *BinaryDataElement) String() string {
 	return fmt.Sprintf("@%d@%s", len(b.Val()), b.Val())
 }
 
+func (b *BinaryDataElement) MarshalHBCI() ([]byte, error) {
+	var buf []byte
+	binaryFormat := fmt.Sprintf("@%d@", len(b.Val()))
+	buf = append(buf, toIso8859_1(binaryFormat)...)
+	buf = append(buf, b.Val()...)
+	return buf, nil
+}
+
 func (b *BinaryDataElement) UnmarshalHBCI(value []byte) error {
 	buf := bytes.NewBuffer(value)
 	r, _, err := buf.ReadRune()
@@ -488,6 +557,10 @@ func (b *BooleanDataElement) String() string {
 	}
 }
 
+func (b *BooleanDataElement) MarshalHBCI() ([]byte, error) {
+	return toIso8859_1(b.String()), nil
+}
+
 func (b *BooleanDataElement) UnmarshalHBCI(value []byte) error {
 	val := string(value)
 	if val == "J" {
@@ -514,6 +587,10 @@ func (d *DateDataElement) Val() time.Time {
 
 func (d *DateDataElement) String() string {
 	return d.Val().Format("20060102")
+}
+
+func (d *DateDataElement) MarshalHBCI() ([]byte, error) {
+	return toIso8859_1(d.String()), nil
 }
 
 func (d *DateDataElement) UnmarshalHBCI(value []byte) error {
@@ -558,6 +635,10 @@ func (t *TimeDataElement) Val() time.Time {
 
 func (t *TimeDataElement) String() string {
 	return t.Val().Format("150405")
+}
+
+func (t *TimeDataElement) MarshalHBCI() ([]byte, error) {
+	return toIso8859_1(t.String()), nil
 }
 
 func (t *TimeDataElement) UnmarshalHBCI(value []byte) error {

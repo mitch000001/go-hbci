@@ -102,6 +102,88 @@ func TestNewAlphaNumericDataElement(t *testing.T) {
 	}
 }
 
+func TestAlphaNumericDataElementMarshalHBCI(t *testing.T) {
+	type testData struct {
+		unmarshaled string
+		marshaled   []byte
+		err         error
+	}
+	tests := []testData{
+		{
+			"abc",
+			toIso8859_1("abc"),
+			nil,
+		},
+		{
+			"ab:c",
+			toIso8859_1("ab?:c"),
+			nil,
+		},
+		{
+			"abüc",
+			toIso8859_1("abüc"),
+			nil,
+		},
+	}
+	for _, test := range tests {
+		element := NewAlphaNumeric(test.unmarshaled, len(test.unmarshaled))
+
+		marshaled, err := element.MarshalHBCI()
+
+		if !reflect.DeepEqual(test.err, err) {
+			t.Logf("Expected error to equal\n%v\n\tgot\n%v\n", test.err, err)
+			t.Fail()
+		}
+
+		if !bytes.Equal(test.marshaled, marshaled) {
+			t.Logf("Expected unmarshaled value to equal\n%q\n\tgot\n%q\n", test.marshaled, marshaled)
+			t.Fail()
+		}
+	}
+}
+
+func TestAlphaNumericDataElementUnmarshalHBCI(t *testing.T) {
+	type testData struct {
+		marshaled   []byte
+		unmarshaled string
+		err         error
+	}
+	tests := []testData{
+		{
+			toIso8859_1("abc"),
+			NewAlphaNumeric("abc", 3).Val(),
+			nil,
+		},
+		{
+			toIso8859_1("ab?:c"),
+			NewAlphaNumeric("ab:c", 3).Val(),
+			nil,
+		},
+		{
+			toIso8859_1("abüc"),
+			NewAlphaNumeric("abüc", 3).Val(),
+			nil,
+		},
+	}
+	for _, test := range tests {
+		element := &AlphaNumericDataElement{}
+
+		err := element.UnmarshalHBCI(test.marshaled)
+
+		if !reflect.DeepEqual(test.err, err) {
+			t.Logf("Expected error to equal\n%v\n\tgot\n%v\n", test.err, err)
+			t.Fail()
+		}
+
+		actual := element.Val()
+
+		if test.unmarshaled != actual {
+			t.Logf("Expected unmarshaled value to equal\n%q\n\tgot\n%q\n", test.unmarshaled, actual)
+			t.Fail()
+		}
+	}
+}
+
 type testDigitDataElementData struct {
 	in          int
 	inMaxLength int

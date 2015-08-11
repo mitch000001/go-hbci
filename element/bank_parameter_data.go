@@ -127,7 +127,7 @@ func (s *SupportedLanguagesDataElement) UnmarshalHBCI(value []byte) error {
 	}
 	languages := make([]DataElement, len(elements))
 	for i, elem := range elements {
-		lang, err := strconv.Atoi(string(elem))
+		lang, err := strconv.Atoi(toUtf8(elem))
 		if err != nil {
 			return err
 		}

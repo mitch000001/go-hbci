@@ -112,47 +112,91 @@ func (b *BasicMessage) SetNumbers() {
 	b.End.SetNumber(num)
 }
 
-func (b *BasicMessage) SetSize() {
+func (b *BasicMessage) SetSize() error {
 	if b.HBCIMessage == nil {
-		panic(fmt.Errorf("HBCIMessage must be set"))
+		return fmt.Errorf("HBCIMessage must be set")
 	}
 	var buffer bytes.Buffer
-	buffer.WriteString(b.Header.String())
+	headerBytes, err := b.Header.MarshalHBCI()
+	if err != nil {
+		return err
+	}
+	buffer.Write(headerBytes)
 	if b.SignatureBegin != nil {
-		buffer.WriteString(b.SignatureBegin.String())
+		sigBytes, err := b.SignatureBegin.MarshalHBCI()
+		if err != nil {
+			return err
+		}
+		buffer.Write(sigBytes)
 	}
 	for _, segment := range b.HBCIMessage.HBCISegments() {
 		if !reflect.ValueOf(segment).IsNil() {
-			buffer.WriteString(segment.String())
+			segBytes, err := segment.MarshalHBCI()
+			if err != nil {
+				return err
+			}
+			buffer.Write(segBytes)
 		}
 	}
 	if b.SignatureEnd != nil {
-		buffer.WriteString(b.SignatureEnd.String())
+		sigEndBytes, err := b.SignatureEnd.MarshalHBCI()
+		if err != nil {
+			return err
+		}
+		buffer.Write(sigEndBytes)
 	}
-	buffer.WriteString(b.End.String())
+	endBytes, err := b.End.MarshalHBCI()
+	if err != nil {
+		return err
+	}
+	buffer.Write(endBytes)
 	b.Header.SetSize(buffer.Len())
+	return nil
 }
 
 func (b *BasicMessage) MarshalHBCI() ([]byte, error) {
 	if b.HBCIMessage == nil {
-		panic(fmt.Errorf("HBCIMessage must be set"))
+		return nil, fmt.Errorf("HBCIMessage must be set")
 	}
-	b.SetSize()
+	err := b.SetSize()
+	if err != nil {
+		return nil, err
+	}
 	if len(b.marshaledContent) == 0 {
 		var buffer bytes.Buffer
-		buffer.WriteString(b.Header.String())
+		headerBytes, err := b.Header.MarshalHBCI()
+		if err != nil {
+			return nil, err
+		}
+		buffer.Write(headerBytes)
 		if b.SignatureBegin != nil {
-			buffer.WriteString(b.SignatureBegin.String())
+			sigBytes, err := b.SignatureBegin.MarshalHBCI()
+			if err != nil {
+				return nil, err
+			}
+			buffer.Write(sigBytes)
 		}
 		for _, segment := range b.HBCIMessage.HBCISegments() {
 			if !reflect.ValueOf(segment).IsNil() {
-				buffer.WriteString(segment.String())
+				segBytes, err := segment.MarshalHBCI()
+				if err != nil {
+					return nil, err
+				}
+				buffer.Write(segBytes)
 			}
 		}
 		if b.SignatureEnd != nil {
-			buffer.WriteString(b.SignatureEnd.String())
+			sigEndBytes, err := b.SignatureEnd.MarshalHBCI()
+			if err != nil {
+				return nil, err
+			}
+			buffer.Write(sigEndBytes)
 		}
-		buffer.WriteString(b.End.String())
+		endBytes, err := b.End.MarshalHBCI()
+		if err != nil {
+			return nil, err
+		}
+		buffer.Write(endBytes)
 		b.marshaledContent = buffer.Bytes()
 	}
 	return b.marshaledContent, nil
@@ -172,21 +216,33 @@ func (b *BasicMessage) Sign(provider SignatureProvider) (*BasicSignedMessage, er
 
 func (b *BasicMessage) Encrypt(provider CryptoProvider) (*EncryptedMessage, error) {
 	if b.HBCIMessage == nil {
-		panic(fmt.Errorf("HBCIMessage must be set"))
+		return nil, fmt.Errorf("HBCIMessage must be set")
 	}
-	var buffer bytes.Buffer
+	var messageBytes []byte
 	if b.SignatureBegin != nil {
-		buffer.WriteString(b.SignatureBegin.String())
+		sigBytes, err := b.SignatureBegin.MarshalHBCI()
+		if err != nil {
+			return nil, err
+		}
+		messageBytes = append(messageBytes, sigBytes...)
 	}
 	for _, segment := range b.HBCIMessage.HBCISegments() {
 		if !reflect.ValueOf(segment).IsNil() {
-			buffer.WriteString(segment.String())
+			segBytes, err := segment.MarshalHBCI()
+			if err != nil {
+				return nil, err
+			}
+			messageBytes = append(messageBytes, segBytes...)
 		}
 	}
 	if b.SignatureEnd != nil {
-		buffer.WriteString(b.SignatureEnd.String())
+		sigEndBytes, err := b.SignatureEnd.MarshalHBCI()
+		if err != nil {
+			return nil, err
+		}
+		messageBytes = append(messageBytes, sigEndBytes...)
 	}
-	encryptedMessage, err := provider.Encrypt(buffer.Bytes())
+	encryptedMessage, err := provider.Encrypt(messageBytes)
 	if err != nil {
 		return nil, err
 	}
