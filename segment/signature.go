@@ -69,6 +69,10 @@ func (s *SignatureHeaderSegment) id() string           { return "HNSHK" }
 func (s *SignatureHeaderSegment) referencedId() string { return "" }
 func (s *SignatureHeaderSegment) sender() string       { return senderBoth }
 
+func (s *SignatureHeaderSegment) SetSecurityFunction(securityFn string) {
+	s.SecurityFunction = element.NewAlphaNumeric(securityFn, 3)
+}
+
 func (s *SignatureHeaderSegment) elements() []element.DataElement {
 	return []element.DataElement{
 		s.SecurityFunction,

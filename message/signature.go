@@ -15,6 +15,7 @@ import (
 )
 
 type SignatureProvider interface {
+	SetSecurityFunction(securityFn string)
 	SetClientSystemID(clientSystemId string)
 	SignMessage(SignedHBCIMessage) error
 }
@@ -44,12 +45,18 @@ func generateControlReference(key domain.Key) string {
 
 func NewPinTanSignatureProvider(key *domain.PinKey, clientSystemId string) SignatureProvider {
 	controlReference := generateControlReference(key)
-	return &PinTanSignatureProvider{key: key, clientSystemId: clientSystemId, controlReference: controlReference}
+	return &PinTanSignatureProvider{
+		key:              key,
+		clientSystemId:   clientSystemId,
+		controlReference: controlReference,
+		securityFn:       "999",
+	}
 }
 
 type PinTanSignatureProvider struct {
 	key              *domain.PinKey
 	clientSystemId   string
+	securityFn       string
 	controlReference string
 }
 
@@ -57,8 +64,13 @@ func (p *PinTanSignatureProvider) SetClientSystemID(clientSystemId string) {
 	p.clientSystemId = clientSystemId
 }
 
+func (p *PinTanSignatureProvider) SetSecurityFunction(securityFn string) {
+	p.securityFn = securityFn
+}
+
 func (p *PinTanSignatureProvider) SignMessage(signedMessage SignedHBCIMessage) error {
 	signatureHeader := segment.NewPinTanSignatureHeaderSegment(p.controlReference, p.clientSystemId, p.key.KeyName())
+	signatureHeader.SetSecurityFunction(p.securityFn)
 	signatureEnd := segment.NewSignatureEndSegment(0, p.controlReference)
 	signatureEnd.SetPinTan(p.key.Pin(), "")
 	signedMessage.SetSignatureHeader(signatureHeader)
@@ -69,18 +81,28 @@ func (p *PinTanSignatureProvider) SignMessage(signedMessage SignedHBCIMessage) e
 
 func NewRDHSignatureProvider(signingKey *domain.RSAKey, signatureId int) SignatureProvider {
 	controlReference := generateControlReference(signingKey)
-	return &RDHSignatureProvider{signingKey: signingKey, controlReference: controlReference, signatureId: signatureId}
+	return &RDHSignatureProvider{
+		signingKey:       signingKey,
+		controlReference: controlReference,
+		signatureId:      signatureId,
+		securityFn:       "1",
+	}
 }
 
 type RDHSignatureProvider struct {
 	signingKey       *domain.RSAKey
 	clientSystemId   string
 	controlReference string
+	securityFn       string
 	signatureId      int
 }
 
 func (r *RDHSignatureProvider) SetClientSystemID(clientSystemId string) {
 	r.clientSystemId = clientSystemId
+}
+
+func (r *RDHSignatureProvider) SetSecurityFunction(securityFn string) {
+	r.securityFn = securityFn
 }
 
 func (r *RDHSignatureProvider) SignMessage(message SignedHBCIMessage) error {

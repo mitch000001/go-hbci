@@ -55,6 +55,7 @@ type dialog struct {
 	Accounts          []domain.AccountInformation
 	messageCount      int
 	dialogID          string
+	securityFn        string
 	signatureProvider message.SignatureProvider
 	cryptoProvider    message.CryptoProvider
 	BankParameterData domain.BankParameterData
@@ -72,6 +73,11 @@ func (d *dialog) SetClientSystemID(clientSystemID string) {
 	d.ClientSystemID = clientSystemID
 	d.signatureProvider.SetClientSystemID(d.ClientSystemID)
 	d.cryptoProvider.SetClientSystemID(d.ClientSystemID)
+}
+
+func (d *dialog) SetSecurityFunction(securityFn string) {
+	d.securityFn = securityFn
+	d.signatureProvider.SetSecurityFunction(d.securityFn)
 }
 
 func (d *dialog) Balances(allAccounts bool) ([]domain.AccountBalance, error) {
@@ -272,6 +278,14 @@ func (d *dialog) Init() error {
 	errors := make([]string, 0)
 	acknowledgements := decryptedMessage.Acknowledgements()
 	for _, ack := range acknowledgements {
+		if ack.Code == 3920 {
+			supportedSecurityFns := ack.Params
+			if len(supportedSecurityFns) != 0 {
+				fmt.Printf("Supported securityFunctions: %q\n", supportedSecurityFns)
+				// TODO: proper handling of each case, see FINTS3.0 docu
+				//d.SetSecurityFunction(supportedSecurityFns[0])
+			}
+		}
 		if ack.IsError() {
 			errors = append(errors, ack.String())
 		}
