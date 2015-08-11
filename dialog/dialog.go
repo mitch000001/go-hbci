@@ -391,8 +391,6 @@ func (d *dialog) request(clientMessage message.ClientMessage) (message.BankMessa
 	if err != nil {
 		return nil, err
 	}
-	fmt.Printf("Request: %q\n", request.MarshaledMessage)
-	fmt.Printf("Response: %q\n", response.MarshaledResponse)
 
 	var bankMessage message.BankMessage
 	if response.IsEncrypted() {
