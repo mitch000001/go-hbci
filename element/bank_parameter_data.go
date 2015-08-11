@@ -36,6 +36,11 @@ func (s *SupportedSecurityMethodDataElement) GroupDataElements() []DataElement {
 	}
 }
 
+func (s *SupportedSecurityMethodDataElement) UnmarshalHBCI(value []byte) error {
+	s.DataElement = NewDataElementGroup(SupportedSecurityMethodDEG, 2, s)
+	return s.DataElement.UnmarshalHBCI(value)
+}
+
 func NewSecurityMethodVersions(min, max int, versions ...int) *SecurityMethodVersionsDataElement {
 	versionDEs := make([]DataElement, len(versions))
 	for i, version := range versions {
@@ -52,6 +57,12 @@ type SecurityMethodVersionsDataElement struct {
 
 func (s *SecurityMethodVersionsDataElement) Elements() []DataElement {
 	return s.arrayElementGroup.array
+}
+
+func (s *SecurityMethodVersionsDataElement) UnmarshalHBCI(value []byte) error {
+	dataElements := make([]DataElement, 9)
+	s.arrayElementGroup = NewArrayElementGroup(SecurityMethodVersionGDEG, 1, 9, dataElements...)
+	return s.arrayElementGroup.UnmarshalHBCI(value)
 }
 
 func (s *SecurityMethodVersionsDataElement) Versions() []*NumberDataElement {
