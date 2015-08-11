@@ -346,6 +346,19 @@ func (d *dialog) parseBankParameterData(bankMessage message.BankMessage) error {
 		}
 		d.BankParameterData = paramSegment.BankParameterData()
 	}
+	pinTanTransactions := bankMessage.FindSegment("DIPINS")
+	if pinTanTransactions != nil {
+		pinTanTransactionSegment := &segment.PinTanBusinessTransactionParamsSegment{}
+		err := pinTanTransactionSegment.UnmarshalHBCI(pinTanTransactions)
+		if err != nil {
+			return fmt.Errorf("Error while unmarshaling PinTan Segment Parameter Data: %v", err)
+		}
+		pinTransactions := make(map[string]bool)
+		for _, transaction := range pinTanTransactionSegment.PinTanBusinessTransactions() {
+			pinTransactions[transaction.SegmentID] = transaction.NeedsTan
+		}
+		d.BankParameterData.PinTanBusinessTransactions = pinTransactions
+	}
 	return nil
 }
 

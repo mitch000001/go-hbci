@@ -203,3 +203,37 @@ func (b *BusinessTransactionParamsSegment) UnmarshalHBCI(value []byte) error {
 	return nil
 }
 
+type PinTanBusinessTransactionParamsSegment struct {
+	*BusinessTransactionParamsSegment
+}
+
+func (p *PinTanBusinessTransactionParamsSegment) version() int { return 1 }
+func (p *PinTanBusinessTransactionParamsSegment) id() string   { return "DIPINS" }
+
+func (p *PinTanBusinessTransactionParamsSegment) UnmarshalHBCI(value []byte) error {
+	businessTransactionSegment := &BusinessTransactionParamsSegment{}
+	err := businessTransactionSegment.UnmarshalHBCI(value)
+	if err != nil {
+		return err
+	}
+	p.BusinessTransactionParamsSegment = businessTransactionSegment
+	elements, err := ExtractElements(value)
+	if err != nil {
+		return err
+	}
+	pinTanParams := &element.PinTanBusinessTransactionParameters{}
+	err = pinTanParams.UnmarshalHBCI(elements[3])
+	if err != nil {
+		return err
+	}
+	p.BusinessTransactionParamsSegment.Params = pinTanParams
+	return nil
+}
+
+func (p *PinTanBusinessTransactionParamsSegment) PinTanBusinessTransactions() []domain.PinTanBusinessTransaction {
+	var transactions []domain.PinTanBusinessTransaction
+	for _, transactionDe := range p.Params.GroupDataElements() {
+		transactions = append(transactions, transactionDe.(*element.PinTanBusinessTransactionParameter).Val())
+	}
+	return transactions
+}

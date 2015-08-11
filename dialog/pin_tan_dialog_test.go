@@ -51,6 +51,12 @@ func TestPinTanDialogSyncClientSystemID(t *testing.T) {
 		t.Fail()
 	}
 
+	pinTransactions := bankParamData.PinTanBusinessTransactions
+	if pinTransactions != nil {
+		t.Logf("Expected PinTanBusinessTransactions to be nil, was %+#v\n", pinTransactions)
+		t.Fail()
+	}
+
 	userParamData := d.UserParameterData
 	if userParamData.Version != 0 {
 		t.Logf("Expected UPD version to equal 0, was %d\n", userParamData.Version)
