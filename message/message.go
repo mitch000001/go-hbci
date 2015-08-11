@@ -25,6 +25,7 @@ type ClientMessage interface {
 	Message
 	MarshalHBCI() ([]byte, error)
 	Encrypt(provider CryptoProvider) (*EncryptedMessage, error)
+	SetMessageNumber(messageNumber int)
 }
 
 type BankMessage interface {
@@ -152,6 +153,10 @@ func (b *BasicMessage) SetSize() error {
 	buffer.Write(endBytes)
 	b.Header.SetSize(buffer.Len())
 	return nil
+}
+
+func (b *BasicMessage) SetMessageNumber(messageNumber int) {
+	b.Header.SetMessageNumber(messageNumber)
 }
 
 func (b *BasicMessage) MarshalHBCI() ([]byte, error) {

@@ -23,7 +23,7 @@ const initialClientSystemID = "0"
 const anonymousClientID = "9999999999"
 
 type Dialog interface {
-	Init() (string, error)
+	Init() error
 	SyncClientSystemID() (string, error)
 	End() error
 }
@@ -83,14 +83,11 @@ func (d *dialog) Balances(allAccounts bool) ([]domain.AccountBalance, error) {
 	if err != nil {
 		return nil, err
 	}
-	messageNum := d.nextMessageNumber()
 	defer d.End()
 	account := *d.Accounts[len(d.Accounts)-1].AccountConnection
 	fmt.Printf("Account: %q\n", account)
 	accountBalanceRequest := segment.NewAccountBalanceRequestSegment(account, allAccounts)
-	clientMessage := message.NewHBCIClientMessage(accountBalanceRequest)
-	clientMessage.Header = segment.NewMessageHeaderSegment(-1, 220, d.dialogID, messageNum)
-	clientMessage.End = segment.NewMessageEndSegment(8, messageNum)
+	clientMessage := d.newBasicMessage(message.NewHBCIMessage(accountBalanceRequest))
 	signedMessage, err := clientMessage.Sign(d.signatureProvider)
 	if err != nil {
 		return nil, err
@@ -127,14 +124,12 @@ func (d *dialog) Balances(allAccounts bool) ([]domain.AccountBalance, error) {
 }
 
 func (d *dialog) SyncClientSystemID() (string, error) {
-	syncMessage := new(message.SynchronisationMessage)
-	messageNum := d.nextMessageNumber()
-	syncMessage.BasicClientMessage = message.NewBasicClientMessage(syncMessage)
-	syncMessage.Header = segment.NewMessageHeaderSegment(-1, 220, initialDialogID, messageNum)
-	syncMessage.End = segment.NewMessageEndSegment(8, messageNum)
-	syncMessage.Identification = segment.NewIdentificationSegment(d.BankID, d.ClientID, initialClientSystemID, true)
-	syncMessage.ProcessingPreparation = segment.NewProcessingPreparationSegment(0, 0, 1)
-	syncMessage.Sync = segment.NewSynchronisationSegment(0)
+	syncMessage := &message.SynchronisationMessage{
+		Identification:        segment.NewIdentificationSegment(d.BankID, d.ClientID, initialClientSystemID, true),
+		ProcessingPreparation: segment.NewProcessingPreparationSegment(0, 0, 1),
+		Sync: segment.NewSynchronisationSegment(0),
+	}
+	syncMessage.BasicMessage = d.newBasicMessage(syncMessage)
 	signedSyncMessage, err := syncMessage.Sign(d.signatureProvider)
 	if err != nil {
 		return "", err
@@ -182,14 +177,9 @@ func (d *dialog) SyncClientSystemID() (string, error) {
 		return "", fmt.Errorf("Malformed message: missing SynchronisationResponse")
 	}
 
-	bankParamData := decryptedMessage.FindSegment("HIBPA")
-	if bankParamData != nil {
-		paramSegment := &segment.CommonBankParameterSegment{}
-		err = paramSegment.UnmarshalHBCI(bankParamData)
-		if err != nil {
-			return "", fmt.Errorf("Error while unmarshaling Bank Parameter Data: %v", err)
-		}
-		d.BankParameterData = paramSegment.BankParameterData()
+	err = d.parseBankParameterData(decryptedMessage)
+	if err != nil {
+		return "", err
 	}
 
 	userParamData := decryptedMessage.FindSegment("HIUPA")
@@ -225,12 +215,11 @@ func (d *dialog) SyncClientSystemID() (string, error) {
 func (d *dialog) Init() error {
 	d.dialogID = initialDialogID
 	d.messageCount = 0
-	initMessage := message.NewDialogInitializationClientMessage()
-	messageNum := d.nextMessageNumber()
-	initMessage.Header = segment.NewMessageHeaderSegment(-1, 220, d.dialogID, messageNum)
-	initMessage.End = segment.NewMessageEndSegment(8, messageNum)
-	initMessage.Identification = segment.NewIdentificationSegment(d.BankID, d.ClientID, d.ClientSystemID, true)
-	initMessage.ProcessingPreparation = segment.NewProcessingPreparationSegment(d.BankParameterDataVersion(), d.UserParameterDataVersion(), d.Language)
+	initMessage := &message.DialogInitializationClientMessage{
+		Identification:        segment.NewIdentificationSegment(d.BankID, d.ClientID, d.ClientSystemID, true),
+		ProcessingPreparation: segment.NewProcessingPreparationSegment(d.BankParameterDataVersion(), d.UserParameterDataVersion(), d.Language),
+	}
+	initMessage.BasicMessage = d.newBasicMessage(initMessage)
 	signedInitMessage, err := initMessage.Sign(d.signatureProvider)
 	if err != nil {
 		return err
@@ -250,14 +239,9 @@ func (d *dialog) Init() error {
 	}
 	d.dialogID = messageHeader.DialogID.Val()
 
-	bankParamData := decryptedMessage.FindSegment("HIBPA")
-	if bankParamData != nil {
-		paramSegment := &segment.CommonBankParameterSegment{}
-		err = paramSegment.UnmarshalHBCI(bankParamData)
-		if err != nil {
-			return fmt.Errorf("Error while unmarshaling Bank Parameter Data: %v", err)
-		}
-		d.BankParameterData = paramSegment.BankParameterData()
+	err = d.parseBankParameterData(decryptedMessage)
+	if err != nil {
+		return err
 	}
 
 	userParamData := decryptedMessage.FindSegment("HIUPA")
@@ -336,6 +320,31 @@ func (d *dialog) init() error {
 			return err
 		}
 		d.ClientSystemID = id
+	}
+	return nil
+}
+
+func (d *dialog) newClientMessage(hbciMessage message.HBCIMessage) message.ClientMessage {
+	return d.newBasicMessage(hbciMessage)
+}
+
+func (d *dialog) newBasicMessage(hbciMessage message.HBCIMessage) *message.BasicMessage {
+	messageNum := d.nextMessageNumber()
+	clientMessage := message.NewBasicMessage(hbciMessage)
+	clientMessage.Header = segment.NewMessageHeaderSegment(-1, 220, d.dialogID, messageNum)
+	clientMessage.End = segment.NewMessageEndSegment(-1, messageNum)
+	return clientMessage
+}
+
+func (d *dialog) parseBankParameterData(bankMessage message.BankMessage) error {
+	bankParamData := bankMessage.FindSegment("HIBPA")
+	if bankParamData != nil {
+		paramSegment := &segment.CommonBankParameterSegment{}
+		err := paramSegment.UnmarshalHBCI(bankParamData)
+		if err != nil {
+			return fmt.Errorf("Error while unmarshaling Bank Parameter Data: %v", err)
+		}
+		d.BankParameterData = paramSegment.BankParameterData()
 	}
 	return nil
 }
@@ -434,12 +443,10 @@ func (d *dialog) nextMessageNumber() int {
 }
 
 func (d *dialog) dialogEnd() *message.DialogFinishingMessage {
-	dialogEnd := new(message.DialogFinishingMessage)
-	messageNum := d.nextMessageNumber()
-	dialogEnd.BasicClientMessage = message.NewBasicClientMessage(dialogEnd)
-	dialogEnd.Header = segment.NewMessageHeaderSegment(0, 220, d.dialogID, messageNum)
-	dialogEnd.End = segment.NewMessageEndSegment(8, messageNum)
-	dialogEnd.DialogEnd = segment.NewDialogEndSegment(d.dialogID)
+	dialogEnd := &message.DialogFinishingMessage{
+		DialogEnd: segment.NewDialogEndSegment(d.dialogID),
+	}
+	dialogEnd.BasicMessage = d.newBasicMessage(dialogEnd)
 	return dialogEnd
 }
 

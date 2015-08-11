@@ -161,7 +161,7 @@ type BusinessTransactionParamsSegment struct {
 	Version       int
 	MaxJobs       *element.NumberDataElement
 	MinSignatures *element.NumberDataElement
-	Params        *element.BusinessTransactionParameter
+	Params        element.DataElementGroup
 }
 
 func (b *BusinessTransactionParamsSegment) version() int         { return b.Version }
@@ -176,3 +176,30 @@ func (b *BusinessTransactionParamsSegment) elements() []element.DataElement {
 		b.Params,
 	}
 }
+
+func (b *BusinessTransactionParamsSegment) UnmarshalHBCI(value []byte) error {
+	elements, err := ExtractElements(value)
+	if err != nil {
+		return err
+	}
+	seg, err := SegmentFromHeaderBytes(elements[0], b)
+	if err != nil {
+		return err
+	}
+	b.Segment = seg
+	if len(elements) < 4 {
+		return fmt.Errorf("%T: Malformed marshaled value", b)
+	}
+	maxJobs, err := strconv.Atoi(string(elements[1]))
+	if err != nil {
+		return fmt.Errorf("%T: Malformed max jobs: %v", b, err)
+	}
+	b.MaxJobs = element.NewNumber(maxJobs, 4)
+	minSignatures, err := strconv.Atoi(string(elements[2]))
+	if err != nil {
+		return fmt.Errorf("%T: Malformed min signatures: %v", b, err)
+	}
+	b.MinSignatures = element.NewNumber(minSignatures, 2)
+	return nil
+}
+

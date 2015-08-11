@@ -6,17 +6,27 @@ import (
 
 func NewSynchronisationMessage() *SynchronisationMessage {
 	s := new(SynchronisationMessage)
-	s.BasicClientMessage = NewBasicClientMessage(s)
+	s.BasicMessage = NewBasicMessage(s)
 	return s
 }
 
 type SynchronisationMessage struct {
-	*BasicClientMessage
+	*BasicMessage
 	Identification             *segment.IdentificationSegment
 	ProcessingPreparation      *segment.ProcessingPreparationSegment
 	PublicSigningKeyRequest    *segment.PublicKeyRequestSegment
 	PublicEncryptionKeyRequest *segment.PublicKeyRequestSegment
 	Sync                       *segment.SynchronisationRequestSegment
+}
+
+func (s *SynchronisationMessage) HBCISegments() []segment.Segment {
+	return []segment.Segment{
+		s.Identification,
+		s.ProcessingPreparation,
+		s.PublicSigningKeyRequest,
+		s.PublicEncryptionKeyRequest,
+		s.Sync,
+	}
 }
 
 func (s *SynchronisationMessage) jobs() []segment.Segment {

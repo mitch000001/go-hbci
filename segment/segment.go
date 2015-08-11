@@ -21,6 +21,7 @@ type Segment interface {
 	SetNumber(func() int)
 	DataElements() []element.DataElement
 	String() string
+	MarshalHBCI() ([]byte, error)
 }
 
 type Segments map[string]Segment
@@ -35,19 +36,27 @@ type segment interface {
 
 func SegmentFromHeaderBytes(headerBytes []byte, seg segment) (Segment, error) {
 	elements := bytes.Split(headerBytes, []byte(":"))
+	var header *element.SegmentHeader
+	id := string(elements[0])
 	numStr := elements[1]
-	num, err := strconv.Atoi(string(numStr))
+	number, err := strconv.Atoi(string(numStr))
 	if err != nil {
-		return nil, fmt.Errorf("Malformed segment header")
+		return nil, fmt.Errorf("Malformed segment header number")
+	}
+	version, err := strconv.Atoi(string(elements[2]))
+	if err != nil {
+		return nil, fmt.Errorf("Malformed segment header version")
 	}
 	if len(elements) == 4 && len(elements[3]) > 0 {
 		ref, err := strconv.Atoi(string(elements[3]))
 		if err != nil {
-			return nil, fmt.Errorf("Malformed segment header")
+			return nil, fmt.Errorf("Malformed segment header reference")
 		}
-		return NewReferencingBasicSegment(num, ref, seg), nil
+		header = element.NewReferencingSegmentHeader(id, number, version, ref)
+	} else {
+		header = element.NewSegmentHeader(id, number, version)
 	}
-	return NewBasicSegment(num, seg), nil
+	return NewBasicSegmentWithHeader(header, seg), nil
 }
 
 func NewReferencingBasicSegment(number int, ref int, seg segment) Segment {
@@ -73,11 +82,34 @@ func (s *basicSegment) String() string {
 	elementStrings := make([]string, len(s.segment.elements())+1)
 	elementStrings[0] = s.header.String()
 	for i, de := range s.segment.elements() {
-		if !reflect.ValueOf(de).IsNil() {
+		val := reflect.ValueOf(de)
+		if val.IsValid() && !val.IsNil() {
 			elementStrings[i+1] = de.String()
 		}
 	}
 	return strings.Join(elementStrings, "+") + "'"
+}
+
+func (s *basicSegment) MarshalHBCI() ([]byte, error) {
+	elementBytes := make([][]byte, len(s.segment.elements())+1)
+	headerBytes, err := s.header.MarshalHBCI()
+	if err != nil {
+		return nil, err
+	}
+	elementBytes[0] = headerBytes
+	for i, de := range s.segment.elements() {
+		val := reflect.ValueOf(de)
+		if val.IsValid() && !val.IsNil() {
+			marshaled, err := de.MarshalHBCI()
+			if err != nil {
+				return nil, err
+			}
+			elementBytes[i+1] = marshaled
+		}
+	}
+	marshaled := bytes.Join(elementBytes, []byte("+"))
+	marshaled = append(marshaled, '\'')
+	return marshaled, nil
 }
 
 func (s *basicSegment) DataElements() []element.DataElement {

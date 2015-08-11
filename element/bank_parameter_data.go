@@ -145,7 +145,7 @@ type SupportedCompressionMethodsDataElement struct {
 }
 
 type BusinessTransactionParameter struct {
-	*elementGroup
+	DataElement
 	DataElements []DataElement
 }
 

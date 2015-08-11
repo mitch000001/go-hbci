@@ -72,6 +72,10 @@ func (m *MessageHeaderSegment) id() string           { return "HNHBK" }
 func (m *MessageHeaderSegment) referencedId() string { return "" }
 func (m *MessageHeaderSegment) sender() string       { return senderBoth }
 
+func (m *MessageHeaderSegment) SetMessageNumber(messageNumber int) {
+	m.Number = element.NewNumber(messageNumber, 4)
+}
+
 func (m *MessageHeaderSegment) UnmarshalHBCI(value []byte) error {
 	value = bytes.TrimSuffix(value, []byte("'"))
 	elements := bytes.Split(value, []byte("+"))

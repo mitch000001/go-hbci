@@ -13,17 +13,18 @@ func TestPinTanDialogSyncClientSystemID(t *testing.T) {
 	url := "http://localhost"
 	clientID := "12345"
 	bankID := domain.BankId{280, "10000000"}
-	dialog := NewPinTanDialog(bankID, url, clientID)
-	dialog.SetPin("abcde")
-	dialog.transport = transport
+	d := NewPinTanDialog(bankID, url, clientID)
+	d.SetPin("abcde")
+	d.transport = transport
 
 	syncResponseMessage := encryptedTestMessage(
 		"newDialogID",
 		"HIRMG:2:2:1+0100::Dialog beendet'",
 		"HIBPA:3:2:+12+280:10000000+Bank Name+3+1+201:210:220+0'",
-		"HISYN:4:3:8+newClientSystemID'",
-		"HIUPA:5:2:7+12345+4+0'",
-		"HIUPD:6:4:8+12345::280:1000000+54321+EUR+Muster+Max+++HKTAN:1+HKKAZ:1'",
+		"DIPINS:4:2:+1+1+HKSAL:N:HKUEB:J'",
+		"HISYN:5:3:8+newClientSystemID'",
+		"HIUPA:6:2:7+12345+4+0'",
+		"HIUPD:7:4:8+12345::280:1000000+54321+EUR+Muster+Max+++HKTAN:1+HKKAZ:1'",
 	)
 
 	dialogEndResponseMessage := encryptedTestMessage("newDialogID", "HIRMG:2:2:1+0020::Auftrag entgegengenommen'")
@@ -33,30 +34,30 @@ func TestPinTanDialogSyncClientSystemID(t *testing.T) {
 		dialogEndResponseMessage,
 	})
 
-	if len(dialog.Accounts) != 0 {
-		t.Logf("Expected no accounts, got %d\n", len(dialog.Accounts))
+	if len(d.Accounts) != 0 {
+		t.Logf("Expected no accounts, got %d\n", len(d.Accounts))
 		t.Fail()
 	}
 
-	dialogID := dialog.dialogID
+	dialogID := d.dialogID
 	if dialogID != initialDialogID {
 		t.Logf("Expected dialogID to equal\n%q\n\tgot\n%q\n", initialDialogID, dialogID)
 		t.Fail()
 	}
 
-	bankParamData := dialog.BankParameterData
+	bankParamData := d.BankParameterData
 	if bankParamData.Version != 0 {
 		t.Logf("Expected BPD version to equal 0, was %d\n", bankParamData.Version)
 		t.Fail()
 	}
 
-	userParamData := dialog.UserParameterData
+	userParamData := d.UserParameterData
 	if userParamData.Version != 0 {
 		t.Logf("Expected UPD version to equal 0, was %d\n", userParamData.Version)
 		t.Fail()
 	}
 
-	res, err := dialog.SyncClientSystemID()
+	res, err := d.SyncClientSystemID()
 
 	if err != nil {
 		t.Logf("Expected no error, got %T:%v\n", err, err)
@@ -70,30 +71,41 @@ func TestPinTanDialogSyncClientSystemID(t *testing.T) {
 		t.Fail()
 	}
 
-	if dialog.ClientSystemID != expected {
-		t.Logf("Expected ClientSystemID to equal %q, got %q\n", expected, dialog.ClientSystemID)
+	if d.ClientSystemID != expected {
+		t.Logf("Expected ClientSystemID to equal %q, got %q\n", expected, d.ClientSystemID)
 		t.Fail()
 	}
 
-	bankParamData = dialog.BankParameterData
+	bankParamData = d.BankParameterData
 	if bankParamData.Version != 12 {
 		t.Logf("Expected BankParameterData version to equal 12, was %d\n", bankParamData.Version)
 		t.Fail()
 	}
 
-	userParamData = dialog.UserParameterData
+	expectedPinTanTransactions := map[string]bool{
+		"HKSAL": false,
+		"HKUEB": true,
+	}
+
+	pinTransactions = bankParamData.PinTanBusinessTransactions
+	if !reflect.DeepEqual(expectedPinTanTransactions, pinTransactions) {
+		t.Logf("Expected PinTanBusinessTransactions to equal\n%+#v\n\tgot\n%+#v\n", expectedPinTanTransactions, pinTransactions)
+		t.Fail()
+	}
+
+	userParamData = d.UserParameterData
 	if userParamData.Version != 4 {
 		t.Logf("Expected UPD version to equal 4, was %d\n", userParamData.Version)
 		t.Fail()
 	}
 
-	dialogID = dialog.dialogID
+	dialogID = d.dialogID
 	if dialogID != "newDialogID" {
 		t.Logf("Expected dialogID to equal\n%q\n\tgot\n%q\n", "newDialogID", dialogID)
 		t.Fail()
 	}
 
-	accounts := dialog.Accounts
+	accounts := d.Accounts
 
 	if len(accounts) == 0 {
 		t.Logf("Expected %d accounts, got 0\n", 1)
@@ -127,7 +139,7 @@ func TestPinTanDialogSyncClientSystemID(t *testing.T) {
 		[]byte(""),
 	})
 
-	res, err = dialog.SyncClientSystemID()
+	res, err = d.SyncClientSystemID()
 
 	if err == nil {
 		t.Logf("Expected error, got nil\n")
@@ -150,11 +162,11 @@ func TestPinTanDialogInit(t *testing.T) {
 	url := "http://localhost"
 	clientID := "12345"
 	bankID := domain.BankId{280, "10000000"}
-	dialog := NewPinTanDialog(bankID, url, clientID)
-	dialog.SetPin("abcde")
-	dialog.transport = transport
+	d := NewPinTanDialog(bankID, url, clientID)
+	d.SetPin("abcde")
+	d.transport = transport
 
-	dialogID := dialog.dialogID
+	dialogID := d.dialogID
 	if dialogID != initialDialogID {
 		t.Logf("Expected dialogID to equal\n%q\n\tgot\n%q\n", initialDialogID, dialogID)
 		t.Fail()
@@ -167,14 +179,14 @@ func TestPinTanDialogInit(t *testing.T) {
 	)
 	transport.SetResponseMessage(initResponse)
 
-	err := dialog.Init()
+	err := d.Init()
 
 	if err != nil {
 		t.Logf("Expected no error, got %T:%v\n", err, err)
 		t.Fail()
 	}
 
-	dialogID = dialog.dialogID
+	dialogID = d.dialogID
 	if dialogID != "newDialogID" {
 		t.Logf("Expected dialogID to equal\n%q\n\tgot\n%q\n", "newDialogID", dialogID)
 		t.Fail()

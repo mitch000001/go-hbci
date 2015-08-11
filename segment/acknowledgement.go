@@ -20,8 +20,10 @@ func (m *MessageAcknowledgement) referencedId() string { return "" }
 func (m *MessageAcknowledgement) sender() string       { return senderBank }
 
 func (m *MessageAcknowledgement) UnmarshalHBCI(value []byte) error {
-	value = bytes.TrimSuffix(value, []byte("'"))
-	elements := bytes.Split(value, []byte("+"))
+	elements, err := ExtractElements(value)
+	if err != nil {
+		return err
+	}
 	if len(elements) == 0 {
 		return fmt.Errorf("Malformed marshaled value")
 	}
@@ -83,8 +85,10 @@ func (s *SegmentAcknowledgement) referencedId() string { return "" }
 func (s *SegmentAcknowledgement) sender() string       { return senderBank }
 
 func (s *SegmentAcknowledgement) UnmarshalHBCI(value []byte) error {
-	value = bytes.TrimSuffix(value, []byte("'"))
-	elements := bytes.Split(value, []byte("+"))
+	elements, err := ExtractElements(value)
+	if err != nil {
+		return err
+	}
 	if len(elements) == 0 {
 		return fmt.Errorf("Malformed marshaled value")
 	}

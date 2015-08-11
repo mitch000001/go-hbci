@@ -12,8 +12,18 @@ import (
 )
 
 func NewPinTanDialog(bankId domain.BankId, hbciUrl string, clientId string) *PinTanDialog {
+	pinKey := domain.NewPinKey("", domain.NewPinTanKeyName(bankId, clientId, "S"))
+	signatureProvider := message.NewPinTanSignatureProvider(pinKey, "0")
+	pinKey = domain.NewPinKey("", domain.NewPinTanKeyName(bankId, clientId, "V"))
+	cryptoProvider := message.NewPinTanCryptoProvider(pinKey, "0")
 	d := &PinTanDialog{
-		dialog: newDialog(bankId, hbciUrl, clientId, nil, nil),
+		dialog: newDialog(
+			bankId,
+			hbciUrl,
+			clientId,
+			signatureProvider,
+			cryptoProvider,
+		),
 	}
 	d.transport = transport.NewHttpsTransport()
 	return d
