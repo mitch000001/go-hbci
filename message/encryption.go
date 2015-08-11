@@ -132,6 +132,10 @@ func (d *DecryptedMessage) FindSegments(segmentID string) [][]byte {
 	return d.segmentExtractor.FindSegments(segmentID)
 }
 
+func (d *DecryptedMessage) Segments() [][]byte {
+	return d.segmentExtractor.Segments()
+}
+
 func (d *DecryptedMessage) SegmentNumber(segmentID string) int {
 	segmentBytes := d.segmentExtractor.FindSegment(segmentID)
 	if segmentBytes == nil {

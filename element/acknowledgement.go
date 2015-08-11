@@ -62,7 +62,7 @@ func (a *AcknowledgementDataElement) UnmarshalHBCI(value []byte) error {
 	if len(chunks) < 3 {
 		return fmt.Errorf("Malformed acknowledgment to unmarshal")
 	}
-	code, err := strconv.Atoi(string(chunks[0]))
+	code, err := strconv.Atoi(charset.ToUtf8(chunks[0]))
 	if err != nil {
 		return fmt.Errorf("%T: Malformed code", a)
 	}
