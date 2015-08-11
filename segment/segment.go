@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/mitch000001/go-hbci/charset"
 	"github.com/mitch000001/go-hbci/element"
 )
 
@@ -35,20 +36,20 @@ type segment interface {
 }
 
 func SegmentFromHeaderBytes(headerBytes []byte, seg segment) (Segment, error) {
-	elements := bytes.Split(headerBytes, []byte(":"))
+	elements, err := element.ExtractElements(headerBytes)
 	var header *element.SegmentHeader
-	id := string(elements[0])
+	id := charset.ToUtf8(elements[0])
 	numStr := elements[1]
-	number, err := strconv.Atoi(string(numStr))
+	number, err := strconv.Atoi(charset.ToUtf8(numStr))
 	if err != nil {
 		return nil, fmt.Errorf("Malformed segment header number")
 	}
-	version, err := strconv.Atoi(string(elements[2]))
+	version, err := strconv.Atoi(charset.ToUtf8(elements[2]))
 	if err != nil {
 		return nil, fmt.Errorf("Malformed segment header version")
 	}
 	if len(elements) == 4 && len(elements[3]) > 0 {
-		ref, err := strconv.Atoi(string(elements[3]))
+		ref, err := strconv.Atoi(charset.ToUtf8(elements[3]))
 		if err != nil {
 			return nil, fmt.Errorf("Malformed segment header reference")
 		}

@@ -6,6 +6,7 @@ import (
 	"sort"
 	"strconv"
 
+	"github.com/mitch000001/go-hbci/charset"
 	"github.com/mitch000001/go-hbci/domain"
 )
 
@@ -90,13 +91,16 @@ type SupportedHBCIVersionsDataElement struct {
 }
 
 func (s *SupportedHBCIVersionsDataElement) UnmarshalHBCI(value []byte) error {
-	elements := bytes.Split(value, []byte(":"))
+	elements, err := ExtractElements(value)
+	if err != nil {
+		return err
+	}
 	if len(elements) == 0 || len(elements) > 9 {
 		return fmt.Errorf("Malformed marshaled value")
 	}
 	versions := make([]DataElement, len(elements))
 	for i, elem := range elements {
-		version, err := strconv.Atoi(string(elem))
+		version, err := strconv.Atoi(charset.ToUtf8(elem))
 		if err != nil {
 			return err
 		}
@@ -134,13 +138,16 @@ func (s *SupportedLanguagesDataElement) Languages() []*NumberDataElement {
 }
 
 func (s *SupportedLanguagesDataElement) UnmarshalHBCI(value []byte) error {
-	elements := bytes.Split(value, []byte(":"))
+	elements, err := ExtractElements(value)
+	if err != nil {
+		return err
+	}
 	if len(elements) == 0 || len(elements) > 9 {
 		return fmt.Errorf("Malformed marshaled value")
 	}
 	languages := make([]DataElement, len(elements))
 	for i, elem := range elements {
-		lang, err := strconv.Atoi(toUtf8(elem))
+		lang, err := strconv.Atoi(charset.ToUtf8(elem))
 		if err != nil {
 			return err
 		}
@@ -240,7 +247,7 @@ func (p *PinTanBusinessTransactionParameter) UnmarshalHBCI(value []byte) error {
 	if err != nil {
 		return err
 	}
-	p.SegmentID = NewAlphaNumeric(toUtf8(elements[0]), 6)
+	p.SegmentID = NewAlphaNumeric(charset.ToUtf8(elements[0]), 6)
 	needsTan := &BooleanDataElement{}
 	err = needsTan.UnmarshalHBCI(elements[1])
 	if err != nil {

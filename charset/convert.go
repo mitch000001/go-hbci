@@ -13,7 +13,7 @@ func ToUtf8(iso8859_1_buf []byte) string {
 	return string(buf)
 }
 
-func ToIso8859_1(utf8String string) []byte {
+func ToISO8859_1(utf8String string) []byte {
 	buf := make([]byte, 0)
 	runes := bytes.Runes([]byte(utf8String))
 	for _, r := range runes {
@@ -32,6 +32,6 @@ type iso8859_1Writer struct {
 }
 
 func (i *iso8859_1Writer) Write(p []byte) (int, error) {
-	iso8859_1Bytes := ToIso8859_1(string(p))
+	iso8859_1Bytes := ToISO8859_1(string(p))
 	return i.Buffer.Write(iso8859_1Bytes)
 }

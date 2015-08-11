@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/mitch000001/go-hbci/charset"
 	"github.com/mitch000001/go-hbci/domain"
 )
 
@@ -66,12 +67,12 @@ func (a *AcknowledgementDataElement) UnmarshalHBCI(value []byte) error {
 		return fmt.Errorf("%T: Malformed code", a)
 	}
 	acknowledgement.Code = code
-	acknowledgement.ReferenceDataElement = toUtf8(chunks[1])
-	acknowledgement.Text = toUtf8(chunks[2])
+	acknowledgement.ReferenceDataElement = charset.ToUtf8(chunks[1])
+	acknowledgement.Text = charset.ToUtf8(chunks[2])
 	if len(chunks) > 3 {
 		params := make([]string, len(chunks[3:]))
 		for i, chunk := range chunks[3:] {
-			params[i] = toUtf8(chunk)
+			params[i] = charset.ToUtf8(chunk)
 		}
 		acknowledgement.Params = params
 	}
@@ -109,7 +110,7 @@ func (p *ParamsDataElement) UnmarshalHBCI(value []byte) error {
 	}
 	dataElements := make([]DataElement, len(elements))
 	for i, elem := range elements {
-		dataElements[i] = NewAlphaNumeric(toUtf8(elem), 35)
+		dataElements[i] = NewAlphaNumeric(charset.ToUtf8(elem), 35)
 	}
 	p.arrayElementGroup = NewArrayElementGroup(AcknowlegdementParamsGDEG, 10, 10, dataElements...)
 	return nil

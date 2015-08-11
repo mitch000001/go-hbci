@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/mitch000001/go-hbci/charset"
 	"github.com/mitch000001/go-hbci/domain"
 	"github.com/mitch000001/go-hbci/element"
 )
@@ -73,7 +74,7 @@ func (c *CommonBankParameterSegment) UnmarshalHBCI(value []byte) error {
 		return err
 	}
 	c.Segment = segment
-	version, err := strconv.Atoi(string(elements[1]))
+	version, err := strconv.Atoi(charset.ToUtf8(elements[1]))
 	if err != nil {
 		return err
 	}
@@ -84,8 +85,8 @@ func (c *CommonBankParameterSegment) UnmarshalHBCI(value []byte) error {
 		return err
 	}
 	c.BankID = bankId
-	c.BankName = element.NewAlphaNumeric(string(elements[3]), 60)
-	transactionCount, err := strconv.Atoi(string(elements[4]))
+	c.BankName = element.NewAlphaNumeric(charset.ToUtf8(elements[3]), 60)
+	transactionCount, err := strconv.Atoi(charset.ToUtf8(elements[4]))
 	if err != nil {
 		return err
 	}
@@ -103,7 +104,7 @@ func (c *CommonBankParameterSegment) UnmarshalHBCI(value []byte) error {
 	}
 	c.SupportedHBCIVersions = versions
 	if len(elements) == 8 {
-		maxSize, err := strconv.Atoi(string(elements[7]))
+		maxSize, err := strconv.Atoi(charset.ToUtf8(elements[7]))
 		if err != nil {
 			return err
 		}
@@ -190,12 +191,12 @@ func (b *BusinessTransactionParamsSegment) UnmarshalHBCI(value []byte) error {
 	if len(elements) < 4 {
 		return fmt.Errorf("%T: Malformed marshaled value", b)
 	}
-	maxJobs, err := strconv.Atoi(string(elements[1]))
+	maxJobs, err := strconv.Atoi(charset.ToUtf8(elements[1]))
 	if err != nil {
 		return fmt.Errorf("%T: Malformed max jobs: %v", b, err)
 	}
 	b.MaxJobs = element.NewNumber(maxJobs, 4)
-	minSignatures, err := strconv.Atoi(string(elements[2]))
+	minSignatures, err := strconv.Atoi(charset.ToUtf8(elements[2]))
 	if err != nil {
 		return fmt.Errorf("%T: Malformed min signatures: %v", b, err)
 	}

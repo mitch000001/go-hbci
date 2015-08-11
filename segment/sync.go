@@ -1,10 +1,10 @@
 package segment
 
 import (
-	"bytes"
 	"fmt"
 	"strconv"
 
+	"github.com/mitch000001/go-hbci/charset"
 	"github.com/mitch000001/go-hbci/element"
 )
 
@@ -58,33 +58,25 @@ func (s *SynchronisationResponseSegment) elements() []element.DataElement {
 }
 
 func (s *SynchronisationResponseSegment) UnmarshalHBCI(value []byte) error {
-	value = bytes.TrimSuffix(value, []byte("'"))
-	elements := bytes.Split(value, []byte("+"))
-	header := elements[0]
-	headerElems := bytes.Split(header, []byte(":"))
-	num, err := strconv.Atoi(string(headerElems[1]))
+	elements, err := ExtractElements(value)
 	if err != nil {
-		return fmt.Errorf("%T: Malformed segment header", s)
+		return err
 	}
-	if len(headerElems) == 4 {
-		ref, err := strconv.Atoi(string(headerElems[3]))
-		if err != nil {
-			return fmt.Errorf("%T: Malformed segment header reference: %v", s, err)
-		}
-		s.Segment = NewReferencingBasicSegment(num, ref, s)
-	} else {
-		s.Segment = NewBasicSegment(num, s)
+	seg, err := SegmentFromHeaderBytes(elements[0], s)
+	if err != nil {
+		return err
 	}
-	s.ClientSystemID = element.NewIdentification(string(elements[1]))
+	s.Segment = seg
+	s.ClientSystemID = element.NewIdentification(charset.ToUtf8(elements[1]))
 	if len(elements) >= 3 && len(elements[2]) > 0 {
-		messageNum, err := strconv.Atoi(string(elements[2]))
+		messageNum, err := strconv.Atoi(charset.ToUtf8(elements[2]))
 		if err != nil {
 			return fmt.Errorf("%T: Malformed message number: %v", s, err)
 		}
 		s.MessageNumber = element.NewNumber(messageNum, 4)
 	}
 	if len(elements) >= 4 && len(elements[3]) > 0 {
-		signatureID, err := strconv.Atoi(string(elements[3]))
+		signatureID, err := strconv.Atoi(charset.ToUtf8(elements[3]))
 		if err != nil {
 			return fmt.Errorf("%T: Malformed signature id: %v", s, err)
 		}

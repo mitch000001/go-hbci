@@ -6,6 +6,7 @@ import (
 	"reflect"
 	"strconv"
 
+	"github.com/mitch000001/go-hbci/charset"
 	"github.com/mitch000001/go-hbci/element"
 )
 
@@ -77,29 +78,26 @@ func (m *MessageHeaderSegment) SetMessageNumber(messageNumber int) {
 }
 
 func (m *MessageHeaderSegment) UnmarshalHBCI(value []byte) error {
-	value = bytes.TrimSuffix(value, []byte("'"))
-	elements := bytes.Split(value, []byte("+"))
+	elements, err := ExtractElements(value)
 	elementsLen := len(elements)
 	if elementsLen == 0 || elementsLen < 5 {
 		return fmt.Errorf("Malformed marshaled value")
 	}
-	header := elements[0]
-	numStr := bytes.Split(header, []byte(":"))[1]
-	num, err := strconv.Atoi(string(numStr))
+	seg, err := SegmentFromHeaderBytes(elements[0], m)
 	if err != nil {
-		return fmt.Errorf("Malformed segment header")
+		return err
 	}
-	m.Segment = NewBasicSegment(num, m)
-	size, err := strconv.Atoi(string(elements[1]))
+	m.Segment = seg
+	size, err := strconv.Atoi(charset.ToUtf8(elements[1]))
 	if err != nil {
 		return fmt.Errorf("Error while unmarshaling size: %v", err)
 	}
-	hbciVersion, err := strconv.Atoi(string(elements[2]))
+	hbciVersion, err := strconv.Atoi(charset.ToUtf8(elements[2]))
 	if err != nil {
 		return fmt.Errorf("Error while unmarshaling hbci version: %v", err)
 	}
-	dialogId := string(elements[3])
-	messageNum, err := strconv.Atoi(string(elements[4]))
+	dialogId := charset.ToUtf8(elements[3])
+	messageNum, err := strconv.Atoi(charset.ToUtf8(elements[4]))
 	if err != nil {
 		return fmt.Errorf("Error while unmarshaling message number: %v", err)
 	}

@@ -58,3 +58,9 @@ func (s *SegmentExtractor) FindSegments(id string) [][]byte {
 	}
 	return segmentMap[id]
 }
+
+func (s *SegmentExtractor) Segments() [][]byte {
+	result := make([][]byte, len(s.segments))
+	copy(result, s.segments)
+	return result
+}

@@ -1,9 +1,7 @@
 package segment
 
 import (
-	"bytes"
 	"fmt"
-	"strconv"
 
 	"github.com/mitch000001/go-hbci/domain"
 	"github.com/mitch000001/go-hbci/element"
@@ -27,13 +25,11 @@ func (m *MessageAcknowledgement) UnmarshalHBCI(value []byte) error {
 	if len(elements) == 0 {
 		return fmt.Errorf("Malformed marshaled value")
 	}
-	header := elements[0]
-	numStr := bytes.Split(header, []byte(":"))[1]
-	num, err := strconv.Atoi(string(numStr))
+	seg, err := SegmentFromHeaderBytes(elements[0], m)
 	if err != nil {
-		return fmt.Errorf("Malformed segment header")
+		return err
 	}
-	m.Segment = NewBasicSegment(num, m)
+	m.Segment = seg
 	elements = elements[1:]
 	acknowledgements := make([]*element.AcknowledgementDataElement, len(elements))
 	for i, elem := range elements {
@@ -92,13 +88,11 @@ func (s *SegmentAcknowledgement) UnmarshalHBCI(value []byte) error {
 	if len(elements) == 0 {
 		return fmt.Errorf("Malformed marshaled value")
 	}
-	header := elements[0]
-	numStr := bytes.Split(header, []byte(":"))[1]
-	num, err := strconv.Atoi(string(numStr))
+	seg, err := SegmentFromHeaderBytes(elements[0], s)
 	if err != nil {
-		return fmt.Errorf("Malformed segment header")
+		return err
 	}
-	s.Segment = NewBasicSegment(num, s)
+	s.Segment = seg
 	elements = elements[1:]
 	acknowledgements := make([]*element.AcknowledgementDataElement, len(elements))
 	for i, elem := range elements {

@@ -5,6 +5,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/mitch000001/go-hbci/charset"
 	"github.com/mitch000001/go-hbci/domain"
 )
 
@@ -111,17 +112,17 @@ func TestAlphaNumericDataElementMarshalHBCI(t *testing.T) {
 	tests := []testData{
 		{
 			"abc",
-			toIso8859_1("abc"),
+			charset.ToISO8859_1("abc"),
 			nil,
 		},
 		{
 			"ab:c",
-			toIso8859_1("ab?:c"),
+			charset.ToISO8859_1("ab?:c"),
 			nil,
 		},
 		{
 			"abüc",
-			toIso8859_1("abüc"),
+			charset.ToISO8859_1("abüc"),
 			nil,
 		},
 	}
@@ -150,17 +151,17 @@ func TestAlphaNumericDataElementUnmarshalHBCI(t *testing.T) {
 	}
 	tests := []testData{
 		{
-			toIso8859_1("abc"),
+			charset.ToISO8859_1("abc"),
 			NewAlphaNumeric("abc", 3).Val(),
 			nil,
 		},
 		{
-			toIso8859_1("ab?:c"),
+			charset.ToISO8859_1("ab?:c"),
 			NewAlphaNumeric("ab:c", 3).Val(),
 			nil,
 		},
 		{
-			toIso8859_1("abüc"),
+			charset.ToISO8859_1("abüc"),
 			NewAlphaNumeric("abüc", 3).Val(),
 			nil,
 		},

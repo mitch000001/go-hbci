@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/mitch000001/go-hbci/charset"
 	"github.com/mitch000001/go-hbci/domain"
 )
 
@@ -159,7 +160,7 @@ func (d *dataElement) String() string        { return fmt.Sprintf("%v", d.val) }
 func (d *dataElement) Optional() bool        { return d.optional }
 func (d *dataElement) SetOptional()          { d.optional = true }
 func (d *dataElement) MarshalHBCI() ([]byte, error) {
-	return toIso8859_1(d.String()), nil
+	return charset.ToISO8859_1(d.String()), nil
 }
 func (d *dataElement) UnmarshalHBCI(value []byte) error {
 	return fmt.Errorf("Not implemented")
@@ -312,23 +313,6 @@ func unescape(in string) string {
 	return replacer.Replace(in)
 }
 
-func toUtf8(iso8859_1_buf []byte) string {
-	buf := make([]rune, len(iso8859_1_buf))
-	for i, b := range iso8859_1_buf {
-		buf[i] = rune(b)
-	}
-	return string(buf)
-}
-
-func toIso8859_1(utf8String string) []byte {
-	buf := make([]byte, 0)
-	runes := bytes.Runes([]byte(utf8String))
-	for _, r := range runes {
-		buf = append(buf, byte(r))
-	}
-	return buf
-}
-
 func NewAlphaNumeric(val string, maxLength int) *AlphaNumericDataElement {
 	return &AlphaNumericDataElement{&dataElement{val, AlphaNumericDE, maxLength, false}}
 }
@@ -352,12 +336,12 @@ func (a *AlphaNumericDataElement) String() string {
 }
 
 func (a *AlphaNumericDataElement) MarshalHBCI() ([]byte, error) {
-	val := toIso8859_1(escape(a.dataElement.String()))
+	val := charset.ToISO8859_1(escape(a.dataElement.String()))
 	return val, nil
 }
 
 func (a *AlphaNumericDataElement) UnmarshalHBCI(value []byte) error {
-	decoded := toUtf8(value)
+	decoded := charset.ToUtf8(value)
 	unescaped := unescape(decoded)
 	*a = AlphaNumericDataElement{&dataElement{unescaped, AlphaNumericDE, len(unescaped), false}}
 	return nil
@@ -377,13 +361,13 @@ func (a *TextDataElement) String() string {
 }
 
 func (a *TextDataElement) MarshalHBCI() ([]byte, error) {
-	val := toIso8859_1(escape(a.dataElement.String()))
+	val := charset.ToISO8859_1(escape(a.dataElement.String()))
 	return val, nil
 }
 
 func (a *TextDataElement) UnmarshalHBCI(value []byte) error {
-	decoded := toUtf8(value)
-	unescaped := unescape(string(decoded))
+	decoded := charset.ToUtf8(value)
+	unescaped := unescape(decoded)
 	*a = TextDataElement{&dataElement{unescaped, TextDE, len(unescaped), false}}
 	return nil
 }
@@ -404,11 +388,11 @@ func (d *DigitDataElement) String() string {
 }
 
 func (d *DigitDataElement) MarshalHBCI() ([]byte, error) {
-	return toIso8859_1(d.String()), nil
+	return charset.ToISO8859_1(d.String()), nil
 }
 
 func (d *DigitDataElement) UnmarshalHBCI(value []byte) error {
-	val, err := strconv.Atoi(string(value))
+	val, err := strconv.Atoi(charset.ToUtf8(value))
 	if err != nil {
 		return err
 	}
@@ -427,11 +411,11 @@ type NumberDataElement struct {
 func (n *NumberDataElement) Val() int { return n.val.(int) }
 
 func (n *NumberDataElement) MarshalHBCI() ([]byte, error) {
-	return toIso8859_1(n.String()), nil
+	return charset.ToISO8859_1(n.String()), nil
 }
 
 func (n *NumberDataElement) UnmarshalHBCI(value []byte) error {
-	val, err := strconv.Atoi(string(value))
+	val, err := strconv.Atoi(charset.ToUtf8(value))
 	if err != nil {
 		return err
 	}
@@ -459,11 +443,11 @@ func (f *FloatDataElement) String() string {
 }
 
 func (f *FloatDataElement) MarshalHBCI() ([]byte, error) {
-	return toIso8859_1(f.String()), nil
+	return charset.ToISO8859_1(f.String()), nil
 }
 
 func (f *FloatDataElement) UnmarshalHBCI(value []byte) error {
-	str := strings.Replace(string(value), ",", ".", 1)
+	str := strings.Replace(charset.ToUtf8(value), ",", ".", 1)
 	val, err := strconv.ParseFloat(str, 64)
 	if err != nil {
 		return err
@@ -511,7 +495,7 @@ func (b *BinaryDataElement) String() string {
 func (b *BinaryDataElement) MarshalHBCI() ([]byte, error) {
 	var buf []byte
 	binaryFormat := fmt.Sprintf("@%d@", len(b.Val()))
-	buf = append(buf, toIso8859_1(binaryFormat)...)
+	buf = append(buf, charset.ToISO8859_1(binaryFormat)...)
 	buf = append(buf, b.Val()...)
 	return buf, nil
 }
@@ -560,11 +544,11 @@ func (b *BooleanDataElement) String() string {
 }
 
 func (b *BooleanDataElement) MarshalHBCI() ([]byte, error) {
-	return toIso8859_1(b.String()), nil
+	return charset.ToISO8859_1(b.String()), nil
 }
 
 func (b *BooleanDataElement) UnmarshalHBCI(value []byte) error {
-	val := string(value)
+	val := charset.ToUtf8(value)
 	if val == "J" {
 		*b = BooleanDataElement{&dataElement{true, BooleanDE, 1, false}}
 	} else if val == "N" {
@@ -592,11 +576,11 @@ func (d *DateDataElement) String() string {
 }
 
 func (d *DateDataElement) MarshalHBCI() ([]byte, error) {
-	return toIso8859_1(d.String()), nil
+	return charset.ToISO8859_1(d.String()), nil
 }
 
 func (d *DateDataElement) UnmarshalHBCI(value []byte) error {
-	t, err := time.Parse("20060102", string(value))
+	t, err := time.Parse("20060102", charset.ToUtf8(value))
 	if err != nil {
 		return err
 	}
@@ -640,11 +624,11 @@ func (t *TimeDataElement) String() string {
 }
 
 func (t *TimeDataElement) MarshalHBCI() ([]byte, error) {
-	return toIso8859_1(t.String()), nil
+	return charset.ToISO8859_1(t.String()), nil
 }
 
 func (t *TimeDataElement) UnmarshalHBCI(value []byte) error {
-	parsedTime, err := time.Parse("150405", string(value))
+	parsedTime, err := time.Parse("150405", charset.ToUtf8(value))
 	if err != nil {
 		return err
 	}
@@ -817,17 +801,20 @@ func (b *BankIdentificationDataElement) Elements() []DataElement {
 }
 
 func (b *BankIdentificationDataElement) UnmarshalHBCI(value []byte) error {
-	elements := bytes.Split(value, []byte(":"))
+	elements, err := ExtractElements(value)
+	if err != nil {
+		return err
+	}
 	if len(elements) < 2 {
 		return fmt.Errorf("Malformed marshaled value")
 	}
 	countryCode := &CountryCodeDataElement{}
-	err := countryCode.UnmarshalHBCI(elements[0])
+	err = countryCode.UnmarshalHBCI(elements[0])
 	if err != nil {
 		return err
 	}
 	b.CountryCode = countryCode
-	b.BankID = NewAlphaNumeric(string(elements[1]), 30)
+	b.BankID = NewAlphaNumeric(charset.ToUtf8(elements[1]), 30)
 	return nil
 }
 
@@ -860,19 +847,22 @@ func (a *AccountConnectionDataElement) Elements() []DataElement {
 }
 
 func (a *AccountConnectionDataElement) UnmarshalHBCI(value []byte) error {
-	elements := bytes.Split(value, []byte(":"))
+	elements, err := ExtractElements(value)
+	if err != nil {
+		return err
+	}
 	if len(elements) < 4 {
 		return fmt.Errorf("Malformed AccountConnection")
 	}
-	countryCode, err := strconv.Atoi(string(elements[2]))
+	countryCode, err := strconv.Atoi(charset.ToUtf8(elements[2]))
 	if err != nil {
 		return fmt.Errorf("%T: Malformed CountryCode: %q", a, elements[2])
 	}
 	accountConnection := domain.AccountConnection{
-		AccountID:                 string(elements[0]),
-		SubAccountCharacteristics: string(elements[1]),
+		AccountID:                 charset.ToUtf8(elements[0]),
+		SubAccountCharacteristics: charset.ToUtf8(elements[1]),
 		CountryCode:               countryCode,
-		BankID:                    string(elements[3]),
+		BankID:                    charset.ToUtf8(elements[3]),
 	}
 	*a = *NewAccountConnection(accountConnection)
 	return nil

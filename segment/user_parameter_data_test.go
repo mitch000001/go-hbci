@@ -36,7 +36,7 @@ func TestCommonUserParameterDataSegmentUnmarshalHBCI(t *testing.T) {
 }
 
 func TestAccountInformationSegmentUnmarshalHBCI(t *testing.T) {
-	test := "HIUPD:1:4:4+123456::280:10000000+12345+EUR+Muster+Max+Sichteinlagen++DKPAE:1"
+	test := "HIUPD:1:4:4+123456::280:10000000+12345+EUR+Muster+Max+Sichteinlagen++DKPAE:1'"
 
 	account := &AccountInformationSegment{}
 

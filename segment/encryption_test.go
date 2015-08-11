@@ -3,7 +3,7 @@ package segment
 import "testing"
 
 func TestEncryptedDataSegmentUnmarshalHBCI(t *testing.T) {
-	test := "HNVSD:999:1+@5@abcde"
+	test := "HNVSD:999:1+@5@abcde'"
 
 	enc := &EncryptedDataSegment{}
 

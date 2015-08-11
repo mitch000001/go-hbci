@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/mitch000001/go-hbci/charset"
 	"github.com/mitch000001/go-hbci/domain"
 )
 
@@ -117,27 +118,30 @@ type AllowedBusinessTransactionDataElement struct {
 }
 
 func (a *AllowedBusinessTransactionDataElement) UnmarshalHBCI(value []byte) error {
-	elements := bytes.Split(value, []byte(":"))
+	elements, err := ExtractElements(value)
+	if err != nil {
+		return err
+	}
 	businessTransaction := domain.BusinessTransaction{}
-	businessTransaction.ID = string(elements[0])
-	neededSignatures, err := strconv.Atoi(string(elements[1]))
+	businessTransaction.ID = charset.ToUtf8(elements[0])
+	neededSignatures, err := strconv.Atoi(charset.ToUtf8(elements[1]))
 	if err != nil {
 		return fmt.Errorf("%T: Error while unmarshaling NeededSignatures: %T:%v", a, err, err)
 	}
 	businessTransaction.NeededSignatures = neededSignatures
 	if len(elements) >= 3 {
-		businessTransaction.LimitKind = string(elements[2])
+		businessTransaction.LimitKind = charset.ToUtf8(elements[2])
 	}
 	if len(elements) >= 5 {
-		amountVal, err := strconv.ParseFloat(string(elements[3]), 64)
+		amountVal, err := strconv.ParseFloat(charset.ToUtf8(elements[3]), 64)
 		if err != nil {
 			return fmt.Errorf("%T: Error while unmarshaling Amount: %T:%v", a, err, err)
 		}
-		currency := string(elements[4])
+		currency := charset.ToUtf8(elements[4])
 		businessTransaction.LimitAmount = domain.Amount{amountVal, currency}
 	}
 	if len(elements) == 6 {
-		days, err := strconv.Atoi(string(elements[5]))
+		days, err := strconv.Atoi(charset.ToUtf8(elements[5]))
 		if err != nil {
 			return fmt.Errorf("%T: Error while unmarshaling LimitDays: %T:%v", a, err, err)
 		}

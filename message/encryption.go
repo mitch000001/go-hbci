@@ -1,12 +1,13 @@
 package message
 
 import (
-	"bytes"
 	"crypto/rand"
 	"fmt"
 	"strconv"
 
+	"github.com/mitch000001/go-hbci/charset"
 	"github.com/mitch000001/go-hbci/domain"
+	"github.com/mitch000001/go-hbci/element"
 	"github.com/mitch000001/go-hbci/segment"
 )
 
@@ -143,9 +144,12 @@ func (d *DecryptedMessage) SegmentNumber(segmentID string) int {
 	if len(elements) < 1 {
 		return -1
 	}
-	header := bytes.Split(elements[0], []byte(":"))
+	header, err := element.ExtractElements(elements[0])
+	if err != nil {
+		return -1
+	}
 	numStr := header[1]
-	num, err := strconv.Atoi(string(numStr))
+	num, err := strconv.Atoi(charset.ToUtf8(numStr))
 	if err != nil {
 		return -1
 	}

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/mitch000001/go-hbci/charset"
 	"github.com/mitch000001/go-hbci/domain"
 	"github.com/mitch000001/go-hbci/element"
 )
@@ -50,13 +51,13 @@ func (c *CommonUserParameterDataSegment) UnmarshalHBCI(value []byte) error {
 	if len(elements) != 4 {
 		return fmt.Errorf("%T: Malformed marshaled value", c)
 	}
-	c.UserID = element.NewIdentification(string(elements[1]))
-	version, err := strconv.Atoi(string(elements[2]))
+	c.UserID = element.NewIdentification(charset.ToUtf8(elements[1]))
+	version, err := strconv.Atoi(charset.ToUtf8(elements[2]))
 	if err != nil {
 		return fmt.Errorf("%T: Malformed BPD version: %v", c, err)
 	}
 	c.UPDVersion = element.NewNumber(version, 3)
-	usage, err := strconv.Atoi(string(elements[3]))
+	usage, err := strconv.Atoi(charset.ToUtf8(elements[3]))
 	if err != nil {
 		return fmt.Errorf("%T: Malformed BPD usage: %v", c, err)
 	}
@@ -117,37 +118,29 @@ func (a *AccountInformationSegment) Account() domain.AccountInformation {
 }
 
 func (a *AccountInformationSegment) UnmarshalHBCI(value []byte) error {
-	value = bytes.TrimSuffix(value, []byte("'"))
-	elements := bytes.Split(value, []byte("+"))
-	header := elements[0]
-	headerElems := bytes.Split(header, []byte(":"))
-	num, err := strconv.Atoi(string(headerElems[1]))
+	elements, err := ExtractElements(value)
 	if err != nil {
-		return fmt.Errorf("Malformed segment header")
+		return err
 	}
-	if len(headerElems) == 4 {
-		ref, err := strconv.Atoi(string(headerElems[3]))
-		if err != nil {
-			return fmt.Errorf("Malformed segment header reference: %v", err)
-		}
-		a.Segment = NewReferencingBasicSegment(num, ref, a)
-	} else {
-		a.Segment = NewBasicSegment(num, a)
+	seg, err := SegmentFromHeaderBytes(elements[0], a)
+	if err != nil {
+		return err
 	}
+	a.Segment = seg
 	elements = elements[1:]
 	a.AccountConnection = &element.AccountConnectionDataElement{}
 	err = a.AccountConnection.UnmarshalHBCI(elements[0])
 	if err != nil {
 		return fmt.Errorf("%T: Unmarshaling AccountConnection failed: %T:%v", a, err, err)
 	}
-	a.UserID = element.NewIdentification(string(elements[1]))
-	a.AccountCurrency = element.NewCurrency(string(elements[2]))
-	a.Name1 = element.NewAlphaNumeric(string(elements[3]), 27)
+	a.UserID = element.NewIdentification(charset.ToUtf8(elements[1]))
+	a.AccountCurrency = element.NewCurrency(charset.ToUtf8(elements[2]))
+	a.Name1 = element.NewAlphaNumeric(charset.ToUtf8(elements[3]), 27)
 	if len(elements) > 4 {
-		a.Name2 = element.NewAlphaNumeric(string(elements[4]), 27)
+		a.Name2 = element.NewAlphaNumeric(charset.ToUtf8(elements[4]), 27)
 	}
 	if len(elements) > 5 {
-		a.AccountProductID = element.NewAlphaNumeric(string(elements[5]), 30)
+		a.AccountProductID = element.NewAlphaNumeric(charset.ToUtf8(elements[5]), 30)
 	}
 	if len(elements) > 6 {
 		accountLimit := elements[6]
