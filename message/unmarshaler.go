@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/mitch000001/go-hbci"
-	"github.com/mitch000001/go-hbci/charset"
 	"github.com/mitch000001/go-hbci/segment"
 	"github.com/mitch000001/go-hbci/token"
 )
