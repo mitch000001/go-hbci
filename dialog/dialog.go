@@ -134,7 +134,9 @@ func (d *dialog) Balances(allAccounts bool) ([]domain.AccountBalance, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer d.End()
+	defer func() {
+		d.End()
+	}()
 	account := *d.Accounts[len(d.Accounts)-1].AccountConnection
 	fmt.Printf("Account: %#v\n", account)
 	accountBalanceRequest := segment.NewAccountBalanceRequestSegment(account, allAccounts)
@@ -290,6 +292,7 @@ func (d *dialog) Init() error {
 	bankInfoMessageBytes := decryptedMessage.FindSegment("HIKIM")
 	fmt.Printf("INFO:\n%q\n", bankInfoMessageBytes)
 
+	newSecurityFn := d.securityFn
 	errors := make([]string, 0)
 	acknowledgements := decryptedMessage.Acknowledgements()
 	for _, ack := range acknowledgements {
@@ -298,7 +301,7 @@ func (d *dialog) Init() error {
 			if len(supportedSecurityFns) != 0 {
 				fmt.Printf("Supported securityFunctions: %q\n", supportedSecurityFns)
 				// TODO: proper handling of each case, see FINTS3.0 docu
-				//d.SetSecurityFunction(supportedSecurityFns[0])
+				newSecurityFn = supportedSecurityFns[0]
 			}
 		}
 		if ack.IsError() {
@@ -307,6 +310,17 @@ func (d *dialog) Init() error {
 	}
 	if len(errors) > 0 {
 		return fmt.Errorf("DialogEnd: Institute returned errors:\n%s", strings.Join(errors, "\n"))
+	}
+	if d.securityFn != newSecurityFn {
+		err = d.End()
+		if err != nil {
+			return err
+		}
+		d.SetSecurityFunction(newSecurityFn)
+		err = d.Init()
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
