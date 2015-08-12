@@ -32,6 +32,14 @@ func (s *SegmentHeader) SetReference(ref int) {
 	*s.Ref = *NewNumber(ref, 3)
 }
 
+func (s *SegmentHeader) ReferencingSegment() int {
+	if s.Ref != nil {
+		return s.Ref.Val()
+	} else {
+		return -1
+	}
+}
+
 func (s *SegmentHeader) IsValid() bool {
 	if s.ID == nil || s.Number == nil || s.Version == nil {
 		return false

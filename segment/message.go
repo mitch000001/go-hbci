@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"github.com/mitch000001/go-hbci/charset"
+	"github.com/mitch000001/go-hbci/domain"
 	"github.com/mitch000001/go-hbci/element"
 )
 
@@ -42,9 +43,9 @@ func (s SegmentSequence) String() string {
 	return buf.String()
 }
 
-func NewReferencingMessageHeaderSegment(size int, hbciVersion int, dialogId string, number int, referencedMessage *element.ReferenceMessage) *MessageHeaderSegment {
+func NewReferencingMessageHeaderSegment(size int, hbciVersion int, dialogId string, number int, referencingMessage domain.ReferencingMessage) *MessageHeaderSegment {
 	m := NewMessageHeaderSegment(size, hbciVersion, dialogId, number)
-	m.Ref = referencedMessage
+	m.Ref = element.NewReferencingMessage(referencingMessage.DialogID, referencingMessage.MessageNumber)
 	return m
 }
 
@@ -65,13 +66,21 @@ type MessageHeaderSegment struct {
 	HBCIVersion *element.NumberDataElement
 	DialogID    *element.IdentificationDataElement
 	Number      *element.NumberDataElement
-	Ref         *element.ReferenceMessage
+	Ref         *element.ReferencingMessageDataElement
 }
 
 func (m *MessageHeaderSegment) version() int         { return 3 }
 func (m *MessageHeaderSegment) id() string           { return "HNHBK" }
 func (m *MessageHeaderSegment) referencedId() string { return "" }
 func (m *MessageHeaderSegment) sender() string       { return senderBoth }
+
+func (m *MessageHeaderSegment) ReferencingMessage() domain.ReferencingMessage {
+	var reference domain.ReferencingMessage
+	if m.Ref != nil {
+		reference = m.Ref.Val()
+	}
+	return reference
+}
 
 func (m *MessageHeaderSegment) SetMessageNumber(messageNumber int) {
 	m.Number = element.NewNumber(messageNumber, 4)
@@ -105,6 +114,14 @@ func (m *MessageHeaderSegment) UnmarshalHBCI(value []byte) error {
 	m.HBCIVersion = element.NewNumber(hbciVersion, 3)
 	m.DialogID = element.NewIdentification(dialogId)
 	m.Number = element.NewNumber(messageNum, 4)
+	if elementsLen == 6 {
+		referencedMessage := &element.ReferencingMessageDataElement{}
+		err = referencedMessage.UnmarshalHBCI(elements[5])
+		if err != nil {
+			return err
+		}
+		m.Ref = referencedMessage
+	}
 	return nil
 }
 

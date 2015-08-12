@@ -19,7 +19,6 @@ func TestElementExtractorExtract(t *testing.T) {
 				"123",
 				"012",
 				"de",
-				"",
 			},
 			nil,
 		},
@@ -28,7 +27,6 @@ func TestElementExtractorExtract(t *testing.T) {
 			[]string{
 				"abcde:123:012",
 				"de",
-				"",
 			},
 			nil,
 		},

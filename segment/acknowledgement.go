@@ -9,7 +9,8 @@ import (
 
 type MessageAcknowledgement struct {
 	Segment
-	acknowledgements []*element.AcknowledgementDataElement
+	acknowledgements   []*element.AcknowledgementDataElement
+	referencingMessage domain.ReferencingMessage
 }
 
 func (m *MessageAcknowledgement) version() int         { return 2 }
@@ -38,10 +39,19 @@ func (m *MessageAcknowledgement) UnmarshalHBCI(value []byte) error {
 		if err != nil {
 			return err
 		}
+		if segmentRef := seg.Header().ReferencingSegment(); segmentRef != -1 {
+			ack.SetReferencingSegmentNumber(segmentRef)
+		}
+		ack.SetReferencingMessage(m.referencingMessage)
+		ack.SetType(domain.MessageAcknowledgement)
 		acknowledgements[i] = ack
 	}
 	m.acknowledgements = acknowledgements
 	return nil
+}
+
+func (m *MessageAcknowledgement) SetReferencingMessage(reference domain.ReferencingMessage) {
+	m.referencingMessage = reference
 }
 
 func (m *MessageAcknowledgement) Acknowledgements() []domain.Acknowledgement {
@@ -49,6 +59,7 @@ func (m *MessageAcknowledgement) Acknowledgements() []domain.Acknowledgement {
 	for i, ackDe := range m.acknowledgements {
 		ack := ackDe.Val()
 		ack.Type = domain.MessageAcknowledgement
+		ack.ReferencingMessage = m.referencingMessage
 		acknowledgements[i] = ack
 	}
 	return acknowledgements
@@ -62,17 +73,10 @@ func (m *MessageAcknowledgement) elements() []element.DataElement {
 	return dataElements
 }
 
-func (m *MessageAcknowledgement) Value() []domain.Acknowledgement {
-	acks := make([]domain.Acknowledgement, len(m.acknowledgements))
-	for i, de := range m.acknowledgements {
-		acks[i] = de.Val()
-	}
-	return acks
-}
-
 type SegmentAcknowledgement struct {
 	Segment
-	acknowledgements []*element.AcknowledgementDataElement
+	acknowledgements   []*element.AcknowledgementDataElement
+	referencingMessage domain.ReferencingMessage
 }
 
 func (s *SegmentAcknowledgement) version() int         { return 2 }
@@ -101,10 +105,17 @@ func (s *SegmentAcknowledgement) UnmarshalHBCI(value []byte) error {
 		if err != nil {
 			return err
 		}
+		ack.SetReferencingSegmentNumber(seg.Header().ReferencingSegment())
+		ack.SetReferencingMessage(s.referencingMessage)
+		ack.SetType(domain.SegmentAcknowledgement)
 		acknowledgements[i] = ack
 	}
 	s.acknowledgements = acknowledgements
 	return nil
+}
+
+func (s *SegmentAcknowledgement) SetReferencingMessage(reference domain.ReferencingMessage) {
+	s.referencingMessage = reference
 }
 
 func (s *SegmentAcknowledgement) Acknowledgements() []domain.Acknowledgement {
@@ -112,6 +123,7 @@ func (s *SegmentAcknowledgement) Acknowledgements() []domain.Acknowledgement {
 	for i, ackDe := range s.acknowledgements {
 		ack := ackDe.Val()
 		ack.Type = domain.SegmentAcknowledgement
+		ack.ReferencingMessage = s.referencingMessage
 		acknowledgements[i] = ack
 	}
 	return acknowledgements

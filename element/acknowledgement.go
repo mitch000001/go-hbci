@@ -21,18 +21,36 @@ func NewAcknowledgement(acknowledgement domain.Acknowledgement) *Acknowledgement
 
 type AcknowledgementDataElement struct {
 	DataElement
-	Code                 *DigitDataElement
-	ReferenceDataElement *AlphaNumericDataElement
-	Text                 *AlphaNumericDataElement
-	Params               *ParamsDataElement
+	Code                     *DigitDataElement
+	ReferenceDataElement     *AlphaNumericDataElement
+	Text                     *AlphaNumericDataElement
+	Params                   *ParamsDataElement
+	referencingMessage       domain.ReferencingMessage
+	referencingSegmentNumber int
+	typ                      string
+}
+
+func (a *AcknowledgementDataElement) SetReferencingMessage(reference domain.ReferencingMessage) {
+	a.referencingMessage = reference
+}
+
+func (a *AcknowledgementDataElement) SetReferencingSegmentNumber(number int) {
+	a.referencingSegmentNumber = number
+}
+
+func (a *AcknowledgementDataElement) SetType(acknowledgementType string) {
+	a.typ = acknowledgementType
 }
 
 func (a *AcknowledgementDataElement) Val() domain.Acknowledgement {
 	return domain.Acknowledgement{
-		Code:                 a.Code.Val(),
-		ReferenceDataElement: a.ReferenceDataElement.Val(),
-		Text:                 a.Text.Val(),
-		Params:               a.Params.Val(),
+		Code:                     a.Code.Val(),
+		ReferenceDataElement:     a.ReferenceDataElement.Val(),
+		Text:                     a.Text.Val(),
+		Params:                   a.Params.Val(),
+		Type:                     a.typ,
+		ReferencingMessage:       a.referencingMessage,
+		ReferencingSegmentNumber: a.referencingSegmentNumber,
 	}
 }
 

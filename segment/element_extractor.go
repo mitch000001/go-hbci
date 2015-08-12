@@ -31,7 +31,9 @@ func (e *ElementExtractor) Extract() ([][]byte, error) {
 			return nil, fmt.Errorf("%T: SyntaxError at position %d: %q\n(%q)", e, t.Pos(), t.Value(), e.rawSegment)
 		}
 		if t.Type() == token.SEGMENT_END_MARKER || t.Type() == token.DATA_ELEMENT_SEPARATOR {
-			e.elements = append(e.elements, []byte(current))
+			if current != "" || t.Type() != token.SEGMENT_END_MARKER {
+				e.elements = append(e.elements, []byte(current))
+			}
 			current = ""
 		} else {
 			current += t.Value()

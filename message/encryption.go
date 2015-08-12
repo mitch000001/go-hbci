@@ -81,6 +81,7 @@ func NewDecryptedMessage(header *segment.MessageHeaderSegment, end *segment.Mess
 		return nil, fmt.Errorf("Malformed decrypted message: missing MessageAcknowledgement")
 	}
 	messageAcknowledgement := &segment.MessageAcknowledgement{}
+	messageAcknowledgement.SetReferencingMessage(header.ReferencingMessage())
 	err = messageAcknowledgement.UnmarshalHBCI(messageAcknowledgementBytes)
 	if err != nil {
 		return nil, fmt.Errorf("Error while unmarshaling MessageAcknowledgement: %v", err)
@@ -89,6 +90,7 @@ func NewDecryptedMessage(header *segment.MessageHeaderSegment, end *segment.Mess
 	rawSegmentAcknowledgements := segmentExtractor.FindSegments("HIRMS")
 	for _, segmentAcknowledgementBytes := range rawSegmentAcknowledgements {
 		segmentAcknowledgement := &segment.SegmentAcknowledgement{}
+		segmentAcknowledgement.SetReferencingMessage(header.ReferencingMessage())
 		err = segmentAcknowledgement.UnmarshalHBCI(segmentAcknowledgementBytes)
 		if err != nil {
 			return nil, fmt.Errorf("Error while unmarshaling SegmentAcknowledgement: %v", err)

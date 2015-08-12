@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"bytes"
 	"fmt"
 	"strings"
 )
@@ -31,15 +32,34 @@ const (
 )
 
 type Acknowledgement struct {
-	Type                 string
-	Code                 int
-	ReferenceDataElement string
-	Text                 string
-	Params               []string
+	Type                     string
+	Code                     int
+	ReferenceDataElement     string
+	Text                     string
+	Params                   []string
+	ReferencingMessage       ReferencingMessage
+	ReferencingSegmentNumber int
 }
 
 func (a Acknowledgement) String() string {
-	return fmt.Sprintf("%s: Code: %d, Position: %s, Text: %s, Parameter: %s", a.Type, a.Code, a.ReferenceDataElement, a.Text, strings.Join(a.Params, ", "))
+	var buf bytes.Buffer
+	fmt.Fprintf(&buf, "%s for message %d (%s)", a.Type, a.ReferencingMessage.MessageNumber, a.ReferencingMessage.DialogID)
+	if a.ReferencingSegmentNumber > 0 {
+		fmt.Fprintf(&buf, ", segment %d: ", a.ReferencingSegmentNumber)
+	} else {
+		fmt.Fprintf(&buf, ": ")
+	}
+	fmt.Fprintf(&buf, "Code: %d, ", a.Code)
+	if a.ReferenceDataElement != "" {
+		fmt.Fprintf(&buf, "Position: %s, ", a.ReferenceDataElement)
+	} else {
+		fmt.Fprintf(&buf, "Position: none, ")
+	}
+	fmt.Fprintf(&buf, "Text: '%s'", a.Text)
+	if len(a.Params) != 0 {
+		fmt.Fprintf(&buf, ", Parameters: %s", strings.Join(a.Params, ", "))
+	}
+	return buf.String()
 }
 
 func (a Acknowledgement) IsMessageAcknowledgement() bool {
