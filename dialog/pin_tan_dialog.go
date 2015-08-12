@@ -3,7 +3,6 @@ package dialog
 import (
 	"fmt"
 	"io"
-	"strings"
 
 	"github.com/mitch000001/go-hbci/domain"
 	"github.com/mitch000001/go-hbci/message"
@@ -79,13 +78,10 @@ func (d *PinTanDialog) Anonymous(fn func() (string, error)) (string, error) {
 		return "", err
 	}
 
-	fmt.Printf("Response: %q\n", strings.Split(string(response), "'"))
-
-	res, err := fn()
+	_, err = fn()
 	if err != nil && err != io.EOF {
 		return "", err
 	}
-	fmt.Printf("Response: %q\n", strings.Split(res, "'"))
 
 	dialogEnd := d.dialogEnd()
 	dialogEnd.SetNumbers()

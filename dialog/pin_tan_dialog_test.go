@@ -154,7 +154,7 @@ func TestPinTanDialogSyncClientSystemID(t *testing.T) {
 
 	if err != nil {
 		errMessage := err.Error()
-		expectedMessage := "Institute returned errors:\nMessageAcknowledgement: Code: 9000, Position: , Text: Nachricht enthält Fehler, Parameter: "
+		expectedMessage := "Institute returned errors:\nMessageAcknowledgement for message 0 (), segment 1: Code: 9000, Position: none, Text: 'Nachricht enthält Fehler'"
 		if expectedMessage != errMessage {
 			t.Logf("Expected error to equal\n%q\n\tgot\n%q\n", expectedMessage, errMessage)
 			t.Fail()
@@ -169,6 +169,7 @@ func TestPinTanDialogInit(t *testing.T) {
 	clientID := "12345"
 	bankID := domain.BankId{280, "10000000"}
 	d := NewPinTanDialog(bankID, url, clientID)
+	d.ClientSystemID = "xyz"
 	d.SetPin("abcde")
 	d.transport = transport
 

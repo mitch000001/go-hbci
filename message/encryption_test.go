@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/mitch000001/go-hbci/domain"
+	"github.com/mitch000001/go-hbci/segment"
 )
 
 func TestEncryptedPinTanMessageDecrypt(t *testing.T) {
@@ -18,7 +19,11 @@ func TestEncryptedPinTanMessageDecrypt(t *testing.T) {
 
 	body := fmt.Sprintf("%s%s", acknowledgement, syncSegment)
 
-	encryptedMessage := NewEncryptedPinTanMessage("clientSystemID", *keyName, []byte(body))
+	header := segment.NewMessageHeaderSegment(1, 220, "abcde", 1)
+	end := segment.NewMessageEndSegment(4, 1)
+	encryptedMessage := NewEncryptedMessage(header, end)
+	provider.WriteEncryptionHeader(encryptedMessage)
+	encryptedMessage.EncryptedData = segment.NewEncryptedDataSegment([]byte(body))
 
 	decryptedMessage, err := encryptedMessage.Decrypt(provider)
 

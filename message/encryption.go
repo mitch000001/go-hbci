@@ -16,7 +16,6 @@ type CryptoProvider interface {
 	Encrypt(message []byte) ([]byte, error)
 	Decrypt(encryptedMessage []byte) ([]byte, error)
 	WriteEncryptionHeader(message *EncryptedMessage)
-	EncryptWithInitialKeyName(message []byte) (*EncryptedMessage, error)
 }
 
 const encryptionInitializationVector = "\x00\x00\x00\x00\x00\x00\x00\x00"
@@ -28,15 +27,6 @@ func GenerateMessageKey() ([]byte, error) {
 		return nil, err
 	}
 	return b, nil
-}
-
-func NewEncryptedPinTanMessage(clientSystemId string, keyName domain.KeyName, encryptedMessage []byte) *EncryptedMessage {
-	e := &EncryptedMessage{
-		EncryptionHeader: segment.NewPinTanEncryptionHeaderSegment(clientSystemId, keyName),
-		EncryptedData:    segment.NewEncryptedDataSegment(encryptedMessage),
-	}
-	e.ClientMessage = NewBasicMessage(e)
-	return e
 }
 
 func NewEncryptedMessage(header *segment.MessageHeaderSegment, end *segment.MessageEndSegment) *EncryptedMessage {
@@ -188,14 +178,6 @@ func (p *PinTanCryptoProvider) Encrypt(message []byte) ([]byte, error) {
 
 func (p *PinTanCryptoProvider) Decrypt(encryptedMessage []byte) ([]byte, error) {
 	return p.key.Decrypt(encryptedMessage)
-}
-
-func (p *PinTanCryptoProvider) EncryptWithInitialKeyName(message []byte) (*EncryptedMessage, error) {
-	keyName := p.key.KeyName()
-	keyName.SetInitial()
-	encryptedBytes, _ := p.key.Encrypt(message)
-	encryptedMessage := NewEncryptedPinTanMessage(p.clientSystemId, keyName, encryptedBytes)
-	return encryptedMessage, nil
 }
 
 func (p *PinTanCryptoProvider) WriteEncryptionHeader(message *EncryptedMessage) {
