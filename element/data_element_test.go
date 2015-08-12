@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/mitch000001/go-hbci/charset"
-	"github.com/mitch000001/go-hbci/domain"
 )
 
 type testDataElementData struct {
@@ -480,26 +479,5 @@ func TestGroupDataElementGroupUnmarshalHBCI(t *testing.T) {
 			t.Logf("Expected UnmarshalHBCI() to return \n%+#s\n\tgot \n%+#s\n", expectedArray, actualArray)
 			t.Fail()
 		}
-	}
-}
-
-func TestAccountConnectionUnmarshalHBCI(t *testing.T) {
-	test := "abc:subacc:280:12345678"
-
-	acc := &AccountConnectionDataElement{}
-
-	err := acc.UnmarshalHBCI([]byte(test))
-
-	if err != nil {
-		t.Logf("Expected no error, got %T:%v\n", err, err)
-		t.Fail()
-	}
-
-	expected := NewAccountConnection(domain.AccountConnection{"abc", "subacc", 280, "12345678"}).String()
-	actual := acc.String()
-
-	if expected != actual {
-		t.Logf("Expected unmarshaled value to equal\n%q\n\tgot\n%q\n", expected, actual)
-		t.Fail()
 	}
 }
