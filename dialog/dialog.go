@@ -34,7 +34,7 @@ func newDialog(bankId domain.BankId, hbciUrl string, userId string, signaturePro
 		hbciUrl:           hbciUrl,
 		BankID:            bankId,
 		UserID:            userId,
-		ClientID:          userId,
+		clientID:          userId,
 		ClientSystemID:    initialClientSystemID,
 		Language:          domain.German,
 		Accounts:          make([]domain.AccountInformation, 0),
@@ -50,7 +50,7 @@ type dialog struct {
 	hbciUrl           string
 	BankID            domain.BankId
 	UserID            string
-	ClientID          string
+	clientID          string
 	ClientSystemID    string
 	Language          domain.Language
 	UserParameterData domain.UserParameterData
@@ -187,7 +187,7 @@ func (d *dialog) Balances(allAccounts bool) ([]domain.AccountBalance, error) {
 
 func (d *dialog) SyncClientSystemID() (string, error) {
 	syncMessage := &message.SynchronisationMessage{
-		Identification:        segment.NewIdentificationSegment(d.BankID, d.ClientID, initialClientSystemID, true),
+		Identification:        segment.NewIdentificationSegment(d.BankID, d.clientID, initialClientSystemID, true),
 		ProcessingPreparation: segment.NewProcessingPreparationSegment(0, 0, 1),
 		Sync: segment.NewSynchronisationSegment(0),
 	}
@@ -265,7 +265,7 @@ func (d *dialog) Init() error {
 	d.dialogID = initialDialogID
 	d.messageCount = 0
 	initMessage := &message.DialogInitializationClientMessage{
-		Identification:        segment.NewIdentificationSegment(d.BankID, d.ClientID, d.ClientSystemID, true),
+		Identification:        segment.NewIdentificationSegment(d.BankID, d.clientID, d.ClientSystemID, true),
 		ProcessingPreparation: segment.NewProcessingPreparationSegment(d.BankParameterDataVersion(), d.UserParameterDataVersion(), d.Language),
 	}
 	initMessage.BasicMessage = d.newBasicMessage(initMessage)
@@ -423,7 +423,7 @@ func (d *dialog) parseUserParameterData(bankMessage message.BankMessage) error {
 			return fmt.Errorf("Error while unmarshaling User Parameter Data: %v", err)
 		}
 		d.UserParameterData = paramSegment.UserParameterData()
-		d.ClientID = d.UserParameterData.UserID
+		d.clientID = d.UserParameterData.UserID
 	}
 
 	accountData := bankMessage.FindSegments("HIUPD")

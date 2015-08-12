@@ -44,7 +44,6 @@ func (a *AmountDataElement) UnmarshalHBCI(value []byte) error {
 	if err != nil {
 		return err
 	}
-	fmt.Printf("elements: %s\n", elements)
 	if len(elements) != 2 {
 		return fmt.Errorf("Malformed marshaled value")
 	}

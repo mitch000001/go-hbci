@@ -64,7 +64,7 @@ func (d *PinTanDialog) Anonymous(fn func() (string, error)) (string, error) {
 	messageNum := d.nextMessageNumber()
 	initMessage.Header = segment.NewMessageHeaderSegment(-1, 220, initialDialogID, messageNum)
 	initMessage.End = segment.NewMessageEndSegment(8, messageNum)
-	initMessage.Identification = segment.NewIdentificationSegment(d.BankID, d.ClientID, "0", false)
+	initMessage.Identification = segment.NewIdentificationSegment(d.BankID, d.clientID, "0", false)
 	initMessage.ProcessingPreparation = segment.NewProcessingPreparationSegment(0, 0, 1)
 	initMessage.SetNumbers()
 	initMessage.SetSize()
