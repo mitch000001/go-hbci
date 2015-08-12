@@ -82,12 +82,55 @@ func (d *dialog) SetSecurityFunction(securityFn string) {
 	d.signatureProvider.SetSecurityFunction(d.securityFn)
 }
 
-func (d *dialog) Balances(allAccounts bool) ([]domain.AccountBalance, error) {
-	err := d.init()
+func (d *dialog) AccountInformation(allAccounts bool) error {
+	err := d.Init()
 	if err != nil {
-		return nil, err
+		return err
 	}
-	err = d.Init()
+	defer func() {
+		d.End()
+	}()
+	account := *d.Accounts[len(d.Accounts)-1].AccountConnection
+	fmt.Printf("Account: %#v\n", account)
+	accountInformationRequest := segment.NewAccountInformationRequestSegment(account, allAccounts)
+	clientMessage := d.newBasicMessage(message.NewHBCIMessage(accountInformationRequest))
+	signedMessage, err := clientMessage.Sign(d.signatureProvider)
+	if err != nil {
+		return err
+	}
+	encMessage, err := signedMessage.Encrypt(d.cryptoProvider)
+	if err != nil {
+		return err
+	}
+	decryptedMessage, err := d.request(encMessage)
+	if err != nil {
+		return err
+	}
+	var errors []string
+	acknowledgements := decryptedMessage.Acknowledgements()
+	for _, ack := range acknowledgements {
+		if ack.IsWarning() {
+			fmt.Printf("%v\n", ack)
+		}
+		if ack.IsError() {
+			errors = append(errors, ack.String())
+		}
+	}
+	if len(errors) > 0 {
+		return fmt.Errorf("Institute returned errors:\n%s", strings.Join(errors, "\n"))
+	}
+	accountInfoResponse := decryptedMessage.FindSegment("HIKIF")
+	if accountInfoResponse != nil {
+		fmt.Printf("Account Info: %s\n", accountInfoResponse)
+		return nil
+	} else {
+		return fmt.Errorf("Malformed response: expected HIKIF segment")
+	}
+	return nil
+}
+
+func (d *dialog) Balances(allAccounts bool) ([]domain.AccountBalance, error) {
+	err := d.Init()
 	if err != nil {
 		return nil, err
 	}
