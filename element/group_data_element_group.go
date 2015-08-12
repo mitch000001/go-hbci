@@ -39,6 +39,29 @@ func (a *AmountDataElement) Val() domain.Amount {
 	}
 }
 
+func (a *AmountDataElement) UnmarshalHBCI(value []byte) error {
+	elements, err := ExtractElements(value)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("elements: %s\n", elements)
+	if len(elements) != 2 {
+		return fmt.Errorf("Malformed marshaled value")
+	}
+	a.Amount = &ValueDataElement{}
+	err = a.Amount.UnmarshalHBCI(elements[0])
+	if err != nil {
+		return err
+	}
+	a.Currency = &CurrencyDataElement{}
+	err = a.Currency.UnmarshalHBCI(elements[1])
+	if err != nil {
+		return err
+	}
+	a.DataElement = NewGroupDataElementGroup(AmountGDEG, 2, a)
+	return nil
+}
+
 func NewBankIndentification(bankId domain.BankId) *BankIdentificationDataElement {
 	b := &BankIdentificationDataElement{
 		CountryCode: NewCountryCode(bankId.CountryCode),
@@ -145,7 +168,7 @@ func (a *AccountConnectionDataElement) Val() domain.AccountConnection {
 	}
 }
 
-func NewBalance(balance domain.Balance, date time.Time) *BalanceDataElement {
+func NewBalance(balance domain.Balance, date time.Time, withTime bool) *BalanceDataElement {
 	var debitCredit string
 	if balance.Amount < 0 {
 		debitCredit = "D"
@@ -157,7 +180,9 @@ func NewBalance(balance domain.Balance, date time.Time) *BalanceDataElement {
 		Amount:               NewValue(math.Abs(balance.Amount)),
 		Currency:             NewCurrency(balance.Currency),
 		TransmissionDate:     NewDate(date),
-		TransmissionTime:     NewTime(date),
+	}
+	if withTime {
+		b.TransmissionTime = NewTime(date)
 	}
 	b.DataElement = NewGroupDataElementGroup(BalanceGDEG, 5, b)
 	return b
@@ -194,6 +219,45 @@ func (b *BalanceDataElement) Balance() domain.Balance {
 		Currency: currency,
 	}
 	return balance
+}
+
+func (b *BalanceDataElement) UnmarshalHBCI(value []byte) error {
+	elements, err := ExtractElements(value)
+	if err != nil {
+		return err
+	}
+	if len(elements) < 4 {
+		return fmt.Errorf("%T: Malformed marshaled value", b)
+	}
+	b.DebitCreditIndicator = &AlphaNumericDataElement{}
+	err = b.DebitCreditIndicator.UnmarshalHBCI(elements[0])
+	if err != nil {
+		return err
+	}
+	b.Amount = &ValueDataElement{}
+	err = b.Amount.UnmarshalHBCI(elements[1])
+	if err != nil {
+		return err
+	}
+	b.Currency = &CurrencyDataElement{}
+	err = b.Currency.UnmarshalHBCI(elements[2])
+	if err != nil {
+		return err
+	}
+	b.TransmissionDate = &DateDataElement{}
+	err = b.TransmissionDate.UnmarshalHBCI(elements[3])
+	if err != nil {
+		return err
+	}
+	if len(elements) == 5 {
+		b.TransmissionTime = &TimeDataElement{}
+		err = b.TransmissionTime.UnmarshalHBCI(elements[4])
+		if err != nil {
+			return err
+		}
+	}
+	b.DataElement = NewGroupDataElementGroup(BalanceGDEG, 5, b)
+	return nil
 }
 
 func (b *BalanceDataElement) Date() time.Time {

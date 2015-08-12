@@ -1,5 +1,7 @@
 package segment
 
+//go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment AccountBalanceResponseSegment
+
 import (
 	"time"
 

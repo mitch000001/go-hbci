@@ -166,14 +166,23 @@ func (d *dialog) Balances(allAccounts bool) ([]domain.AccountBalance, error) {
 	if len(errors) > 0 {
 		return nil, fmt.Errorf("Institute returned errors:\n%s", strings.Join(errors, "\n"))
 	}
-	balanceResponse := decryptedMessage.FindSegment("HISAL")
-	if balanceResponse != nil {
+	var balances []domain.AccountBalance
+	balanceResponses := decryptedMessage.FindSegments("HISAL")
+	if balanceResponses != nil {
+		for _, marshaledSegment := range balanceResponses {
+			balanceSegment := &segment.AccountBalanceResponseSegment{}
+			err = balanceSegment.UnmarshalHBCI(marshaledSegment)
+			if err != nil {
+				return nil, fmt.Errorf("Error while parsing account balance: %v", err)
+			}
+			balances = append(balances, balanceSegment.AccountBalance())
+		}
 		return nil, nil
 	} else {
 		return nil, fmt.Errorf("Malformed response: expected HISAL segment")
 	}
 
-	return nil, fmt.Errorf("TODO")
+	return balances, nil
 }
 
 func (d *dialog) SyncClientSystemID() (string, error) {
