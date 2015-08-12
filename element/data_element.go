@@ -168,7 +168,7 @@ func (g *elementGroup) SetOptional() {
 	g.optional = true
 }
 
-func NewArrayElementGroup(typ DataElementType, min, max int, elems ...DataElement) *arrayElementGroup {
+func NewArrayElementGroup(typ DataElementType, min, max int, elems []DataElement) *arrayElementGroup {
 	e := &arrayElementGroup{
 		array:     elems,
 		minLength: min,

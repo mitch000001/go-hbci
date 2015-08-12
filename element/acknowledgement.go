@@ -103,7 +103,7 @@ func NewParams(min, max int, params ...string) *ParamsDataElement {
 	for _, p := range params {
 		paramDE = append(paramDE, NewAlphaNumeric(p, 35))
 	}
-	return &ParamsDataElement{arrayElementGroup: NewArrayElementGroup(AcknowlegdementParamsGDEG, min, max, paramDE...)}
+	return &ParamsDataElement{arrayElementGroup: NewArrayElementGroup(AcknowlegdementParamsGDEG, min, max, paramDE)}
 }
 
 type ParamsDataElement struct {
@@ -130,6 +130,6 @@ func (p *ParamsDataElement) UnmarshalHBCI(value []byte) error {
 	for i, elem := range elements {
 		dataElements[i] = NewAlphaNumeric(charset.ToUtf8(elem), 35)
 	}
-	p.arrayElementGroup = NewArrayElementGroup(AcknowlegdementParamsGDEG, 10, 10, dataElements...)
+	p.arrayElementGroup = NewArrayElementGroup(AcknowlegdementParamsGDEG, 10, 10, dataElements)
 	return nil
 }

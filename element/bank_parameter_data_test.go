@@ -16,7 +16,7 @@ func TestPinTanBusinessTransactionParametersUnmarshalHBCI(t *testing.T) {
 	}
 	param2.DataElement = NewGroupDataElementGroup(PinTanBusinessTransactionParameterGDEG, 2, param2)
 	expectedElement := &PinTanBusinessTransactionParameters{}
-	expectedElement.arrayElementGroup = NewArrayElementGroup(PinTanBusinessTransactionParameterGDEG, 2, 2, param1, param2)
+	expectedElement.arrayElementGroup = NewArrayElementGroup(PinTanBusinessTransactionParameterGDEG, 2, 2, []DataElement{param1, param2})
 
 	expected := expectedElement.String()
 

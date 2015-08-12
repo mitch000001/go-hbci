@@ -55,7 +55,7 @@ func NewAllowedBusinessTransactions(transactions ...domain.BusinessTransaction) 
 		transactionDEs = append(transactionDEs, NewAllowedBusinessTransaction(tr))
 	}
 	a := &AllowedBusinessTransactionsDataElement{
-		arrayElementGroup: NewArrayElementGroup(AllowedBusinessTransactionDEG, 0, 999, transactionDEs...),
+		arrayElementGroup: NewArrayElementGroup(AllowedBusinessTransactionDEG, 0, 999, transactionDEs),
 	}
 	return a
 }
@@ -76,7 +76,7 @@ func (a *AllowedBusinessTransactionsDataElement) UnmarshalHBCI(value []byte) err
 		transactions[i] = tr
 	}
 	*a = AllowedBusinessTransactionsDataElement{
-		arrayElementGroup: NewArrayElementGroup(AllowedBusinessTransactionDEG, 0, 999, transactions...),
+		arrayElementGroup: NewArrayElementGroup(AllowedBusinessTransactionDEG, 0, 999, transactions),
 	}
 	return nil
 }

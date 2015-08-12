@@ -48,7 +48,7 @@ func NewSecurityMethodVersions(min, max int, versions ...int) *SecurityMethodVer
 		versionDEs[i] = NewNumber(version, 3)
 	}
 	s := &SecurityMethodVersionsDataElement{}
-	s.arrayElementGroup = NewArrayElementGroup(SecurityMethodVersionGDEG, min, max, versionDEs...)
+	s.arrayElementGroup = NewArrayElementGroup(SecurityMethodVersionGDEG, min, max, versionDEs)
 	return s
 }
 
@@ -62,7 +62,7 @@ func (s *SecurityMethodVersionsDataElement) Elements() []DataElement {
 
 func (s *SecurityMethodVersionsDataElement) UnmarshalHBCI(value []byte) error {
 	dataElements := make([]DataElement, 9)
-	s.arrayElementGroup = NewArrayElementGroup(SecurityMethodVersionGDEG, 1, 9, dataElements...)
+	s.arrayElementGroup = NewArrayElementGroup(SecurityMethodVersionGDEG, 1, 9, dataElements)
 	return s.arrayElementGroup.UnmarshalHBCI(value)
 }
 
@@ -80,7 +80,7 @@ func NewSupportedHBCIVersions(versions ...int) *SupportedHBCIVersionsDataElement
 		versionDEs[i] = NewNumber(version, 3)
 	}
 	s := &SupportedHBCIVersionsDataElement{}
-	s.arrayElementGroup = NewArrayElementGroup(SupportedHBCIVersionDEG, 1, 9, versionDEs...)
+	s.arrayElementGroup = NewArrayElementGroup(SupportedHBCIVersionDEG, 1, 9, versionDEs)
 	return s
 }
 
@@ -109,7 +109,7 @@ func (s *SupportedHBCIVersionsDataElement) UnmarshalHBCI(value []byte) error {
 		}
 		versions[i] = NewNumber(version, 3)
 	}
-	s.arrayElementGroup = NewArrayElementGroup(SupportedHBCIVersionDEG, 1, 9, versions...)
+	s.arrayElementGroup = NewArrayElementGroup(SupportedHBCIVersionDEG, 1, 9, versions)
 	return nil
 }
 
@@ -119,7 +119,7 @@ func NewSupportedLanguages(languages ...int) *SupportedLanguagesDataElement {
 		languageDEs[i] = NewNumber(lang, 3)
 	}
 	s := &SupportedLanguagesDataElement{}
-	s.arrayElementGroup = NewArrayElementGroup(SupportedLanguagesDEG, 1, 9, languageDEs...)
+	s.arrayElementGroup = NewArrayElementGroup(SupportedLanguagesDEG, 1, 9, languageDEs)
 	return s
 }
 
@@ -156,7 +156,7 @@ func (s *SupportedLanguagesDataElement) UnmarshalHBCI(value []byte) error {
 		}
 		languages[i] = NewNumber(lang, 3)
 	}
-	s.arrayElementGroup = NewArrayElementGroup(SupportedLanguagesDEG, 1, 9, languages...)
+	s.arrayElementGroup = NewArrayElementGroup(SupportedLanguagesDEG, 1, 9, languages)
 	return nil
 }
 
@@ -184,7 +184,7 @@ func NewPinTanBusinessTransactionParameters(pinTanTransactions []domain.PinTanBu
 		transactionsDEs[i] = pinTanBusinessTransaction
 	}
 	p := &PinTanBusinessTransactionParameters{}
-	p.arrayElementGroup = NewArrayElementGroup(PinTanBusinessTransactionParameterGDEG, len(transactionsDEs), len(transactionsDEs), transactionsDEs...)
+	p.arrayElementGroup = NewArrayElementGroup(PinTanBusinessTransactionParameterGDEG, len(transactionsDEs), len(transactionsDEs), transactionsDEs)
 	return p
 }
 
@@ -218,7 +218,7 @@ func (p *PinTanBusinessTransactionParameters) UnmarshalHBCI(value []byte) error 
 		}
 		dataElements[i/2] = pinTanTransaction
 	}
-	p.arrayElementGroup = NewArrayElementGroup(PinTanBusinessTransactionParameterGDEG, len(dataElements), len(dataElements), dataElements...)
+	p.arrayElementGroup = NewArrayElementGroup(PinTanBusinessTransactionParameterGDEG, len(dataElements), len(dataElements), dataElements)
 	return nil
 }
 
