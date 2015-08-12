@@ -28,12 +28,13 @@ type Dialog interface {
 	End() error
 }
 
-func newDialog(bankId domain.BankId, hbciUrl string, clientId string, signatureProvider message.SignatureProvider, cryptoProvider message.CryptoProvider) *dialog {
+func newDialog(bankId domain.BankId, hbciUrl string, userId string, signatureProvider message.SignatureProvider, cryptoProvider message.CryptoProvider) *dialog {
 	return &dialog{
 		httpClient:        http.DefaultClient,
 		hbciUrl:           hbciUrl,
 		BankID:            bankId,
-		ClientID:          clientId,
+		UserID:            userId,
+		ClientID:          userId,
 		ClientSystemID:    initialClientSystemID,
 		Language:          domain.German,
 		Accounts:          make([]domain.AccountInformation, 0),
@@ -48,6 +49,7 @@ type dialog struct {
 	httpClient        *http.Client
 	hbciUrl           string
 	BankID            domain.BankId
+	UserID            string
 	ClientID          string
 	ClientSystemID    string
 	Language          domain.Language
@@ -91,7 +93,7 @@ func (d *dialog) Balances(allAccounts bool) ([]domain.AccountBalance, error) {
 	}
 	defer d.End()
 	account := *d.Accounts[len(d.Accounts)-1].AccountConnection
-	fmt.Printf("Account: %q\n", account)
+	fmt.Printf("Account: %#v\n", account)
 	accountBalanceRequest := segment.NewAccountBalanceRequestSegment(account, allAccounts)
 	clientMessage := d.newBasicMessage(message.NewHBCIMessage(accountBalanceRequest))
 	signedMessage, err := clientMessage.Sign(d.signatureProvider)
@@ -188,26 +190,9 @@ func (d *dialog) SyncClientSystemID() (string, error) {
 		return "", err
 	}
 
-	userParamData := decryptedMessage.FindSegment("HIUPA")
-	if userParamData != nil {
-		paramSegment := &segment.CommonUserParameterDataSegment{}
-		err = paramSegment.UnmarshalHBCI(userParamData)
-		if err != nil {
-			return "", fmt.Errorf("Error while unmarshaling User Parameter Data: %v", err)
-		}
-		d.UserParameterData = paramSegment.UserParameterData()
-	}
-
-	accountData := decryptedMessage.FindSegments("HIUPD")
-	if accountData != nil {
-		for _, acc := range accountData {
-			infoSegment := &segment.AccountInformationSegment{}
-			err = infoSegment.UnmarshalHBCI(acc)
-			if err != nil {
-				return "", fmt.Errorf("Error while unmarshaling Accounts: %v", err)
-			}
-			d.Accounts = append(d.Accounts, infoSegment.Account())
-		}
+	err = d.parseUserParameterData(decryptedMessage)
+	if err != nil {
+		return "", err
 	}
 
 	err = d.End()
@@ -219,6 +204,10 @@ func (d *dialog) SyncClientSystemID() (string, error) {
 }
 
 func (d *dialog) Init() error {
+	err := d.init()
+	if err != nil {
+		return err
+	}
 	d.dialogID = initialDialogID
 	d.messageCount = 0
 	initMessage := &message.DialogInitializationClientMessage{
@@ -250,26 +239,9 @@ func (d *dialog) Init() error {
 		return err
 	}
 
-	userParamData := decryptedMessage.FindSegment("HIUPA")
-	if userParamData != nil {
-		paramSegment := &segment.CommonUserParameterDataSegment{}
-		err = paramSegment.UnmarshalHBCI(userParamData)
-		if err != nil {
-			return fmt.Errorf("Error while unmarshaling User Parameter Data: %v", err)
-		}
-		d.UserParameterData = paramSegment.UserParameterData()
-	}
-
-	accountData := decryptedMessage.FindSegments("HIUPD")
-	if accountData != nil {
-		for _, acc := range accountData {
-			infoSegment := &segment.AccountInformationSegment{}
-			err = infoSegment.UnmarshalHBCI(acc)
-			if err != nil {
-				return fmt.Errorf("Error while unmarshaling Accounts: %v", err)
-			}
-			d.Accounts = append(d.Accounts, infoSegment.Account())
-		}
+	err = d.parseUserParameterData(decryptedMessage)
+	if err != nil {
+		return err
 	}
 
 	bankInfoMessageBytes := decryptedMessage.FindSegment("HIKIM")
@@ -373,6 +345,33 @@ func (d *dialog) parseBankParameterData(bankMessage message.BankMessage) error {
 		}
 		d.BankParameterData.PinTanBusinessTransactions = pinTransactions
 	}
+	return nil
+}
+
+func (d *dialog) parseUserParameterData(bankMessage message.BankMessage) error {
+	userParamData := bankMessage.FindSegment("HIUPA")
+	if userParamData != nil {
+		paramSegment := &segment.CommonUserParameterDataSegment{}
+		err := paramSegment.UnmarshalHBCI(userParamData)
+		if err != nil {
+			return fmt.Errorf("Error while unmarshaling User Parameter Data: %v", err)
+		}
+		d.UserParameterData = paramSegment.UserParameterData()
+		d.ClientID = d.UserParameterData.UserID
+	}
+
+	accountData := bankMessage.FindSegments("HIUPD")
+	if accountData != nil {
+		for _, acc := range accountData {
+			infoSegment := &segment.AccountInformationSegment{}
+			err := infoSegment.UnmarshalHBCI(acc)
+			if err != nil {
+				return fmt.Errorf("Error while unmarshaling Accounts: %v", err)
+			}
+			d.Accounts = append(d.Accounts, infoSegment.Account())
+		}
+	}
+
 	return nil
 }
 

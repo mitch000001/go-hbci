@@ -11,16 +11,16 @@ import (
 	"github.com/mitch000001/go-hbci/transport"
 )
 
-func NewPinTanDialog(bankId domain.BankId, hbciUrl string, clientId string) *PinTanDialog {
-	pinKey := domain.NewPinKey("", domain.NewPinTanKeyName(bankId, clientId, "S"))
+func NewPinTanDialog(bankId domain.BankId, hbciUrl string, userId string) *PinTanDialog {
+	pinKey := domain.NewPinKey("", domain.NewPinTanKeyName(bankId, userId, "S"))
 	signatureProvider := message.NewPinTanSignatureProvider(pinKey, "0")
-	pinKey = domain.NewPinKey("", domain.NewPinTanKeyName(bankId, clientId, "V"))
+	pinKey = domain.NewPinKey("", domain.NewPinTanKeyName(bankId, userId, "V"))
 	cryptoProvider := message.NewPinTanCryptoProvider(pinKey, "0")
 	d := &PinTanDialog{
 		dialog: newDialog(
 			bankId,
 			hbciUrl,
-			clientId,
+			userId,
 			signatureProvider,
 			cryptoProvider,
 		),
@@ -36,9 +36,9 @@ type PinTanDialog struct {
 
 func (d *PinTanDialog) SetPin(pin string) {
 	d.pin = pin
-	pinKey := domain.NewPinKey(pin, domain.NewPinTanKeyName(d.BankID, d.ClientID, "S"))
+	pinKey := domain.NewPinKey(pin, domain.NewPinTanKeyName(d.BankID, d.UserID, "S"))
 	d.signatureProvider = message.NewPinTanSignatureProvider(pinKey, d.ClientSystemID)
-	pinKey = domain.NewPinKey(pin, domain.NewPinTanKeyName(d.BankID, d.ClientID, "V"))
+	pinKey = domain.NewPinKey(pin, domain.NewPinTanKeyName(d.BankID, d.UserID, "V"))
 	d.cryptoProvider = message.NewPinTanCryptoProvider(pinKey, d.ClientSystemID)
 }
 
