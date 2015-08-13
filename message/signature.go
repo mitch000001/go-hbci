@@ -69,6 +69,9 @@ func (p *PinTanSignatureProvider) SetSecurityFunction(securityFn string) {
 }
 
 func (p *PinTanSignatureProvider) SignMessage(signedMessage SignedHBCIMessage) error {
+	if p.key.Pin() == "" {
+		return fmt.Errorf("Malformed PIN")
+	}
 	signatureHeader := segment.NewPinTanSignatureHeaderSegment(p.controlReference, p.clientSystemId, p.key.KeyName())
 	signatureHeader.SetSecurityFunction(p.securityFn)
 	signatureEnd := segment.NewSignatureEndSegment(0, p.controlReference)

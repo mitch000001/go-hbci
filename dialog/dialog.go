@@ -177,7 +177,6 @@ func (d *dialog) Balances(allAccounts bool) ([]domain.AccountBalance, error) {
 			}
 			balances = append(balances, balanceSegment.AccountBalance())
 		}
-		return nil, nil
 	} else {
 		return nil, fmt.Errorf("Malformed response: expected HISAL segment")
 	}

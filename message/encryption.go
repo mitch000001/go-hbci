@@ -173,6 +173,9 @@ func (p *PinTanCryptoProvider) SetClientSystemID(clientSystemId string) {
 }
 
 func (p *PinTanCryptoProvider) Encrypt(message []byte) ([]byte, error) {
+	if p.key.Pin() == "" {
+		return nil, fmt.Errorf("Malformed PIN")
+	}
 	return p.key.Encrypt(message)
 }
 

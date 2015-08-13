@@ -3,9 +3,81 @@ package dialog
 import (
 	"reflect"
 	"testing"
+	"time"
 
 	"github.com/mitch000001/go-hbci/domain"
 )
+
+func TestPinTanDialogBalances(t *testing.T) {
+	transport := &MockHttpsTransport{}
+
+	url := "http://localhost"
+	clientID := "12345"
+	bankID := domain.BankId{280, "10000000"}
+	d := NewPinTanDialog(bankID, url, clientID)
+	d.SetPin("abcde")
+	d.SetClientSystemID("xyz")
+	d.transport = transport
+
+	d.Accounts = []domain.AccountInformation{
+		domain.AccountInformation{
+			AccountConnection: &domain.AccountConnection{AccountID: "100000000", CountryCode: 280, BankID: "10000000"},
+			UserID:            "100000000",
+			Currency:          "EUR",
+			Name1:             "Muster",
+			Name2:             "Max",
+			AllowedBusinessTransactions: []domain.BusinessTransaction{
+				domain.BusinessTransaction{ID: "HKSAL", NeededSignatures: 1},
+			},
+		},
+	}
+
+	initResponse := encryptedTestMessage(
+		"abcde",
+		"HIRMG:2:2:1+0020::Auftrag entgegengenommen'",
+		"HIKIM:10:2+ec-Karte+Ihre neue ec-Karte liegt zur Abholung bereit.'",
+	)
+	balanceResponse := encryptedTestMessage(
+		"abcde",
+		"HIRMG:2:2:1+0020::Auftrag entgegengenommen'",
+		"HISAL:3:5:1+100000000::280:10000000+Sichteinlagen+EUR+C:1000,15:EUR:20150812+C:20,:EUR:20150812+500,:EUR+1499,85:EUR'",
+	)
+	dialogEndResponseMessage := encryptedTestMessage("abcde", "HIRMG:2:2:1+0020::Der Auftrag wurde ausgeführt'")
+
+	transport.SetResponseMessages([][]byte{
+		initResponse,
+		balanceResponse,
+		dialogEndResponseMessage,
+	})
+
+	balances, err := d.Balances(true)
+	if err != nil {
+		t.Logf("Expected no error, got %T:%v\n", err, err)
+		t.Fail()
+	}
+
+	date, _ := time.Parse("20060102", "20150812")
+
+	expectedBalance := domain.AccountBalance{
+		Account:          domain.AccountConnection{AccountID: "100000000", CountryCode: 280, BankID: "10000000"},
+		ProductName:      "Sichteinlagen",
+		Currency:         "EUR",
+		BookedBalance:    domain.Balance{domain.Amount{1000.15, "EUR"}, date, nil},
+		EarmarkedBalance: &domain.Balance{domain.Amount{20, "EUR"}, date, nil},
+		CreditLimit:      &domain.Amount{500, "EUR"},
+		AvailableAmount:  &domain.Amount{1499.85, "EUR"},
+	}
+
+	if len(balances) != 1 {
+		t.Logf("Expected balances length to equal 1, was %d\n", len(balances))
+		t.Fail()
+	} else {
+		if !reflect.DeepEqual(balances[0], expectedBalance) {
+			t.Logf("Expected balance to equal\n%#v\n\tgot\n%#v\n", expectedBalance, balances[0])
+			t.Fail()
+		}
+	}
+}
 
 func TestPinTanDialogSyncClientSystemID(t *testing.T) {
 	transport := &MockHttpsTransport{}

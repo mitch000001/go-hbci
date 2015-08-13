@@ -16,9 +16,10 @@ func TestAccountBalanceResponseSegmentUnmarshalHBCI(t *testing.T) {
 		AccountConnection:  element.NewAccountConnection(domain.AccountConnection{AccountID: "100000000", CountryCode: 280, BankID: "10000000"}),
 		AccountProductName: element.NewAlphaNumeric("Sichteinlagen", 35),
 		AccountCurrency:    element.NewCurrency("EUR"),
-		BookedBalance:      element.NewBalance(domain.Balance{1000.15, "EUR"}, date, false),
-		EarmarkedBalance:   element.NewBalance(domain.Balance{20, "EUR"}, date, false),
+		BookedBalance:      element.NewBalance(domain.Amount{1000.15, "EUR"}, date, false),
+		EarmarkedBalance:   element.NewBalance(domain.Amount{20, "EUR"}, date, false),
 		CreditLimit:        element.NewAmount(500, "EUR"),
+		AvailableAmount:    element.NewAmount(1499.85, "EUR"),
 	}
 	expectedSegment.Segment = NewReferencingBasicSegment(4, 3, expectedSegment)
 

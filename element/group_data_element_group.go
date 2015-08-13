@@ -167,17 +167,17 @@ func (a *AccountConnectionDataElement) Val() domain.AccountConnection {
 	}
 }
 
-func NewBalance(balance domain.Balance, date time.Time, withTime bool) *BalanceDataElement {
+func NewBalance(amount domain.Amount, date time.Time, withTime bool) *BalanceDataElement {
 	var debitCredit string
-	if balance.Amount < 0 {
+	if amount.Amount < 0 {
 		debitCredit = "D"
 	} else {
 		debitCredit = "C"
 	}
 	b := &BalanceDataElement{
 		DebitCreditIndicator: NewAlphaNumeric(debitCredit, 1),
-		Amount:               NewValue(math.Abs(balance.Amount)),
-		Currency:             NewCurrency(balance.Currency),
+		Amount:               NewValue(math.Abs(amount.Amount)),
+		Currency:             NewCurrency(amount.Currency),
 		TransmissionDate:     NewDate(date),
 	}
 	if withTime {
@@ -213,9 +213,17 @@ func (b *BalanceDataElement) Balance() domain.Balance {
 		val = -val
 	}
 	currency := b.Currency.Val()
-	balance := domain.Balance{
+	amount := domain.Amount{
 		Amount:   val,
 		Currency: currency,
+	}
+	balance := domain.Balance{
+		Amount:           amount,
+		TransmissionDate: b.TransmissionDate.Val(),
+	}
+	if transmissionTime := b.TransmissionTime; transmissionTime != nil {
+		val := transmissionTime.Val()
+		balance.TransmissionTime = &val
 	}
 	return balance
 }

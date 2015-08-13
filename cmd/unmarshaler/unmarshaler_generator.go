@@ -117,7 +117,7 @@ func ({{.NameVar}} *{{.Name}}) UnmarshalHBCI(value []byte) error {
 		return err
 	}
 	{{.NameVar}}.Segment = seg{{ range $idx, $field := .Fields }}
-	if len(elements) > {{ plusOne $idx | plusOne }} {
+	if len(elements) >= {{ plusOne $idx | plusOne }} {
 		{{ $.NameVar }}.{{ $field.Name }} = &{{ $field.TypeDecl }}{}
 		err = {{ $.NameVar }}.{{ $field.Name }}.UnmarshalHBCI(elements[{{ plusOne $idx }}])
 		if err != nil {

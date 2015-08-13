@@ -1,6 +1,9 @@
 package domain
 
+import "time"
+
 type Balance struct {
-	Amount   float64
-	Currency string
+	Amount           Amount
+	TransmissionDate time.Time
+	TransmissionTime *time.Time
 }
