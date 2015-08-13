@@ -1,7 +1,5 @@
 package segment
 
-//go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment AccountBalanceResponseSegment
-
 import (
 	"time"
 
@@ -39,6 +37,8 @@ func (a *AccountBalanceRequestSegment) elements() []element.DataElement {
 		a.Aufsetzpunkt,
 	}
 }
+
+//go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment AccountBalanceResponseSegment
 
 type AccountBalanceResponseSegment struct {
 	Segment

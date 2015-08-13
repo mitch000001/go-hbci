@@ -16,7 +16,7 @@ const (
 	binaryIdentifier          = '@'
 )
 
-type stringLexerStateFn func(*StringLexer) stringLexerStateFn
+type StringLexerStateFn func(*StringLexer) StringLexerStateFn
 
 // NewStringLexer creates a new scanner for the input string.
 func NewStringLexer(name, input string) *StringLexer {
@@ -32,11 +32,25 @@ func NewStringLexer(name, input string) *StringLexer {
 type StringLexer struct {
 	name   string             // the name of the input; used only for error reports.
 	input  string             // the string being scanned.
-	state  stringLexerStateFn // the next lexing function to enter
+	state  StringLexerStateFn // the next lexing function to enter
 	pos    int                // current position in the input.
 	start  int                // start position of this item.
 	width  int                // width of last rune read from input.
 	tokens chan Token         // channel of scanned tokens.
+}
+
+// SetEntryPoint sets the initial state of the lexer. The lexer will reset itself to use the
+// new entryPoint properly
+func (l *StringLexer) SetEntryPoint(entryPoint StringLexerStateFn) {
+	l.reset()
+	l.state = entryPoint
+}
+
+func (l *StringLexer) reset() {
+	l.pos = 0
+	l.start = 0
+	l.width = 0
+	l.tokens = make(chan Token, 2)
 }
 
 func (l *StringLexer) run() {
@@ -133,14 +147,14 @@ func (l *StringLexer) lineNumber() int {
 
 // error returns an error token and terminates the scan by passing
 // back a nil pointer that will be the next state, terminating l.run.
-func (l *StringLexer) errorf(format string, args ...interface{}) stringLexerStateFn {
+func (l *StringLexer) errorf(format string, args ...interface{}) StringLexerStateFn {
 	l.tokens <- NewToken(ERROR, fmt.Sprintf(format, args...), l.start)
 	return nil
 }
 
 // state functions
 
-func lexText(l *StringLexer) stringLexerStateFn {
+func lexText(l *StringLexer) StringLexerStateFn {
 	switch r := l.next(); {
 	case r == dataElementSeparator:
 		l.emit(DATA_ELEMENT_SEPARATOR)
@@ -167,7 +181,7 @@ func lexText(l *StringLexer) stringLexerStateFn {
 	}
 }
 
-func lexAlphaNumeric(l *StringLexer) stringLexerStateFn {
+func lexAlphaNumeric(l *StringLexer) StringLexerStateFn {
 	text := false
 	for {
 		switch r := l.next(); {
@@ -193,7 +207,7 @@ func lexAlphaNumeric(l *StringLexer) stringLexerStateFn {
 	}
 }
 
-func lexBinaryData(l *StringLexer) stringLexerStateFn {
+func lexBinaryData(l *StringLexer) StringLexerStateFn {
 	l.accept("@")
 	digits := "0123456789"
 	binaryLengthStart := l.pos
@@ -218,7 +232,7 @@ func lexBinaryData(l *StringLexer) stringLexerStateFn {
 	}
 }
 
-func lexDigit(l *StringLexer) stringLexerStateFn {
+func lexDigit(l *StringLexer) StringLexerStateFn {
 	leadingZero := l.accept("0")
 	if leadingZero {
 		// Only valid number with leading 0 is 0

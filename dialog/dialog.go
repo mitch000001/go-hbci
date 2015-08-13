@@ -82,6 +82,62 @@ func (d *dialog) SetSecurityFunction(securityFn string) {
 	d.signatureProvider.SetSecurityFunction(d.securityFn)
 }
 
+func (d *dialog) AccountTransactions(timeframe domain.Timeframe, allAccounts bool) ([]domain.AccountTransaction, error) {
+	err := d.Init()
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		d.End()
+	}()
+	account := *d.Accounts[len(d.Accounts)-1].AccountConnection
+	fmt.Printf("Account: %#v\n", account)
+	accountTransactionRequest := segment.NewAccountTransactionRequestSegment(account, allAccounts)
+	accountTransactionRequest.SetTransactionRange(timeframe)
+	clientMessage := d.newBasicMessage(message.NewHBCIMessage(accountTransactionRequest))
+	signedMessage, err := clientMessage.Sign(d.signatureProvider)
+	if err != nil {
+		return nil, err
+	}
+	encMessage, err := signedMessage.Encrypt(d.cryptoProvider)
+	if err != nil {
+		return nil, err
+	}
+	decryptedMessage, err := d.request(encMessage)
+	if err != nil {
+		return nil, err
+	}
+	var errors []string
+	acknowledgements := decryptedMessage.Acknowledgements()
+	for _, ack := range acknowledgements {
+		if ack.IsWarning() {
+			fmt.Printf("%v\n", ack)
+		}
+		if ack.IsError() {
+			errors = append(errors, ack.String())
+		}
+	}
+	if len(errors) > 0 {
+		return nil, fmt.Errorf("Institute returned errors:\n%s", strings.Join(errors, "\n"))
+	}
+	var accountTransactions []domain.AccountTransaction
+	accountTransactionResponses := decryptedMessage.FindSegments("HIKAZ")
+	if accountTransactionResponses != nil {
+		for _, marshaledSegment := range accountTransactionResponses {
+			segment := &segment.AccountTransactionResponseSegment{}
+			err = segment.UnmarshalHBCI(marshaledSegment)
+			if err != nil {
+				return nil, err
+			}
+			accountTransactions = append(accountTransactions, segment.Transactions()...)
+		}
+	} else {
+		return nil, fmt.Errorf("Malformed response: expected HIKAZ segment")
+	}
+
+	return accountTransactions, nil
+}
+
 func (d *dialog) AccountInformation(allAccounts bool) error {
 	err := d.Init()
 	if err != nil {
