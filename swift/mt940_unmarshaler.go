@@ -32,8 +32,8 @@ func (m *MT940) Unmarshal(value []byte) error {
 				return err
 			}
 		case bytes.HasPrefix(tag, []byte(":25:")):
-			m.AccountID = &AlphaNumericTag{}
-			err = m.AccountID.Unmarshal(tag)
+			m.Account = &AccountTag{}
+			err = m.Account.Unmarshal(tag)
 			if err != nil {
 				return err
 			}
@@ -86,8 +86,8 @@ func (m *MT940) Unmarshal(value []byte) error {
 		}
 		for idx, transaction := range transactions {
 			sequence := &TransactionSequence{Transaction: transaction}
-			if cust, ok := customTags[idx]; ok {
-				sequence.CustomTag = cust
+			if cust, ok := customTags[idx+1]; ok {
+				sequence.Description = cust
 			}
 			m.Transactions = append(m.Transactions, sequence)
 		}

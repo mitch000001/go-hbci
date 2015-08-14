@@ -99,8 +99,8 @@ type CustomFieldTag struct {
 	BookingText        string
 	PrimanotenNumber   string
 	Purpose            string
-	BankID             int
-	AccountID          int
+	BankID             string
+	AccountID          string
 	Name               string
 	MessageKeyAddition int
 	Purpose2           string
@@ -171,17 +171,9 @@ func (c *CustomFieldTag) Unmarshal(value []byte) error {
 		case strings.HasPrefix(fieldKey, "?2"):
 			c.Purpose += strings.Replace(string(fieldValue), "\r\n", "", -1)
 		case strings.HasPrefix(fieldKey, "?30"):
-			bankId, err := strconv.Atoi(string(fieldValue))
-			if err != nil {
-				return err
-			}
-			c.BankID = bankId
+			c.BankID = string(fieldValue)
 		case strings.HasPrefix(fieldKey, "?31"):
-			accountId, err := strconv.Atoi(string(fieldValue))
-			if err != nil {
-				return err
-			}
-			c.AccountID = accountId
+			c.AccountID = string(fieldValue)
 		case strings.HasPrefix(fieldKey, "?32"):
 			c.Name = string(fieldValue)
 		case strings.HasPrefix(fieldKey, "?33"):

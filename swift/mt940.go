@@ -14,7 +14,7 @@ import (
 type MT940 struct {
 	JobReference         *AlphaNumericTag
 	Reference            *AlphaNumericTag
-	AccountID            *AlphaNumericTag
+	Account              *AccountTag
 	StatementNumber      *StatementNumberTag
 	StartingBalance      *BalanceTag
 	Transactions         []*TransactionSequence
@@ -22,6 +22,73 @@ type MT940 struct {
 	CurrentValutaBalance *BalanceTag
 	FutureValutaBalance  *BalanceTag
 	CustomField          *CustomFieldTag
+}
+
+func (m *MT940) AccountTransactions() []domain.AccountTransaction {
+	accountConnection := domain.AccountConnection{BankID: m.Account.BankID, AccountID: m.Account.AccountID, CountryCode: 280}
+	var transactions []domain.AccountTransaction
+	for _, transactionSequence := range m.Transactions {
+		tr := transactionSequence.Transaction
+		descr := transactionSequence.Description
+		var amount float64
+		if tr.DebitCreditIndicator == "D" {
+			amount = -tr.Amount
+		} else {
+			amount = tr.Amount
+		}
+		transaction := domain.AccountTransaction{
+			Account:     accountConnection,
+			Amount:      domain.Amount{amount, m.StartingBalance.Currency},
+			ValutaDate:  tr.ValutaDate.Time,
+			BookingDate: tr.BookingDate.Time,
+			AccountBalanceBefore: domain.Balance{
+				Amount: domain.Amount{
+					m.StartingBalance.Amount,
+					m.StartingBalance.Currency,
+				},
+				TransmissionDate: m.StartingBalance.BookingDate.Time,
+			},
+			AccountBalanceAfter: domain.Balance{
+				Amount: domain.Amount{
+					m.ClosingBalance.Amount,
+					m.ClosingBalance.Currency,
+				},
+				TransmissionDate: m.ClosingBalance.BookingDate.Time,
+			},
+		}
+		if descr != nil {
+			transaction.BankID = descr.BankID
+			transaction.AccountID = descr.AccountID
+			transaction.Purpose = descr.Purpose
+			transaction.Purpose2 = descr.Purpose2
+		}
+		transactions = append(transactions, transaction)
+	}
+	return transactions
+}
+
+type AccountTag struct {
+	Tag       string
+	BankID    string
+	AccountID string
+}
+
+func (a *AccountTag) Unmarshal(value []byte) error {
+	elements, err := ExtractTagElements(value)
+	if err != nil {
+		return err
+	}
+	if len(elements) != 2 {
+		return fmt.Errorf("%T: Malformed marshaled value", a)
+	}
+	a.Tag = string(elements[0])
+	fields := bytes.Split(elements[1], []byte("/"))
+	if len(fields) != 2 {
+		return fmt.Errorf("%T: Malformed marshaled value", a)
+	}
+	a.BankID = string(fields[0])
+	a.AccountID = string(fields[1])
+	return nil
 }
 
 type StatementNumberTag struct {
@@ -100,12 +167,12 @@ func (b *BalanceTag) Unmarshal(value []byte) error {
 
 type TransactionSequence struct {
 	Transaction *TransactionTag
-	CustomTag   *CustomFieldTag
+	Description *CustomFieldTag
 }
 
 type TransactionTag struct {
 	Tag                   string
-	Date                  domain.ShortDate
+	ValutaDate            domain.ShortDate
 	BookingDate           domain.ShortDate
 	DebitCreditIndicator  string
 	CurrencyKind          string
@@ -131,7 +198,7 @@ func (t *TransactionTag) Unmarshal(value []byte) error {
 	if err != nil {
 		return err
 	}
-	t.Date = domain.NewShortDate(date)
+	t.ValutaDate = domain.NewShortDate(date)
 	r, _, err := buf.ReadRune()
 	if err != nil {
 		return err

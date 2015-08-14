@@ -5,6 +5,7 @@ import (
 
 	"github.com/mitch000001/go-hbci/domain"
 	"github.com/mitch000001/go-hbci/element"
+	"github.com/mitch000001/go-hbci/swift"
 )
 
 func NewAccountTransactionRequestSegment(account domain.AccountConnection, allAccounts bool) *AccountTransactionRequestSegment {
@@ -55,16 +56,19 @@ func (a *AccountTransactionRequestSegment) elements() []element.DataElement {
 	}
 }
 
-//go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment AccountTransactionResponseSegment
-
 type AccountTransactionResponseSegment struct {
 	Segment
 	BookedTransactions   *element.BinaryDataElement
 	UnbookedTransactions *element.BinaryDataElement
+	bookedTransactions   []*swift.MT940
 }
 
 func (a *AccountTransactionResponseSegment) Transactions() []domain.AccountTransaction {
-	return []domain.AccountTransaction{}
+	var transactions []domain.AccountTransaction
+	for _, bookedTr := range a.bookedTransactions {
+		transactions = append(transactions, bookedTr.AccountTransactions()...)
+	}
+	return transactions
 }
 
 func (a *AccountTransactionResponseSegment) version() int         { return 5 }

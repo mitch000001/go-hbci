@@ -45,10 +45,10 @@ func lexSwiftSyntaxSymbol(l *StringLexer) StringLexerStateFn {
 		switch {
 		case p == eof:
 			return l.errorf("Unexpected end of input")
-		case p == space:
+		case p == dash:
 			l.next()
 			l.emit(SWIFT_MESSAGE_SEPARATOR)
-		case p != space:
+		case p != dash:
 			l.emit(SWIFT_TAG_SEPARATOR)
 		}
 		return lexSwiftStart
@@ -93,7 +93,7 @@ func lexSwiftAlpha(l *StringLexer) StringLexerStateFn {
 	case isSwiftAlphaNumeric(r):
 		return lexSwiftAlphaNumeric
 	default:
-		return l.errorf("Unexpected character")
+		return lexSwiftAlphaNumeric
 	}
 }
 
@@ -111,19 +111,17 @@ func lexSwiftCharacter(l *StringLexer) StringLexerStateFn {
 	case isSwiftAlphaNumeric(r):
 		return lexSwiftAlphaNumeric
 	default:
-		return l.errorf("Unexpected character")
+		return lexSwiftAlphaNumeric
 	}
 }
 
 func lexSwiftAlphaNumeric(l *StringLexer) StringLexerStateFn {
 	r := l.next()
 	switch {
-	case isSwiftAlphaNumeric(r):
-		return lexSwiftAlphaNumeric
 	case r == carriageReturn:
 		l.backup()
 		currentPos := l.pos
-		if l.accept("\r") && l.accept("\n") && l.accept(" :") { // are we really on a tag boundary
+		if l.accept(string(carriageReturn)) && l.accept(string(lineFeed)) && l.accept(string(dash)+":") { // are we really on a tag boundary
 			l.pos = currentPos
 			l.emit(SWIFT_ALPHANUMERIC)
 			return lexSwiftStart
@@ -133,21 +131,23 @@ func lexSwiftAlphaNumeric(l *StringLexer) StringLexerStateFn {
 		}
 	case r == eof:
 		return l.errorf("Unexpected end of input")
+	case isSwiftAlphaNumeric(r):
+		return lexSwiftAlphaNumeric
 	default:
-		return l.errorf("Unexpected character")
+		return lexSwiftAlphaNumeric
 	}
 }
 
 func isSwiftAlphaNumeric(r rune) bool {
-	return r == space || ('\'' <= r && r <= ')') || ('+' <= r && r <= ':') || r == '?' || ('A' <= r && r <= 'Z') || ('a' <= r && r <= 'z')
+	return r == dash || r == lineFeed || r == ' ' || ('\'' <= r && r <= ')') || ('+' <= r && r <= ':') || r == '?' || ('A' <= r && r <= 'Z') || ('a' <= r && r <= 'z')
 }
 
 const (
 	carriageReturn           = '\r'
 	lineFeed                 = '\n'
-	space                    = ' '
+	dash                     = '-'
 	tagSeparatorSequence     = "\r\n"
-	messageSeparatorSequence = "\r\n "
+	messageSeparatorSequence = "\r\n-"
 )
 
 const (

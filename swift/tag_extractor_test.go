@@ -6,7 +6,7 @@ import (
 )
 
 func TestTagExtractorExtract(t *testing.T) {
-	test := "\r\n:20:abcde\r\n:21:def\r\n "
+	test := "\r\n:20:abcde\r\n:21:def\r\n-"
 
 	extractor := NewTagExtractor([]byte(test))
 
