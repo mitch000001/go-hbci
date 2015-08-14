@@ -21,7 +21,7 @@ type MT940 struct {
 	ClosingBalance       *BalanceTag
 	CurrentValutaBalance *BalanceTag
 	FutureValutaBalance  *BalanceTag
-	CustomField          *AlphaNumericTag
+	CustomField          *CustomFieldTag
 }
 
 type StatementNumberTag struct {
@@ -100,7 +100,7 @@ func (b *BalanceTag) Unmarshal(value []byte) error {
 
 type TransactionSequence struct {
 	Transaction *TransactionTag
-	CustomTag   *AlphaNumericTag
+	CustomTag   *CustomFieldTag
 }
 
 type TransactionTag struct {
@@ -180,17 +180,23 @@ func (t *TransactionTag) Unmarshal(value []byte) error {
 	}
 	t.Amount = amount
 	t.BookingKey = string(buf.Next(3))
-	if bytes.IndexByte(buf.Bytes(), '/') == -1 {
-		t.Reference = buf.String()
+	remaining := buf.String()
+	addInfSepIdx := strings.Index(remaining, "\r\n/")
+	doubleSlashIdx := strings.Index(remaining, "//")
+
+	if doubleSlashIdx != -1 && addInfSepIdx != -1 {
+		t.Reference = remaining[:doubleSlashIdx]
+		t.BankReference = remaining[doubleSlashIdx+2 : addInfSepIdx]
+		t.AdditionalInformation = remaining[addInfSepIdx+3:]
 	} else {
-		if bytes.Index(buf.Bytes(), []byte("//")) != -1 {
-			ref, err := buf.ReadString('/')
-			if err != nil {
-				return err
-			}
-			if len(ref) > 1 {
-				t.Reference = ref[:len(ref)-1]
-			}
+		t.Reference = remaining
+		if doubleSlashIdx != -1 {
+			t.Reference = remaining[:doubleSlashIdx]
+			t.BankReference = remaining[doubleSlashIdx+2:]
+		}
+		if addInfSepIdx != -1 {
+			t.Reference = remaining[:addInfSepIdx]
+			t.AdditionalInformation = remaining[addInfSepIdx+3:]
 		}
 	}
 	return nil

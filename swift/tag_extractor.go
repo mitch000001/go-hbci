@@ -31,6 +31,15 @@ func ExtractTagElements(tag []byte) ([][]byte, error) {
 	}, nil
 }
 
+func ExtractTagID(tag []byte) ([]byte, error) {
+	elements, err := ExtractTagElements(tag)
+	if err != nil {
+		return nil, err
+	} else {
+		return elements[0], nil
+	}
+}
+
 func NewTagExtractor(swiftMessage []byte) *TagExtractor {
 	lexer := token.NewSwiftLexer("TagExtractor", charset.ToUtf8(swiftMessage))
 	return &TagExtractor{
