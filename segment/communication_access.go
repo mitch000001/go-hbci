@@ -35,8 +35,8 @@ type CommunicationAccessRequestSegment struct {
 	Aufsetzpunkt *element.AlphaNumericDataElement
 }
 
-func (c *CommunicationAccessRequestSegment) version() int         { return 3 }
-func (c *CommunicationAccessRequestSegment) id() string           { return "HKKOM" }
+func (c *CommunicationAccessRequestSegment) Version() int         { return 3 }
+func (c *CommunicationAccessRequestSegment) ID() string           { return "HKKOM" }
 func (c *CommunicationAccessRequestSegment) referencedId() string { return "" }
 func (c *CommunicationAccessRequestSegment) sender() string       { return senderUser }
 
@@ -69,8 +69,8 @@ type CommunicationAccessResponseSegment struct {
 	CommunicationParams *element.CommunicationParameterDataElement
 }
 
-func (c *CommunicationAccessResponseSegment) version() int         { return 3 }
-func (c *CommunicationAccessResponseSegment) id() string           { return "HIKOM" }
+func (c *CommunicationAccessResponseSegment) Version() int         { return 3 }
+func (c *CommunicationAccessResponseSegment) ID() string           { return "HIKOM" }
 func (c *CommunicationAccessResponseSegment) referencedId() string { return "HKKOM" }
 func (c *CommunicationAccessResponseSegment) sender() string       { return senderBank }
 

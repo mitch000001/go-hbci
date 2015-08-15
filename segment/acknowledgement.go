@@ -13,8 +13,8 @@ type MessageAcknowledgement struct {
 	referencingMessage domain.ReferencingMessage
 }
 
-func (m *MessageAcknowledgement) version() int         { return 2 }
-func (m *MessageAcknowledgement) id() string           { return "HIRMG" }
+func (m *MessageAcknowledgement) Version() int         { return 2 }
+func (m *MessageAcknowledgement) ID() string           { return "HIRMG" }
 func (m *MessageAcknowledgement) referencedId() string { return "" }
 func (m *MessageAcknowledgement) sender() string       { return senderBank }
 
@@ -79,8 +79,8 @@ type SegmentAcknowledgement struct {
 	referencingMessage domain.ReferencingMessage
 }
 
-func (s *SegmentAcknowledgement) version() int         { return 2 }
-func (s *SegmentAcknowledgement) id() string           { return "HIRMS" }
+func (s *SegmentAcknowledgement) Version() int         { return 2 }
+func (s *SegmentAcknowledgement) ID() string           { return "HIRMS" }
 func (s *SegmentAcknowledgement) referencedId() string { return "" }
 func (s *SegmentAcknowledgement) sender() string       { return senderBank }
 

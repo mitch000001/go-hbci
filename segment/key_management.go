@@ -35,8 +35,8 @@ type PublicKeyRenewalSegment struct {
 	Certificate *element.CertificateDataElement
 }
 
-func (p *PublicKeyRenewalSegment) version() int         { return 2 }
-func (p *PublicKeyRenewalSegment) id() string           { return "HKSAK" }
+func (p *PublicKeyRenewalSegment) Version() int         { return 2 }
+func (p *PublicKeyRenewalSegment) ID() string           { return "HKSAK" }
 func (p *PublicKeyRenewalSegment) referencedId() string { return "" }
 func (p *PublicKeyRenewalSegment) sender() string       { return senderUser }
 
@@ -70,8 +70,8 @@ type PublicKeyRequestSegment struct {
 	Certificate *element.CertificateDataElement
 }
 
-func (p *PublicKeyRequestSegment) version() int         { return 2 }
-func (p *PublicKeyRequestSegment) id() string           { return "HKISA" }
+func (p *PublicKeyRequestSegment) Version() int         { return 2 }
+func (p *PublicKeyRequestSegment) ID() string           { return "HKISA" }
 func (p *PublicKeyRequestSegment) referencedId() string { return "" }
 func (p *PublicKeyRequestSegment) sender() string       { return senderUser }
 
@@ -114,8 +114,8 @@ type PublicKeyTransmissionSegment struct {
 	Certificate *element.CertificateDataElement
 }
 
-func (p *PublicKeyTransmissionSegment) version() int         { return 2 }
-func (p *PublicKeyTransmissionSegment) id() string           { return "HIISA" }
+func (p *PublicKeyTransmissionSegment) Version() int         { return 2 }
+func (p *PublicKeyTransmissionSegment) ID() string           { return "HIISA" }
 func (p *PublicKeyTransmissionSegment) referencedId() string { return "HKISA" }
 func (p *PublicKeyTransmissionSegment) sender() string       { return senderBank }
 
@@ -173,8 +173,8 @@ type PublicKeyRevocationSegment struct {
 	Certificate      *element.CertificateDataElement
 }
 
-func (p *PublicKeyRevocationSegment) version() int         { return 2 }
-func (p *PublicKeyRevocationSegment) id() string           { return "HKSSP" }
+func (p *PublicKeyRevocationSegment) Version() int         { return 2 }
+func (p *PublicKeyRevocationSegment) ID() string           { return "HKSSP" }
 func (p *PublicKeyRevocationSegment) referencedId() string { return "" }
 func (p *PublicKeyRevocationSegment) sender() string       { return senderUser }
 
@@ -227,8 +227,8 @@ type PublicKeyRevocationConfirmationSegment struct {
 	Certificate      *element.CertificateDataElement
 }
 
-func (p *PublicKeyRevocationConfirmationSegment) version() int         { return 2 }
-func (p *PublicKeyRevocationConfirmationSegment) id() string           { return "HISSP" }
+func (p *PublicKeyRevocationConfirmationSegment) Version() int         { return 2 }
+func (p *PublicKeyRevocationConfirmationSegment) ID() string           { return "HISSP" }
 func (p *PublicKeyRevocationConfirmationSegment) referencedId() string { return "HKSSP" }
 func (p *PublicKeyRevocationConfirmationSegment) sender() string       { return senderBank }
 

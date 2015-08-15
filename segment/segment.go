@@ -21,6 +21,8 @@ type Segment interface {
 	Header() *element.SegmentHeader
 	SetNumber(func() int)
 	DataElements() []element.DataElement
+	ID() string
+	Version() int
 	String() string
 	MarshalHBCI() ([]byte, error)
 }
@@ -28,8 +30,8 @@ type Segment interface {
 type Segments map[string]Segment
 
 type segment interface {
-	version() int
-	id() string
+	Version() int
+	ID() string
 	referencedId() string
 	sender() string
 	elements() []element.DataElement
@@ -61,12 +63,12 @@ func SegmentFromHeaderBytes(headerBytes []byte, seg segment) (Segment, error) {
 }
 
 func NewReferencingBasicSegment(number int, ref int, seg segment) Segment {
-	header := element.NewReferencingSegmentHeader(seg.id(), number, seg.version(), ref)
+	header := element.NewReferencingSegmentHeader(seg.ID(), number, seg.Version(), ref)
 	return NewBasicSegmentWithHeader(header, seg)
 }
 
 func NewBasicSegment(number int, seg segment) Segment {
-	header := element.NewSegmentHeader(seg.id(), number, seg.version())
+	header := element.NewSegmentHeader(seg.ID(), number, seg.Version())
 	return NewBasicSegmentWithHeader(header, seg)
 }
 
@@ -126,6 +128,10 @@ func (s *basicSegment) Header() *element.SegmentHeader {
 
 func (s *basicSegment) ID() string {
 	return s.header.ID.Val()
+}
+
+func (s *basicSegment) Version() int {
+	return s.header.Version.Val()
 }
 
 func (s *basicSegment) SetNumber(numberFn func() int) {

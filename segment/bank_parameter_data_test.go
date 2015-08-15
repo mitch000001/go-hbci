@@ -27,8 +27,8 @@ func TestBusinessTransactionParamsSegment(t *testing.T) {
 	segment := &BusinessTransactionParamsSegment{}
 
 	expectedSegment := &BusinessTransactionParamsSegment{
-		ID:            "DIDFBS",
-		Version:       1,
+		id:            "DIDFBS",
+		version:       1,
 		MaxJobs:       element.NewNumber(1, 1),
 		MinSignatures: element.NewNumber(1, 1),
 	}

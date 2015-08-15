@@ -64,8 +64,8 @@ type SignatureHeaderSegment struct {
 	Certificate          *element.CertificateDataElement
 }
 
-func (s *SignatureHeaderSegment) version() int         { return 3 }
-func (s *SignatureHeaderSegment) id() string           { return "HNSHK" }
+func (s *SignatureHeaderSegment) Version() int         { return 3 }
+func (s *SignatureHeaderSegment) ID() string           { return "HNSHK" }
 func (s *SignatureHeaderSegment) referencedId() string { return "" }
 func (s *SignatureHeaderSegment) sender() string       { return senderBoth }
 
@@ -104,8 +104,8 @@ type SignatureEndSegment struct {
 	PinTan             *element.PinTanDataElement
 }
 
-func (s *SignatureEndSegment) version() int         { return 1 }
-func (s *SignatureEndSegment) id() string           { return "HNSHA" }
+func (s *SignatureEndSegment) Version() int         { return 1 }
+func (s *SignatureEndSegment) ID() string           { return "HNSHA" }
 func (s *SignatureEndSegment) referencedId() string { return "" }
 func (s *SignatureEndSegment) sender() string       { return senderBoth }
 

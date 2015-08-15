@@ -53,8 +53,8 @@ type EncryptionHeaderSegment struct {
 	Certificate          *element.CertificateDataElement
 }
 
-func (e *EncryptionHeaderSegment) version() int         { return 2 }
-func (e *EncryptionHeaderSegment) id() string           { return "HNVSK" }
+func (e *EncryptionHeaderSegment) Version() int         { return 2 }
+func (e *EncryptionHeaderSegment) ID() string           { return "HNVSK" }
 func (e *EncryptionHeaderSegment) referencedId() string { return "" }
 func (e *EncryptionHeaderSegment) sender() string       { return senderBoth }
 
@@ -84,8 +84,8 @@ type EncryptedDataSegment struct {
 	Data *element.BinaryDataElement
 }
 
-func (e *EncryptedDataSegment) version() int         { return 1 }
-func (e *EncryptedDataSegment) id() string           { return "HNVSD" }
+func (e *EncryptedDataSegment) Version() int         { return 1 }
+func (e *EncryptedDataSegment) ID() string           { return "HNVSD" }
 func (e *EncryptedDataSegment) referencedId() string { return "" }
 func (e *EncryptedDataSegment) sender() string       { return senderBoth }
 

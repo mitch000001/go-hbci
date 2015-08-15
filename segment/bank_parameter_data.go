@@ -44,8 +44,8 @@ type CommonBankParameterSegment struct {
 	MaxMessageSize           *element.NumberDataElement
 }
 
-func (c *CommonBankParameterSegment) version() int         { return 2 }
-func (c *CommonBankParameterSegment) id() string           { return "HIBPA" }
+func (c *CommonBankParameterSegment) Version() int         { return 2 }
+func (c *CommonBankParameterSegment) ID() string           { return "HIBPA" }
 func (c *CommonBankParameterSegment) referencedId() string { return "HKVVB" }
 func (c *CommonBankParameterSegment) sender() string       { return senderBank }
 
@@ -158,15 +158,15 @@ func (c *CompressionMethodSegment) elements() []element.DataElement {
 
 type BusinessTransactionParamsSegment struct {
 	Segment
-	ID            string
-	Version       int
+	id            string
+	version       int
 	MaxJobs       *element.NumberDataElement
 	MinSignatures *element.NumberDataElement
 	Params        element.DataElementGroup
 }
 
-func (b *BusinessTransactionParamsSegment) version() int         { return b.Version }
-func (b *BusinessTransactionParamsSegment) id() string           { return b.ID }
+func (b *BusinessTransactionParamsSegment) Version() int         { return b.version }
+func (b *BusinessTransactionParamsSegment) ID() string           { return b.id }
 func (b *BusinessTransactionParamsSegment) referencedId() string { return "HKVVB" }
 func (b *BusinessTransactionParamsSegment) sender() string       { return senderBank }
 
@@ -208,8 +208,8 @@ type PinTanBusinessTransactionParamsSegment struct {
 	*BusinessTransactionParamsSegment
 }
 
-func (p *PinTanBusinessTransactionParamsSegment) version() int { return 1 }
-func (p *PinTanBusinessTransactionParamsSegment) id() string   { return "DIPINS" }
+func (p *PinTanBusinessTransactionParamsSegment) Version() int { return 1 }
+func (p *PinTanBusinessTransactionParamsSegment) ID() string   { return "DIPINS" }
 
 func (p *PinTanBusinessTransactionParamsSegment) UnmarshalHBCI(value []byte) error {
 	businessTransactionSegment := &BusinessTransactionParamsSegment{}

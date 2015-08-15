@@ -69,8 +69,8 @@ type MessageHeaderSegment struct {
 	Ref         *element.ReferencingMessageDataElement
 }
 
-func (m *MessageHeaderSegment) version() int         { return 3 }
-func (m *MessageHeaderSegment) id() string           { return "HNHBK" }
+func (m *MessageHeaderSegment) Version() int         { return 3 }
+func (m *MessageHeaderSegment) ID() string           { return "HNHBK" }
 func (m *MessageHeaderSegment) referencedId() string { return "" }
 func (m *MessageHeaderSegment) sender() string       { return senderBoth }
 
@@ -152,8 +152,8 @@ type MessageEndSegment struct {
 	Number *element.NumberDataElement
 }
 
-func (m *MessageEndSegment) version() int         { return 1 }
-func (m *MessageEndSegment) id() string           { return "HNHBS" }
+func (m *MessageEndSegment) Version() int         { return 1 }
+func (m *MessageEndSegment) ID() string           { return "HNHBS" }
 func (m *MessageEndSegment) referencedId() string { return "" }
 func (m *MessageEndSegment) sender() string       { return senderBoth }
 

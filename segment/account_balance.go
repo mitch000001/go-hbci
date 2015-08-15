@@ -24,8 +24,8 @@ type AccountBalanceRequestSegment struct {
 	Aufsetzpunkt      *element.AlphaNumericDataElement
 }
 
-func (a *AccountBalanceRequestSegment) version() int         { return 5 }
-func (a *AccountBalanceRequestSegment) id() string           { return "HKSAL" }
+func (a *AccountBalanceRequestSegment) Version() int         { return 5 }
+func (a *AccountBalanceRequestSegment) ID() string           { return "HKSAL" }
 func (a *AccountBalanceRequestSegment) referencedId() string { return "" }
 func (a *AccountBalanceRequestSegment) sender() string       { return senderUser }
 
@@ -55,8 +55,8 @@ type AccountBalanceResponseSegment struct {
 	DueDate            *element.DateDataElement
 }
 
-func (a *AccountBalanceResponseSegment) version() int         { return 5 }
-func (a *AccountBalanceResponseSegment) id() string           { return "HISAL" }
+func (a *AccountBalanceResponseSegment) Version() int         { return 5 }
+func (a *AccountBalanceResponseSegment) ID() string           { return "HISAL" }
 func (a *AccountBalanceResponseSegment) referencedId() string { return "HKSAL" }
 func (a *AccountBalanceResponseSegment) sender() string       { return senderBank }
 

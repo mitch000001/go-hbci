@@ -30,8 +30,8 @@ type TanRequestSegment struct {
 	TANInformation    *element.AlphaNumericDataElement
 }
 
-func (t *TanRequestSegment) version() int         { return 1 }
-func (t *TanRequestSegment) id() string           { return "HKTAN" }
+func (t *TanRequestSegment) Version() int         { return 1 }
+func (t *TanRequestSegment) ID() string           { return "HKTAN" }
 func (t *TanRequestSegment) referencedId() string { return "" }
 func (t *TanRequestSegment) sender() string       { return senderUser }
 

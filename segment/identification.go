@@ -30,8 +30,8 @@ type IdentificationSegment struct {
 	ClientSystemStatus *element.NumberDataElement
 }
 
-func (i *IdentificationSegment) version() int         { return 2 }
-func (i *IdentificationSegment) id() string           { return "HKIDN" }
+func (i *IdentificationSegment) Version() int         { return 2 }
+func (i *IdentificationSegment) ID() string           { return "HKIDN" }
 func (i *IdentificationSegment) referencedId() string { return "" }
 func (i *IdentificationSegment) sender() string       { return senderUser }
 

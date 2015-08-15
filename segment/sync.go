@@ -26,8 +26,8 @@ type SynchronisationRequestSegment struct {
 	SyncModus *element.NumberDataElement
 }
 
-func (s *SynchronisationRequestSegment) version() int         { return 2 }
-func (s *SynchronisationRequestSegment) id() string           { return "HKSYN" }
+func (s *SynchronisationRequestSegment) Version() int         { return 2 }
+func (s *SynchronisationRequestSegment) ID() string           { return "HKSYN" }
 func (s *SynchronisationRequestSegment) referencedId() string { return "" }
 func (s *SynchronisationRequestSegment) sender() string       { return senderUser }
 
@@ -44,8 +44,8 @@ type SynchronisationResponseSegment struct {
 	SignatureID    *element.NumberDataElement
 }
 
-func (s *SynchronisationResponseSegment) version() int         { return 3 }
-func (s *SynchronisationResponseSegment) id() string           { return "HISYN" }
+func (s *SynchronisationResponseSegment) Version() int         { return 3 }
+func (s *SynchronisationResponseSegment) ID() string           { return "HISYN" }
 func (s *SynchronisationResponseSegment) referencedId() string { return "HKSYN" }
 func (s *SynchronisationResponseSegment) sender() string       { return senderBank }
 

@@ -22,8 +22,8 @@ type AccountInformationRequestSegment struct {
 	Aufsetzpunkt      *element.AlphaNumericDataElement
 }
 
-func (a *AccountInformationRequestSegment) version() int         { return 1 }
-func (a *AccountInformationRequestSegment) id() string           { return "HKKIF" }
+func (a *AccountInformationRequestSegment) Version() int         { return 1 }
+func (a *AccountInformationRequestSegment) ID() string           { return "HKKIF" }
 func (a *AccountInformationRequestSegment) referencedId() string { return "" }
 func (a *AccountInformationRequestSegment) sender() string       { return senderUser }
 

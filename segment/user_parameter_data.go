@@ -25,8 +25,8 @@ type CommonUserParameterDataSegment struct {
 	UPDUsage *element.NumberDataElement
 }
 
-func (c *CommonUserParameterDataSegment) version() int         { return 2 }
-func (c *CommonUserParameterDataSegment) id() string           { return "HIUPA" }
+func (c *CommonUserParameterDataSegment) Version() int         { return 2 }
+func (c *CommonUserParameterDataSegment) ID() string           { return "HIUPA" }
 func (c *CommonUserParameterDataSegment) referencedId() string { return "HKVVB" }
 func (c *CommonUserParameterDataSegment) sender() string       { return senderBank }
 
@@ -88,8 +88,8 @@ type AccountInformationSegment struct {
 	AllowedBusinessTransactions *element.AllowedBusinessTransactionsDataElement
 }
 
-func (a *AccountInformationSegment) version() int         { return 4 }
-func (a *AccountInformationSegment) id() string           { return "HIUPD" }
+func (a *AccountInformationSegment) Version() int         { return 4 }
+func (a *AccountInformationSegment) ID() string           { return "HIUPD" }
 func (a *AccountInformationSegment) referencedId() string { return "HKVVB" }
 func (a *AccountInformationSegment) sender() string       { return senderBank }
 

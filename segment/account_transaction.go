@@ -40,8 +40,8 @@ func (a *AccountTransactionRequestSegment) SetTransactionRange(timeframe domain.
 	a.To = element.NewDate(to.Time)
 }
 
-func (a *AccountTransactionRequestSegment) version() int         { return 5 }
-func (a *AccountTransactionRequestSegment) id() string           { return "HKKAZ" }
+func (a *AccountTransactionRequestSegment) Version() int         { return 5 }
+func (a *AccountTransactionRequestSegment) ID() string           { return "HKKAZ" }
 func (a *AccountTransactionRequestSegment) referencedId() string { return "" }
 func (a *AccountTransactionRequestSegment) sender() string       { return senderUser }
 
@@ -71,8 +71,8 @@ func (a *AccountTransactionResponseSegment) Transactions() []domain.AccountTrans
 	return transactions
 }
 
-func (a *AccountTransactionResponseSegment) version() int         { return 5 }
-func (a *AccountTransactionResponseSegment) id() string           { return "HIKAZ" }
+func (a *AccountTransactionResponseSegment) Version() int         { return 5 }
+func (a *AccountTransactionResponseSegment) ID() string           { return "HIKAZ" }
 func (a *AccountTransactionResponseSegment) referencedId() string { return "HKKAZ" }
 func (a *AccountTransactionResponseSegment) sender() string       { return senderBank }
 
