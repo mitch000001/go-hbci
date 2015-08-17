@@ -107,15 +107,13 @@ func (m *MockHttpsTransport) checkAndAdaptBoundaries(req *transport.Request) {
 	if len(m.responses) <= m.callCount {
 		if m.responses == nil {
 			m.responses = make([]*transport.Response, m.callCount)
-		} else {
-			m.responses = append(m.responses, nil)
 		}
+		m.responses = append(m.responses, nil)
 	}
 	if len(m.errors) <= m.callCount {
 		if m.errors == nil {
 			m.errors = make([]error, m.callCount)
-		} else {
-			m.errors = append(m.errors, fmt.Errorf("Unexpected request: %+#v\nBody: %q", req, req.MarshaledMessage))
 		}
+		m.errors = append(m.errors, fmt.Errorf("Unexpected request: %+#v\nBody: %q", req, req.MarshaledMessage))
 	}
 }

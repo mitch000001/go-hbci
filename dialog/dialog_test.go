@@ -9,7 +9,57 @@ import (
 
 	"github.com/mitch000001/go-hbci/charset"
 	"github.com/mitch000001/go-hbci/domain"
+	"github.com/mitch000001/go-hbci/message"
+	"github.com/mitch000001/go-hbci/segment"
 )
+
+func TestPinTanDialogSendMessage(t *testing.T) {
+	transport := &MockHttpsTransport{}
+
+	d := newTestPinTanDialog(transport)
+	account := domain.AccountInformation{
+		AccountConnection: domain.AccountConnection{AccountID: "100000000", CountryCode: 280, BankID: "10000000"},
+		UserID:            "100000000",
+		Currency:          "EUR",
+		Name1:             "Muster",
+		Name2:             "Max",
+		AllowedBusinessTransactions: []domain.BusinessTransaction{
+			domain.BusinessTransaction{ID: "HKSAL", NeededSignatures: 1},
+		},
+	}
+	d.Accounts = []domain.AccountInformation{
+		account,
+	}
+	initResponse := encryptedTestMessage(
+		"abcde",
+		"HIRMG:2:2:1+0020::Auftrag entgegengenommen'",
+	)
+	balanceResponse := encryptedTestMessage(
+		"abcde",
+		"HIRMG:2:2:1+0020::Auftrag entgegengenommen'",
+		"HISAL:3:5:1+100000000::280:10000000+Sichteinlagen+EUR+C:1000,15:EUR:20150812+C:20,:EUR:20150812+500,:EUR+1499,85:EUR'",
+	)
+	dialogEndResponseMessage := encryptedTestMessage("abcde", "HIRMG:2:2:1+0020::Der Auftrag wurde ausgeführt'")
+	transport.SetResponseMessages([][]byte{
+		initResponse,
+		balanceResponse,
+		dialogEndResponseMessage,
+	})
+
+	accountBalanceRequest := segment.NewAccountBalanceRequestSegment(account.AccountConnection, false)
+
+	res, err := d.SendMessage(message.NewHBCIMessage(accountBalanceRequest))
+
+	if err != nil {
+		t.Logf("Expected no error, got %T:%v\n", err, err)
+		t.Fail()
+	}
+
+	if res == nil {
+		t.Logf("Expected result not to be nil\n")
+		t.Fail()
+	}
+}
 
 func TestPinTanDialogSyncClientSystemID(t *testing.T) {
 	transport := &MockHttpsTransport{}
@@ -199,6 +249,7 @@ func newTestPinTanDialog(transport *MockHttpsTransport) *PinTanDialog {
 	bankID := domain.BankId{280, "10000000"}
 	d := NewPinTanDialog(bankID, url, clientID)
 	d.SetPin("abcde")
+	d.SetClientSystemID("xyz")
 	d.transport = transport
 	return d
 }
