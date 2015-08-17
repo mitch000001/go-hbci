@@ -12,7 +12,7 @@ Also, there is no client interface yet in terms of entry point for the library o
 The implemented standard conforms to HBCI 2.2.
 
 ## Roadmap
-- [ ] Parsing Accounts
-- [ ] Listing transactions
+- [x] Parsing Accounts
+- [x] Listing transactions
 - [ ] Some other read only action
 - [ ] Write access
