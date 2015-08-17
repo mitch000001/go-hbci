@@ -14,12 +14,7 @@ import (
 func TestPinTanDialogSyncClientSystemID(t *testing.T) {
 	transport := &MockHttpsTransport{}
 
-	url := "http://localhost"
-	clientID := "12345"
-	bankID := domain.BankId{280, "10000000"}
-	d := NewPinTanDialog(bankID, url, clientID)
-	d.SetPin("abcde")
-	d.transport = transport
+	d := newTestPinTanDialog(transport)
 
 	syncResponseMessage := encryptedTestMessage(
 		"newDialogID",
@@ -169,13 +164,7 @@ func TestPinTanDialogSyncClientSystemID(t *testing.T) {
 func TestPinTanDialogInit(t *testing.T) {
 	transport := &MockHttpsTransport{}
 
-	url := "http://localhost"
-	clientID := "12345"
-	bankID := domain.BankId{280, "10000000"}
-	d := NewPinTanDialog(bankID, url, clientID)
-	d.ClientSystemID = "xyz"
-	d.SetPin("abcde")
-	d.transport = transport
+	d := newTestPinTanDialog(transport)
 
 	dialogID := d.dialogID
 	if dialogID != initialDialogID {
@@ -202,6 +191,16 @@ func TestPinTanDialogInit(t *testing.T) {
 		t.Logf("Expected dialogID to equal\n%q\n\tgot\n%q\n", "newDialogID", dialogID)
 		t.Fail()
 	}
+}
+
+func newTestPinTanDialog(transport *MockHttpsTransport) *PinTanDialog {
+	url := "http://localhost"
+	clientID := "12345"
+	bankID := domain.BankId{280, "10000000"}
+	d := NewPinTanDialog(bankID, url, clientID)
+	d.SetPin("abcde")
+	d.transport = transport
+	return d
 }
 
 func encryptedTestMessage(dialogID string, encryptedData ...string) []byte {

@@ -30,11 +30,9 @@ func NewPinTanDialog(bankId domain.BankId, hbciUrl string, userId string) *PinTa
 
 type PinTanDialog struct {
 	*dialog
-	pin string
 }
 
 func (d *PinTanDialog) SetPin(pin string) {
-	d.pin = pin
 	pinKey := domain.NewPinKey(pin, domain.NewPinTanKeyName(d.BankID, d.UserID, "S"))
 	d.signatureProvider = message.NewPinTanSignatureProvider(pinKey, d.ClientSystemID)
 	pinKey = domain.NewPinKey(pin, domain.NewPinTanKeyName(d.BankID, d.UserID, "V"))
