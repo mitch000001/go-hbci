@@ -83,7 +83,10 @@ func (d *PinTanDialog) Anonymous(fn func() (string, error)) (string, error) {
 		return "", err
 	}
 
-	dialogEnd := d.dialogEnd()
+	dialogEnd := &message.DialogFinishingMessage{
+		DialogEnd: segment.NewDialogEndSegment(d.dialogID),
+	}
+	dialogEnd.BasicMessage = d.newBasicMessage(dialogEnd)
 	dialogEnd.SetNumbers()
 	dialogEnd.SetSize()
 	marshaledEndMessage, err := dialogEnd.MarshalHBCI()

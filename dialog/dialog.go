@@ -23,9 +23,7 @@ const initialClientSystemID = "0"
 const anonymousClientID = "9999999999"
 
 type Dialog interface {
-	Init() error
-	SyncClientSystemID() (string, error)
-	End() error
+	SendMessage(clientMessage message.HBCIMessage) (message.BankMessage, error)
 }
 
 func newDialog(bankId domain.BankId, hbciUrl string, userId string, signatureProvider message.SignatureProvider, cryptoProvider message.CryptoProvider) *dialog {
@@ -83,12 +81,12 @@ func (d *dialog) SetSecurityFunction(securityFn string) {
 }
 
 func (d *dialog) SendMessage(clientMessage message.HBCIMessage) (message.BankMessage, error) {
-	err := d.Init()
+	err := d.init()
 	if err != nil {
 		return nil, err
 	}
 	defer func() {
-		d.End()
+		d.end()
 	}()
 	requestMessage := d.newBasicMessage(clientMessage)
 	signedMessage, err := requestMessage.Sign(d.signatureProvider)
@@ -183,7 +181,7 @@ func (d *dialog) SyncClientSystemID() (string, error) {
 		return "", err
 	}
 
-	err = d.End()
+	err = d.end()
 	if err != nil {
 		return "", err
 	}
@@ -191,10 +189,13 @@ func (d *dialog) SyncClientSystemID() (string, error) {
 	return d.ClientSystemID, nil
 }
 
-func (d *dialog) Init() error {
-	err := d.init()
-	if err != nil {
-		return err
+func (d *dialog) init() error {
+	if d.ClientSystemID == initialClientSystemID {
+		id, err := d.SyncClientSystemID()
+		if err != nil {
+			return err
+		}
+		d.ClientSystemID = id
 	}
 	d.dialogID = initialDialogID
 	d.messageCount = 0
@@ -255,12 +256,12 @@ func (d *dialog) Init() error {
 		return fmt.Errorf("DialogEnd: Institute returned errors:\n%s", strings.Join(errors, "\n"))
 	}
 	if d.securityFn != newSecurityFn {
-		err = d.End()
+		err = d.end()
 		if err != nil {
 			return err
 		}
 		d.SetSecurityFunction(newSecurityFn)
-		err = d.Init()
+		err = d.init()
 		if err != nil {
 			return err
 		}
@@ -269,8 +270,11 @@ func (d *dialog) Init() error {
 	return nil
 }
 
-func (d *dialog) End() error {
-	dialogEnd := d.dialogEnd()
+func (d *dialog) end() error {
+	dialogEnd := &message.DialogFinishingMessage{
+		DialogEnd: segment.NewDialogEndSegment(d.dialogID),
+	}
+	dialogEnd.BasicMessage = d.newBasicMessage(dialogEnd)
 	signedDialogEnd, err := dialogEnd.Sign(d.signatureProvider)
 	if err != nil {
 		return err
@@ -296,17 +300,6 @@ func (d *dialog) End() error {
 		return fmt.Errorf("DialogEnd: Institute returned errors:\n%s", strings.Join(errors, "\n"))
 	}
 
-	return nil
-}
-
-func (d *dialog) init() error {
-	if d.ClientSystemID == initialClientSystemID {
-		id, err := d.SyncClientSystemID()
-		if err != nil {
-			return err
-		}
-		d.ClientSystemID = id
-	}
 	return nil
 }
 
@@ -464,14 +457,6 @@ func extractUnencryptedMessage(response *transport.Response) (*message.Decrypted
 func (d *dialog) nextMessageNumber() int {
 	d.messageCount += 1
 	return d.messageCount
-}
-
-func (d *dialog) dialogEnd() *message.DialogFinishingMessage {
-	dialogEnd := &message.DialogFinishingMessage{
-		DialogEnd: segment.NewDialogEndSegment(d.dialogID),
-	}
-	dialogEnd.BasicMessage = d.newBasicMessage(dialogEnd)
-	return dialogEnd
 }
 
 func (d *dialog) post(message []byte) ([]byte, error) {

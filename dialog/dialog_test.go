@@ -190,7 +190,7 @@ func TestPinTanDialogInit(t *testing.T) {
 	)
 	transport.SetResponseMessage(initResponse)
 
-	err := d.Init()
+	err := d.init()
 
 	if err != nil {
 		t.Logf("Expected no error, got %T:%v\n", err, err)
