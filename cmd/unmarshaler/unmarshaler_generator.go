@@ -57,9 +57,4 @@ func main() {
 	if err != nil {
 		fmt.Println(err)
 	}
-	//if object != nil {
-	//ast.Print(fileSet, object)
-	//}
-	//printer.Fprint(os.Stdout, fileSet, f)
-	//ast.Print(fileSet, f)
 }

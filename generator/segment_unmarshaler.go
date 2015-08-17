@@ -30,6 +30,9 @@ type SegmentUnmarshalerGenerator struct {
 
 func (s *SegmentUnmarshalerGenerator) Generate() (io.Reader, error) {
 	object := s.file.Scope.Lookup(s.segmentName)
+	if object == nil {
+		return nil, fmt.Errorf("%T: No segment with name %q found in package %q", s, s.segmentName, s.packageName)
+	}
 	visitor := &structVisitor{fileSet: s.fileSet}
 	ast.Walk(visitor, object.Decl.(*ast.TypeSpec))
 

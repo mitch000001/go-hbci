@@ -18,10 +18,17 @@ import (
 	"github.com/mitch000001/go-hbci/element"
 )
 
-type segmentTest struct {
+type SegmentTest struct {
 	segment.Segment
 	Abc *element.AlphaNumericDataElement
 	Def *element.NumberDataElement
+}
+
+func (s *SegmentTest) elements() []element.DataElement {
+	return []element.DataElement{
+		s.Abc,
+		s.Def,
+	}
 }
 `
 	fileSet := token.NewFileSet()
@@ -39,7 +46,7 @@ import (
 	"github.com/mitch000001/go-hbci/element"
 )
 
-func (s *segmentTest) UnmarshalHBCI(value []byte) error {
+func (s *SegmentTest) UnmarshalHBCI(value []byte) error {
 	elements, err := ExtractElements(value)
 	if err != nil {
 		return err
@@ -70,7 +77,7 @@ func (s *segmentTest) UnmarshalHBCI(value []byte) error {
 }
 `
 
-	generator := NewSegmentUnmarshaler("segmentTest", "testsegment", fileSet, f)
+	generator := NewSegmentUnmarshaler("SegmentTest", "testsegment", fileSet, f)
 
 	reader, err := generator.Generate()
 
