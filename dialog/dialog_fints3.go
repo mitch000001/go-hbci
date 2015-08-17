@@ -1,20 +1,30 @@
-package hbci
+package dialog
 
-import "github.com/mitch000001/go-hbci/message"
+import (
+	"github.com/mitch000001/go-hbci/domain"
+	"github.com/mitch000001/go-hbci/message"
+	"github.com/mitch000001/go-hbci/transport"
+)
 
-func NewFINTS3PinTanDialog(bankId BankId, hbciUrl string, clientId string) *pinTanDialog {
-	signatureProvider := message.NewFINTS3PinTanSignatureProvider(nil)
-	encryptionProvider := message.NewFINTS3PinTanEncryptionProvider(nil, "")
-	d := &pinTanDialog{
-		dialog: newDialog(bankId, hbciUrl, clientId, signatureProvider, encryptionProvider),
-	}
+func NewFINTS3PinTanDialog(bankId domain.BankId, hbciUrl string, userId string) *PinTanDialog {
+	pinKey := domain.NewPinKey("", domain.NewPinTanKeyName(bankId, userId, "S"))
+	signatureProvider := message.NewFINTS3PinTanSignatureProvider(pinKey, "0")
+	pinKey = domain.NewPinKey("", domain.NewPinTanKeyName(bankId, userId, "V"))
+	cryptoProvider := message.NewFINTS3PinTanEncryptionProvider(pinKey, "0")
+	d := NewPinTanDialog(
+		bankId,
+		hbciUrl,
+		userId,
+	)
+	d.signatureProvider = signatureProvider
+	d.cryptoProvider = cryptoProvider
+	d.transport = transport.NewHttpsTransport()
 	return d
 }
 
-func (d *pinTanDialog) SetFINTS3Pin(pin string) {
-	d.pin = pin
-	pinKey := NewPinKey(pin, NewPinTanKeyName(d.BankID, d.ClientID, "S"))
-	d.signingKey = pinKey
-	d.signatureProvider = message.NewFINTS3PinTanSignatureProvider(pinKey)
-	d.encryptionProvider = message.NewFINTS3PinTanEncryptionProvider(pinKey, d.ClientSystemID)
+func (d *PinTanDialog) SetFINTS3Pin(pin string) {
+	pinKey := domain.NewPinKey(pin, domain.NewPinTanKeyName(d.BankID, d.UserID, "S"))
+	d.signatureProvider = message.NewFINTS3PinTanSignatureProvider(pinKey, d.ClientSystemID)
+	pinKey = domain.NewPinKey(pin, domain.NewPinTanKeyName(d.BankID, d.UserID, "V"))
+	d.cryptoProvider = message.NewFINTS3PinTanEncryptionProvider(pinKey, d.ClientSystemID)
 }

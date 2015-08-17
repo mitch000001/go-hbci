@@ -18,12 +18,20 @@ type FINTS3PinTanEncryptionProvider struct {
 	*PinTanCryptoProvider
 }
 
-func (p *FINTS3PinTanEncryptionProvider) WriteEncryptionHeader(message *EncryptedFINTS3Message) {
+func (p *FINTS3PinTanEncryptionProvider) WriteEncryptionHeader(message *EncryptedMessage) {
 	message.EncryptionHeader = segment.NewFINTS3PinTanEncryptionHeaderSegment(p.clientSystemId, p.key.KeyName())
 }
 
-func NewFINTS3PinTanSignatureProvider(key *domain.PinKey) SignatureProvider {
-	return &FINTS3PinTanSignatureProvider{&PinTanSignatureProvider{key: key}}
+func NewFINTS3PinTanSignatureProvider(key *domain.PinKey, clientSystemId string) SignatureProvider {
+	controlReference := generateControlReference(key)
+	return &FINTS3PinTanSignatureProvider{
+		&PinTanSignatureProvider{
+			key:              key,
+			clientSystemId:   clientSystemId,
+			controlReference: controlReference,
+			securityFn:       "999",
+		},
+	}
 }
 
 type FINTS3PinTanSignatureProvider struct {
@@ -35,8 +43,7 @@ func (p *FINTS3PinTanSignatureProvider) SignMessage(signedMessage SignedHBCIMess
 	signatureHeader.SetSecurityFunction(p.securityFn)
 	signatureEnd := segment.NewSignatureEndSegment(0, p.controlReference)
 	signatureEnd.SetPinTan(p.key.Pin(), "")
-	// TODO: reimplement
-	//signedMessage.SetSignatureHeader(signatureHeader)
+	signedMessage.SetSignatureHeader(signatureHeader)
 	signedMessage.SetSignatureEnd(signatureEnd)
 	signedMessage.SetNumbers()
 	return nil

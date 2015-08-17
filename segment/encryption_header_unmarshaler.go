@@ -7,7 +7,7 @@ import (
 	"github.com/mitch000001/go-hbci/element"
 )
 
-func (e *EncryptionHeaderSegment) UnmarshalHBCI(value []byte) error {
+func (e *EncryptionHeaderV2) UnmarshalHBCI(value []byte) error {
 	elements, err := ExtractElements(value)
 	if err != nil {
 		return err

@@ -8,7 +8,7 @@ import (
 )
 
 func NewPinTanEncryptionHeaderSegment(clientSystemId string, keyName domain.KeyName) *EncryptionHeaderSegment {
-	e := &EncryptionHeaderSegment{
+	e := &EncryptionHeaderV2{
 		SecurityFunction:     element.NewAlphaNumeric("998", 3),
 		SecuritySupplierRole: element.NewAlphaNumeric("1", 3),
 		SecurityID:           element.NewRDHSecurityIdentification(element.SecurityHolderMessageSender, clientSystemId),
@@ -18,11 +18,15 @@ func NewPinTanEncryptionHeaderSegment(clientSystemId string, keyName domain.KeyN
 		CompressionFunction:  element.NewAlphaNumeric("0", 3),
 	}
 	e.ClientSegment = NewBasicSegment(998, e)
-	return e
+
+	segment := &EncryptionHeaderSegment{
+		Segment: e,
+	}
+	return segment
 }
 
 func NewEncryptionHeaderSegment(clientSystemId string, keyName domain.KeyName, key []byte) *EncryptionHeaderSegment {
-	e := &EncryptionHeaderSegment{
+	e := &EncryptionHeaderV2{
 		SecurityFunction:     element.NewAlphaNumeric("4", 3),
 		SecuritySupplierRole: element.NewAlphaNumeric("1", 3),
 		SecurityID:           element.NewRDHSecurityIdentification(element.SecurityHolderMessageSender, clientSystemId),
@@ -32,12 +36,20 @@ func NewEncryptionHeaderSegment(clientSystemId string, keyName domain.KeyName, k
 		CompressionFunction:  element.NewAlphaNumeric("0", 3),
 	}
 	e.ClientSegment = NewBasicSegment(998, e)
-	return e
+
+	segment := &EncryptionHeaderSegment{
+		Segment: e,
+	}
+	return segment
 }
 
 //go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment EncryptionHeaderSegment
 
 type EncryptionHeaderSegment struct {
+	Segment
+}
+
+type EncryptionHeaderV2 struct {
 	ClientSegment
 	// "4" for ENC, Encryption (encryption and eventually compression)
 	// "998" for Cleartext
@@ -54,12 +66,12 @@ type EncryptionHeaderSegment struct {
 	Certificate          *element.CertificateDataElement
 }
 
-func (e *EncryptionHeaderSegment) Version() int         { return 2 }
-func (e *EncryptionHeaderSegment) ID() string           { return "HNVSK" }
-func (e *EncryptionHeaderSegment) referencedId() string { return "" }
-func (e *EncryptionHeaderSegment) sender() string       { return senderBoth }
+func (e *EncryptionHeaderV2) Version() int         { return 2 }
+func (e *EncryptionHeaderV2) ID() string           { return "HNVSK" }
+func (e *EncryptionHeaderV2) referencedId() string { return "" }
+func (e *EncryptionHeaderV2) sender() string       { return senderBoth }
 
-func (e *EncryptionHeaderSegment) elements() []element.DataElement {
+func (e *EncryptionHeaderV2) elements() []element.DataElement {
 	return []element.DataElement{
 		e.SecurityFunction,
 		e.SecuritySupplierRole,
