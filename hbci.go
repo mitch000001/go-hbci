@@ -14,7 +14,3 @@ var supportedUnmarshaler = map[string]Unmarshaler{}
 func MakeCall() string {
 	return ""
 }
-
-type Client struct {
-	clientSystemID string
-}

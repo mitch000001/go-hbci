@@ -82,7 +82,7 @@ func (d *dialog) SetSecurityFunction(securityFn string) {
 	d.signatureProvider.SetSecurityFunction(d.securityFn)
 }
 
-func (d *dialog) AccountTransactions(timeframe domain.Timeframe, allAccounts bool) ([]domain.AccountTransaction, error) {
+func (d *dialog) SendMessage(clientMessage message.HBCIMessage) (message.BankMessage, error) {
 	err := d.Init()
 	if err != nil {
 		return nil, err
@@ -90,12 +90,8 @@ func (d *dialog) AccountTransactions(timeframe domain.Timeframe, allAccounts boo
 	defer func() {
 		d.End()
 	}()
-	account := *d.Accounts[len(d.Accounts)-1].AccountConnection
-	fmt.Printf("Account: %#v\n", account)
-	accountTransactionRequest := segment.NewAccountTransactionRequestSegment(account, allAccounts)
-	accountTransactionRequest.SetTransactionRange(timeframe)
-	clientMessage := d.newBasicMessage(message.NewHBCIMessage(accountTransactionRequest))
-	signedMessage, err := clientMessage.Sign(d.signatureProvider)
+	requestMessage := d.newBasicMessage(clientMessage)
+	signedMessage, err := requestMessage.Sign(d.signatureProvider)
 	if err != nil {
 		return nil, err
 	}
@@ -120,124 +116,7 @@ func (d *dialog) AccountTransactions(timeframe domain.Timeframe, allAccounts boo
 	if len(errors) > 0 {
 		return nil, fmt.Errorf("Institute returned errors:\n%s", strings.Join(errors, "\n"))
 	}
-	var accountTransactions []domain.AccountTransaction
-	accountTransactionResponses := decryptedMessage.FindSegments("HIKAZ")
-	if accountTransactionResponses != nil {
-		for _, marshaledSegment := range accountTransactionResponses {
-			segment := &segment.AccountTransactionResponseSegment{}
-			err = segment.UnmarshalHBCI(marshaledSegment)
-			if err != nil {
-				return nil, err
-			}
-			accountTransactions = append(accountTransactions, segment.Transactions()...)
-		}
-	} else {
-		return nil, fmt.Errorf("Malformed response: expected HIKAZ segment")
-	}
-
-	return accountTransactions, nil
-}
-
-func (d *dialog) AccountInformation(allAccounts bool) error {
-	err := d.Init()
-	if err != nil {
-		return err
-	}
-	defer func() {
-		d.End()
-	}()
-	account := *d.Accounts[len(d.Accounts)-1].AccountConnection
-	fmt.Printf("Account: %#v\n", account)
-	accountInformationRequest := segment.NewAccountInformationRequestSegment(account, allAccounts)
-	clientMessage := d.newBasicMessage(message.NewHBCIMessage(accountInformationRequest))
-	signedMessage, err := clientMessage.Sign(d.signatureProvider)
-	if err != nil {
-		return err
-	}
-	encMessage, err := signedMessage.Encrypt(d.cryptoProvider)
-	if err != nil {
-		return err
-	}
-	decryptedMessage, err := d.request(encMessage)
-	if err != nil {
-		return err
-	}
-	var errors []string
-	acknowledgements := decryptedMessage.Acknowledgements()
-	for _, ack := range acknowledgements {
-		if ack.IsWarning() {
-			fmt.Printf("%v\n", ack)
-		}
-		if ack.IsError() {
-			errors = append(errors, ack.String())
-		}
-	}
-	if len(errors) > 0 {
-		return fmt.Errorf("Institute returned errors:\n%s", strings.Join(errors, "\n"))
-	}
-	accountInfoResponse := decryptedMessage.FindSegment("HIKIF")
-	if accountInfoResponse != nil {
-		fmt.Printf("Account Info: %s\n", accountInfoResponse)
-		return nil
-	} else {
-		return fmt.Errorf("Malformed response: expected HIKIF segment")
-	}
-	return nil
-}
-
-func (d *dialog) Balances(allAccounts bool) ([]domain.AccountBalance, error) {
-	err := d.Init()
-	if err != nil {
-		return nil, err
-	}
-	defer func() {
-		d.End()
-	}()
-	account := *d.Accounts[len(d.Accounts)-1].AccountConnection
-	fmt.Printf("Account: %#v\n", account)
-	accountBalanceRequest := segment.NewAccountBalanceRequestSegment(account, allAccounts)
-	clientMessage := d.newBasicMessage(message.NewHBCIMessage(accountBalanceRequest))
-	signedMessage, err := clientMessage.Sign(d.signatureProvider)
-	if err != nil {
-		return nil, err
-	}
-	encMessage, err := signedMessage.Encrypt(d.cryptoProvider)
-	if err != nil {
-		return nil, err
-	}
-	decryptedMessage, err := d.request(encMessage)
-	if err != nil {
-		return nil, err
-	}
-	var errors []string
-	acknowledgements := decryptedMessage.Acknowledgements()
-	for _, ack := range acknowledgements {
-		if ack.IsWarning() {
-			fmt.Printf("%v\n", ack)
-		}
-		if ack.IsError() {
-			errors = append(errors, ack.String())
-		}
-	}
-	if len(errors) > 0 {
-		return nil, fmt.Errorf("Institute returned errors:\n%s", strings.Join(errors, "\n"))
-	}
-	var balances []domain.AccountBalance
-	balanceResponses := decryptedMessage.FindSegments("HISAL")
-	if balanceResponses != nil {
-		for _, marshaledSegment := range balanceResponses {
-			balanceSegment := &segment.AccountBalanceResponseSegment{}
-			err = balanceSegment.UnmarshalHBCI(marshaledSegment)
-			if err != nil {
-				return nil, fmt.Errorf("Error while parsing account balance: %v", err)
-			}
-			balances = append(balances, balanceSegment.AccountBalance())
-		}
-	} else {
-		return nil, fmt.Errorf("Malformed response: expected HISAL segment")
-	}
-
-	return balances, nil
+	return decryptedMessage, nil
 }
 
 func (d *dialog) SyncClientSystemID() (string, error) {

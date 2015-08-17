@@ -13,39 +13,6 @@ type MockHttpsTransport struct {
 	callCount int
 }
 
-func (m *MockHttpsTransport) init() {
-	if m.requests == nil {
-		m.requests = make([]*transport.Request, 0)
-	}
-	if m.responses == nil {
-		m.responses = make([]*transport.Response, 0)
-	}
-	if m.errors == nil {
-		m.errors = make([]error, 0)
-	}
-	m.callCount = 0
-}
-
-func (m *MockHttpsTransport) checkAndAdaptBoundaries(req *transport.Request) {
-	if m.requests == nil {
-		m.requests = make([]*transport.Request, m.callCount)
-	}
-	if len(m.responses) <= m.callCount {
-		if m.responses == nil {
-			m.responses = make([]*transport.Response, m.callCount)
-		} else {
-			m.responses = append(m.responses, nil)
-		}
-	}
-	if len(m.errors) <= m.callCount {
-		if m.errors == nil {
-			m.errors = make([]error, m.callCount)
-		} else {
-			m.errors = append(m.errors, fmt.Errorf("Unexpected request: %+#v\nBody: %q", req, req.MarshaledMessage))
-		}
-	}
-}
-
 func (m *MockHttpsTransport) Do(request *transport.Request) (*transport.Response, error) {
 	m.checkAndAdaptBoundaries(request)
 	m.requests = append(m.requests, request)
@@ -118,4 +85,37 @@ func (m *MockHttpsTransport) Reset() {
 	m.responses = make([]*transport.Response, 0)
 	m.errors = make([]error, 0)
 	m.callCount = 0
+}
+
+func (m *MockHttpsTransport) init() {
+	if m.requests == nil {
+		m.requests = make([]*transport.Request, 0)
+	}
+	if m.responses == nil {
+		m.responses = make([]*transport.Response, 0)
+	}
+	if m.errors == nil {
+		m.errors = make([]error, 0)
+	}
+	m.callCount = 0
+}
+
+func (m *MockHttpsTransport) checkAndAdaptBoundaries(req *transport.Request) {
+	if m.requests == nil {
+		m.requests = make([]*transport.Request, m.callCount)
+	}
+	if len(m.responses) <= m.callCount {
+		if m.responses == nil {
+			m.responses = make([]*transport.Response, m.callCount)
+		} else {
+			m.responses = append(m.responses, nil)
+		}
+	}
+	if len(m.errors) <= m.callCount {
+		if m.errors == nil {
+			m.errors = make([]error, m.callCount)
+		} else {
+			m.errors = append(m.errors, fmt.Errorf("Unexpected request: %+#v\nBody: %q", req, req.MarshaledMessage))
+		}
+	}
 }

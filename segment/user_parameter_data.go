@@ -96,7 +96,7 @@ func (a *AccountInformationSegment) sender() string       { return senderBank }
 func (a *AccountInformationSegment) Account() domain.AccountInformation {
 	accountConnection := a.AccountConnection.Val()
 	info := domain.AccountInformation{
-		AccountConnection: &accountConnection,
+		AccountConnection: accountConnection,
 		UserID:            a.UserID.Val(),
 		Currency:          a.AccountCurrency.Val(),
 		Name1:             a.Name1.Val(),

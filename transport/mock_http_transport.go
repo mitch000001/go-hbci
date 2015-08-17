@@ -15,40 +15,6 @@ type MockHttpTransport struct {
 	callCount int
 }
 
-func (m *MockHttpTransport) init() {
-	if m.requests == nil {
-		m.requests = make([]*http.Request, 0)
-	}
-	if m.responses == nil {
-		m.responses = make([]*http.Response, 0)
-	}
-	if m.errors == nil {
-		m.errors = make([]error, 0)
-	}
-	m.callCount = 0
-}
-
-func (m *MockHttpTransport) checkAndAdaptBoundaries(req *http.Request) {
-	if m.requests == nil {
-		m.requests = make([]*http.Request, m.callCount)
-	}
-	if len(m.responses) <= m.callCount {
-		if m.responses == nil {
-			m.responses = make([]*http.Response, m.callCount)
-		} else {
-			m.responses = append(m.responses, nil)
-		}
-	}
-	if len(m.errors) <= m.callCount {
-		if m.errors == nil {
-			m.errors = make([]error, m.callCount)
-		} else {
-			bodyBytes, _ := ioutil.ReadAll(req.Body)
-			m.errors = append(m.errors, fmt.Errorf("Unexpected request: %+#v\nBody: %q", req, bodyBytes))
-		}
-	}
-}
-
 func (m *MockHttpTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	m.checkAndAdaptBoundaries(req)
 	m.requests = append(m.requests, req)
@@ -132,4 +98,38 @@ func (m *MockHttpTransport) Reset() {
 	m.responses = make([]*http.Response, 0)
 	m.errors = make([]error, 0)
 	m.callCount = 0
+}
+
+func (m *MockHttpTransport) init() {
+	if m.requests == nil {
+		m.requests = make([]*http.Request, 0)
+	}
+	if m.responses == nil {
+		m.responses = make([]*http.Response, 0)
+	}
+	if m.errors == nil {
+		m.errors = make([]error, 0)
+	}
+	m.callCount = 0
+}
+
+func (m *MockHttpTransport) checkAndAdaptBoundaries(req *http.Request) {
+	if m.requests == nil {
+		m.requests = make([]*http.Request, m.callCount)
+	}
+	if len(m.responses) <= m.callCount {
+		if m.responses == nil {
+			m.responses = make([]*http.Response, m.callCount)
+		} else {
+			m.responses = append(m.responses, nil)
+		}
+	}
+	if len(m.errors) <= m.callCount {
+		if m.errors == nil {
+			m.errors = make([]error, m.callCount)
+		} else {
+			bodyBytes, _ := ioutil.ReadAll(req.Body)
+			m.errors = append(m.errors, fmt.Errorf("Unexpected request: %+#v\nBody: %q", req, bodyBytes))
+		}
+	}
 }

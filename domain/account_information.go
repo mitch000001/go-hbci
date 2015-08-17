@@ -1,7 +1,7 @@
 package domain
 
 type AccountInformation struct {
-	AccountConnection           *AccountConnection
+	AccountConnection           AccountConnection
 	UserID                      string
 	Currency                    string
 	Name1                       string
