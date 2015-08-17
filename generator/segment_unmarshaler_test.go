@@ -27,7 +27,6 @@ type SegmentTest struct {
 func (s *SegmentTest) elements() []element.DataElement {
 	return []element.DataElement{
 		s.Abc,
-		s.Def,
 	}
 }
 `
@@ -66,13 +65,6 @@ func (s *SegmentTest) UnmarshalHBCI(value []byte) error {
 			return err
 		}
 	}
-	if len(elements) > 2 {
-		s.Def = &element.NumberDataElement{}
-		err = s.Def.UnmarshalHBCI(elements[2])
-		if err != nil {
-			return err
-		}
-	}
 	return nil
 }
 `
@@ -101,6 +93,49 @@ func (s *SegmentTest) UnmarshalHBCI(value []byte) error {
 			t.Logf("Diff: \n%s\n", diffPrettyPrint(diffs))
 			t.Fail()
 		}
+	}
+
+	// unknown element in elements
+	testSrc = `package testsegment
+
+import (
+	"github.com/mitch000001/go-hbci/element"
+)
+
+type SegmentTest struct {
+	segment.Segment
+	Abc *element.AlphaNumericDataElement
+	Def *element.NumberDataElement
+}
+
+func (s *SegmentTest) elements() []element.DataElement {
+	return []element.DataElement{
+		s.Abc,
+		&element.NumberDataElement{},
+	}
+}
+`
+	fileSet = token.NewFileSet()
+	f, err = parser.ParseFile(fileSet, "", testSrc, 0)
+	if err != nil {
+		t.Logf("Error while parsing source: %T:%v\n", err, err)
+		t.FailNow()
+	}
+
+	generator = NewSegmentUnmarshaler("SegmentTest", "testsegment", fileSet, f)
+
+	_, err = generator.Generate()
+
+	if err != nil {
+		errMessage := err.Error()
+		expectedMessage := `*generator.SegmentUnmarshalerGenerator: Unsupported element in elements method: "&element.NumberDataElement{}"`
+		if expectedMessage != errMessage {
+			t.Logf("Expected error message to equal\n%q\n\tgot\n%q\n", expectedMessage, errMessage)
+			t.Fail()
+		}
+	} else {
+		t.Logf("Expected error, got nil\n")
+		t.Fail()
 	}
 }
 
