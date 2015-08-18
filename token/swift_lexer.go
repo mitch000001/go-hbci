@@ -55,6 +55,7 @@ func lexSwiftSyntaxSymbol(l *StringLexer) StringLexerStateFn {
 	} else {
 		return l.errorf("Malformed syntax symbol")
 	}
+	return lexSwiftStart
 }
 
 func lexSwiftDigit(l *StringLexer) StringLexerStateFn {
@@ -70,7 +71,7 @@ func lexSwiftDigit(l *StringLexer) StringLexerStateFn {
 			return lexSwiftAlphaNumeric
 		}
 	} else {
-		if p := l.peek(); p == carriageReturn {
+		if isTagBoundary(l) {
 			l.emit(SWIFT_NUMERIC)
 			return lexSwiftStart
 		} else {
@@ -86,6 +87,7 @@ func lexSwiftAlpha(l *StringLexer) StringLexerStateFn {
 	case ('0' <= r && r <= '9'):
 		return lexSwiftCharacter
 	case r == carriageReturn:
+		l.backup()
 		l.emit(SWIFT_ALPHA)
 		return lexSwiftStart
 	case r == eof:
@@ -104,6 +106,7 @@ func lexSwiftCharacter(l *StringLexer) StringLexerStateFn {
 	case ('0' <= r && r <= '9'):
 		return lexSwiftCharacter
 	case r == carriageReturn:
+		l.backup()
 		l.emit(SWIFT_CHARACTER)
 		return lexSwiftStart
 	case r == eof:
@@ -120,13 +123,11 @@ func lexSwiftAlphaNumeric(l *StringLexer) StringLexerStateFn {
 	switch {
 	case r == carriageReturn:
 		l.backup()
-		currentPos := l.pos
-		if l.accept(string(carriageReturn)) && l.accept(string(lineFeed)) && l.accept(string(dash)+":") { // are we really on a tag boundary
-			l.pos = currentPos
+		if isTagBoundary(l) { // are we really on a tag boundary
 			l.emit(SWIFT_ALPHANUMERIC)
-			return lexSwiftStart
+			return lexSwiftSyntaxSymbol
 		} else {
-			l.backup()
+			l.next()
 			return lexSwiftAlphaNumeric
 		}
 	case r == eof:
@@ -138,14 +139,30 @@ func lexSwiftAlphaNumeric(l *StringLexer) StringLexerStateFn {
 	}
 }
 
+func isTagBoundary(s *StringLexer) bool {
+	currentPos := s.pos
+	isTagBoundary := s.accept(string(carriageReturn)) && s.accept(string(lineFeed)) && s.accept(string(dash)+string(tagIdentifier))
+	s.pos = currentPos
+	return isTagBoundary
+}
+
 func isSwiftAlphaNumeric(r rune) bool {
 	return r == dash || r == lineFeed || r == ' ' || ('\'' <= r && r <= ')') || ('+' <= r && r <= ':') || r == '?' || ('A' <= r && r <= 'Z') || ('a' <= r && r <= 'z')
+}
+
+func peekAfterSequence(l *StringLexer, valid string) rune {
+	currentPos := l.pos
+	l.acceptRun(valid)
+	r := l.peek()
+	l.pos = currentPos
+	return r
 }
 
 const (
 	carriageReturn           = '\r'
 	lineFeed                 = '\n'
 	dash                     = '-'
+	tagIdentifier            = ':'
 	tagSeparatorSequence     = "\r\n"
 	messageSeparatorSequence = "\r\n-"
 )

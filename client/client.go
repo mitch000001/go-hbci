@@ -2,6 +2,7 @@ package client
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/mitch000001/go-hbci/dialog"
 	"github.com/mitch000001/go-hbci/domain"
@@ -54,9 +55,12 @@ func (c *Client) Accounts() ([]domain.AccountInformation, error) {
 	return c.pinTanDialog.Accounts, nil
 }
 
-func (c *Client) AccountTransactions(account domain.AccountConnection, timeframe domain.Timeframe, allAccounts bool) ([]domain.AccountTransaction, error) {
+func (c *Client) AccountTransactions(account domain.AccountConnection, timeframe domain.Timeframe, allAccounts bool, aufsetzpunkt string) ([]domain.AccountTransaction, error) {
 	accountTransactionRequest := segment.NewAccountTransactionRequestSegment(account, allAccounts)
 	accountTransactionRequest.SetTransactionRange(timeframe)
+	if aufsetzpunkt != "" {
+		accountTransactionRequest.SetAufsetzpunkt(aufsetzpunkt)
+	}
 	decryptedMessage, err := c.pinTanDialog.SendMessage(message.NewHBCIMessage(accountTransactionRequest))
 	if err != nil {
 		return nil, err
@@ -64,13 +68,43 @@ func (c *Client) AccountTransactions(account domain.AccountConnection, timeframe
 	var accountTransactions []domain.AccountTransaction
 	accountTransactionResponses := decryptedMessage.FindSegments("HIKAZ")
 	if accountTransactionResponses != nil {
+		type response struct {
+			transactions []domain.AccountTransaction
+			err          error
+		}
+		resFn := func(tr []domain.AccountTransaction, err error) response {
+			return response{tr, err}
+		}
+		responses := make(chan response, len(accountTransactionResponses))
 		for _, marshaledSegment := range accountTransactionResponses {
+			fmt.Printf("Marshaled transactions:\n\n%q\n\n", marshaledSegment)
 			segment := &segment.AccountTransactionResponseSegment{}
 			err = segment.UnmarshalHBCI(marshaledSegment)
 			if err != nil {
 				return nil, err
 			}
 			accountTransactions = append(accountTransactions, segment.Transactions()...)
+			if segment != nil {
+				go func() {
+					responses <- resFn(c.AccountTransactions(account, timeframe, allAccounts, aufsetzpunkt))
+				}()
+			} else {
+				responses <- resFn([]domain.AccountTransaction{}, nil)
+			}
+		}
+		var errs []string
+		for {
+			if len(responses) == 0 {
+				break
+			}
+			res := <-responses
+			accountTransactions = append(accountTransactions, res.transactions...)
+			if res.err != nil {
+				errs = append(errs, fmt.Sprintf("%T:%v", res.err, res.err))
+			}
+		}
+		if len(errs) != 0 {
+			return nil, fmt.Errorf("Got errors: %s", strings.Join(errs, "\t"))
 		}
 	} else {
 		return nil, fmt.Errorf("Malformed response: expected HIKAZ segment")

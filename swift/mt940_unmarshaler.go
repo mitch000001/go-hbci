@@ -84,17 +84,17 @@ func (m *MT940) Unmarshal(value []byte) error {
 		default:
 			return fmt.Errorf("Malformed marshaled value")
 		}
-		for idx, transaction := range transactions {
-			sequence := &TransactionSequence{Transaction: transaction}
-			if cust, ok := customTags[idx+1]; ok {
-				sequence.Description = cust
-			}
-			m.Transactions = append(m.Transactions, sequence)
+	}
+	for idx, transaction := range transactions {
+		sequence := &TransactionSequence{Transaction: transaction}
+		if cust, ok := customTags[idx+1]; ok {
+			sequence.Description = cust
 		}
-		for k, cust := range customTags {
-			if k > closingBalanceIndex {
-				m.CustomField = cust
-			}
+		m.Transactions = append(m.Transactions, sequence)
+	}
+	for k, cust := range customTags {
+		if k > closingBalanceIndex {
+			m.CustomField = cust
 		}
 	}
 	return nil

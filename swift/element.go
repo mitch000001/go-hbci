@@ -167,19 +167,19 @@ func (c *CustomFieldTag) Unmarshal(value []byte) error {
 		case strings.HasPrefix(fieldKey, "?00"):
 			c.BookingText = string(fieldValue)
 		case strings.HasPrefix(fieldKey, "?10"):
-			c.PrimanotenNumber = string(fieldValue)
+			c.PrimanotenNumber = strings.Replace(string(fieldValue), "\r\n", "", -1)
 		case strings.HasPrefix(fieldKey, "?2"):
 			c.Purpose += strings.Replace(string(fieldValue), "\r\n", "", -1)
 		case strings.HasPrefix(fieldKey, "?30"):
-			c.BankID = string(fieldValue)
+			c.BankID = strings.Replace(string(fieldValue), "\r\n", "", -1)
 		case strings.HasPrefix(fieldKey, "?31"):
-			c.AccountID = string(fieldValue)
+			c.AccountID = strings.Replace(string(fieldValue), "\r\n", "", -1)
 		case strings.HasPrefix(fieldKey, "?32"):
-			c.Name = string(fieldValue)
+			c.Name = strings.Replace(string(fieldValue), "\r\n", "", -1)
 		case strings.HasPrefix(fieldKey, "?33"):
-			c.Name += " " + string(fieldValue)
+			c.Name += " " + strings.Replace(string(fieldValue), "\r\n", "", -1)
 		case strings.HasPrefix(fieldKey, "?34"):
-			messageKeyAddition, err := strconv.Atoi(string(fieldValue))
+			messageKeyAddition, err := strconv.Atoi(strings.Replace(string(fieldValue), "\r\n", "", -1))
 			if err != nil {
 				return err
 			}

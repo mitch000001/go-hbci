@@ -15,13 +15,12 @@ import (
 var testAccount domain.AccountConnection
 
 func TestClientAccountTransactions(t *testing.T) {
-	t.Skip()
 	c := newClient()
 
 	timeframe := domain.Timeframe{
 		StartDate: domain.NewShortDate(time.Now().AddDate(0, 0, -10)),
 	}
-	transactions, err := c.AccountTransactions(testAccount, timeframe, false)
+	transactions, err := c.AccountTransactions(testAccount, timeframe, false, "")
 
 	if err != nil {
 		t.Logf("Expected error to be nil, got %T:%v\n", err, err)
@@ -34,7 +33,7 @@ func TestClientAccountTransactions(t *testing.T) {
 	}
 
 	for _, tr := range transactions {
-		fmt.Printf("Transaction: %#v\n", tr)
+		fmt.Printf("Transaction: %s\n", tr)
 	}
 }
 

@@ -27,6 +27,10 @@ type AccountTransactionRequestSegment struct {
 	Aufsetzpunkt *element.AlphaNumericDataElement
 }
 
+func (a *AccountTransactionRequestSegment) SetAufsetzpunkt(aufsetzpoint string) {
+	a.Aufsetzpunkt = element.NewAlphaNumeric(aufsetzpoint, len(aufsetzpoint))
+}
+
 func (a *AccountTransactionRequestSegment) SetTransactionRange(timeframe domain.Timeframe) {
 	from := timeframe.StartDate
 	to := timeframe.EndDate
