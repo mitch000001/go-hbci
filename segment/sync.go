@@ -3,14 +3,22 @@ package segment
 import "github.com/mitch000001/go-hbci/element"
 
 func NewSynchronisationSegment(modus int) *SynchronisationRequestSegment {
-	s := &SynchronisationRequestSegment{
+	s := &SynchronisationRequestV2{
 		SyncModus: element.NewNumber(modus, 1),
 	}
 	s.ClientSegment = NewBasicSegment(5, s)
-	return s
+
+	segment := &SynchronisationRequestSegment{
+		Segment: s,
+	}
+	return segment
 }
 
 type SynchronisationRequestSegment struct {
+	Segment
+}
+
+type SynchronisationRequestV2 struct {
 	ClientSegment
 	// Code | Bedeutung
 	// ---------------------------------------------------------
@@ -20,12 +28,12 @@ type SynchronisationRequestSegment struct {
 	SyncModus *element.NumberDataElement
 }
 
-func (s *SynchronisationRequestSegment) Version() int         { return 2 }
-func (s *SynchronisationRequestSegment) ID() string           { return "HKSYN" }
-func (s *SynchronisationRequestSegment) referencedId() string { return "" }
-func (s *SynchronisationRequestSegment) sender() string       { return senderUser }
+func (s *SynchronisationRequestV2) Version() int         { return 2 }
+func (s *SynchronisationRequestV2) ID() string           { return "HKSYN" }
+func (s *SynchronisationRequestV2) referencedId() string { return "" }
+func (s *SynchronisationRequestV2) sender() string       { return senderUser }
 
-func (s *SynchronisationRequestSegment) elements() []element.DataElement {
+func (s *SynchronisationRequestV2) elements() []element.DataElement {
 	return []element.DataElement{
 		s.SyncModus,
 	}

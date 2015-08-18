@@ -16,6 +16,7 @@ type SynchronisationMessage struct {
 	ProcessingPreparation      *segment.ProcessingPreparationSegment
 	PublicSigningKeyRequest    *segment.PublicKeyRequestSegment
 	PublicEncryptionKeyRequest *segment.PublicKeyRequestSegment
+	PublicKeyRequest           *segment.PublicKeyRequestSegment
 	Sync                       *segment.SynchronisationRequestSegment
 }
 
@@ -25,6 +26,7 @@ func (s *SynchronisationMessage) HBCISegments() []segment.ClientSegment {
 		s.ProcessingPreparation,
 		s.PublicSigningKeyRequest,
 		s.PublicEncryptionKeyRequest,
+		s.PublicKeyRequest,
 		s.Sync,
 	}
 }
@@ -35,6 +37,7 @@ func (s *SynchronisationMessage) jobs() []segment.ClientSegment {
 		s.ProcessingPreparation,
 		s.PublicSigningKeyRequest,
 		s.PublicEncryptionKeyRequest,
+		s.PublicKeyRequest,
 		s.Sync,
 	}
 }
