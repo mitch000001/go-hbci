@@ -9,7 +9,7 @@ import (
 )
 
 const productName = "go-hbci library"
-const productVersion = "0.0.1"
+const productVersion = "0.0.2"
 
 func NewDialogEndSegment(dialogId string) *DialogEndSegment {
 	d := &DialogEndSegment{
