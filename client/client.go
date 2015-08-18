@@ -77,7 +77,6 @@ func (c *Client) AccountTransactions(account domain.AccountConnection, timeframe
 		}
 		responses := make(chan response, len(accountTransactionResponses))
 		for _, marshaledSegment := range accountTransactionResponses {
-			fmt.Printf("Marshaled transactions:\n\n%q\n\n", marshaledSegment)
 			segment := &segment.AccountTransactionResponseSegment{}
 			err = segment.UnmarshalHBCI(marshaledSegment)
 			if err != nil {
