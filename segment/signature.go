@@ -111,26 +111,48 @@ func (s *SignatureHeaderV3) elements() []element.DataElement {
 }
 
 func NewSignatureEndSegment(number int, controlReference string) *SignatureEndSegment {
-	s := &SignatureEndSegment{
+	s := &SignatureEndV1{
 		SecurityControlRef: element.NewAlphaNumeric(controlReference, 14),
 	}
 	s.ClientSegment = NewBasicSegment(number, s)
-	return s
+
+	segment := &SignatureEndSegment{
+		signatureEndSegment: s,
+	}
+	return segment
+}
+
+type signatureEndSegment interface {
+	Segment
+	SetSignature(signature []byte)
+	SetPinTan(pin, tan string)
 }
 
 type SignatureEndSegment struct {
+	signatureEndSegment
+}
+
+func (s *SignatureEndSegment) SetSignature(signature []byte) {
+	s.signatureEndSegment.SetSignature(signature)
+}
+
+func (s *SignatureEndSegment) SetPinTan(pin, tan string) {
+	s.signatureEndSegment.SetPinTan(pin, tan)
+}
+
+type SignatureEndV1 struct {
 	ClientSegment
 	SecurityControlRef *element.AlphaNumericDataElement
 	Signature          *element.BinaryDataElement
 	PinTan             *element.PinTanDataElement
 }
 
-func (s *SignatureEndSegment) Version() int         { return 1 }
-func (s *SignatureEndSegment) ID() string           { return "HNSHA" }
-func (s *SignatureEndSegment) referencedId() string { return "" }
-func (s *SignatureEndSegment) sender() string       { return senderBoth }
+func (s *SignatureEndV1) Version() int         { return 1 }
+func (s *SignatureEndV1) ID() string           { return "HNSHA" }
+func (s *SignatureEndV1) referencedId() string { return "" }
+func (s *SignatureEndV1) sender() string       { return senderBoth }
 
-func (s *SignatureEndSegment) elements() []element.DataElement {
+func (s *SignatureEndV1) elements() []element.DataElement {
 	return []element.DataElement{
 		s.SecurityControlRef,
 		s.Signature,
@@ -138,10 +160,10 @@ func (s *SignatureEndSegment) elements() []element.DataElement {
 	}
 }
 
-func (s *SignatureEndSegment) SetSignature(signature []byte) {
+func (s *SignatureEndV1) SetSignature(signature []byte) {
 	s.Signature = element.NewBinary(signature, 512)
 }
 
-func (s *SignatureEndSegment) SetPinTan(pin, tan string) {
+func (s *SignatureEndV1) SetPinTan(pin, tan string) {
 	s.PinTan = element.NewPinTan(pin, tan)
 }

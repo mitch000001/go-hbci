@@ -10,13 +10,13 @@ import (
 func NewFINTS3PinTanEncryptionHeaderSegment(clientSystemId string, keyName domain.KeyName) *EncryptionHeaderSegment {
 	e := &EncryptionHeaderSegmentV3{
 		SecurityProfile:      element.NewPinTanSecurityProfile(),
-		SecurityFunction:     element.NewAlphaNumeric("998", 3),
-		SecuritySupplierRole: element.NewAlphaNumeric("1", 3),
+		SecurityFunction:     element.NewCode("998", 3, []string{"4", "998"}),
+		SecuritySupplierRole: element.NewCode("1", 3, []string{"1", "4"}),
 		SecurityID:           element.NewRDHSecurityIdentification(element.SecurityHolderMessageSender, clientSystemId),
 		SecurityDate:         element.NewSecurityDate(element.SecurityTimestamp, time.Now()),
 		EncryptionAlgorithm:  element.NewPinTanEncryptionAlgorithm(),
 		KeyName:              element.NewKeyName(keyName),
-		CompressionFunction:  element.NewAlphaNumeric("0", 3),
+		CompressionFunction:  element.NewCode("0", 3, []string{"0", "1", "2", "3", "4", "5", "6", "7", "999"}),
 	}
 	e.ClientSegment = NewBasicSegment(998, e)
 
@@ -31,17 +31,26 @@ type EncryptionHeaderSegmentV3 struct {
 	SecurityProfile *element.SecurityProfileDataElement
 	// "4" for ENC, Encryption (encryption and eventually compression)
 	// "998" for Cleartext
-	SecurityFunction *element.AlphaNumericDataElement
+	SecurityFunction *element.CodeDataElement
 	// "1" for ISS,  Herausgeber der chiffrierten Nachricht (Erfasser)
 	// "4" for WIT, der Unterzeichnete ist Zeuge, aber für den Inhalt der
 	// Nachricht nicht verantwortlich (Übermittler, welcher nicht Erfasser ist)
-	SecuritySupplierRole *element.AlphaNumericDataElement
+	SecuritySupplierRole *element.CodeDataElement
 	SecurityID           *element.SecurityIdentificationDataElement
 	SecurityDate         *element.SecurityDateDataElement
 	EncryptionAlgorithm  *element.EncryptionAlgorithmDataElement
 	KeyName              *element.KeyNameDataElement
-	CompressionFunction  *element.AlphaNumericDataElement
-	Certificate          *element.CertificateDataElement
+	// 0: no compression (NULL)
+	// 1: Lempel, Ziv, Welch (LZW)
+	// 2: Optimized LZW (COM)
+	// 3: Lempel, Ziv (LZSS)
+	// 4: LZ + Huffman Coding (LZHuf)
+	// 5: PKZIP (ZIP)
+	// 6: deflate (GZIP) (http://www.gzip.org/zlib)
+	// 7: bzip2 (http://sourceware.cygnus.com/bzip2/)
+	// 999: Gegenseitig vereinbart (ZZZ)
+	CompressionFunction *element.CodeDataElement
+	Certificate         *element.CertificateDataElement
 }
 
 func (e *EncryptionHeaderSegmentV3) Version() int         { return 3 }
