@@ -29,7 +29,8 @@ func main() {
 	if err != nil {
 		fmt.Println(err)
 	}
-	segmentGenerator := generator.NewSegmentUnmarshaler(*segmentFlag, packageName, fileSet, f)
+	segment := generator.SegmentIdentifier{Name: *segmentFlag}
+	segmentGenerator := generator.NewSegmentUnmarshaler(segment, packageName, fileSet, f)
 	generated, err := segmentGenerator.Generate()
 	if err != nil {
 		fmt.Printf("Error while generating Unmarshaler: %v\n", err)

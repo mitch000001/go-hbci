@@ -1,12 +1,11 @@
 package dialog
 
 import (
-	"github.com/mitch000001/go-hbci/client"
 	"github.com/mitch000001/go-hbci/domain"
 	"github.com/mitch000001/go-hbci/message"
 )
 
-func NewFINTS3PinTanDialog(bankId domain.BankId, hbciUrl string, userId string) *PinTanDialog {
+func NewFINTS3PinTanDialog(bankId domain.BankId, hbciUrl string, userId string, hbciVersion int) *PinTanDialog {
 	pinKey := domain.NewPinKey("", domain.NewPinTanKeyName(bankId, userId, "S"))
 	signatureProvider := message.NewFINTS3PinTanSignatureProvider(pinKey, "0")
 	pinKey = domain.NewPinKey("", domain.NewPinTanKeyName(bankId, userId, "V"))
@@ -15,8 +14,8 @@ func NewFINTS3PinTanDialog(bankId domain.BankId, hbciUrl string, userId string) 
 		bankId,
 		hbciUrl,
 		userId,
+		hbciVersion,
 	)
-	d.hbciVersion = client.Version300
 	d.signatureProvider = signatureProvider
 	d.cryptoProvider = cryptoProvider
 	return d

@@ -247,7 +247,7 @@ func newTestPinTanDialog(transport *MockHttpsTransport) *PinTanDialog {
 	url := "http://localhost"
 	clientID := "12345"
 	bankID := domain.BankId{280, "10000000"}
-	d := NewPinTanDialog(bankID, url, clientID)
+	d := NewPinTanDialog(bankID, url, clientID, 220)
 	d.SetPin("abcde")
 	d.SetClientSystemID("xyz")
 	d.transport = transport

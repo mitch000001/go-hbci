@@ -21,7 +21,7 @@ func TestSegmentUnmarshalerGeneratorGenerate(t *testing.T) {
 
 	expectedSrc, err := ioutil.ReadFile("test_files/test_segment_unmarshaler.go")
 
-	generator := NewSegmentUnmarshaler("TestSegment", "test_files", fileSet, f)
+	generator := NewSegmentUnmarshaler(SegmentIdentifier{Name: "TestSegment"}, "test_files", fileSet, f)
 
 	reader, err := generator.Generate()
 
@@ -55,7 +55,7 @@ func TestSegmentUnmarshalerGeneratorGenerate(t *testing.T) {
 		t.FailNow()
 	}
 
-	generator = NewSegmentUnmarshaler("TestSegmentUnknownElement", "test_files", fileSet, f)
+	generator = NewSegmentUnmarshaler(SegmentIdentifier{Name: "TestSegment"}, "test_files", fileSet, f)
 
 	_, err = generator.Generate()
 

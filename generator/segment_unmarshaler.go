@@ -12,9 +12,9 @@ import (
 	"unicode/utf8"
 )
 
-func NewSegmentUnmarshaler(segmentName, packageName string, fileSet *token.FileSet, file *ast.File) *SegmentUnmarshalerGenerator {
+func NewSegmentUnmarshaler(segment SegmentIdentifier, packageName string, fileSet *token.FileSet, file *ast.File) *SegmentUnmarshalerGenerator {
 	return &SegmentUnmarshalerGenerator{
-		segmentName: segmentName,
+		segment:     segment,
 		packageName: packageName,
 		fileSet:     fileSet,
 		file:        file,
@@ -22,7 +22,7 @@ func NewSegmentUnmarshaler(segmentName, packageName string, fileSet *token.FileS
 }
 
 type SegmentUnmarshalerGenerator struct {
-	segmentName string
+	segment     SegmentIdentifier
 	packageName string
 	fileSet     *token.FileSet
 	file        *ast.File
@@ -34,11 +34,11 @@ func (s *SegmentUnmarshalerGenerator) Generate() (io.Reader, error) {
 		return nil, err
 	}
 
-	r, _ := utf8.DecodeRuneInString(s.segmentName)
+	r, _ := utf8.DecodeRuneInString(s.segment.Name)
 	nameVar := string(unicode.ToLower(r))
 	templObj := &segmentTemplateObject{
 		Package: s.packageName,
-		Name:    s.segmentName,
+		Name:    s.segment.Name,
 		NameVar: nameVar,
 		Fields:  sortedFields,
 	}
@@ -55,11 +55,11 @@ func (s *SegmentUnmarshalerGenerator) Generate() (io.Reader, error) {
 }
 
 func (s *SegmentUnmarshalerGenerator) extractFields() ([]field, error) {
-	object := s.file.Scope.Lookup(s.segmentName)
+	object := s.file.Scope.Lookup(s.segment.Name)
 	if object == nil {
-		return nil, fmt.Errorf("%T: No segment with name %q found in package %q", s, s.segmentName, s.packageName)
+		return nil, fmt.Errorf("%T: No segment with name %q found in package %q", s, s.segment.Name, s.packageName)
 	}
-	elemVisitor := &elementVisitor{fileSet: s.fileSet, object: object, receiverName: s.segmentName}
+	elemVisitor := &elementVisitor{fileSet: s.fileSet, object: object, receiverName: s.segment.Name}
 	ast.Walk(elemVisitor, s.file)
 	if elemVisitor.err != nil {
 		return nil, fmt.Errorf("%T: %v", s, elemVisitor.err)

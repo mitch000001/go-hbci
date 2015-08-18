@@ -4,14 +4,13 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/mitch000001/go-hbci/client"
 	"github.com/mitch000001/go-hbci/domain"
 	"github.com/mitch000001/go-hbci/message"
 	"github.com/mitch000001/go-hbci/segment"
 	"github.com/mitch000001/go-hbci/transport"
 )
 
-func NewPinTanDialog(bankId domain.BankId, hbciUrl string, userId string) *PinTanDialog {
+func NewPinTanDialog(bankId domain.BankId, hbciUrl string, userId string, hbciVersion int) *PinTanDialog {
 	pinKey := domain.NewPinKey("", domain.NewPinTanKeyName(bankId, userId, "S"))
 	signatureProvider := message.NewPinTanSignatureProvider(pinKey, "0")
 	pinKey = domain.NewPinKey("", domain.NewPinTanKeyName(bankId, userId, "V"))
@@ -21,7 +20,7 @@ func NewPinTanDialog(bankId domain.BankId, hbciUrl string, userId string) *PinTa
 			bankId,
 			hbciUrl,
 			userId,
-			client.Version220,
+			hbciVersion,
 			signatureProvider,
 			cryptoProvider,
 		),

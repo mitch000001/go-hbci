@@ -11,6 +11,6 @@ func ExamplePinTanDialog() {
 		CountryCode: 280,
 		ID:          blz,
 	}
-	d := dialog.NewPinTanDialog(bankId, url, userId)
+	d := dialog.NewPinTanDialog(bankId, url, userId, 220)
 	d.SetPin("12345")
 }

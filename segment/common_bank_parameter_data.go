@@ -9,39 +9,47 @@ import (
 	"github.com/mitch000001/go-hbci/element"
 )
 
-var HKVVBSegmentNumber = -1
-
-func NewCommonBankParameterSegment(
-	bpdVersion int,
-	bankId domain.BankId,
-	bankName string,
-	businessTransactionCount int,
-	supportedLanguages []int,
-	supportedHBCIVersions []int,
-	maxMessageSize int) *CommonBankParameterSegment {
-	c := &CommonBankParameterSegment{
-		BPDVersion:               element.NewNumber(bpdVersion, 3),
-		BankID:                   element.NewBankIndentification(bankId),
-		BankName:                 element.NewAlphaNumeric(bankName, 60),
-		BusinessTransactionCount: element.NewNumber(businessTransactionCount, 3),
-		SupportedLanguages:       element.NewSupportedLanguages(supportedLanguages...),
-		SupportedHBCIVersions:    element.NewSupportedHBCIVersions(supportedHBCIVersions...),
-		MaxMessageSize:           element.NewNumber(maxMessageSize, 4),
-	}
-	header := element.NewReferencingSegmentHeader("HIBPA", 1, 2, HKVVBSegmentNumber)
-	c.Segment = NewBasicSegmentWithHeader(header, c)
-	return c
-}
-
 //go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment CommonBankParameterSegment
 
 type CommonBankParameterSegment struct {
 	commonBankParameterSegment
 }
 
+func (c *CommonBankParameterSegment) UnmarshalHBCI(value []byte) error {
+	elements, err := ExtractElements(value)
+	if err != nil {
+		return err
+	}
+	header := &element.SegmentHeader{}
+	err = header.UnmarshalHBCI(elements[0])
+	if err != nil {
+		return err
+	}
+	var segment commonBankParameterSegment
+	switch header.Version.Val() {
+	case 2:
+		segment = &CommonBankParameterV2{}
+		err = segment.UnmarshalHBCI(value)
+		if err != nil {
+			return err
+		}
+	case 3:
+		segment = &CommonBankParameterV3{}
+		err = segment.UnmarshalHBCI(value)
+		if err != nil {
+			return err
+		}
+	default:
+		return fmt.Errorf("Unknown segment version: %d", header.Version.Val())
+	}
+	c.commonBankParameterSegment = segment
+	return nil
+}
+
 type commonBankParameterSegment interface {
 	Segment
 	BankParameterData() domain.BankParameterData
+	UnmarshalHBCI([]byte) error
 }
 
 type CommonBankParameterV2 struct {
@@ -174,4 +182,56 @@ func (c *CommonBankParameterV3) BankParameterData() domain.BankParameterData {
 		MinTimeout:                c.MinTimeoutValue.Val(),
 		MaxTimeout:                c.MaxTimeoutValue.Val(),
 	}
+}
+
+func (c *CommonBankParameterV3) UnmarshalHBCI(value []byte) error {
+	elements, err := ExtractElements(value)
+	if err != nil {
+		return err
+	}
+	if len(elements) == 0 || len(elements) < 7 {
+		return fmt.Errorf("Malformed marshaled value")
+	}
+	segment, err := SegmentFromHeaderBytes(elements[0], c)
+	if err != nil {
+		return err
+	}
+	c.Segment = segment
+	version, err := strconv.Atoi(charset.ToUtf8(elements[1]))
+	if err != nil {
+		return err
+	}
+	c.BPDVersion = element.NewNumber(version, 3)
+	bankId := &element.BankIdentificationDataElement{}
+	err = bankId.UnmarshalHBCI(elements[2])
+	if err != nil {
+		return err
+	}
+	c.BankID = bankId
+	c.BankName = element.NewAlphaNumeric(charset.ToUtf8(elements[3]), 60)
+	transactionCount, err := strconv.Atoi(charset.ToUtf8(elements[4]))
+	if err != nil {
+		return err
+	}
+	c.BusinessTransactionCount = element.NewNumber(transactionCount, 3)
+	languages := &element.SupportedLanguagesDataElement{}
+	err = languages.UnmarshalHBCI(elements[5])
+	if err != nil {
+		return err
+	}
+	c.SupportedLanguages = languages
+	versions := &element.SupportedHBCIVersionsDataElement{}
+	err = versions.UnmarshalHBCI(elements[6])
+	if err != nil {
+		return err
+	}
+	c.SupportedHBCIVersions = versions
+	if len(elements) == 8 {
+		maxSize, err := strconv.Atoi(charset.ToUtf8(elements[7]))
+		if err != nil {
+			return err
+		}
+		c.MaxMessageSize = element.NewNumber(maxSize, 4)
+	}
+	return nil
 }

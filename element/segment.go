@@ -1,5 +1,7 @@
 package element
 
+import "fmt"
+
 func NewReferencingSegmentHeader(id string, number, version, reference int) *SegmentHeader {
 	header := NewSegmentHeader(id, number, version)
 	header.Ref = NewNumber(reference, 3)
@@ -59,4 +61,44 @@ func (s *SegmentHeader) GroupDataElements() []DataElement {
 		s.Version,
 		s.Ref,
 	}
+}
+
+func (s *SegmentHeader) UnmarshalHBCI(value []byte) error {
+	elements, err := ExtractElements(value)
+	if err != nil {
+		return err
+	}
+	if len(elements) < 3 {
+		return fmt.Errorf("Malformed segment header")
+	}
+	s.DataElement = NewDataElementGroup(SegmentHeaderDEG, 4, s)
+	if len(elements) > 0 {
+		s.ID = &AlphaNumericDataElement{}
+		err = s.ID.UnmarshalHBCI(elements[0])
+		if err != nil {
+			return err
+		}
+	}
+	if len(elements) > 1 {
+		s.Number = &NumberDataElement{}
+		err = s.Number.UnmarshalHBCI(elements[1])
+		if err != nil {
+			return fmt.Errorf("Malformed segment header number: %v", err)
+		}
+	}
+	if len(elements) > 2 {
+		s.Version = &NumberDataElement{}
+		err = s.Version.UnmarshalHBCI(elements[2])
+		if err != nil {
+			return fmt.Errorf("Malformed segment header version: %v", err)
+		}
+	}
+	if len(elements) > 3 && len(elements[3]) > 0 {
+		s.Ref = &NumberDataElement{}
+		err = s.Ref.UnmarshalHBCI(elements[3])
+		if err != nil {
+			return fmt.Errorf("Malformed segment header reference: %v", err)
+		}
+	}
+	return nil
 }

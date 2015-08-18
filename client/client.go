@@ -36,9 +36,9 @@ func New(config Config) (*Client, error) {
 	var d *dialog.PinTanDialog
 	switch config.HBCIVersion {
 	case Version220:
-		d = dialog.NewPinTanDialog(bankId, config.URL, config.AccountID)
+		d = dialog.NewPinTanDialog(bankId, config.URL, config.AccountID, Version220)
 	case Version300:
-		d = dialog.NewFINTS3PinTanDialog(bankId, config.URL, config.AccountID)
+		d = dialog.NewFINTS3PinTanDialog(bankId, config.URL, config.AccountID, Version300)
 	default:
 		return nil, fmt.Errorf("Unsupported HBCI version. Supported versions are %s", supportedVersions)
 	}

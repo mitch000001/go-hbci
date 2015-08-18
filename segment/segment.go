@@ -4,10 +4,8 @@ import (
 	"bytes"
 	"fmt"
 	"reflect"
-	"strconv"
 	"strings"
 
-	"github.com/mitch000001/go-hbci/charset"
 	"github.com/mitch000001/go-hbci/element"
 )
 
@@ -45,27 +43,27 @@ type Unmarshaler interface {
 	UnmarshalHBCI([]byte) error
 }
 
-func SegmentFromHeaderBytes(headerBytes []byte, seg basicSegment) (*segment, error) {
-	elements, err := element.ExtractElements(headerBytes)
-	var header *element.SegmentHeader
-	id := charset.ToUtf8(elements[0])
-	numStr := elements[1]
-	number, err := strconv.Atoi(charset.ToUtf8(numStr))
-	if err != nil {
-		return nil, fmt.Errorf("Malformed segment header number")
-	}
-	version, err := strconv.Atoi(charset.ToUtf8(elements[2]))
-	if err != nil {
-		return nil, fmt.Errorf("Malformed segment header version")
-	}
-	if len(elements) == 4 && len(elements[3]) > 0 {
-		ref, err := strconv.Atoi(charset.ToUtf8(elements[3]))
-		if err != nil {
-			return nil, fmt.Errorf("Malformed segment header reference")
-		}
-		header = element.NewReferencingSegmentHeader(id, number, version, ref)
+type segmentIndex map[string]func() Unmarshaler
+
+func (u segmentIndex) UnmarshalerForSegment(segmentId string) Unmarshaler {
+	segmentFn, ok := u[segmentId]
+	if ok {
+		return segmentFn()
 	} else {
-		header = element.NewSegmentHeader(id, number, version)
+		panic(fmt.Errorf("Segment not in index: %q", segmentId))
+	}
+}
+
+func (u segmentIndex) IsIndexed(segmentId string) bool {
+	_, ok := u[segmentId]
+	return ok
+}
+
+func SegmentFromHeaderBytes(headerBytes []byte, seg basicSegment) (*segment, error) {
+	header := &element.SegmentHeader{}
+	err := header.UnmarshalHBCI(headerBytes)
+	if err != nil {
+		return nil, fmt.Errorf("Error while unmarshaling segment header: %v", err)
 	}
 	return NewBasicSegmentWithHeader(header, seg), nil
 }
