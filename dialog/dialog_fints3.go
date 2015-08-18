@@ -1,9 +1,9 @@
 package dialog
 
 import (
+	"github.com/mitch000001/go-hbci/client"
 	"github.com/mitch000001/go-hbci/domain"
 	"github.com/mitch000001/go-hbci/message"
-	"github.com/mitch000001/go-hbci/transport"
 )
 
 func NewFINTS3PinTanDialog(bankId domain.BankId, hbciUrl string, userId string) *PinTanDialog {
@@ -16,9 +16,9 @@ func NewFINTS3PinTanDialog(bankId domain.BankId, hbciUrl string, userId string) 
 		hbciUrl,
 		userId,
 	)
+	d.hbciVersion = client.Version300
 	d.signatureProvider = signatureProvider
 	d.cryptoProvider = cryptoProvider
-	d.transport = transport.NewHttpsTransport()
 	return d
 }
 

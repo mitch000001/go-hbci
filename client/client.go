@@ -12,10 +12,12 @@ import (
 
 const (
 	Version220 = 220
+	Version300 = 300
 )
 
 var supportedVersions = []int{
 	Version220,
+	Version300,
 }
 
 type Config struct {
@@ -31,7 +33,15 @@ func New(config Config) (*Client, error) {
 		CountryCode: 280,
 		ID:          config.BankID,
 	}
-	d := dialog.NewPinTanDialog(bankId, config.URL, config.AccountID)
+	var d *dialog.PinTanDialog
+	switch config.HBCIVersion {
+	case Version220:
+		d = dialog.NewPinTanDialog(bankId, config.URL, config.AccountID)
+	case Version300:
+		d = dialog.NewFINTS3PinTanDialog(bankId, config.URL, config.AccountID)
+	default:
+		return nil, fmt.Errorf("Unsupported HBCI version. Supported versions are %s", supportedVersions)
+	}
 	d.SetPin(config.PIN)
 	client := &Client{
 		config:       config,

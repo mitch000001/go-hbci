@@ -27,7 +27,7 @@ type Dialog interface {
 	SendMessage(clientMessage message.HBCIMessage) (message.BankMessage, error)
 }
 
-func newDialog(bankId domain.BankId, hbciUrl string, userId string, signatureProvider message.SignatureProvider, cryptoProvider message.CryptoProvider) *dialog {
+func newDialog(bankId domain.BankId, hbciUrl string, userId string, hbciVersion int, signatureProvider message.SignatureProvider, cryptoProvider message.CryptoProvider) *dialog {
 	return &dialog{
 		httpClient:         http.DefaultClient,
 		hbciUrl:            hbciUrl,
@@ -40,6 +40,7 @@ func newDialog(bankId domain.BankId, hbciUrl string, userId string, signaturePro
 		signatureProvider:  signatureProvider,
 		cryptoProvider:     cryptoProvider,
 		dialogID:           initialDialogID,
+		hbciVersion:        hbciVersion,
 		syncSegmentVersion: 2,
 	}
 }
@@ -61,6 +62,7 @@ type dialog struct {
 	signatureProvider  message.SignatureProvider
 	cryptoProvider     message.CryptoProvider
 	BankParameterData  domain.BankParameterData
+	hbciVersion        int
 	syncSegmentVersion int
 }
 
@@ -320,7 +322,7 @@ func (d *dialog) newClientMessage(hbciMessage message.HBCIMessage) message.Clien
 func (d *dialog) newBasicMessage(hbciMessage message.HBCIMessage) *message.BasicMessage {
 	messageNum := d.nextMessageNumber()
 	clientMessage := message.NewBasicMessage(hbciMessage)
-	clientMessage.Header = segment.NewMessageHeaderSegment(-1, 220, d.dialogID, messageNum)
+	clientMessage.Header = segment.NewMessageHeaderSegment(-1, d.hbciVersion, d.dialogID, messageNum)
 	clientMessage.End = segment.NewMessageEndSegment(-1, messageNum)
 	return clientMessage
 }

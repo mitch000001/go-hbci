@@ -5,6 +5,9 @@ type BankParameterData struct {
 	BankID                     BankId
 	BankName                   string
 	MaxTransactionsPerMessage  int
+	MaxMessageSize             int
+	MinTimeout                 int
+	MaxTimeout                 int
 	PinTanBusinessTransactions map[string]bool
 }
 
