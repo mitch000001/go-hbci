@@ -2,7 +2,7 @@ package segment
 
 import "github.com/mitch000001/go-hbci/element"
 
-func NewSynchronisationSegment(modus int) *SynchronisationRequestSegment {
+func NewSynchronisationSegmentV2(modus int) *SynchronisationRequestSegment {
 	s := &SynchronisationRequestV2{
 		SyncModus: element.NewNumber(modus, 1),
 	}

@@ -29,37 +29,39 @@ type Dialog interface {
 
 func newDialog(bankId domain.BankId, hbciUrl string, userId string, signatureProvider message.SignatureProvider, cryptoProvider message.CryptoProvider) *dialog {
 	return &dialog{
-		httpClient:        http.DefaultClient,
-		hbciUrl:           hbciUrl,
-		BankID:            bankId,
-		UserID:            userId,
-		clientID:          userId,
-		ClientSystemID:    initialClientSystemID,
-		Language:          domain.German,
-		Accounts:          make([]domain.AccountInformation, 0),
-		signatureProvider: signatureProvider,
-		cryptoProvider:    cryptoProvider,
-		dialogID:          initialDialogID,
+		httpClient:         http.DefaultClient,
+		hbciUrl:            hbciUrl,
+		BankID:             bankId,
+		UserID:             userId,
+		clientID:           userId,
+		ClientSystemID:     initialClientSystemID,
+		Language:           domain.German,
+		Accounts:           make([]domain.AccountInformation, 0),
+		signatureProvider:  signatureProvider,
+		cryptoProvider:     cryptoProvider,
+		dialogID:           initialDialogID,
+		syncSegmentVersion: 2,
 	}
 }
 
 type dialog struct {
-	transport         transport.Transport
-	httpClient        *http.Client
-	hbciUrl           string
-	BankID            domain.BankId
-	UserID            string
-	clientID          string
-	ClientSystemID    string
-	Language          domain.Language
-	UserParameterData domain.UserParameterData
-	Accounts          []domain.AccountInformation
-	messageCount      int
-	dialogID          string
-	securityFn        string
-	signatureProvider message.SignatureProvider
-	cryptoProvider    message.CryptoProvider
-	BankParameterData domain.BankParameterData
+	transport          transport.Transport
+	httpClient         *http.Client
+	hbciUrl            string
+	BankID             domain.BankId
+	UserID             string
+	clientID           string
+	ClientSystemID     string
+	Language           domain.Language
+	UserParameterData  domain.UserParameterData
+	Accounts           []domain.AccountInformation
+	messageCount       int
+	dialogID           string
+	securityFn         string
+	signatureProvider  message.SignatureProvider
+	cryptoProvider     message.CryptoProvider
+	BankParameterData  domain.BankParameterData
+	syncSegmentVersion int
 }
 
 func (d *dialog) UserParameterDataVersion() int {
@@ -122,7 +124,14 @@ func (d *dialog) SyncClientSystemID() (string, error) {
 	syncMessage := &message.SynchronisationMessage{
 		Identification:        segment.NewIdentificationSegment(d.BankID, d.clientID, initialClientSystemID, true),
 		ProcessingPreparation: segment.NewProcessingPreparationSegment(0, 0, 1),
-		Sync: segment.NewSynchronisationSegment(0),
+	}
+	switch d.syncSegmentVersion {
+	case 2:
+		syncMessage.Sync = segment.NewSynchronisationSegmentV2(0)
+	case 3:
+		syncMessage.Sync = segment.NewSynchronisationSegmentV3(0)
+	default:
+		return "", fmt.Errorf("Error while creating sync message: sync segment version not supported (%d", d.syncSegmentVersion)
 	}
 	syncMessage.BasicMessage = d.newBasicMessage(syncMessage)
 	signedSyncMessage, err := syncMessage.Sign(d.signatureProvider)
