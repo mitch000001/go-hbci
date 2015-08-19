@@ -1,9 +1,9 @@
 package element
 
-func NewPinTanSecurityProfile() *SecurityProfileDataElement {
+func NewPinTanSecurityProfile(securityMethod int) *SecurityProfileDataElement {
 	s := &SecurityProfileDataElement{
 		SecurityMethod:        NewAlphaNumeric("PIN", 3),
-		SecurityMethodVersion: NewNumber(1, 3),
+		SecurityMethodVersion: NewNumber(securityMethod, 3),
 	}
 	s.DataElement = NewDataElementGroup(SecurityProfileDEG, 2, s)
 	return s

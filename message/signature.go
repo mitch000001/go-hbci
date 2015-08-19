@@ -43,9 +43,10 @@ func generateControlReference(key domain.Key) string {
 	return fmt.Sprintf("%x", h.Sum(nil))
 }
 
-func NewPinTanSignatureProvider(key *domain.PinKey, clientSystemId string) SignatureProvider {
+func NewPinTanSignatureProvider(key *domain.PinKey, clientSystemId string, hbciVersion segment.Version) SignatureProvider {
 	controlReference := generateControlReference(key)
 	return &PinTanSignatureProvider{
+		hbciVersion:      hbciVersion,
 		key:              key,
 		clientSystemId:   clientSystemId,
 		controlReference: controlReference,
@@ -54,6 +55,7 @@ func NewPinTanSignatureProvider(key *domain.PinKey, clientSystemId string) Signa
 }
 
 type PinTanSignatureProvider struct {
+	hbciVersion      segment.Version
 	key              *domain.PinKey
 	clientSystemId   string
 	securityFn       string
@@ -72,9 +74,9 @@ func (p *PinTanSignatureProvider) SignMessage(signedMessage SignedHBCIMessage) e
 	if p.key.Pin() == "" {
 		return fmt.Errorf("Malformed PIN")
 	}
-	signatureHeader := segment.NewPinTanSignatureHeaderSegment(p.controlReference, p.clientSystemId, p.key.KeyName())
+	signatureHeader := p.hbciVersion.PinTanSignatureHeader(p.controlReference, p.clientSystemId, p.key.KeyName())
 	signatureHeader.SetSecurityFunction(p.securityFn)
-	signatureEnd := segment.NewSignatureEndSegment(0, p.controlReference)
+	signatureEnd := p.hbciVersion.SignatureEnd(0, p.controlReference)
 	signatureEnd.SetPinTan(p.key.Pin(), "")
 	signedMessage.SetSignatureHeader(signatureHeader)
 	signedMessage.SetSignatureEnd(signatureEnd)
@@ -82,10 +84,11 @@ func (p *PinTanSignatureProvider) SignMessage(signedMessage SignedHBCIMessage) e
 	return nil
 }
 
-func NewRDHSignatureProvider(signingKey *domain.RSAKey, signatureId int) SignatureProvider {
+func NewRDHSignatureProvider(signingKey *domain.RSAKey, signatureId int, hbciVersion segment.Version) SignatureProvider {
 	controlReference := generateControlReference(signingKey)
 	return &RDHSignatureProvider{
 		signingKey:       signingKey,
+		hbciVersion:      hbciVersion,
 		controlReference: controlReference,
 		signatureId:      signatureId,
 		securityFn:       "1",
@@ -94,6 +97,7 @@ func NewRDHSignatureProvider(signingKey *domain.RSAKey, signatureId int) Signatu
 
 type RDHSignatureProvider struct {
 	signingKey       *domain.RSAKey
+	hbciVersion      segment.Version
 	clientSystemId   string
 	controlReference string
 	securityFn       string
@@ -109,8 +113,8 @@ func (r *RDHSignatureProvider) SetSecurityFunction(securityFn string) {
 }
 
 func (r *RDHSignatureProvider) SignMessage(message SignedHBCIMessage) error {
-	signatureHeader := segment.NewRDHSignatureHeaderSegment(r.controlReference, r.signatureId, r.clientSystemId, r.signingKey.KeyName())
-	signatureEnd := segment.NewSignatureEndSegment(0, r.controlReference)
+	signatureHeader := r.hbciVersion.RDHSignatureHeader(r.controlReference, r.signatureId, r.clientSystemId, r.signingKey.KeyName())
+	signatureEnd := r.hbciVersion.SignatureEnd(0, r.controlReference)
 	message.SetSignatureHeader(signatureHeader)
 	message.SetSignatureEnd(signatureEnd)
 	message.SetNumbers()

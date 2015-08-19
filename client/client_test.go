@@ -80,11 +80,11 @@ func TestClientBalances(t *testing.T) {
 
 func newTestClient() *Client {
 	config := Config{
-		URL:         "http://localhost",
+		URL:         "https://localhost",
 		AccountID:   "12345",
 		BankID:      "10000000",
 		PIN:         "abcde",
-		HBCIVersion: Version220,
+		HBCIVersion: domain.HBCIVersion220,
 	}
 	c, err := New(config)
 	if err != nil {

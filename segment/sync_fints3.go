@@ -28,7 +28,7 @@ type SynchronisationRequestV3 struct {
 	SyncModus *element.CodeDataElement
 }
 
-func (s *SynchronisationRequestV3) Version() int         { return 2 }
+func (s *SynchronisationRequestV3) Version() int         { return 3 }
 func (s *SynchronisationRequestV3) ID() string           { return "HKSYN" }
 func (s *SynchronisationRequestV3) referencedId() string { return "" }
 func (s *SynchronisationRequestV3) sender() string       { return senderUser }

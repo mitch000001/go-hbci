@@ -9,7 +9,7 @@ import (
 
 func NewFINTS3PinTanEncryptionHeaderSegment(clientSystemId string, keyName domain.KeyName) *EncryptionHeaderSegment {
 	e := &EncryptionHeaderSegmentV3{
-		SecurityProfile:      element.NewPinTanSecurityProfile(),
+		SecurityProfile:      element.NewPinTanSecurityProfile(1),
 		SecurityFunction:     element.NewCode("998", 3, []string{"4", "998"}),
 		SecuritySupplierRole: element.NewCode("1", 3, []string{"1", "4"}),
 		SecurityID:           element.NewRDHSecurityIdentification(element.SecurityHolderMessageSender, clientSystemId),

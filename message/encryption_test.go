@@ -12,7 +12,7 @@ func TestEncryptedPinTanMessageDecrypt(t *testing.T) {
 	keyName := domain.NewPinTanKeyName(domain.BankId{CountryCode: 280, ID: "1"}, "userID", "V")
 	pinKey := domain.NewPinKey("abcde", keyName)
 
-	provider := NewPinTanCryptoProvider(pinKey, "clientSystemID")
+	provider := NewPinTanCryptoProvider(pinKey, "clientSystemID", segment.HBCI220)
 
 	syncSegment := "HISYN:2:3:8+newClientSystemID'"
 	acknowledgement := "HIRMG:2:2:1+0100::Dialog beendet'"

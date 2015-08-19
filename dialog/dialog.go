@@ -27,43 +27,41 @@ type Dialog interface {
 	SendMessage(clientMessage message.HBCIMessage) (message.BankMessage, error)
 }
 
-func newDialog(bankId domain.BankId, hbciUrl string, userId string, hbciVersion int, signatureProvider message.SignatureProvider, cryptoProvider message.CryptoProvider) *dialog {
+func newDialog(bankId domain.BankId, hbciUrl string, userId string, hbciVersion segment.Version, signatureProvider message.SignatureProvider, cryptoProvider message.CryptoProvider) *dialog {
 	return &dialog{
-		httpClient:         http.DefaultClient,
-		hbciUrl:            hbciUrl,
-		BankID:             bankId,
-		UserID:             userId,
-		clientID:           userId,
-		ClientSystemID:     initialClientSystemID,
-		Language:           domain.German,
-		Accounts:           make([]domain.AccountInformation, 0),
-		signatureProvider:  signatureProvider,
-		cryptoProvider:     cryptoProvider,
-		dialogID:           initialDialogID,
-		hbciVersion:        hbciVersion,
-		syncSegmentVersion: 2,
+		httpClient:        http.DefaultClient,
+		hbciUrl:           hbciUrl,
+		BankID:            bankId,
+		UserID:            userId,
+		clientID:          userId,
+		ClientSystemID:    initialClientSystemID,
+		Language:          domain.German,
+		Accounts:          make([]domain.AccountInformation, 0),
+		signatureProvider: signatureProvider,
+		cryptoProvider:    cryptoProvider,
+		dialogID:          initialDialogID,
+		hbciVersion:       hbciVersion,
 	}
 }
 
 type dialog struct {
-	transport          transport.Transport
-	httpClient         *http.Client
-	hbciUrl            string
-	BankID             domain.BankId
-	UserID             string
-	clientID           string
-	ClientSystemID     string
-	Language           domain.Language
-	UserParameterData  domain.UserParameterData
-	Accounts           []domain.AccountInformation
-	messageCount       int
-	dialogID           string
-	securityFn         string
-	signatureProvider  message.SignatureProvider
-	cryptoProvider     message.CryptoProvider
-	BankParameterData  domain.BankParameterData
-	hbciVersion        int
-	syncSegmentVersion int
+	transport         transport.Transport
+	httpClient        *http.Client
+	hbciUrl           string
+	BankID            domain.BankId
+	UserID            string
+	clientID          string
+	ClientSystemID    string
+	Language          domain.Language
+	UserParameterData domain.UserParameterData
+	Accounts          []domain.AccountInformation
+	messageCount      int
+	dialogID          string
+	securityFn        string
+	signatureProvider message.SignatureProvider
+	cryptoProvider    message.CryptoProvider
+	BankParameterData domain.BankParameterData
+	hbciVersion       segment.Version
 }
 
 func (d *dialog) UserParameterDataVersion() int {
@@ -126,14 +124,7 @@ func (d *dialog) SyncClientSystemID() (string, error) {
 	syncMessage := &message.SynchronisationMessage{
 		Identification:        segment.NewIdentificationSegment(d.BankID, d.clientID, initialClientSystemID, true),
 		ProcessingPreparation: segment.NewProcessingPreparationSegment(0, 0, 1),
-	}
-	switch d.syncSegmentVersion {
-	case 2:
-		syncMessage.Sync = segment.NewSynchronisationSegmentV2(0)
-	case 3:
-		syncMessage.Sync = segment.NewSynchronisationSegmentV3(0)
-	default:
-		return "", fmt.Errorf("Error while creating sync message: sync segment version not supported (%d", d.syncSegmentVersion)
+		Sync: d.hbciVersion.SynchronisationRequest(0),
 	}
 	syncMessage.BasicMessage = d.newBasicMessage(syncMessage)
 	signedSyncMessage, err := syncMessage.Sign(d.signatureProvider)
@@ -322,7 +313,7 @@ func (d *dialog) newClientMessage(hbciMessage message.HBCIMessage) message.Clien
 func (d *dialog) newBasicMessage(hbciMessage message.HBCIMessage) *message.BasicMessage {
 	messageNum := d.nextMessageNumber()
 	clientMessage := message.NewBasicMessage(hbciMessage)
-	clientMessage.Header = segment.NewMessageHeaderSegment(-1, d.hbciVersion, d.dialogID, messageNum)
+	clientMessage.Header = segment.NewMessageHeaderSegment(-1, d.hbciVersion.Version(), d.dialogID, messageNum)
 	clientMessage.End = segment.NewMessageEndSegment(-1, messageNum)
 	return clientMessage
 }

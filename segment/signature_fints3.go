@@ -7,14 +7,14 @@ import (
 	"github.com/mitch000001/go-hbci/element"
 )
 
-func NewFINTS3PinTanSignatureHeaderSegment(controlReference string, holderId string, keyName domain.KeyName) *SignatureHeaderSegment {
+func NewFINTS3PinTanSignatureHeaderSegment(controlReference string, clientSystemId string, keyName domain.KeyName) *SignatureHeaderSegment {
 	s := &SignatureHeaderSegmentV4{
-		SecurityProfile:          element.NewPinTanSecurityProfile(),
+		SecurityProfile:          element.NewPinTanSecurityProfile(1),
 		SecurityFunction:         element.NewCode("999", 3, []string{"1", "2", "999"}),
 		SecurityControlRef:       element.NewAlphaNumeric(controlReference, 14),
 		SecurityApplicationRange: element.NewCode("1", 3, []string{"1", "2"}),
 		SecuritySupplierRole:     element.NewCode("1", 3, []string{"1", "3", "4"}),
-		SecurityID:               element.NewRDHSecurityIdentification(element.SecurityHolderMessageSender, holderId),
+		SecurityID:               element.NewRDHSecurityIdentification(element.SecurityHolderMessageSender, clientSystemId),
 		SecurityDate:             element.NewSecurityDate(element.SecurityTimestamp, time.Now()),
 		HashAlgorithm:            element.NewDefaultHashAlgorithm(),
 		SignatureAlgorithm:       element.NewRDHSignatureAlgorithm(),
@@ -54,6 +54,11 @@ type SignatureHeaderSegmentV4 struct {
 
 func (s *SignatureHeaderSegmentV4) SetSecurityFunction(securityFn string) {
 	s.SecurityFunction = element.NewCode(securityFn, 3, []string{"1", "2", "999", securityFn})
+	if securityFn == "999" {
+		s.SecurityProfile = element.NewPinTanSecurityProfile(1)
+	} else {
+		s.SecurityProfile = element.NewPinTanSecurityProfile(2)
+	}
 }
 
 func (s *SignatureHeaderSegmentV4) Version() int         { return 3 }
