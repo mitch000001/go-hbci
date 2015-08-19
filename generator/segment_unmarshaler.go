@@ -51,6 +51,63 @@ func (s *SegmentUnmarshalerGenerator) Generate() (io.Reader, error) {
 	return executor.execute()
 }
 
+func NewVersionedSegmentUnmarshaler(segment SegmentIdentifier, packageName string, fileSet *token.FileSet, file *ast.File) *VersionedSegmentUnmarshalerGenerator {
+	return &VersionedSegmentUnmarshalerGenerator{
+		segment:     segment,
+		packageName: packageName,
+		fileSet:     fileSet,
+		file:        file,
+	}
+}
+
+type VersionedSegmentUnmarshalerGenerator struct {
+	segment     SegmentIdentifier
+	packageName string
+	fileSet     *token.FileSet
+	file        *ast.File
+}
+
+func (v *VersionedSegmentUnmarshalerGenerator) Generate() (io.Reader, error) {
+	var versionedTemplateObjects []*segmentTemplateObject
+	for _, version := range v.segment.Versions {
+		fieldExtractor := &fieldExtractor{
+			segment: version,
+			file:    v.file,
+			fileSet: v.fileSet,
+		}
+		sortedFields, err := fieldExtractor.extractFields()
+		if err != nil {
+			return nil, err
+		}
+
+		r, _ := utf8.DecodeRuneInString(version.Name)
+		nameVar := string(unicode.ToLower(r))
+		templObj := &segmentTemplateObject{
+			Package: v.packageName,
+			Name:    version.Name,
+			NameVar: nameVar,
+			Version: version.Version,
+			Fields:  sortedFields,
+		}
+		versionedTemplateObjects = append(versionedTemplateObjects, templObj)
+	}
+	r, _ := utf8.DecodeRuneInString(v.segment.Name)
+	nameVar := string(unicode.ToLower(r))
+	templObj := &segmentTemplateObject{
+		Package: v.packageName,
+		Name:    v.segment.Name,
+		NameVar: nameVar,
+	}
+	segmentTemplObj := &versionedSegmentTemplateObject{
+		segmentTemplateObject: templObj,
+		SegmentVersions:       versionedTemplateObjects,
+		InterfaceName:         v.segment.InterfaceName,
+	}
+
+	executor := &versionedSegmentTemplateExecutor{segmentTemplObj}
+	return executor.execute()
+}
+
 type segmentTemplateExecutor struct {
 	templateObject *segmentTemplateObject
 }
@@ -59,7 +116,15 @@ func (s *segmentTemplateExecutor) execute() (io.Reader, error) {
 	funcMap := map[string]interface{}{
 		"plusOne": func(in int) int { return in + 1 },
 	}
-	t, err := template.New("segment").Funcs(funcMap).Parse(segmentUnmarshalingTemplate)
+	t, err := template.New("executor").Funcs(funcMap).Parse(segmentExecutorTemplate)
+	if err != nil {
+		return nil, fmt.Errorf("Error while parsing template: %v", err)
+	}
+	t, err = t.Parse(segmentUnmarshalingTemplate)
+	if err != nil {
+		return nil, fmt.Errorf("Error while parsing template: %v", err)
+	}
+	t, err = t.Parse(packageDeclTemplate)
 	if err != nil {
 		return nil, fmt.Errorf("Error while parsing template: %v", err)
 	}
@@ -75,6 +140,7 @@ type segmentTemplateObject struct {
 	Package string
 	Name    string
 	NameVar string
+	Version int
 	Fields  []field
 	counter int
 }
@@ -142,15 +208,21 @@ func (s *structVisitor) Visit(node ast.Node) ast.Visitor {
 	return s
 }
 
-const segmentUnmarshalingTemplate = `package {{.Package}}
+const segmentExecutorTemplate = `{{template "package_declaration" .}}
+{{template "segment" .}}
+`
+
+const packageDeclTemplate = `{{define "package_declaration"}}package {{.Package}}
 
 import (
 	"bytes"
 	"fmt"
 
 	"github.com/mitch000001/go-hbci/element"
-)
+){{end}}
+`
 
+const segmentUnmarshalingTemplate = `{{define "segment"}}
 func ({{.NameVar}} *{{.Name}}) UnmarshalHBCI(value []byte) error {
 	elements, err := ExtractElements(value)
 	if err != nil {
@@ -176,12 +248,12 @@ func ({{.NameVar}} *{{.Name}}) UnmarshalHBCI(value []byte) error {
 		}
 	}{{ end }}
 	return nil
-}
+}{{end}}
 `
 
 type versionedSegmentTemplateObject struct {
 	*segmentTemplateObject
-	SegmentVersions []SegmentIdentifier
+	SegmentVersions []*segmentTemplateObject
 	InterfaceName   string
 }
 
@@ -190,7 +262,22 @@ type versionedSegmentTemplateExecutor struct {
 }
 
 func (v *versionedSegmentTemplateExecutor) execute() (io.Reader, error) {
-	t, err := template.New("versioned_segment").Parse(versionedSegmentUnmarshalingTemplate)
+	funcMap := map[string]interface{}{
+		"plusOne": func(in int) int { return in + 1 },
+	}
+	t, err := template.New("executor").Funcs(funcMap).Parse(versionedSegmentExecutorTemplate)
+	if err != nil {
+		return nil, fmt.Errorf("Error while parsing template: %v", err)
+	}
+	t, err = t.Parse(versionedSegmentUnmarshalingTemplate)
+	if err != nil {
+		return nil, fmt.Errorf("Error while parsing template: %v", err)
+	}
+	t, err = t.Parse(segmentUnmarshalingTemplate)
+	if err != nil {
+		return nil, fmt.Errorf("Error while parsing template: %v", err)
+	}
+	t, err = t.Parse(packageDeclTemplate)
 	if err != nil {
 		return nil, fmt.Errorf("Error while parsing template: %v", err)
 	}
@@ -202,14 +289,12 @@ func (v *versionedSegmentTemplateExecutor) execute() (io.Reader, error) {
 	return &buf, nil
 }
 
-const versionedSegmentUnmarshalingTemplate = `package {{.Package}}
+const versionedSegmentExecutorTemplate = `{{template "package_declaration" .}}
+{{template "versioned_segment" .}}
+`
 
-import (
-	"fmt"
-
-	"github.com/mitch000001/go-hbci/element"
-)
-
+const versionedSegmentUnmarshalingTemplate = `
+{{define "versioned_segment"}}
 func ({{.NameVar}} *{{.Name}}) UnmarshalHBCI(value []byte) error {
 	elements, err := ExtractElements(value)
 	if err != nil {
@@ -222,16 +307,17 @@ func ({{.NameVar}} *{{.Name}}) UnmarshalHBCI(value []byte) error {
 	}
 	var segment {{ .InterfaceName }}
 	switch header.Version.Val() {
-	{{$version := range .SegmentVersions}}case {{$version.Version}}:
-		segment = &{{$version.VersionedName}}{}
+	{{range $version := .SegmentVersions}}case {{$version.Version}}:
+		segment = &{{$version.Name}}{}
 		err = segment.UnmarshalHBCI(value)
 		if err != nil {
 			return err
-		}{{end}}
-	default:
+		}
+	{{end}}default:
 		return fmt.Errorf("Unknown segment version: %d", header.Version.Val())
 	}
 	{{.NameVar}}.{{.InterfaceName}} = segment
 	return nil
-}
+}{{ range $versioned := .SegmentVersions }}
+{{template "segment" $versioned}}{{end}}{{end}}
 `
