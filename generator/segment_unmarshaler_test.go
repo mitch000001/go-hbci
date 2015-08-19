@@ -61,7 +61,7 @@ func TestSegmentUnmarshalerGeneratorGenerate(t *testing.T) {
 
 	if err != nil {
 		errMessage := err.Error()
-		expectedMessage := `*generator.SegmentUnmarshalerGenerator: Unsupported element in elements method: "&element.NumberDataElement{}"`
+		expectedMessage := `Unsupported element in elements method: "&element.NumberDataElement{}"`
 		if expectedMessage != errMessage {
 			t.Logf("Expected error message to equal\n%q\n\tgot\n%q\n", expectedMessage, errMessage)
 			t.Fail()
