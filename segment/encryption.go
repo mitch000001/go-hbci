@@ -36,6 +36,8 @@ func NewEncryptionHeaderSegment(clientSystemId string, keyName domain.KeyName, k
 	return e
 }
 
+//go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment EncryptionHeaderSegment
+
 type EncryptionHeaderSegment struct {
 	Segment
 	// "4" for ENC, Encryption (encryption and eventually compression)

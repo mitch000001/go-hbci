@@ -147,6 +147,8 @@ func NewMessageEndSegment(segmentNumber, messageNumber int) *MessageEndSegment {
 	return end
 }
 
+//go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment MessageEndSegment
+
 type MessageEndSegment struct {
 	Segment
 	Number *element.NumberDataElement

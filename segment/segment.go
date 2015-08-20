@@ -37,6 +37,35 @@ type segment interface {
 	elements() []element.DataElement
 }
 
+type Unmarshaler interface {
+	UnmarshalHBCI([]byte) error
+}
+
+type segmentIndex map[string]func() Unmarshaler
+
+func (u segmentIndex) UnmarshalerForSegment(segmentId string) Unmarshaler {
+	segmentFn, ok := u[segmentId]
+	if ok {
+		return segmentFn()
+	} else {
+		panic(fmt.Errorf("Segment not in index: %q", segmentId))
+	}
+}
+
+func (u segmentIndex) IsIndexed(segmentId string) bool {
+	_, ok := u[segmentId]
+	return ok
+}
+
+var knownSegments = segmentIndex{
+	"HNHBK": func() Unmarshaler { return &MessageHeaderSegment{} },
+	"HNHBS": func() Unmarshaler { return &MessageEndSegment{} },
+	"HNVSK": func() Unmarshaler { return &EncryptionHeaderSegment{} },
+	"HNVSD": func() Unmarshaler { return &EncryptedDataSegment{} },
+	"HIRMG": func() Unmarshaler { return &MessageAcknowledgement{} },
+	"HIRMS": func() Unmarshaler { return &SegmentAcknowledgement{} },
+}
+
 func SegmentFromHeaderBytes(headerBytes []byte, seg segment) (Segment, error) {
 	elements, err := element.ExtractElements(headerBytes)
 	var header *element.SegmentHeader
