@@ -1,12 +1,6 @@
 package segment
 
-import (
-	"fmt"
-	"strconv"
-
-	"github.com/mitch000001/go-hbci/charset"
-	"github.com/mitch000001/go-hbci/element"
-)
+import "github.com/mitch000001/go-hbci/element"
 
 func NewSynchronisationSegment(modus int) *SynchronisationRequestSegment {
 	s := &SynchronisationRequestSegment{
@@ -37,6 +31,8 @@ func (s *SynchronisationRequestSegment) elements() []element.DataElement {
 	}
 }
 
+//go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment SynchronisationResponseSegment
+
 type SynchronisationResponseSegment struct {
 	Segment
 	ClientSystemID *element.IdentificationDataElement
@@ -55,32 +51,4 @@ func (s *SynchronisationResponseSegment) elements() []element.DataElement {
 		s.MessageNumber,
 		s.SignatureID,
 	}
-}
-
-func (s *SynchronisationResponseSegment) UnmarshalHBCI(value []byte) error {
-	elements, err := ExtractElements(value)
-	if err != nil {
-		return err
-	}
-	seg, err := SegmentFromHeaderBytes(elements[0], s)
-	if err != nil {
-		return err
-	}
-	s.Segment = seg
-	s.ClientSystemID = element.NewIdentification(charset.ToUtf8(elements[1]))
-	if len(elements) >= 3 && len(elements[2]) > 0 {
-		messageNum, err := strconv.Atoi(charset.ToUtf8(elements[2]))
-		if err != nil {
-			return fmt.Errorf("%T: Malformed message number: %v", s, err)
-		}
-		s.MessageNumber = element.NewNumber(messageNum, 4)
-	}
-	if len(elements) >= 4 && len(elements[3]) > 0 {
-		signatureID, err := strconv.Atoi(charset.ToUtf8(elements[3]))
-		if err != nil {
-			return fmt.Errorf("%T: Malformed signature id: %v", s, err)
-		}
-		s.SignatureID = element.NewNumber(signatureID, 16)
-	}
-	return nil
 }
