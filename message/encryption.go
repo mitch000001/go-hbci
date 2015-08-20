@@ -109,9 +109,11 @@ type DecryptedMessage struct {
 func (d *DecryptedMessage) MarshalHBCI() ([]byte, error) {
 	return d.rawMessage, nil
 }
+
 func (d *DecryptedMessage) MessageHeader() *segment.MessageHeaderSegment {
 	return d.message.MessageHeader()
 }
+
 func (d *DecryptedMessage) MessageEnd() *segment.MessageEndSegment {
 	return d.message.MessageEnd()
 }
