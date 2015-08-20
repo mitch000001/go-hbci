@@ -19,14 +19,14 @@ func (s *SecurityMethodSegment) UnmarshalHBCI(value []byte) error {
 		return err
 	}
 	s.Segment = seg
-	if len(elements) > 1 {
+	if len(elements) > 1 && len(elements[1]) > 0 {
 		s.MixAllowed = &element.BooleanDataElement{}
 		err = s.MixAllowed.UnmarshalHBCI(elements[1])
 		if err != nil {
 			return err
 		}
 	}
-	if len(elements) > 2 {
+	if len(elements) > 2 && len(elements[2]) > 0 {
 		s.SupportedMethods = &element.SupportedSecurityMethodDataElement{}
 		err = s.SupportedMethods.UnmarshalHBCI(elements[2])
 		if err != nil {

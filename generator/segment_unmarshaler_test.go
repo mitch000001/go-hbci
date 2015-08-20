@@ -58,7 +58,7 @@ func (s *SegmentTest) UnmarshalHBCI(value []byte) error {
 		return err
 	}
 	s.Segment = seg
-	if len(elements) > 1 {
+	if len(elements) > 1 && len(elements[1]) > 0 {
 		s.Abc = &element.AlphaNumericDataElement{}
 		err = s.Abc.UnmarshalHBCI(elements[1])
 		if err != nil {

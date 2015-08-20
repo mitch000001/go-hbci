@@ -19,7 +19,7 @@ func (c *CompressionMethodSegment) UnmarshalHBCI(value []byte) error {
 		return err
 	}
 	c.Segment = seg
-	if len(elements) > 1 {
+	if len(elements) > 1 && len(elements[1]) > 0 {
 		c.SupportedCompressionMethods = &element.SupportedCompressionMethodsDataElement{}
 		err = c.SupportedCompressionMethods.UnmarshalHBCI(elements[1])
 		if err != nil {

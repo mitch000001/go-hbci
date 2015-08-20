@@ -19,7 +19,7 @@ func (m *MessageEndSegment) UnmarshalHBCI(value []byte) error {
 		return err
 	}
 	m.Segment = seg
-	if len(elements) > 1 {
+	if len(elements) > 1 && len(elements[1]) > 0 {
 		m.Number = &element.NumberDataElement{}
 		err = m.Number.UnmarshalHBCI(elements[1])
 		if err != nil {
