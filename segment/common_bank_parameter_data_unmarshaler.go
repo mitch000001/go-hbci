@@ -1,6 +1,7 @@
 package segment
 
 import (
+	"bytes"
 	"fmt"
 
 	"github.com/mitch000001/go-hbci/element"
@@ -63,7 +64,11 @@ func (c *CommonBankParameterSegment) UnmarshalHBCI(value []byte) error {
 	}
 	if len(elements) > 7 && len(elements[7]) > 0 {
 		c.MaxMessageSize = &element.NumberDataElement{}
-		err = c.MaxMessageSize.UnmarshalHBCI(elements[7])
+		if len(elements)+1 > 7 {
+			err = c.MaxMessageSize.UnmarshalHBCI(bytes.Join(elements[7:], []byte("+")))
+		} else {
+			err = c.MaxMessageSize.UnmarshalHBCI(elements[7])
+		}
 		if err != nil {
 			return err
 		}

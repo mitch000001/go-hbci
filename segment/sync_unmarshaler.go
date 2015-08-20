@@ -1,6 +1,7 @@
 package segment
 
 import (
+	"bytes"
 	"fmt"
 
 	"github.com/mitch000001/go-hbci/element"
@@ -35,7 +36,11 @@ func (s *SynchronisationResponseSegment) UnmarshalHBCI(value []byte) error {
 	}
 	if len(elements) > 3 && len(elements[3]) > 0 {
 		s.SignatureID = &element.NumberDataElement{}
-		err = s.SignatureID.UnmarshalHBCI(elements[3])
+		if len(elements)+1 > 3 {
+			err = s.SignatureID.UnmarshalHBCI(bytes.Join(elements[3:], []byte("+")))
+		} else {
+			err = s.SignatureID.UnmarshalHBCI(elements[3])
+		}
 		if err != nil {
 			return err
 		}

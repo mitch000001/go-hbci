@@ -1,6 +1,7 @@
 package segment
 
 import (
+	"bytes"
 	"fmt"
 
 	"github.com/mitch000001/go-hbci/element"
@@ -49,7 +50,11 @@ func (m *MessageHeaderSegment) UnmarshalHBCI(value []byte) error {
 	}
 	if len(elements) > 5 && len(elements[5]) > 0 {
 		m.Ref = &element.ReferencingMessageDataElement{}
-		err = m.Ref.UnmarshalHBCI(elements[5])
+		if len(elements)+1 > 5 {
+			err = m.Ref.UnmarshalHBCI(bytes.Join(elements[5:], []byte("+")))
+		} else {
+			err = m.Ref.UnmarshalHBCI(elements[5])
+		}
 		if err != nil {
 			return err
 		}

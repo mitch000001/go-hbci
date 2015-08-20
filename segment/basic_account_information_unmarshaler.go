@@ -71,7 +71,11 @@ func (a *AccountInformationSegment) UnmarshalHBCI(value []byte) error {
 	}
 	if len(elements) > 8 && len(elements[8]) > 0 {
 		a.AllowedBusinessTransactions = &element.AllowedBusinessTransactionsDataElement{}
-		err = a.AllowedBusinessTransactions.UnmarshalHBCI(bytes.Join(elements[8:], []byte("+")))
+		if len(elements)+1 > 8 {
+			err = a.AllowedBusinessTransactions.UnmarshalHBCI(bytes.Join(elements[8:], []byte("+")))
+		} else {
+			err = a.AllowedBusinessTransactions.UnmarshalHBCI(elements[8])
+		}
 		if err != nil {
 			return err
 		}

@@ -1,6 +1,7 @@
 package segment
 
 import (
+	"bytes"
 	"fmt"
 
 	"github.com/mitch000001/go-hbci/element"
@@ -70,7 +71,11 @@ func (e *EncryptionHeaderSegment) UnmarshalHBCI(value []byte) error {
 	}
 	if len(elements) > 8 && len(elements[8]) > 0 {
 		e.Certificate = &element.CertificateDataElement{}
-		err = e.Certificate.UnmarshalHBCI(elements[8])
+		if len(elements)+1 > 8 {
+			err = e.Certificate.UnmarshalHBCI(bytes.Join(elements[8:], []byte("+")))
+		} else {
+			err = e.Certificate.UnmarshalHBCI(elements[8])
+		}
 		if err != nil {
 			return err
 		}

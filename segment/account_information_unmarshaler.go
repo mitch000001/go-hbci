@@ -1,6 +1,7 @@
 package segment
 
 import (
+	"bytes"
 	"fmt"
 
 	"github.com/mitch000001/go-hbci/element"
@@ -126,7 +127,11 @@ func (a *AccountInformationResponseSegment) UnmarshalHBCI(value []byte) error {
 	}
 	if len(elements) > 16 && len(elements[16]) > 0 {
 		a.DisposalEligiblePersons = &element.DisposalEligiblePersonsDataElement{}
-		err = a.DisposalEligiblePersons.UnmarshalHBCI(elements[16])
+		if len(elements)+1 > 16 {
+			err = a.DisposalEligiblePersons.UnmarshalHBCI(bytes.Join(elements[16:], []byte("+")))
+		} else {
+			err = a.DisposalEligiblePersons.UnmarshalHBCI(elements[16])
+		}
 		if err != nil {
 			return err
 		}

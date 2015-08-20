@@ -1,6 +1,7 @@
 package segment
 
 import (
+	"bytes"
 	"fmt"
 
 	"github.com/mitch000001/go-hbci/element"
@@ -35,7 +36,11 @@ func (c *CommonUserParameterDataSegment) UnmarshalHBCI(value []byte) error {
 	}
 	if len(elements) > 3 && len(elements[3]) > 0 {
 		c.UPDUsage = &element.NumberDataElement{}
-		err = c.UPDUsage.UnmarshalHBCI(elements[3])
+		if len(elements)+1 > 3 {
+			err = c.UPDUsage.UnmarshalHBCI(bytes.Join(elements[3:], []byte("+")))
+		} else {
+			err = c.UPDUsage.UnmarshalHBCI(elements[3])
+		}
 		if err != nil {
 			return err
 		}

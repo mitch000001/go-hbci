@@ -1,6 +1,7 @@
 package segment
 
 import (
+	"bytes"
 	"fmt"
 
 	"github.com/mitch000001/go-hbci/element"
@@ -21,7 +22,11 @@ func (e *EncryptedDataSegment) UnmarshalHBCI(value []byte) error {
 	e.Segment = seg
 	if len(elements) > 1 && len(elements[1]) > 0 {
 		e.Data = &element.BinaryDataElement{}
-		err = e.Data.UnmarshalHBCI(elements[1])
+		if len(elements)+1 > 1 {
+			err = e.Data.UnmarshalHBCI(bytes.Join(elements[1:], []byte("+")))
+		} else {
+			err = e.Data.UnmarshalHBCI(elements[1])
+		}
 		if err != nil {
 			return err
 		}

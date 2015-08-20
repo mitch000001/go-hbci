@@ -1,6 +1,7 @@
 package segment
 
 import (
+	"bytes"
 	"fmt"
 
 	"github.com/mitch000001/go-hbci/element"
@@ -28,7 +29,11 @@ func (b *BankAnnouncementSegment) UnmarshalHBCI(value []byte) error {
 	}
 	if len(elements) > 2 && len(elements[2]) > 0 {
 		b.Body = &element.TextDataElement{}
-		err = b.Body.UnmarshalHBCI(elements[2])
+		if len(elements)+1 > 2 {
+			err = b.Body.UnmarshalHBCI(bytes.Join(elements[2:], []byte("+")))
+		} else {
+			err = b.Body.UnmarshalHBCI(elements[2])
+		}
 		if err != nil {
 			return err
 		}

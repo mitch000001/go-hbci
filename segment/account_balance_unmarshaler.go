@@ -1,6 +1,7 @@
 package segment
 
 import (
+	"bytes"
 	"fmt"
 
 	"github.com/mitch000001/go-hbci/element"
@@ -91,7 +92,11 @@ func (a *AccountBalanceResponseSegment) UnmarshalHBCI(value []byte) error {
 	}
 	if len(elements) > 11 && len(elements[11]) > 0 {
 		a.DueDate = &element.DateDataElement{}
-		err = a.DueDate.UnmarshalHBCI(elements[11])
+		if len(elements)+1 > 11 {
+			err = a.DueDate.UnmarshalHBCI(bytes.Join(elements[11:], []byte("+")))
+		} else {
+			err = a.DueDate.UnmarshalHBCI(elements[11])
+		}
 		if err != nil {
 			return err
 		}

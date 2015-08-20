@@ -233,6 +233,7 @@ func (s *structVisitor) Visit(node ast.Node) ast.Visitor {
 const segmentUnmarshalingTemplate = `package {{.Package}}
 
 import (
+	"bytes"
 	"fmt"
 
 	"github.com/mitch000001/go-hbci/element"
@@ -253,7 +254,11 @@ func ({{.NameVar}} *{{.Name}}) UnmarshalHBCI(value []byte) error {
 	{{.NameVar}}.Segment = seg{{ range $idx, $field := .Fields }}
 	if len(elements) > {{ plusOne $idx }} && len(elements[{{ plusOne $idx}}]) > 0 {
 		{{ $.NameVar }}.{{ $field.Name }} = &{{ $field.TypeDecl }}{}
-		err = {{ $.NameVar }}.{{ $field.Name }}.UnmarshalHBCI(elements[{{ plusOne $idx }}])
+		{{if len $.Fields | eq (plusOne $idx)}}if len(elements)+1 > {{plusOne $idx}} {
+			err = {{ $.NameVar }}.{{ $field.Name }}.UnmarshalHBCI(bytes.Join(elements[{{ plusOne $idx }}:], []byte("+")))
+		} else {
+			err = {{ $.NameVar }}.{{ $field.Name }}.UnmarshalHBCI(elements[{{ plusOne $idx }}])
+		}{{else}}err = {{ $.NameVar }}.{{ $field.Name }}.UnmarshalHBCI(elements[{{ plusOne $idx }}]){{end}}
 		if err != nil {
 			return err
 		}
