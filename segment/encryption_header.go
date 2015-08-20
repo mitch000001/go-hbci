@@ -1,7 +1,6 @@
 package segment
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/mitch000001/go-hbci/domain"
@@ -70,45 +69,5 @@ func (e *EncryptionHeaderSegment) elements() []element.DataElement {
 		e.KeyName,
 		e.CompressionFunction,
 		e.Certificate,
-	}
-}
-
-func NewEncryptedDataSegment(encryptedData []byte) *EncryptedDataSegment {
-	e := &EncryptedDataSegment{
-		Data: element.NewBinary(encryptedData, -1),
-	}
-	e.Segment = NewBasicSegment(999, e)
-	return e
-}
-
-type EncryptedDataSegment struct {
-	Segment
-	Data *element.BinaryDataElement
-}
-
-func (e *EncryptedDataSegment) Version() int         { return 1 }
-func (e *EncryptedDataSegment) ID() string           { return "HNVSD" }
-func (e *EncryptedDataSegment) referencedId() string { return "" }
-func (e *EncryptedDataSegment) sender() string       { return senderBoth }
-
-func (e *EncryptedDataSegment) UnmarshalHBCI(value []byte) error {
-	elements, err := ExtractElements(value)
-	seg, err := SegmentFromHeaderBytes(elements[0], e)
-	if err != nil {
-		return err
-	}
-	e.Segment = seg
-	encryptedData := elements[1]
-	e.Data = &element.BinaryDataElement{}
-	err = e.Data.UnmarshalHBCI(encryptedData)
-	if err != nil {
-		return fmt.Errorf("Error while unmarshaling encrypted data: %v", err)
-	}
-	return nil
-}
-
-func (e *EncryptedDataSegment) elements() []element.DataElement {
-	return []element.DataElement{
-		e.Data,
 	}
 }
