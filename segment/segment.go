@@ -27,9 +27,14 @@ type Segment interface {
 	MarshalHBCI() ([]byte, error)
 }
 
+type BankSegment interface {
+	Segment
+	Unmarshaler
+}
+
 type Segments map[string]Segment
 
-type segment interface {
+type basicSegment interface {
 	Version() int
 	ID() string
 	referencedId() string
@@ -66,7 +71,7 @@ var knownSegments = segmentIndex{
 	"HIRMS": func() Unmarshaler { return &SegmentAcknowledgement{} },
 }
 
-func SegmentFromHeaderBytes(headerBytes []byte, seg segment) (Segment, error) {
+func SegmentFromHeaderBytes(headerBytes []byte, seg basicSegment) (Segment, error) {
 	elements, err := element.ExtractElements(headerBytes)
 	var header *element.SegmentHeader
 	id := charset.ToUtf8(elements[0])
@@ -91,26 +96,26 @@ func SegmentFromHeaderBytes(headerBytes []byte, seg segment) (Segment, error) {
 	return NewBasicSegmentWithHeader(header, seg), nil
 }
 
-func NewReferencingBasicSegment(number int, ref int, seg segment) Segment {
+func NewReferencingBasicSegment(number int, ref int, seg basicSegment) Segment {
 	header := element.NewReferencingSegmentHeader(seg.ID(), number, seg.Version(), ref)
 	return NewBasicSegmentWithHeader(header, seg)
 }
 
-func NewBasicSegment(number int, seg segment) Segment {
+func NewBasicSegment(number int, seg basicSegment) Segment {
 	header := element.NewSegmentHeader(seg.ID(), number, seg.Version())
 	return NewBasicSegmentWithHeader(header, seg)
 }
 
-func NewBasicSegmentWithHeader(header *element.SegmentHeader, seg segment) Segment {
-	return &basicSegment{header: header, segment: seg}
+func NewBasicSegmentWithHeader(header *element.SegmentHeader, seg basicSegment) Segment {
+	return &segment{header: header, segment: seg}
 }
 
-type basicSegment struct {
-	segment segment
+type segment struct {
+	segment basicSegment
 	header  *element.SegmentHeader
 }
 
-func (s *basicSegment) String() string {
+func (s *segment) String() string {
 	elementStrings := make([]string, len(s.segment.elements())+1)
 	elementStrings[0] = s.header.String()
 	for i, de := range s.segment.elements() {
@@ -122,7 +127,7 @@ func (s *basicSegment) String() string {
 	return strings.Join(elementStrings, "+") + "'"
 }
 
-func (s *basicSegment) MarshalHBCI() ([]byte, error) {
+func (s *segment) MarshalHBCI() ([]byte, error) {
 	elementBytes := make([][]byte, len(s.segment.elements())+1)
 	headerBytes, err := s.header.MarshalHBCI()
 	if err != nil {
@@ -144,29 +149,29 @@ func (s *basicSegment) MarshalHBCI() ([]byte, error) {
 	return marshaled, nil
 }
 
-func (s *basicSegment) DataElements() []element.DataElement {
+func (s *segment) DataElements() []element.DataElement {
 	var dataElements []element.DataElement
 	dataElements = append(dataElements, s.header)
 	dataElements = append(dataElements, s.segment.elements()...)
 	return dataElements
 }
 
-func (s *basicSegment) Header() *element.SegmentHeader {
+func (s *segment) Header() *element.SegmentHeader {
 	return s.header
 }
 
-func (s *basicSegment) ID() string {
+func (s *segment) ID() string {
 	return s.header.ID.Val()
 }
 
-func (s *basicSegment) Version() int {
+func (s *segment) Version() int {
 	return s.header.Version.Val()
 }
 
-func (s *basicSegment) SetNumber(numberFn func() int) {
+func (s *segment) SetNumber(numberFn func() int) {
 	s.header.SetNumber(numberFn())
 }
 
-func (s *basicSegment) SetReference(ref int) {
+func (s *segment) SetReference(ref int) {
 	s.header.SetReference(ref)
 }
