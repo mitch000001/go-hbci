@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/mitch000001/go-hbci/domain"
+	"github.com/mitch000001/go-hbci/internal"
 	"github.com/mitch000001/go-hbci/message"
 	"github.com/mitch000001/go-hbci/segment"
 	"github.com/mitch000001/go-hbci/transport"
@@ -237,7 +238,7 @@ func (d *dialog) init() error {
 	}
 
 	bankInfoMessageBytes := decryptedMessage.FindSegment("HIKIM")
-	fmt.Printf("INFO:\n%q\n", bankInfoMessageBytes)
+	internal.Info.Printf("INFO:\n%q\n", bankInfoMessageBytes)
 
 	newSecurityFn := d.securityFn
 	errors := make([]string, 0)
@@ -246,7 +247,7 @@ func (d *dialog) init() error {
 		if ack.Code == 3920 {
 			supportedSecurityFns := ack.Params
 			if len(supportedSecurityFns) != 0 {
-				fmt.Printf("Supported securityFunctions: %q\n", supportedSecurityFns)
+				internal.Info.Printf("Supported securityFunctions: %q\n", supportedSecurityFns)
 				// TODO: proper handling of each case, see FINTS3.0 docu
 				newSecurityFn = supportedSecurityFns[0]
 			}
@@ -376,6 +377,7 @@ func (d *dialog) request(clientMessage message.ClientMessage) (message.BankMessa
 	if err != nil {
 		return nil, err
 	}
+	internal.Debug.Printf("Request:\n %s\n\n", bytes.Join(bytes.Split(marshaledMessage, []byte("'")), []byte("\n")))
 
 	request := &transport.Request{
 		URL:              d.hbciUrl,
@@ -398,12 +400,14 @@ func (d *dialog) request(clientMessage message.ClientMessage) (message.BankMessa
 		if err != nil {
 			return nil, fmt.Errorf("Error while decrypting message: %v", err)
 		}
+		internal.Debug.Printf("Response:\n %s\n\n", bytes.Join(decryptedMessage.Segments(), []byte("\n")))
 		bankMessage = decryptedMessage
 	} else {
 		decryptedMessage, err := extractUnencryptedMessage(response)
 		if err != nil {
 			return nil, err
 		}
+		internal.Debug.Printf("Response:\n %s\n\n", bytes.Join(decryptedMessage.Segments(), []byte("\n")))
 		bankMessage = decryptedMessage
 	}
 
