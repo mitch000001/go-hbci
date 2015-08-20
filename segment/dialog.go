@@ -1,9 +1,6 @@
 package segment
 
 import (
-	"fmt"
-
-	"github.com/mitch000001/go-hbci/charset"
 	"github.com/mitch000001/go-hbci/domain"
 	"github.com/mitch000001/go-hbci/element"
 )
@@ -75,49 +72,4 @@ func (p *ProcessingPreparationSegment) elements() []element.DataElement {
 		p.ProductName,
 		p.ProductVersion,
 	}
-}
-
-func NewBankAnnouncementSegment(subject, body string) *BankAnnouncementSegment {
-	b := &BankAnnouncementSegment{
-		Subject: element.NewAlphaNumeric(subject, 35),
-		Body:    element.NewText(body, 2048),
-	}
-	b.Segment = NewBasicSegment(8, b)
-	return b
-}
-
-type BankAnnouncementSegment struct {
-	Segment
-	Subject *element.AlphaNumericDataElement
-	Body    *element.TextDataElement
-}
-
-func (b *BankAnnouncementSegment) Version() int         { return 2 }
-func (b *BankAnnouncementSegment) ID() string           { return "HIKIM" }
-func (b *BankAnnouncementSegment) referencedId() string { return "" }
-func (b *BankAnnouncementSegment) sender() string       { return senderBank }
-
-func (b *BankAnnouncementSegment) elements() []element.DataElement {
-	return []element.DataElement{
-		b.Subject,
-		b.Body,
-	}
-}
-
-func (b *BankAnnouncementSegment) UnmarshalHBCI(value []byte) error {
-	elements, err := ExtractElements(value)
-	if err != nil {
-		return err
-	}
-	if len(elements) != 3 {
-		return fmt.Errorf("Malformed marshaled value")
-	}
-	segment, err := SegmentFromHeaderBytes(elements[0], b)
-	if err != nil {
-		return err
-	}
-	b.Segment = segment
-	b.Subject = element.NewAlphaNumeric(charset.ToUtf8(elements[1]), 35)
-	b.Body = element.NewText(charset.ToUtf8(elements[2]), 2048)
-	return nil
 }
