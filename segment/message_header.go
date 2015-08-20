@@ -2,11 +2,8 @@ package segment
 
 import (
 	"bytes"
-	"fmt"
 	"reflect"
-	"strconv"
 
-	"github.com/mitch000001/go-hbci/charset"
 	"github.com/mitch000001/go-hbci/domain"
 	"github.com/mitch000001/go-hbci/element"
 )
@@ -60,6 +57,8 @@ func NewMessageHeaderSegment(size int, hbciVersion int, dialogId string, number 
 	return m
 }
 
+//go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment MessageHeaderSegment
+
 type MessageHeaderSegment struct {
 	Segment
 	Size        *element.DigitDataElement
@@ -86,45 +85,6 @@ func (m *MessageHeaderSegment) SetMessageNumber(messageNumber int) {
 	m.Number = element.NewNumber(messageNumber, 4)
 }
 
-func (m *MessageHeaderSegment) UnmarshalHBCI(value []byte) error {
-	elements, err := ExtractElements(value)
-	elementsLen := len(elements)
-	if elementsLen == 0 || elementsLen < 5 {
-		return fmt.Errorf("Malformed marshaled value")
-	}
-	seg, err := SegmentFromHeaderBytes(elements[0], m)
-	if err != nil {
-		return err
-	}
-	m.Segment = seg
-	size, err := strconv.Atoi(charset.ToUtf8(elements[1]))
-	if err != nil {
-		return fmt.Errorf("Error while unmarshaling size: %v", err)
-	}
-	hbciVersion, err := strconv.Atoi(charset.ToUtf8(elements[2]))
-	if err != nil {
-		return fmt.Errorf("Error while unmarshaling hbci version: %v", err)
-	}
-	dialogId := charset.ToUtf8(elements[3])
-	messageNum, err := strconv.Atoi(charset.ToUtf8(elements[4]))
-	if err != nil {
-		return fmt.Errorf("Error while unmarshaling message number: %v", err)
-	}
-	m.Size = element.NewDigit(size, 12)
-	m.HBCIVersion = element.NewNumber(hbciVersion, 3)
-	m.DialogID = element.NewIdentification(dialogId)
-	m.Number = element.NewNumber(messageNum, 4)
-	if elementsLen == 6 {
-		referencedMessage := &element.ReferencingMessageDataElement{}
-		err = referencedMessage.UnmarshalHBCI(elements[5])
-		if err != nil {
-			return err
-		}
-		m.Ref = referencedMessage
-	}
-	return nil
-}
-
 func (m *MessageHeaderSegment) elements() []element.DataElement {
 	return []element.DataElement{
 		m.Size,
@@ -145,22 +105,4 @@ func NewMessageEndSegment(segmentNumber, messageNumber int) *MessageEndSegment {
 	}
 	end.Segment = NewBasicSegment(segmentNumber, end)
 	return end
-}
-
-//go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment MessageEndSegment
-
-type MessageEndSegment struct {
-	Segment
-	Number *element.NumberDataElement
-}
-
-func (m *MessageEndSegment) Version() int         { return 1 }
-func (m *MessageEndSegment) ID() string           { return "HNHBS" }
-func (m *MessageEndSegment) referencedId() string { return "" }
-func (m *MessageEndSegment) sender() string       { return senderBoth }
-
-func (m *MessageEndSegment) elements() []element.DataElement {
-	return []element.DataElement{
-		m.Number,
-	}
 }

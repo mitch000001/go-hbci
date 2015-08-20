@@ -36,6 +36,8 @@ func (a *AccountInformationRequestSegment) elements() []element.DataElement {
 	}
 }
 
+//go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment AccountInformationResponseSegment
+
 type AccountInformationResponseSegment struct {
 	Segment
 	AccountConnection                *element.AccountConnectionDataElement
@@ -53,7 +55,7 @@ type AccountInformationResponseSegment struct {
 	AccountStatementShippingType     *element.NumberDataElement
 	AccountStatementShippingRotation *element.NumberDataElement
 	AdditionalInformation            *element.TextDataElement
-	DisposalEligiblePersons          []*element.DisposalEligiblePersonDataElement
+	DisposalEligiblePersons          *element.DisposalEligiblePersonsDataElement
 }
 
 func (a *AccountInformationResponseSegment) version() int         { return 1 }
@@ -62,11 +64,6 @@ func (a *AccountInformationResponseSegment) referencedId() string { return "HKKI
 func (a *AccountInformationResponseSegment) sender() string       { return senderBank }
 
 func (a *AccountInformationResponseSegment) elements() []element.DataElement {
-	dataElements := make([]element.DataElement, len(a.DisposalEligiblePersons))
-	for _, de := range a.DisposalEligiblePersons {
-		dataElements = append(dataElements, de)
-	}
-	arrayDataElement := element.NewArrayElementGroup(element.DisposalEligiblePersonDEG, 0, 9, dataElements)
 	return []element.DataElement{
 		a.AccountConnection,
 		a.AccountKind,
@@ -83,6 +80,6 @@ func (a *AccountInformationResponseSegment) elements() []element.DataElement {
 		a.AccountStatementShippingType,
 		a.AccountStatementShippingRotation,
 		a.AdditionalInformation,
-		arrayDataElement,
+		a.DisposalEligiblePersons,
 	}
 }
