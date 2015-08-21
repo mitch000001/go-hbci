@@ -305,14 +305,14 @@ func ({{.NameVar}} *{{.Name}}) UnmarshalHBCI(value []byte) error {
 	if err != nil {
 		return err
 	}
-	var segment {{ .InterfaceName }}
+	var segment {{.InterfaceName}}
 	switch header.Version.Val() {
-	{{range $version := .SegmentVersions}}case {{$version.Version}}:
-		segment = &{{$version.Name}}{}
+	{{range $version := .SegmentVersions}}case {{$version.Version}}:{{with $versionName := $version.Name}}
+		segment = &{{$versionName}}{}
 		err = segment.UnmarshalHBCI(value)
 		if err != nil {
 			return err
-		}
+		}{{end}}
 	{{end}}default:
 		return fmt.Errorf("Unknown segment version: %d", header.Version.Val())
 	}

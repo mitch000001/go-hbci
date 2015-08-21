@@ -10,3 +10,7 @@ func SegmentFromHeaderBytes([]byte, Segment) (Segment, error) { return nil, nil 
 type Segment interface {
 	elements() []element.DataElement
 }
+
+type BankSegment interface {
+	UnmarshalHBCI([]byte) error
+}

@@ -55,7 +55,7 @@ func TestSegmentUnmarshalerGeneratorGenerate(t *testing.T) {
 		t.FailNow()
 	}
 
-	generator = NewSegmentUnmarshaler(SegmentIdentifier{Name: "TestSegment"}, "test_files", fileSet, f)
+	generator = NewSegmentUnmarshaler(SegmentIdentifier{Name: "TestSegmentUnknownElement"}, "test_files", fileSet, f)
 
 	_, err = generator.Generate()
 
@@ -73,112 +73,27 @@ func TestSegmentUnmarshalerGeneratorGenerate(t *testing.T) {
 }
 
 func TestVersionedSegmentUnmarshalerGeneratorGenerate(t *testing.T) {
-	testSrc := `package testsegment
-
-import (
-	"github.com/mitch000001/go-hbci/element"
-)
-
-type SegmentTest struct {
-	segment.Segment
-}
-
-type SegmentTestV1 struct {
-	segment.Segment
-	Abc *element.AlphaNumericDataElement
-	Def *element.NumberDataElement
-}
-
-func (s *SegmentTestV1) elements() []element.DataElement {
-	return []element.DataElement{
-		s.Abc,
-		s.Def,
-	}
-}
-`
 	fileSet := token.NewFileSet()
-	f, err := parser.ParseFile(fileSet, "", testSrc, 0)
+	f, err := parser.ParseFile(fileSet, "test_files/versioned_test_segment.go", nil, 0)
 	if err != nil {
 		t.Logf("Error while parsing source: %T:%v\n", err, err)
 		t.FailNow()
 	}
 
-	expectedSrc := `package testsegment
-
-import (
-	"fmt"
-
-	"github.com/mitch000001/go-hbci/element"
-)
-
-func (s *SegmentTest) UnmarshalHBCI(value []byte) error {
-	elements, err := ExtractElements(value)
-	if err != nil {
-		return err
-	}
-	header := &element.SegmentHeader{}
-	err = header.UnmarshalHBCI(elements[0])
-	if err != nil {
-		return err
-	}
-	var segment Segment
-	switch header.Version.Val() {
-	case 1:
-		segment = &SegmentTestV1{}
-		err = segment.UnmarshalHBCI(value)
-		if err != nil {
-			return err
-		}
-	default:
-		return fmt.Errorf("Unknown segment version: %d", header.Version.Val())
-	}
-	s.Segment = segment
-	return nil
-}
-
-func (s *SegmentTestV1) UnmarshalHBCI(value []byte) error {
-	elements, err := ExtractElements(value)
-	if err != nil {
-		return err
-	}
-	if len(elements) == 0 {
-		return fmt.Errorf("Malformed marshaled value")
-	}
-	seg, err := SegmentFromHeaderBytes(elements[0], s)
-	if err != nil {
-		return err
-	}
-	s.Segment = seg
-	if len(elements) > 1 {
-		s.Abc = &element.AlphaNumericDataElement{}
-		err = s.Abc.UnmarshalHBCI(elements[1])
-		if err != nil {
-			return err
-		}
-	}
-	if len(elements) > 2 {
-		s.Def = &element.NumberDataElement{}
-		err = s.Def.UnmarshalHBCI(elements[2])
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-`
+	expectedSrc, err := ioutil.ReadFile("test_files/versioned_test_segment_unmarshaler.go")
 
 	segment := SegmentIdentifier{
-		Name:          "SegmentTest",
-		InterfaceName: "Segment",
+		Name:          "VersionedTestSegment",
+		InterfaceName: "BankSegment",
 		Versions: []SegmentIdentifier{
 			{
-				Name:    "SegmentTestV1",
+				Name:    "VersionedTestSegmentV1",
 				Version: 1,
 			},
 		},
 	}
 
-	generator := NewVersionedSegmentUnmarshaler(segment, "testsegment", fileSet, f)
+	generator := NewVersionedSegmentUnmarshaler(segment, "test_files", fileSet, f)
 
 	reader, err := generator.Generate()
 
@@ -196,174 +111,36 @@ func (s *SegmentTestV1) UnmarshalHBCI(value []byte) error {
 			t.Logf("Error while parsing source: %T:%v\n", err, err)
 			t.FailNow()
 		}
-		if !bytes.Equal([]byte(expectedSrc), generatedSourcebytes) {
-			diffs := diffmatchpatch.New().DiffMain(expectedSrc, string(generatedSourcebytes), true)
+		if !bytes.Equal(expectedSrc, generatedSourcebytes) {
+			diffs := diffmatchpatch.New().DiffMain(string(expectedSrc), string(generatedSourcebytes), true)
 			t.Logf("Expected generated sources to equal\n%s\n\tgot\n%s\n", expectedSrc, generatedSourcebytes)
 			t.Logf("Diff: \n%s\n", diffPrettyPrint(diffs))
 			t.Fail()
 		}
 	}
 
-	// multiple versions
-	testSrc = `package testsegment
-
-import (
-	"github.com/mitch000001/go-hbci/element"
-)
-
-type SegmentTest struct {
-	segment.Segment
-}
-
-type SegmentTestV1 struct {
-	segment.Segment
-	Abc *element.AlphaNumericDataElement
-	Def *element.NumberDataElement
-}
-
-func (s *SegmentTestV1) elements() []element.DataElement {
-	return []element.DataElement{
-		s.Abc,
-		s.Def,
-	}
-}
-
-type SegmentTestV2 struct {
-	segment.Segment
-	Abc *element.AlphaNumericDataElement
-	Def *element.NumberDataElement
-}
-
-func (s *SegmentTestV2) elements() []element.DataElement {
-	return []element.DataElement{
-		s.Abc,
-		s.Def,
-	}
-}
-`
+	// custom interface
 	fileSet = token.NewFileSet()
-	f, err = parser.ParseFile(fileSet, "", testSrc, 0)
+	f, err = parser.ParseFile(fileSet, "test_files/versioned_test_segment_custom_interface.go", nil, 0)
 	if err != nil {
 		t.Logf("Error while parsing source: %T:%v\n", err, err)
 		t.FailNow()
 	}
 
-	expectedSrc = `package testsegment
-
-import (
-	"fmt"
-
-	"github.com/mitch000001/go-hbci/element"
-)
-
-func (s *SegmentTest) UnmarshalHBCI(value []byte) error {
-	elements, err := ExtractElements(value)
-	if err != nil {
-		return err
-	}
-	header := &element.SegmentHeader{}
-	err = header.UnmarshalHBCI(elements[0])
-	if err != nil {
-		return err
-	}
-	var segment Segment
-	switch header.Version.Val() {
-	case 1:
-		segment = &SegmentTestV1{}
-		err = segment.UnmarshalHBCI(value)
-		if err != nil {
-			return err
-		}
-	case 2:
-		segment = &SegmentTestV2{}
-		err = segment.UnmarshalHBCI(value)
-		if err != nil {
-			return err
-		}
-	default:
-		return fmt.Errorf("Unknown segment version: %d", header.Version.Val())
-	}
-	s.Segment = segment
-	return nil
-}
-
-func (s *SegmentTestV1) UnmarshalHBCI(value []byte) error {
-	elements, err := ExtractElements(value)
-	if err != nil {
-		return err
-	}
-	if len(elements) == 0 {
-		return fmt.Errorf("Malformed marshaled value")
-	}
-	seg, err := SegmentFromHeaderBytes(elements[0], s)
-	if err != nil {
-		return err
-	}
-	s.Segment = seg
-	if len(elements) > 1 {
-		s.Abc = &element.AlphaNumericDataElement{}
-		err = s.Abc.UnmarshalHBCI(elements[1])
-		if err != nil {
-			return err
-		}
-	}
-	if len(elements) > 2 {
-		s.Def = &element.NumberDataElement{}
-		err = s.Def.UnmarshalHBCI(elements[2])
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func (s *SegmentTestV2) UnmarshalHBCI(value []byte) error {
-	elements, err := ExtractElements(value)
-	if err != nil {
-		return err
-	}
-	if len(elements) == 0 {
-		return fmt.Errorf("Malformed marshaled value")
-	}
-	seg, err := SegmentFromHeaderBytes(elements[0], s)
-	if err != nil {
-		return err
-	}
-	s.Segment = seg
-	if len(elements) > 1 {
-		s.Abc = &element.AlphaNumericDataElement{}
-		err = s.Abc.UnmarshalHBCI(elements[1])
-		if err != nil {
-			return err
-		}
-	}
-	if len(elements) > 2 {
-		s.Def = &element.NumberDataElement{}
-		err = s.Def.UnmarshalHBCI(elements[2])
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-`
+	expectedSrc, err = ioutil.ReadFile("test_files/versioned_test_segment_custom_interface_unmarshaler.go")
 
 	segment = SegmentIdentifier{
-		Name:          "SegmentTest",
-		InterfaceName: "Segment",
+		Name:          "VersionedTestSegmentCustomInterface",
+		InterfaceName: "versionedTestSegmentCustomInterface",
 		Versions: []SegmentIdentifier{
 			{
-				Name:    "SegmentTestV1",
+				Name:    "VersionedTestSegmentCustomInterfaceV1",
 				Version: 1,
-			},
-			{
-				Name:    "SegmentTestV2",
-				Version: 2,
 			},
 		},
 	}
 
-	generator = NewVersionedSegmentUnmarshaler(segment, "testsegment", fileSet, f)
+	generator = NewVersionedSegmentUnmarshaler(segment, "test_files", fileSet, f)
 
 	reader, err = generator.Generate()
 
@@ -381,8 +158,59 @@ func (s *SegmentTestV2) UnmarshalHBCI(value []byte) error {
 			t.Logf("Error while parsing source: %T:%v\n", err, err)
 			t.FailNow()
 		}
-		if !bytes.Equal([]byte(expectedSrc), generatedSourcebytes) {
-			diffs := diffmatchpatch.New().DiffMain(expectedSrc, string(generatedSourcebytes), true)
+		if !bytes.Equal(expectedSrc, generatedSourcebytes) {
+			diffs := diffmatchpatch.New().DiffMain(string(expectedSrc), string(generatedSourcebytes), true)
+			t.Logf("Expected generated sources to equal\n%s\n\tgot\n%s\n", expectedSrc, generatedSourcebytes)
+			t.Logf("Diff: \n%s\n", diffPrettyPrint(diffs))
+			t.Fail()
+		}
+	}
+
+	// multiple versions
+	fileSet = token.NewFileSet()
+	f, err = parser.ParseFile(fileSet, "test_files/multiple_versioned_test_segment.go", nil, 0)
+	if err != nil {
+		t.Logf("Error while parsing source: %T:%v\n", err, err)
+		t.FailNow()
+	}
+
+	expectedSrc, err = ioutil.ReadFile("test_files/multiple_versioned_test_segment_unmarshaler.go")
+
+	segment = SegmentIdentifier{
+		Name:          "MultipleVersionedTestSegment",
+		InterfaceName: "BankSegment",
+		Versions: []SegmentIdentifier{
+			{
+				Name:    "MultipleVersionedTestSegmentV1",
+				Version: 1,
+			},
+			{
+				Name:    "MultipleVersionedTestSegmentV2",
+				Version: 2,
+			},
+		},
+	}
+
+	generator = NewVersionedSegmentUnmarshaler(segment, "test_files", fileSet, f)
+
+	reader, err = generator.Generate()
+
+	if err != nil {
+		t.Logf("Expected no error, got %T:%v\n", err, err)
+		t.Fail()
+	}
+
+	if reader == nil {
+		t.Logf("Expected reader not to be nil")
+		t.Fail()
+	} else {
+		generatedSourcebytes, err := ioutil.ReadAll(reader)
+		if err != nil {
+			t.Logf("Error while parsing source: %T:%v\n", err, err)
+			t.FailNow()
+		}
+		if !bytes.Equal(expectedSrc, generatedSourcebytes) {
+			diffs := diffmatchpatch.New().DiffMain(string(expectedSrc), string(generatedSourcebytes), true)
 			t.Logf("Expected generated sources to equal\n%s\n\tgot\n%s\n", expectedSrc, generatedSourcebytes)
 			t.Logf("Diff: \n%s\n", diffPrettyPrint(diffs))
 			t.Fail()

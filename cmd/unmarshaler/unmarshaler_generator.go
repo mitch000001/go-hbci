@@ -16,7 +16,7 @@ import (
 )
 
 var segmentFlag = flag.String("segment", "", "'MyAwesomeSegment'")
-var segmentInterfaceFlag = flag.String("segment_interface", "Segment", "'MyAwesomeInterface'")
+var segmentInterfaceFlag = flag.String("segment_interface", "BankSegment", "'MyAwesomeInterface'")
 var segmentVersionsFlag segmentVersions
 
 func init() {
@@ -37,15 +37,16 @@ func main() {
 		fmt.Println(err)
 	}
 	segment := generator.SegmentIdentifier{
-		Name:          *segmentFlag,
-		InterfaceName: *segmentInterfaceFlag,
-		Versions:      segmentVersionsFlag,
+		Name:     *segmentFlag,
+		Versions: segmentVersionsFlag,
 	}
 	var generated io.Reader
 	if len(segmentVersionsFlag) != 0 {
+		segment.InterfaceName = *segmentInterfaceFlag
 		segmentGenerator := generator.NewVersionedSegmentUnmarshaler(segment, packageName, fileSet, f)
 		generated, err = segmentGenerator.Generate()
 	} else {
+		segment.InterfaceName = "Segment"
 		segmentGenerator := generator.NewSegmentUnmarshaler(segment, packageName, fileSet, f)
 		generated, err = segmentGenerator.Generate()
 	}
