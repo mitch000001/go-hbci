@@ -224,7 +224,7 @@ func (s *SignatureHeaderSegmentV4) SetSecurityFunction(securityFn string) {
 	}
 }
 
-func (s *SignatureHeaderSegmentV4) Version() int         { return 3 }
+func (s *SignatureHeaderSegmentV4) Version() int         { return 4 }
 func (s *SignatureHeaderSegmentV4) ID() string           { return "HNSHK" }
 func (s *SignatureHeaderSegmentV4) referencedId() string { return "" }
 func (s *SignatureHeaderSegmentV4) sender() string       { return senderBoth }
@@ -265,7 +265,7 @@ type SignatureEndV2 struct {
 	CustomSignature    *element.CustomSignatureDataElement
 }
 
-func (s *SignatureEndV2) Version() int         { return 1 }
+func (s *SignatureEndV2) Version() int         { return 2 }
 func (s *SignatureEndV2) ID() string           { return "HNSHA" }
 func (s *SignatureEndV2) referencedId() string { return "" }
 func (s *SignatureEndV2) sender() string       { return senderBoth }

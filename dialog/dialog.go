@@ -377,7 +377,10 @@ func (d *dialog) request(clientMessage message.ClientMessage) (message.BankMessa
 	if err != nil {
 		return nil, err
 	}
-	internal.Debug.Printf("Request:\n %s\n\n", bytes.Join(bytes.Split(marshaledMessage, []byte("'")), []byte("\n")))
+	internal.Debug.Printf("Request:\n")
+	for _, seg := range bytes.Split(marshaledMessage, []byte("'")) {
+		internal.Debug.Printf("%q\n", seg)
+	}
 
 	request := &transport.Request{
 		URL:              d.hbciUrl,
