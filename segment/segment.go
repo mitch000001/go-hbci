@@ -43,22 +43,6 @@ type Unmarshaler interface {
 	UnmarshalHBCI([]byte) error
 }
 
-type segmentIndex map[string]func() Unmarshaler
-
-func (u segmentIndex) UnmarshalerForSegment(segmentId string) Unmarshaler {
-	segmentFn, ok := u[segmentId]
-	if ok {
-		return segmentFn()
-	} else {
-		panic(fmt.Errorf("Segment not in index: %q", segmentId))
-	}
-}
-
-func (u segmentIndex) IsIndexed(segmentId string) bool {
-	_, ok := u[segmentId]
-	return ok
-}
-
 func SegmentFromHeaderBytes(headerBytes []byte, seg basicSegment) (*segment, error) {
 	header := &element.SegmentHeader{}
 	err := header.UnmarshalHBCI(headerBytes)

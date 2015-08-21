@@ -43,7 +43,7 @@ func NewEncryptionHeaderSegment(clientSystemId string, keyName domain.KeyName, k
 	return segment
 }
 
-//go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment EncryptionHeaderSegment -segment_interface Segment -segment_versions="EncryptionHeaderV2:2,EncryptionHeaderSegmentV3:3"
+//go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment EncryptionHeaderSegment -segment_interface BankSegment -segment_versions="EncryptionHeaderV2:2,EncryptionHeaderSegmentV3:3"
 
 type EncryptionHeaderSegment struct {
 	BankSegment
