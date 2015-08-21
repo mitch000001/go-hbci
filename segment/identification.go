@@ -18,12 +18,12 @@ func NewIdentificationSegment(bankId domain.BankId, clientId string, clientSyste
 		ClientSystemId:     element.NewIdentification(clientSystemId),
 		ClientSystemStatus: clientSystemStatus,
 	}
-	id.Segment = NewBasicSegment(3, id)
+	id.ClientSegment = NewBasicSegment(3, id)
 	return id
 }
 
 type IdentificationSegment struct {
-	Segment
+	ClientSegment
 	BankId             *element.BankIdentificationDataElement
 	ClientId           *element.IdentificationDataElement
 	ClientSystemId     *element.IdentificationDataElement

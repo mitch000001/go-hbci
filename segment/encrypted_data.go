@@ -6,14 +6,14 @@ func NewEncryptedDataSegment(encryptedData []byte) *EncryptedDataSegment {
 	e := &EncryptedDataSegment{
 		Data: element.NewBinary(encryptedData, -1),
 	}
-	e.Segment = NewBasicSegment(999, e)
+	e.ClientSegment = NewBasicSegment(999, e)
 	return e
 }
 
 //go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment EncryptedDataSegment
 
 type EncryptedDataSegment struct {
-	Segment
+	ClientSegment
 	Data *element.BinaryDataElement
 }
 

@@ -2,10 +2,18 @@ package segment
 
 import "github.com/mitch000001/go-hbci/element"
 
+func NewMessageEndSegment(segmentNumber, messageNumber int) *MessageEndSegment {
+	end := &MessageEndSegment{
+		Number: element.NewNumber(messageNumber, 4),
+	}
+	end.ClientSegment = NewBasicSegment(segmentNumber, end)
+	return end
+}
+
 //go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment MessageEndSegment
 
 type MessageEndSegment struct {
-	Segment
+	ClientSegment
 	Number *element.NumberDataElement
 }
 

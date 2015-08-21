@@ -34,7 +34,7 @@ type BankMessage interface {
 }
 
 type HBCIMessage interface {
-	HBCISegments() []segment.Segment
+	HBCISegments() []segment.ClientSegment
 }
 
 type SignedHBCIMessage interface {
@@ -44,23 +44,23 @@ type SignedHBCIMessage interface {
 	SetSignatureEnd(*segment.SignatureEndSegment)
 }
 
-func NewHBCIMessage(segments ...segment.Segment) HBCIMessage {
+func NewHBCIMessage(segments ...segment.ClientSegment) HBCIMessage {
 	return hbciSegments(segments)
 }
 
-type hbciSegments []segment.Segment
+type hbciSegments []segment.ClientSegment
 
-func (h hbciSegments) HBCISegments() []segment.Segment {
+func (h hbciSegments) HBCISegments() []segment.ClientSegment {
 	return h
 }
 
-func NewHBCIClientMessage(segments ...segment.Segment) *BasicClientMessage {
+func NewHBCIClientMessage(segments ...segment.ClientSegment) *BasicClientMessage {
 	return NewBasicClientMessage(hbciSegmentClientMessage(segments))
 }
 
-type hbciSegmentClientMessage []segment.Segment
+type hbciSegmentClientMessage []segment.ClientSegment
 
-func (h hbciSegmentClientMessage) jobs() []segment.Segment {
+func (h hbciSegmentClientMessage) jobs() []segment.ClientSegment {
 	return h
 }
 
@@ -318,7 +318,7 @@ func (b *BasicSignedMessage) SetSignatureEnd(sigEnd *segment.SignatureEndSegment
 	b.message.SignatureEnd = sigEnd
 }
 
-func (b *BasicSignedMessage) HBCISegments() []segment.Segment {
+func (b *BasicSignedMessage) HBCISegments() []segment.ClientSegment {
 	return b.message.HBCISegments()
 }
 
@@ -342,7 +342,7 @@ type basicBankMessage struct {
 }
 
 type clientMessage interface {
-	jobs() []segment.Segment
+	jobs() []segment.ClientSegment
 }
 
 func NewBasicClientMessage(clientMessage clientMessage) *BasicClientMessage {
@@ -358,6 +358,6 @@ type BasicClientMessage struct {
 	clientMessage
 }
 
-func (b *BasicClientMessage) HBCISegments() []segment.Segment {
+func (b *BasicClientMessage) HBCISegments() []segment.ClientSegment {
 	return b.clientMessage.jobs()
 }

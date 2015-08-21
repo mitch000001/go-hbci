@@ -19,7 +19,7 @@ func (e *EncryptedDataSegment) UnmarshalHBCI(value []byte) error {
 	if err != nil {
 		return err
 	}
-	e.Segment = seg
+	e.ClientSegment = seg
 	if len(elements) > 1 && len(elements[1]) > 0 {
 		e.Data = &element.BinaryDataElement{}
 		if len(elements)+1 > 1 {

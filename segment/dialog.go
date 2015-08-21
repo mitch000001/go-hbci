@@ -12,12 +12,12 @@ func NewDialogEndSegment(dialogId string) *DialogEndSegment {
 	d := &DialogEndSegment{
 		DialogID: element.NewIdentification(dialogId),
 	}
-	d.Segment = NewBasicSegment(3, d)
+	d.ClientSegment = NewBasicSegment(3, d)
 	return d
 }
 
 type DialogEndSegment struct {
-	Segment
+	ClientSegment
 	DialogID *element.IdentificationDataElement
 }
 
@@ -40,12 +40,12 @@ func NewProcessingPreparationSegment(bdpVersion int, udpVersion int, language do
 		ProductName:    element.NewAlphaNumeric(productName, 25),
 		ProductVersion: element.NewAlphaNumeric(productVersion, 5),
 	}
-	p.Segment = NewBasicSegment(4, p)
+	p.ClientSegment = NewBasicSegment(4, p)
 	return p
 }
 
 type ProcessingPreparationSegment struct {
-	Segment
+	ClientSegment
 	BPDVersion *element.NumberDataElement
 	UPDVersion *element.NumberDataElement
 	// 0 for undefined

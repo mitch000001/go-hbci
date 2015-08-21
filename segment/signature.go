@@ -20,7 +20,7 @@ func NewPinTanSignatureHeaderSegment(controlReference string, clientSystemId str
 		SignatureAlgorithm:       element.NewRDHSignatureAlgorithm(),
 		KeyName:                  element.NewKeyName(keyName),
 	}
-	s.Segment = NewBasicSegment(2, s)
+	s.ClientSegment = NewBasicSegment(2, s)
 	return s
 }
 
@@ -37,12 +37,12 @@ func NewRDHSignatureHeaderSegment(controlReference string, signatureId int, clie
 		SignatureAlgorithm:       element.NewRDHSignatureAlgorithm(),
 		KeyName:                  element.NewKeyName(keyName),
 	}
-	s.Segment = NewBasicSegment(2, s)
+	s.ClientSegment = NewBasicSegment(2, s)
 	return s
 }
 
 type SignatureHeaderSegment struct {
-	Segment
+	ClientSegment
 	// "1" for NRO, Non-Repudiation of Origin (RDH)
 	// "2" for AUT, Message Origin Authentication (DDV)
 	// "999" for PIN/TAN
@@ -93,12 +93,12 @@ func NewSignatureEndSegment(number int, controlReference string) *SignatureEndSe
 	s := &SignatureEndSegment{
 		SecurityControlRef: element.NewAlphaNumeric(controlReference, 14),
 	}
-	s.Segment = NewBasicSegment(number, s)
+	s.ClientSegment = NewBasicSegment(number, s)
 	return s
 }
 
 type SignatureEndSegment struct {
-	Segment
+	ClientSegment
 	SecurityControlRef *element.AlphaNumericDataElement
 	Signature          *element.BinaryDataElement
 	PinTan             *element.PinTanDataElement

@@ -19,8 +19,8 @@ type SynchronisationMessage struct {
 	Sync                       *segment.SynchronisationRequestSegment
 }
 
-func (s *SynchronisationMessage) HBCISegments() []segment.Segment {
-	return []segment.Segment{
+func (s *SynchronisationMessage) HBCISegments() []segment.ClientSegment {
+	return []segment.ClientSegment{
 		s.Identification,
 		s.ProcessingPreparation,
 		s.PublicSigningKeyRequest,
@@ -29,8 +29,8 @@ func (s *SynchronisationMessage) HBCISegments() []segment.Segment {
 	}
 }
 
-func (s *SynchronisationMessage) jobs() []segment.Segment {
-	return []segment.Segment{
+func (s *SynchronisationMessage) jobs() []segment.ClientSegment {
+	return []segment.ClientSegment{
 		s.Identification,
 		s.ProcessingPreparation,
 		s.PublicSigningKeyRequest,

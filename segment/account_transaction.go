@@ -13,12 +13,12 @@ func NewAccountTransactionRequestSegment(account domain.AccountConnection, allAc
 		Account:     element.NewAccountConnection(account),
 		AllAccounts: element.NewBoolean(allAccounts),
 	}
-	a.Segment = NewBasicSegment(1, a)
+	a.ClientSegment = NewBasicSegment(1, a)
 	return a
 }
 
 type AccountTransactionRequestSegment struct {
-	Segment
+	ClientSegment
 	Account      *element.AccountConnectionDataElement
 	AllAccounts  *element.BooleanDataElement
 	From         *element.DateDataElement

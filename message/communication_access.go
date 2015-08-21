@@ -16,8 +16,8 @@ type CommunicationAccessMessage struct {
 	Request *segment.CommunicationAccessRequestSegment
 }
 
-func (c *CommunicationAccessMessage) HBCISegments() []segment.Segment {
-	return []segment.Segment{
+func (c *CommunicationAccessMessage) HBCISegments() []segment.ClientSegment {
+	return []segment.ClientSegment{
 		c.Request,
 	}
 }

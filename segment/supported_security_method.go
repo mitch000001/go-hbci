@@ -10,8 +10,8 @@ type SecurityMethodSegment struct {
 	SupportedMethods *element.SupportedSecurityMethodDataElement
 }
 
-func (s *SecurityMethodSegment) version() int         { return 2 }
-func (s *SecurityMethodSegment) id() string           { return "HISHV" }
+func (s *SecurityMethodSegment) Version() int         { return 2 }
+func (s *SecurityMethodSegment) ID() string           { return "HISHV" }
 func (s *SecurityMethodSegment) referencedId() string { return "HKVVB" }
 func (s *SecurityMethodSegment) sender() string       { return senderBank }
 

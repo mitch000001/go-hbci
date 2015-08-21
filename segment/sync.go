@@ -6,12 +6,12 @@ func NewSynchronisationSegment(modus int) *SynchronisationRequestSegment {
 	s := &SynchronisationRequestSegment{
 		SyncModus: element.NewNumber(modus, 1),
 	}
-	s.Segment = NewBasicSegment(5, s)
+	s.ClientSegment = NewBasicSegment(5, s)
 	return s
 }
 
 type SynchronisationRequestSegment struct {
-	Segment
+	ClientSegment
 	// Code | Bedeutung
 	// ---------------------------------------------------------
 	// 0 ￼ ￼| Neue Kundensystem-ID zurückmelden

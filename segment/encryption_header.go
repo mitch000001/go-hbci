@@ -17,7 +17,7 @@ func NewPinTanEncryptionHeaderSegment(clientSystemId string, keyName domain.KeyN
 		KeyName:              element.NewKeyName(keyName),
 		CompressionFunction:  element.NewAlphaNumeric("0", 3),
 	}
-	e.Segment = NewBasicSegment(998, e)
+	e.ClientSegment = NewBasicSegment(998, e)
 	return e
 }
 
@@ -31,14 +31,14 @@ func NewEncryptionHeaderSegment(clientSystemId string, keyName domain.KeyName, k
 		KeyName:              element.NewKeyName(keyName),
 		CompressionFunction:  element.NewAlphaNumeric("0", 3),
 	}
-	e.Segment = NewBasicSegment(998, e)
+	e.ClientSegment = NewBasicSegment(998, e)
 	return e
 }
 
 //go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment EncryptionHeaderSegment
 
 type EncryptionHeaderSegment struct {
-	Segment
+	ClientSegment
 	// "4" for ENC, Encryption (encryption and eventually compression)
 	// "998" for Cleartext
 	SecurityFunction *element.AlphaNumericDataElement

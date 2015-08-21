@@ -20,10 +20,11 @@ const (
 type Segment interface {
 	Header() *element.SegmentHeader
 	SetNumber(func() int)
-	DataElements() []element.DataElement
-	ID() string
-	Version() int
 	String() string
+}
+
+type ClientSegment interface {
+	Segment
 	MarshalHBCI() ([]byte, error)
 }
 
@@ -31,8 +32,6 @@ type BankSegment interface {
 	Segment
 	Unmarshaler
 }
-
-type Segments map[string]Segment
 
 type basicSegment interface {
 	Version() int
@@ -46,7 +45,7 @@ type Unmarshaler interface {
 	UnmarshalHBCI([]byte) error
 }
 
-func SegmentFromHeaderBytes(headerBytes []byte, seg basicSegment) (Segment, error) {
+func SegmentFromHeaderBytes(headerBytes []byte, seg basicSegment) (*segment, error) {
 	elements, err := element.ExtractElements(headerBytes)
 	var header *element.SegmentHeader
 	id := charset.ToUtf8(elements[0])
@@ -71,17 +70,17 @@ func SegmentFromHeaderBytes(headerBytes []byte, seg basicSegment) (Segment, erro
 	return NewBasicSegmentWithHeader(header, seg), nil
 }
 
-func NewReferencingBasicSegment(number int, ref int, seg basicSegment) Segment {
+func NewReferencingBasicSegment(number int, ref int, seg basicSegment) *segment {
 	header := element.NewReferencingSegmentHeader(seg.ID(), number, seg.Version(), ref)
 	return NewBasicSegmentWithHeader(header, seg)
 }
 
-func NewBasicSegment(number int, seg basicSegment) Segment {
+func NewBasicSegment(number int, seg basicSegment) *segment {
 	header := element.NewSegmentHeader(seg.ID(), number, seg.Version())
 	return NewBasicSegmentWithHeader(header, seg)
 }
 
-func NewBasicSegmentWithHeader(header *element.SegmentHeader, seg basicSegment) Segment {
+func NewBasicSegmentWithHeader(header *element.SegmentHeader, seg basicSegment) *segment {
 	return &segment{header: header, segment: seg}
 }
 

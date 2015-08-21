@@ -19,7 +19,7 @@ func (e *EncryptionHeaderSegment) UnmarshalHBCI(value []byte) error {
 	if err != nil {
 		return err
 	}
-	e.Segment = seg
+	e.ClientSegment = seg
 	if len(elements) > 1 && len(elements[1]) > 0 {
 		e.SecurityFunction = &element.AlphaNumericDataElement{}
 		err = e.SecurityFunction.UnmarshalHBCI(elements[1])

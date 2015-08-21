@@ -11,7 +11,7 @@ func NewFINTS3CommunicationAccessRequestSegment(fromBank domain.BankId, toBank d
 		ToBankID:   element.NewBankIndentification(toBank),
 		MaxEntries: element.NewNumber(maxEntries, 4),
 	}
-	c.Segment = NewBasicSegment(2, c)
+	c.ClientSegment = NewBasicSegment(2, c)
 	return c
 }
 
@@ -22,12 +22,12 @@ func NewCommunicationAccessRequestSegment(fromBank domain.BankId, toBank domain.
 		MaxEntries:   element.NewNumber(maxEntries, 4),
 		Aufsetzpunkt: element.NewAlphaNumeric(aufsetzpunkt, 35),
 	}
-	c.Segment = NewBasicSegment(2, c)
+	c.ClientSegment = NewBasicSegment(2, c)
 	return c
 }
 
 type CommunicationAccessRequestSegment struct {
-	Segment
+	ClientSegment
 	FromBankID *element.BankIdentificationDataElement
 	ToBankID   *element.BankIdentificationDataElement
 	MaxEntries *element.NumberDataElement
@@ -61,6 +61,8 @@ func NewCommunicationAccessResponseSegment(bankId domain.BankId, language int, p
 	c.Segment = NewBasicSegmentWithHeader(header, c)
 	return c
 }
+
+//go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment CommunicationAccessResponseSegment
 
 type CommunicationAccessResponseSegment struct {
 	Segment

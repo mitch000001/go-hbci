@@ -56,12 +56,12 @@ func NewPublicKeyRequestSegment(number int, keyName domain.KeyName) *PublicKeyRe
 		FunctionID: element.NewNumber(124, 3),
 		KeyName:    element.NewKeyName(keyName),
 	}
-	p.Segment = NewBasicSegment(number, p)
+	p.ClientSegment = NewBasicSegment(number, p)
 	return p
 }
 
 type PublicKeyRequestSegment struct {
-	Segment
+	ClientSegment
 	// "2" für ‘Key-Management-Nachricht erwartet Antwort’
 	MessageID *element.NumberDataElement
 	// "124" für ‘Certificate Status Request’

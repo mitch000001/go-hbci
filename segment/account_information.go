@@ -10,12 +10,12 @@ func NewAccountInformationRequestSegment(account domain.AccountConnection, allAc
 		AccountConnection: element.NewAccountConnection(account),
 		AllAccounts:       element.NewBoolean(allAccounts),
 	}
-	a.Segment = NewBasicSegment(1, a)
+	a.ClientSegment = NewBasicSegment(1, a)
 	return a
 }
 
 type AccountInformationRequestSegment struct {
-	Segment
+	ClientSegment
 	AccountConnection *element.AccountConnectionDataElement
 	AllAccounts       *element.BooleanDataElement
 	MaxEntries        *element.NumberDataElement
@@ -58,8 +58,8 @@ type AccountInformationResponseSegment struct {
 	DisposalEligiblePersons          *element.DisposalEligiblePersonsDataElement
 }
 
-func (a *AccountInformationResponseSegment) version() int         { return 1 }
-func (a *AccountInformationResponseSegment) id() string           { return "HIKIF" }
+func (a *AccountInformationResponseSegment) Version() int         { return 1 }
+func (a *AccountInformationResponseSegment) ID() string           { return "HIKIF" }
 func (a *AccountInformationResponseSegment) referencedId() string { return "HKKIF" }
 func (a *AccountInformationResponseSegment) sender() string       { return senderBank }
 

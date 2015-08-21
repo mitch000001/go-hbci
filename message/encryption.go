@@ -41,8 +41,8 @@ type EncryptedMessage struct {
 	EncryptedData    *segment.EncryptedDataSegment
 }
 
-func (e *EncryptedMessage) HBCISegments() []segment.Segment {
-	return []segment.Segment{
+func (e *EncryptedMessage) HBCISegments() []segment.ClientSegment {
+	return []segment.ClientSegment{
 		e.EncryptionHeader,
 		e.EncryptedData,
 	}

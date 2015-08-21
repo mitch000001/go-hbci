@@ -9,8 +9,8 @@ type CompressionMethodSegment struct {
 	SupportedCompressionMethods *element.SupportedCompressionMethodsDataElement
 }
 
-func (c *CompressionMethodSegment) version() int         { return 1 }
-func (c *CompressionMethodSegment) id() string           { return "HIKPV" }
+func (c *CompressionMethodSegment) Version() int         { return 1 }
+func (c *CompressionMethodSegment) ID() string           { return "HIKPV" }
 func (c *CompressionMethodSegment) referencedId() string { return "HKVVB" }
 func (c *CompressionMethodSegment) sender() string       { return senderBank }
 

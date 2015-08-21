@@ -16,8 +16,8 @@ type DialogInitializationClientMessage struct {
 	PublicEncryptionKeyRequest *segment.PublicKeyRequestSegment
 }
 
-func (d *DialogInitializationClientMessage) HBCISegments() []segment.Segment {
-	return []segment.Segment{
+func (d *DialogInitializationClientMessage) HBCISegments() []segment.ClientSegment {
+	return []segment.ClientSegment{
 		d.Identification,
 		d.ProcessingPreparation,
 		d.PublicSigningKeyRequest,
@@ -34,27 +34,19 @@ func (d *DialogInitializationClientMessage) jobs() []segment.Segment {
 	}
 }
 
-type DialogInitializationBankMessage struct {
-	*basicBankMessage
-	BankParams            segment.SegmentSequence
-	UserParams            segment.SegmentSequence
-	PublicKeyTransmission *segment.PublicKeyTransmissionSegment
-	Announcement          *segment.BankAnnouncementSegment
-}
-
 type DialogFinishingMessage struct {
 	*BasicMessage
 	DialogEnd *segment.DialogEndSegment
 }
 
-func (d *DialogFinishingMessage) HBCISegments() []segment.Segment {
-	return []segment.Segment{
+func (d *DialogFinishingMessage) HBCISegments() []segment.ClientSegment {
+	return []segment.ClientSegment{
 		d.DialogEnd,
 	}
 }
 
-func (d *DialogFinishingMessage) jobs() []segment.Segment {
-	return []segment.Segment{
+func (d *DialogFinishingMessage) jobs() []segment.ClientSegment {
+	return []segment.ClientSegment{
 		d.DialogEnd,
 	}
 }
