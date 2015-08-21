@@ -20,7 +20,7 @@ func NewPinTanEncryptionHeaderSegment(clientSystemId string, keyName domain.KeyN
 	e.ClientSegment = NewBasicSegment(998, e)
 
 	segment := &EncryptionHeaderSegment{
-		BankSegment: e,
+		CommonSegment: e,
 	}
 	return segment
 }
@@ -38,15 +38,15 @@ func NewEncryptionHeaderSegment(clientSystemId string, keyName domain.KeyName, k
 	e.ClientSegment = NewBasicSegment(998, e)
 
 	segment := &EncryptionHeaderSegment{
-		BankSegment: e,
+		CommonSegment: e,
 	}
 	return segment
 }
 
-//go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment EncryptionHeaderSegment -segment_interface BankSegment -segment_versions="EncryptionHeaderV2:2,EncryptionHeaderSegmentV3:3"
+//go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment EncryptionHeaderSegment -segment_interface CommonSegment -segment_versions="EncryptionHeaderV2:2:ClientSegment,EncryptionHeaderSegmentV3:3:ClientSegment"
 
 type EncryptionHeaderSegment struct {
-	BankSegment
+	CommonSegment
 }
 
 type EncryptionHeaderV2 struct {
@@ -98,7 +98,7 @@ func NewFINTS3PinTanEncryptionHeaderSegment(clientSystemId string, keyName domai
 	e.ClientSegment = NewBasicSegment(998, e)
 
 	segment := &EncryptionHeaderSegment{
-		BankSegment: e,
+		CommonSegment: e,
 	}
 	return segment
 }

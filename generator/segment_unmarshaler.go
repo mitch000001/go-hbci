@@ -42,10 +42,11 @@ func (s *SegmentUnmarshalerGenerator) Generate() (io.Reader, error) {
 	r, _ := utf8.DecodeRuneInString(s.segment.Name)
 	nameVar := string(unicode.ToLower(r))
 	templObj := &segmentTemplateObject{
-		Package: s.packageName,
-		Name:    s.segment.Name,
-		NameVar: nameVar,
-		Fields:  sortedFields,
+		Package:       s.packageName,
+		Name:          s.segment.Name,
+		NameVar:       nameVar,
+		InterfaceName: s.segment.InterfaceName,
+		Fields:        sortedFields,
 	}
 	executor := &segmentTemplateExecutor{templObj}
 	return executor.execute()
@@ -83,25 +84,26 @@ func (v *VersionedSegmentUnmarshalerGenerator) Generate() (io.Reader, error) {
 		r, _ := utf8.DecodeRuneInString(version.Name)
 		nameVar := string(unicode.ToLower(r))
 		templObj := &segmentTemplateObject{
-			Package: v.packageName,
-			Name:    version.Name,
-			NameVar: nameVar,
-			Version: version.Version,
-			Fields:  sortedFields,
+			Package:       v.packageName,
+			Name:          version.Name,
+			NameVar:       nameVar,
+			InterfaceName: version.InterfaceName,
+			Version:       version.Version,
+			Fields:        sortedFields,
 		}
 		versionedTemplateObjects = append(versionedTemplateObjects, templObj)
 	}
 	r, _ := utf8.DecodeRuneInString(v.segment.Name)
 	nameVar := string(unicode.ToLower(r))
 	templObj := &segmentTemplateObject{
-		Package: v.packageName,
-		Name:    v.segment.Name,
-		NameVar: nameVar,
+		Package:       v.packageName,
+		Name:          v.segment.Name,
+		NameVar:       nameVar,
+		InterfaceName: v.segment.InterfaceName,
 	}
 	segmentTemplObj := &versionedSegmentTemplateObject{
 		segmentTemplateObject: templObj,
 		SegmentVersions:       versionedTemplateObjects,
-		InterfaceName:         v.segment.InterfaceName,
 	}
 
 	executor := &versionedSegmentTemplateExecutor{segmentTemplObj}
@@ -137,12 +139,13 @@ func (s *segmentTemplateExecutor) execute() (io.Reader, error) {
 }
 
 type segmentTemplateObject struct {
-	Package string
-	Name    string
-	NameVar string
-	Version int
-	Fields  []field
-	counter int
+	Package       string
+	Name          string
+	NameVar       string
+	InterfaceName string
+	Version       int
+	Fields        []field
+	counter       int
 }
 
 type fieldExtractor struct {
@@ -235,7 +238,7 @@ func ({{.NameVar}} *{{.Name}}) UnmarshalHBCI(value []byte) error {
 	if err != nil {
 		return err
 	}
-	{{.NameVar}}.Segment = seg{{ range $idx, $field := .Fields }}
+	{{.NameVar}}.{{.InterfaceName}} = seg{{ range $idx, $field := .Fields }}
 	if len(elements) > {{ plusOne $idx }} && len(elements[{{ plusOne $idx}}]) > 0 {
 		{{ $.NameVar }}.{{ $field.Name }} = &{{ $field.TypeDecl }}{}
 		{{if len $.Fields | eq (plusOne $idx)}}if len(elements)+1 > {{plusOne $idx}} {
@@ -254,7 +257,6 @@ func ({{.NameVar}} *{{.Name}}) UnmarshalHBCI(value []byte) error {
 type versionedSegmentTemplateObject struct {
 	*segmentTemplateObject
 	SegmentVersions []*segmentTemplateObject
-	InterfaceName   string
 }
 
 type versionedSegmentTemplateExecutor struct {

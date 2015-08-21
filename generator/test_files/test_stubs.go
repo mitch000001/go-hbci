@@ -11,6 +11,12 @@ type Segment interface {
 	elements() []element.DataElement
 }
 
+type versionInterface1 interface {
+}
+
+type versionInterface2 interface {
+}
+
 type BankSegment interface {
 	UnmarshalHBCI([]byte) error
 }

@@ -1,6 +1,10 @@
 package segment
 
-import "github.com/mitch000001/go-hbci/element"
+import (
+	"strconv"
+
+	"github.com/mitch000001/go-hbci/element"
+)
 
 func NewSynchronisationSegmentV2(modus int) *SynchronisationRequestSegment {
 	s := &SynchronisationRequestV2{
@@ -9,13 +13,13 @@ func NewSynchronisationSegmentV2(modus int) *SynchronisationRequestSegment {
 	s.ClientSegment = NewBasicSegment(5, s)
 
 	segment := &SynchronisationRequestSegment{
-		Segment: s,
+		ClientSegment: s,
 	}
 	return segment
 }
 
 type SynchronisationRequestSegment struct {
-	Segment
+	ClientSegment
 }
 
 type SynchronisationRequestV2 struct {
@@ -34,6 +38,39 @@ func (s *SynchronisationRequestV2) referencedId() string { return "" }
 func (s *SynchronisationRequestV2) sender() string       { return senderUser }
 
 func (s *SynchronisationRequestV2) elements() []element.DataElement {
+	return []element.DataElement{
+		s.SyncModus,
+	}
+}
+
+func NewSynchronisationSegmentV3(modus int) *SynchronisationRequestSegment {
+	s := &SynchronisationRequestV3{
+		SyncModus: element.NewCode(strconv.Itoa(modus), 1, []string{"0", "1", "2"}),
+	}
+	s.ClientSegment = NewBasicSegment(5, s)
+
+	segment := &SynchronisationRequestSegment{
+		ClientSegment: s,
+	}
+	return segment
+}
+
+type SynchronisationRequestV3 struct {
+	ClientSegment
+	// Code | Bedeutung
+	// ---------------------------------------------------------
+	// 0 ￼ ￼| Neue Kundensystem-ID zurückmelden
+	// 1	| Letzte verarbeitete Nachrichtennummer zurückmelden ￼ ￼
+	// 2 ￼ ￼| Signatur-ID zurückmelden
+	SyncModus *element.CodeDataElement
+}
+
+func (s *SynchronisationRequestV3) Version() int         { return 3 }
+func (s *SynchronisationRequestV3) ID() string           { return "HKSYN" }
+func (s *SynchronisationRequestV3) referencedId() string { return "" }
+func (s *SynchronisationRequestV3) sender() string       { return senderUser }
+
+func (s *SynchronisationRequestV3) elements() []element.DataElement {
 	return []element.DataElement{
 		s.SyncModus,
 	}

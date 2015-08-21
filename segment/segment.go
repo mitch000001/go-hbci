@@ -31,6 +31,12 @@ type BankSegment interface {
 	Unmarshaler
 }
 
+type CommonSegment interface {
+	Segment
+	MarshalHBCI() ([]byte, error)
+	Unmarshaler
+}
+
 type basicSegment interface {
 	Version() int
 	ID() string

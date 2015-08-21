@@ -10,7 +10,7 @@ func NewEncryptedDataSegment(encryptedData []byte) *EncryptedDataSegment {
 	return e
 }
 
-//go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment EncryptedDataSegment
+//go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment EncryptedDataSegment -segment_interface ClientSegment
 
 type EncryptedDataSegment struct {
 	ClientSegment

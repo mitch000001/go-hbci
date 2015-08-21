@@ -16,7 +16,7 @@ import (
 )
 
 var segmentFlag = flag.String("segment", "", "'MyAwesomeSegment'")
-var segmentInterfaceFlag = flag.String("segment_interface", "BankSegment", "'MyAwesomeInterface'")
+var segmentInterfaceFlag = flag.String("segment_interface", "Segment", "'MyAwesomeInterface'")
 var segmentVersionsFlag segmentVersions
 
 func init() {
@@ -37,16 +37,15 @@ func main() {
 		fmt.Println(err)
 	}
 	segment := generator.SegmentIdentifier{
-		Name:     *segmentFlag,
-		Versions: segmentVersionsFlag,
+		Name:          *segmentFlag,
+		InterfaceName: *segmentInterfaceFlag,
+		Versions:      segmentVersionsFlag,
 	}
 	var generated io.Reader
 	if len(segmentVersionsFlag) != 0 {
-		segment.InterfaceName = *segmentInterfaceFlag
 		segmentGenerator := generator.NewVersionedSegmentUnmarshaler(segment, packageName, fileSet, f)
 		generated, err = segmentGenerator.Generate()
 	} else {
-		segment.InterfaceName = "Segment"
 		segmentGenerator := generator.NewSegmentUnmarshaler(segment, packageName, fileSet, f)
 		generated, err = segmentGenerator.Generate()
 	}
@@ -83,7 +82,7 @@ type segmentVersions []generator.SegmentIdentifier
 func (s *segmentVersions) String() string {
 	var buf bytes.Buffer
 	for _, version := range *s {
-		fmt.Fprintf(&buf, "%s:%d", version.Name, version.Version)
+		fmt.Fprintf(&buf, "%s:%d:%s", version.Name, version.Version, version.InterfaceName)
 	}
 	return buf.String()
 }
@@ -97,15 +96,21 @@ func (s *segmentVersions) Set(in string) error {
 		return r == ','
 	})
 	for _, seg := range segments {
-		parts := strings.SplitN(seg, ":", 2)
-		if len(parts) != 2 {
+		parts := strings.Split(seg, ":")
+		if len(parts) < 2 {
 			return fmt.Errorf("Malformed versioned segment: %q", seg)
 		}
 		version, err := strconv.Atoi(parts[1])
 		if err != nil {
 			return fmt.Errorf("Malformed segment version: %v", err)
 		}
-		*s = append(*s, generator.SegmentIdentifier{Name: parts[0], Version: version})
+		var interfaceName string
+		if len(parts) == 3 {
+			interfaceName = parts[2]
+		} else {
+			interfaceName = "Segment" // TODO: defaults?
+		}
+		*s = append(*s, generator.SegmentIdentifier{Name: parts[0], Version: version, InterfaceName: interfaceName})
 	}
 	return nil
 }

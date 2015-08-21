@@ -21,7 +21,7 @@ func TestSegmentUnmarshalerGeneratorGenerate(t *testing.T) {
 
 	expectedSrc, err := ioutil.ReadFile("test_files/test_segment_unmarshaler.go")
 
-	generator := NewSegmentUnmarshaler(SegmentIdentifier{Name: "TestSegment"}, "test_files", fileSet, f)
+	generator := NewSegmentUnmarshaler(SegmentIdentifier{Name: "TestSegment", InterfaceName: "Segment"}, "test_files", fileSet, f)
 
 	reader, err := generator.Generate()
 
@@ -87,8 +87,9 @@ func TestVersionedSegmentUnmarshalerGeneratorGenerate(t *testing.T) {
 		InterfaceName: "BankSegment",
 		Versions: []SegmentIdentifier{
 			{
-				Name:    "VersionedTestSegmentV1",
-				Version: 1,
+				Name:          "VersionedTestSegmentV1",
+				Version:       1,
+				InterfaceName: "Segment",
 			},
 		},
 	}
@@ -134,8 +135,9 @@ func TestVersionedSegmentUnmarshalerGeneratorGenerate(t *testing.T) {
 		InterfaceName: "versionedTestSegmentCustomInterface",
 		Versions: []SegmentIdentifier{
 			{
-				Name:    "VersionedTestSegmentCustomInterfaceV1",
-				Version: 1,
+				Name:          "VersionedTestSegmentCustomInterfaceV1",
+				Version:       1,
+				InterfaceName: "Segment",
 			},
 		},
 	}
@@ -181,12 +183,67 @@ func TestVersionedSegmentUnmarshalerGeneratorGenerate(t *testing.T) {
 		InterfaceName: "BankSegment",
 		Versions: []SegmentIdentifier{
 			{
-				Name:    "MultipleVersionedTestSegmentV1",
-				Version: 1,
+				Name:          "MultipleVersionedTestSegmentV1",
+				Version:       1,
+				InterfaceName: "Segment",
 			},
 			{
-				Name:    "MultipleVersionedTestSegmentV2",
-				Version: 2,
+				Name:          "MultipleVersionedTestSegmentV2",
+				Version:       2,
+				InterfaceName: "Segment",
+			},
+		},
+	}
+
+	generator = NewVersionedSegmentUnmarshaler(segment, "test_files", fileSet, f)
+
+	reader, err = generator.Generate()
+
+	if err != nil {
+		t.Logf("Expected no error, got %T:%v\n", err, err)
+		t.Fail()
+	}
+
+	if reader == nil {
+		t.Logf("Expected reader not to be nil")
+		t.Fail()
+	} else {
+		generatedSourcebytes, err := ioutil.ReadAll(reader)
+		if err != nil {
+			t.Logf("Error while parsing source: %T:%v\n", err, err)
+			t.FailNow()
+		}
+		if !bytes.Equal(expectedSrc, generatedSourcebytes) {
+			diffs := diffmatchpatch.New().DiffMain(string(expectedSrc), string(generatedSourcebytes), true)
+			t.Logf("Expected generated sources to equal\n%s\n\tgot\n%s\n", expectedSrc, generatedSourcebytes)
+			t.Logf("Diff: \n%s\n", diffPrettyPrint(diffs))
+			t.Fail()
+		}
+	}
+
+	// multiple versions custom interfaces
+	fileSet = token.NewFileSet()
+	f, err = parser.ParseFile(fileSet, "test_files/multiple_versioned_test_segment_custom_interfaces.go", nil, 0)
+	if err != nil {
+		t.Logf("Error while parsing source: %T:%v\n", err, err)
+		t.FailNow()
+	}
+
+	expectedSrc, err = ioutil.ReadFile("test_files/multiple_versioned_test_segment_custom_interfaces_unmarshaler.go")
+
+	segment = SegmentIdentifier{
+		Name:          "MultipleVersionedTestSegmentCustomInterfaces",
+		InterfaceName: "BankSegment",
+		Versions: []SegmentIdentifier{
+			{
+				Name:          "MultipleVersionedTestSegmentCustomInterfacesV1",
+				Version:       1,
+				InterfaceName: "versionInterface1",
+			},
+			{
+				Name:          "MultipleVersionedTestSegmentCustomInterfacesV2",
+				Version:       2,
+				InterfaceName: "versionInterface2",
 			},
 		},
 	}
