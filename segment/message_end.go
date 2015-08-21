@@ -10,7 +10,7 @@ func NewMessageEndSegment(segmentNumber, messageNumber int) *MessageEndSegment {
 	return end
 }
 
-//go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment MessageEndSegment
+//go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment MessageEndSegment -segment_interface ClientSegment
 
 type MessageEndSegment struct {
 	ClientSegment

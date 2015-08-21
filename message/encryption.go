@@ -158,14 +158,16 @@ func (d *DecryptedMessage) Acknowledgements() []domain.Acknowledgement {
 	return d.acknowledgements
 }
 
-func NewPinTanCryptoProvider(key *domain.PinKey, clientSystemId string) *PinTanCryptoProvider {
+func NewPinTanCryptoProvider(key *domain.PinKey, clientSystemId string, hbciVersion segment.Version) *PinTanCryptoProvider {
 	return &PinTanCryptoProvider{
+		hbciVersion:    hbciVersion,
 		key:            key,
 		clientSystemId: clientSystemId,
 	}
 }
 
 type PinTanCryptoProvider struct {
+	hbciVersion    segment.Version
 	key            *domain.PinKey
 	clientSystemId string
 }
@@ -186,5 +188,5 @@ func (p *PinTanCryptoProvider) Decrypt(encryptedMessage []byte) ([]byte, error) 
 }
 
 func (p *PinTanCryptoProvider) WriteEncryptionHeader(message *EncryptedMessage) {
-	message.EncryptionHeader = segment.NewPinTanEncryptionHeaderSegment(p.clientSystemId, p.key.KeyName())
+	message.EncryptionHeader = p.hbciVersion.PinTanEncryptionHeader(p.clientSystemId, p.key.KeyName())
 }

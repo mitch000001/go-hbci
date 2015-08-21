@@ -4,10 +4,8 @@ import (
 	"bytes"
 	"fmt"
 	"reflect"
-	"strconv"
 	"strings"
 
-	"github.com/mitch000001/go-hbci/charset"
 	"github.com/mitch000001/go-hbci/element"
 )
 
@@ -33,6 +31,12 @@ type BankSegment interface {
 	Unmarshaler
 }
 
+type CommonSegment interface {
+	Segment
+	MarshalHBCI() ([]byte, error)
+	Unmarshaler
+}
+
 type basicSegment interface {
 	Version() int
 	ID() string
@@ -46,26 +50,10 @@ type Unmarshaler interface {
 }
 
 func SegmentFromHeaderBytes(headerBytes []byte, seg basicSegment) (*segment, error) {
-	elements, err := element.ExtractElements(headerBytes)
-	var header *element.SegmentHeader
-	id := charset.ToUtf8(elements[0])
-	numStr := elements[1]
-	number, err := strconv.Atoi(charset.ToUtf8(numStr))
+	header := &element.SegmentHeader{}
+	err := header.UnmarshalHBCI(headerBytes)
 	if err != nil {
-		return nil, fmt.Errorf("Malformed segment header number")
-	}
-	version, err := strconv.Atoi(charset.ToUtf8(elements[2]))
-	if err != nil {
-		return nil, fmt.Errorf("Malformed segment header version")
-	}
-	if len(elements) == 4 && len(elements[3]) > 0 {
-		ref, err := strconv.Atoi(charset.ToUtf8(elements[3]))
-		if err != nil {
-			return nil, fmt.Errorf("Malformed segment header reference")
-		}
-		header = element.NewReferencingSegmentHeader(id, number, version, ref)
-	} else {
-		header = element.NewSegmentHeader(id, number, version)
+		return nil, fmt.Errorf("Error while unmarshaling segment header: %v", err)
 	}
 	return NewBasicSegmentWithHeader(header, seg), nil
 }

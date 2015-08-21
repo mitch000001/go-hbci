@@ -22,7 +22,7 @@ func NewMessageHeaderSegment(size int, hbciVersion int, dialogId string, number 
 	return m
 }
 
-//go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment MessageHeaderSegment
+//go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment MessageHeaderSegment -segment_interface ClientSegment
 
 type MessageHeaderSegment struct {
 	ClientSegment

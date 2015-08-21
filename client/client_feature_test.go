@@ -3,6 +3,7 @@
 package client_test
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"testing"
@@ -66,13 +67,46 @@ func TestPinTanDialogBalances(t *testing.T) {
 	}
 }
 
+func TestClientAccounts(t *testing.T) {
+	c := newClient()
+
+	accounts, err := c.Accounts()
+
+	if err != nil {
+		t.Logf("Expected error to be nil, got %T:%v\n", err, err)
+		t.Fail()
+	}
+
+	if accounts == nil {
+		t.Logf("Expected accounts not to be nil\n")
+		t.Fail()
+	}
+
+	for _, account := range accounts {
+		fmt.Printf("Account: %s\nProduct name: %s\nCurrency: %s\n", account.AccountConnection.AccountID, account.ProductID, account.Currency)
+	}
+}
+
 func newClient() *client.Client {
-	config := client.Config{
-		URL:         os.Getenv("GOHBCI_URL"),
-		AccountID:   os.Getenv("GOHBCI_USERID"),
-		BankID:      os.Getenv("GOHBCI_BLZ"),
-		PIN:         os.Getenv("GOHBCI_PIN"),
-		HBCIVersion: client.Version220,
+	configFile, err := os.Open("../.fints300.json")
+	if err != nil && !os.IsNotExist(err) {
+		panic(err)
+	}
+	var config client.Config
+	if configFile != nil {
+		jsonDecoder := json.NewDecoder(configFile)
+		err = jsonDecoder.Decode(&config)
+		if err != nil {
+			panic(err)
+		}
+	} else {
+		config = client.Config{
+			URL:         os.Getenv("GOHBCI_URL"),
+			AccountID:   os.Getenv("GOHBCI_USERID"),
+			BankID:      os.Getenv("GOHBCI_BLZ"),
+			PIN:         os.Getenv("GOHBCI_PIN"),
+			HBCIVersion: domain.HBCIVersion220,
+		}
 	}
 	testAccount = domain.AccountConnection{AccountID: config.AccountID, CountryCode: 280, BankID: config.BankID}
 	c, err := client.New(config)

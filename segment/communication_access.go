@@ -5,16 +5,6 @@ import (
 	"github.com/mitch000001/go-hbci/element"
 )
 
-func NewFINTS3CommunicationAccessRequestSegment(fromBank domain.BankId, toBank domain.BankId, maxEntries int) *CommunicationAccessRequestSegment {
-	c := &CommunicationAccessRequestSegment{
-		FromBankID: element.NewBankIndentification(fromBank),
-		ToBankID:   element.NewBankIndentification(toBank),
-		MaxEntries: element.NewNumber(maxEntries, 4),
-	}
-	c.ClientSegment = NewBasicSegment(2, c)
-	return c
-}
-
 func NewCommunicationAccessRequestSegment(fromBank domain.BankId, toBank domain.BankId, maxEntries int, aufsetzpunkt string) *CommunicationAccessRequestSegment {
 	c := &CommunicationAccessRequestSegment{
 		FromBankID:   element.NewBankIndentification(fromBank),

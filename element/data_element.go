@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"reflect"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -451,6 +452,40 @@ func (b *BooleanDataElement) UnmarshalHBCI(value []byte) error {
 		return fmt.Errorf("BooleanDataElement: Malformed input")
 	}
 	return nil
+}
+
+func NewCode(val string, maxLength int, validSet []string) *CodeDataElement {
+	sort.Strings(validSet)
+	return &CodeDataElement{
+		AlphaNumericDataElement: NewAlphaNumeric(val, maxLength),
+		validSet:                validSet,
+	}
+}
+
+type CodeDataElement struct {
+	*AlphaNumericDataElement
+	validSet []string
+}
+
+func (c *CodeDataElement) Type() DataElementType {
+	return CodeDE
+}
+
+func (c *CodeDataElement) IsValid() bool {
+	if sort.SearchStrings(c.validSet, c.Val()) >= len(c.validSet) {
+		return false
+	} else {
+		return c.AlphaNumericDataElement.IsValid()
+	}
+}
+
+func (a *CodeDataElement) MarshalHBCI() ([]byte, error) {
+	return a.AlphaNumericDataElement.MarshalHBCI()
+}
+
+func (a *CodeDataElement) UnmarshalHBCI(value []byte) error {
+	a.AlphaNumericDataElement = &AlphaNumericDataElement{}
+	return a.AlphaNumericDataElement.UnmarshalHBCI(value)
 }
 
 func NewDate(date time.Time) *DateDataElement {

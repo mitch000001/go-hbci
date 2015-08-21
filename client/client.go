@@ -10,14 +10,6 @@ import (
 	"github.com/mitch000001/go-hbci/segment"
 )
 
-const (
-	Version220 = 220
-)
-
-var supportedVersions = []int{
-	Version220,
-}
-
 type Config struct {
 	BankID      string `json:"bank_id"`
 	AccountID   string `json:"account_id"`
@@ -26,12 +18,25 @@ type Config struct {
 	HBCIVersion int    `json:"hbci_version"`
 }
 
+func (c Config) hbciVersion() (segment.Version, error) {
+	version, ok := segment.SupportedHBCIVersions[c.HBCIVersion]
+	if !ok {
+		return version, fmt.Errorf("Unsupported HBCI version. Supported versions are %s", domain.SupportedHBCIVersions)
+	}
+	return version, nil
+}
+
 func New(config Config) (*Client, error) {
 	bankId := domain.BankId{
 		CountryCode: 280,
 		ID:          config.BankID,
 	}
-	d := dialog.NewPinTanDialog(bankId, config.URL, config.AccountID)
+	var d *dialog.PinTanDialog
+	hbciVersion, err := config.hbciVersion()
+	if err != nil {
+		return nil, err
+	}
+	d = dialog.NewPinTanDialog(bankId, config.URL, config.AccountID, hbciVersion)
 	d.SetPin(config.PIN)
 	client := &Client{
 		config:       config,

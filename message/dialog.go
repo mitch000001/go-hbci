@@ -14,6 +14,7 @@ type DialogInitializationClientMessage struct {
 	ProcessingPreparation      *segment.ProcessingPreparationSegment
 	PublicSigningKeyRequest    *segment.PublicKeyRequestSegment
 	PublicEncryptionKeyRequest *segment.PublicKeyRequestSegment
+	PublicKeyRequest           *segment.PublicKeyRequestSegment
 }
 
 func (d *DialogInitializationClientMessage) HBCISegments() []segment.ClientSegment {
@@ -22,6 +23,7 @@ func (d *DialogInitializationClientMessage) HBCISegments() []segment.ClientSegme
 		d.ProcessingPreparation,
 		d.PublicSigningKeyRequest,
 		d.PublicEncryptionKeyRequest,
+		d.PublicKeyRequest,
 	}
 }
 

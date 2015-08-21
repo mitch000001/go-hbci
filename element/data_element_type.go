@@ -15,6 +15,7 @@ const (
 	BinaryDE
 	// Derived types
 	BooleanDE
+	CodeDE
 	DateDE
 	VirtualDateDE
 	TimeDE
@@ -51,6 +52,7 @@ const (
 	AccountLimitDEG
 	AllowedBusinessTransactionDEG
 	DisposalEligiblePersonDEG
+	SecurityProfileDEG
 )
 
 var typeName = map[DataElementType]string{
@@ -63,6 +65,7 @@ var typeName = map[DataElementType]string{
 	BinaryDE:       "bin",
 	// Derived types
 	BooleanDE:        "jn",
+	CodeDE:           "code",
 	DateDE:           "dat",
 	VirtualDateDE:    "vdat",
 	TimeDE:           "tim",
@@ -98,6 +101,7 @@ var typeName = map[DataElementType]string{
 	AccountLimitDEG:               "Kontolimit",
 	AllowedBusinessTransactionDEG: "Erlaubte Geschäftsvorfälle",
 	DisposalEligiblePersonDEG:     "Verfügungsberechtigte",
+	SecurityProfileDEG:            "Sicherheitsprofil",
 }
 
 func (d DataElementType) String() string {

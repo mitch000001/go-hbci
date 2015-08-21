@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/mitch000001/go-hbci/domain"
+	"github.com/mitch000001/go-hbci/internal"
 	"github.com/mitch000001/go-hbci/message"
 	"github.com/mitch000001/go-hbci/segment"
 	"github.com/mitch000001/go-hbci/transport"
@@ -27,7 +28,7 @@ type Dialog interface {
 	SendMessage(clientMessage message.HBCIMessage) (message.BankMessage, error)
 }
 
-func newDialog(bankId domain.BankId, hbciUrl string, userId string, signatureProvider message.SignatureProvider, cryptoProvider message.CryptoProvider) *dialog {
+func newDialog(bankId domain.BankId, hbciUrl string, userId string, hbciVersion segment.Version, signatureProvider message.SignatureProvider, cryptoProvider message.CryptoProvider) *dialog {
 	return &dialog{
 		httpClient:        http.DefaultClient,
 		hbciUrl:           hbciUrl,
@@ -40,6 +41,7 @@ func newDialog(bankId domain.BankId, hbciUrl string, userId string, signaturePro
 		signatureProvider: signatureProvider,
 		cryptoProvider:    cryptoProvider,
 		dialogID:          initialDialogID,
+		hbciVersion:       hbciVersion,
 	}
 }
 
@@ -60,6 +62,7 @@ type dialog struct {
 	signatureProvider message.SignatureProvider
 	cryptoProvider    message.CryptoProvider
 	BankParameterData domain.BankParameterData
+	hbciVersion       segment.Version
 }
 
 func (d *dialog) UserParameterDataVersion() int {
@@ -122,7 +125,7 @@ func (d *dialog) SyncClientSystemID() (string, error) {
 	syncMessage := &message.SynchronisationMessage{
 		Identification:        segment.NewIdentificationSegment(d.BankID, d.clientID, initialClientSystemID, true),
 		ProcessingPreparation: segment.NewProcessingPreparationSegment(0, 0, 1),
-		Sync: segment.NewSynchronisationSegment(0),
+		Sync: d.hbciVersion.SynchronisationRequest(0),
 	}
 	syncMessage.BasicMessage = d.newBasicMessage(syncMessage)
 	signedSyncMessage, err := syncMessage.Sign(d.signatureProvider)
@@ -235,7 +238,7 @@ func (d *dialog) init() error {
 	}
 
 	bankInfoMessageBytes := decryptedMessage.FindSegment("HIKIM")
-	fmt.Printf("INFO:\n%q\n", bankInfoMessageBytes)
+	internal.Info.Printf("INFO:\n%q\n", bankInfoMessageBytes)
 
 	newSecurityFn := d.securityFn
 	errors := make([]string, 0)
@@ -244,7 +247,7 @@ func (d *dialog) init() error {
 		if ack.Code == 3920 {
 			supportedSecurityFns := ack.Params
 			if len(supportedSecurityFns) != 0 {
-				fmt.Printf("Supported securityFunctions: %q\n", supportedSecurityFns)
+				internal.Info.Printf("Supported securityFunctions: %q\n", supportedSecurityFns)
 				// TODO: proper handling of each case, see FINTS3.0 docu
 				newSecurityFn = supportedSecurityFns[0]
 			}
@@ -311,7 +314,7 @@ func (d *dialog) newClientMessage(hbciMessage message.HBCIMessage) message.Clien
 func (d *dialog) newBasicMessage(hbciMessage message.HBCIMessage) *message.BasicMessage {
 	messageNum := d.nextMessageNumber()
 	clientMessage := message.NewBasicMessage(hbciMessage)
-	clientMessage.Header = segment.NewMessageHeaderSegment(-1, 220, d.dialogID, messageNum)
+	clientMessage.Header = segment.NewMessageHeaderSegment(-1, d.hbciVersion.Version(), d.dialogID, messageNum)
 	clientMessage.End = segment.NewMessageEndSegment(-1, messageNum)
 	return clientMessage
 }
@@ -374,6 +377,7 @@ func (d *dialog) request(clientMessage message.ClientMessage) (message.BankMessa
 	if err != nil {
 		return nil, err
 	}
+	internal.Debug.Printf("Request:\n %s\n\n", bytes.Join(bytes.Split(marshaledMessage, []byte("'")), []byte("\n")))
 
 	request := &transport.Request{
 		URL:              d.hbciUrl,
@@ -396,12 +400,14 @@ func (d *dialog) request(clientMessage message.ClientMessage) (message.BankMessa
 		if err != nil {
 			return nil, fmt.Errorf("Error while decrypting message: %v", err)
 		}
+		internal.Debug.Printf("Response:\n %s\n\n", bytes.Join(decryptedMessage.Segments(), []byte("\n")))
 		bankMessage = decryptedMessage
 	} else {
 		decryptedMessage, err := extractUnencryptedMessage(response)
 		if err != nil {
 			return nil, err
 		}
+		internal.Debug.Printf("Response:\n %s\n\n", bytes.Join(decryptedMessage.Segments(), []byte("\n")))
 		bankMessage = decryptedMessage
 	}
 
