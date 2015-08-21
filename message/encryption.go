@@ -48,11 +48,6 @@ func (e *EncryptedMessage) HBCISegments() []segment.ClientSegment {
 	}
 }
 
-type EncryptedFINTS3Message struct {
-	*EncryptedMessage
-	EncryptionHeader *segment.EncryptionHeaderSegmentV3
-}
-
 func (e *EncryptedMessage) Decrypt(provider CryptoProvider) (*DecryptedMessage, error) {
 	decryptedMessageBytes, err := provider.Decrypt(e.EncryptedData.Data.Val())
 	if err != nil {
