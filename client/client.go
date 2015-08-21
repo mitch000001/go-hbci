@@ -40,6 +40,7 @@ func New(config Config) (*Client, error) {
 	d.SetPin(config.PIN)
 	client := &Client{
 		config:       config,
+		hbciVersion:  hbciVersion,
 		pinTanDialog: d,
 	}
 	return client, nil
@@ -47,6 +48,7 @@ func New(config Config) (*Client, error) {
 
 type Client struct {
 	config       Config
+	hbciVersion  segment.Version
 	pinTanDialog *dialog.PinTanDialog
 }
 
@@ -61,7 +63,7 @@ func (c *Client) Accounts() ([]domain.AccountInformation, error) {
 }
 
 func (c *Client) AccountTransactions(account domain.AccountConnection, timeframe domain.Timeframe, allAccounts bool, aufsetzpunkt string) ([]domain.AccountTransaction, error) {
-	accountTransactionRequest := segment.NewAccountTransactionRequestSegment(account, allAccounts)
+	accountTransactionRequest := c.hbciVersion.AccountTransactionRequest(account, allAccounts)
 	accountTransactionRequest.SetTransactionRange(timeframe)
 	if aufsetzpunkt != "" {
 		accountTransactionRequest.SetAufsetzpunkt(aufsetzpunkt)

@@ -8,13 +8,14 @@ var SupportedHBCIVersions = map[int]Version{
 }
 
 type Version struct {
-	version                int
-	PinTanEncryptionHeader func(clientSystemId string, keyName domain.KeyName) *EncryptionHeaderSegment
-	RDHEncryptionHeader    func(clientSystemId string, keyName domain.KeyName, key []byte) *EncryptionHeaderSegment
-	PinTanSignatureHeader  func(controlReference string, clientSystemId string, keyName domain.KeyName) *SignatureHeaderSegment
-	RDHSignatureHeader     func(controlReference string, signatureId int, clientSystemId string, keyName domain.KeyName) *SignatureHeaderSegment
-	SignatureEnd           func(number int, controlReference string) *SignatureEndSegment
-	SynchronisationRequest func(modus int) *SynchronisationRequestSegment
+	version                   int
+	PinTanEncryptionHeader    func(clientSystemId string, keyName domain.KeyName) *EncryptionHeaderSegment
+	RDHEncryptionHeader       func(clientSystemId string, keyName domain.KeyName, key []byte) *EncryptionHeaderSegment
+	PinTanSignatureHeader     func(controlReference string, clientSystemId string, keyName domain.KeyName) *SignatureHeaderSegment
+	RDHSignatureHeader        func(controlReference string, signatureId int, clientSystemId string, keyName domain.KeyName) *SignatureHeaderSegment
+	SignatureEnd              func(number int, controlReference string) *SignatureEndSegment
+	SynchronisationRequest    func(modus int) *SynchronisationRequestSegment
+	AccountTransactionRequest func(account domain.AccountConnection, allAccounts bool) *AccountTransactionRequestSegment
 }
 
 func (v Version) Version() int {
