@@ -83,7 +83,11 @@ func TestClientAccounts(t *testing.T) {
 	}
 
 	for _, account := range accounts {
-		fmt.Printf("Account: %s\nProduct name: %s\nCurrency: %s\n", account.AccountConnection.AccountID, account.ProductID, account.Currency)
+		t.Logf("Account: %s\tProduct name: %s\tCurrency: %s\n", account.AccountConnection.AccountID, account.ProductID, account.Currency)
+		t.Logf("Allowed transactions:\n")
+		for _, allowedTransaction := range account.AllowedBusinessTransactions {
+			t.Logf("ID: %s\tNeeded signatures: %d\n", allowedTransaction.ID, allowedTransaction.NeededSignatures)
+		}
 	}
 }
 
