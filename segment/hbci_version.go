@@ -2,12 +2,12 @@ package segment
 
 import "github.com/mitch000001/go-hbci/domain"
 
-var SupportedHBCIVersions = map[int]Version{
+var SupportedHBCIVersions = map[int]HBCIVersion{
 	220: HBCI220,
 	300: FINTS300,
 }
 
-type Version struct {
+type HBCIVersion struct {
 	version                   int
 	PinTanEncryptionHeader    func(clientSystemId string, keyName domain.KeyName) *EncryptionHeaderSegment
 	RDHEncryptionHeader       func(clientSystemId string, keyName domain.KeyName, key []byte) *EncryptionHeaderSegment
@@ -18,6 +18,6 @@ type Version struct {
 	AccountTransactionRequest func(account domain.AccountConnection, allAccounts bool) *AccountTransactionRequestSegment
 }
 
-func (v Version) Version() int {
+func (v HBCIVersion) Version() int {
 	return v.version
 }

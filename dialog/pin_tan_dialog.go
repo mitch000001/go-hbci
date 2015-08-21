@@ -10,7 +10,7 @@ import (
 	"github.com/mitch000001/go-hbci/transport"
 )
 
-func NewPinTanDialog(bankId domain.BankId, hbciUrl string, userId string, hbciVersion segment.Version) *PinTanDialog {
+func NewPinTanDialog(bankId domain.BankId, hbciUrl string, userId string, hbciVersion segment.HBCIVersion) *PinTanDialog {
 	pinKey := domain.NewPinKey("", domain.NewPinTanKeyName(bankId, userId, "S"))
 	signatureProvider := message.NewPinTanSignatureProvider(pinKey, "0", hbciVersion)
 	pinKey = domain.NewPinKey("", domain.NewPinTanKeyName(bankId, userId, "V"))

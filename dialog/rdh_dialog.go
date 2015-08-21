@@ -6,7 +6,7 @@ import (
 	"github.com/mitch000001/go-hbci/segment"
 )
 
-func NewRDHDialog(bankId domain.BankId, hbciUrl string, clientId string, hbciVersion segment.Version) *rdhDialog {
+func NewRDHDialog(bankId domain.BankId, hbciUrl string, clientId string, hbciVersion segment.HBCIVersion) *rdhDialog {
 	key, err := domain.GenerateSigningKey()
 	if err != nil {
 		panic(err)

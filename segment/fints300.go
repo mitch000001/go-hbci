@@ -1,6 +1,6 @@
 package segment
 
-var FINTS300 = Version{
+var FINTS300 = HBCIVersion{
 	version:                   300,
 	PinTanEncryptionHeader:    NewPinTanEncryptionHeaderSegmentV3,
 	SynchronisationRequest:    NewSynchronisationSegmentV3,

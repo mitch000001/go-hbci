@@ -18,7 +18,7 @@ type Config struct {
 	HBCIVersion int    `json:"hbci_version"`
 }
 
-func (c Config) hbciVersion() (segment.Version, error) {
+func (c Config) hbciVersion() (segment.HBCIVersion, error) {
 	version, ok := segment.SupportedHBCIVersions[c.HBCIVersion]
 	if !ok {
 		return version, fmt.Errorf("Unsupported HBCI version. Supported versions are %s", domain.SupportedHBCIVersions)
@@ -48,7 +48,7 @@ func New(config Config) (*Client, error) {
 
 type Client struct {
 	config       Config
-	hbciVersion  segment.Version
+	hbciVersion  segment.HBCIVersion
 	pinTanDialog *dialog.PinTanDialog
 }
 

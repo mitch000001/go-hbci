@@ -158,7 +158,7 @@ func (d *DecryptedMessage) Acknowledgements() []domain.Acknowledgement {
 	return d.acknowledgements
 }
 
-func NewPinTanCryptoProvider(key *domain.PinKey, clientSystemId string, hbciVersion segment.Version) *PinTanCryptoProvider {
+func NewPinTanCryptoProvider(key *domain.PinKey, clientSystemId string, hbciVersion segment.HBCIVersion) *PinTanCryptoProvider {
 	return &PinTanCryptoProvider{
 		hbciVersion:    hbciVersion,
 		key:            key,
@@ -167,7 +167,7 @@ func NewPinTanCryptoProvider(key *domain.PinKey, clientSystemId string, hbciVers
 }
 
 type PinTanCryptoProvider struct {
-	hbciVersion    segment.Version
+	hbciVersion    segment.HBCIVersion
 	key            *domain.PinKey
 	clientSystemId string
 }

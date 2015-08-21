@@ -1,6 +1,6 @@
 package segment
 
-var HBCI220 = Version{
+var HBCI220 = HBCIVersion{
 	version:                   220,
 	PinTanEncryptionHeader:    NewPinTanEncryptionHeaderSegment,
 	RDHEncryptionHeader:       NewEncryptionHeaderSegment,

@@ -28,7 +28,7 @@ type Dialog interface {
 	SendMessage(clientMessage message.HBCIMessage) (message.BankMessage, error)
 }
 
-func newDialog(bankId domain.BankId, hbciUrl string, userId string, hbciVersion segment.Version, signatureProvider message.SignatureProvider, cryptoProvider message.CryptoProvider) *dialog {
+func newDialog(bankId domain.BankId, hbciUrl string, userId string, hbciVersion segment.HBCIVersion, signatureProvider message.SignatureProvider, cryptoProvider message.CryptoProvider) *dialog {
 	return &dialog{
 		httpClient:        http.DefaultClient,
 		hbciUrl:           hbciUrl,
@@ -62,7 +62,7 @@ type dialog struct {
 	signatureProvider message.SignatureProvider
 	cryptoProvider    message.CryptoProvider
 	BankParameterData domain.BankParameterData
-	hbciVersion       segment.Version
+	hbciVersion       segment.HBCIVersion
 }
 
 func (d *dialog) UserParameterDataVersion() int {

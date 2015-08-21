@@ -43,7 +43,7 @@ func generateControlReference(key domain.Key) string {
 	return fmt.Sprintf("%x", h.Sum(nil))
 }
 
-func NewPinTanSignatureProvider(key *domain.PinKey, clientSystemId string, hbciVersion segment.Version) SignatureProvider {
+func NewPinTanSignatureProvider(key *domain.PinKey, clientSystemId string, hbciVersion segment.HBCIVersion) SignatureProvider {
 	controlReference := generateControlReference(key)
 	return &PinTanSignatureProvider{
 		hbciVersion:      hbciVersion,
@@ -55,7 +55,7 @@ func NewPinTanSignatureProvider(key *domain.PinKey, clientSystemId string, hbciV
 }
 
 type PinTanSignatureProvider struct {
-	hbciVersion      segment.Version
+	hbciVersion      segment.HBCIVersion
 	key              *domain.PinKey
 	clientSystemId   string
 	securityFn       string
@@ -84,7 +84,7 @@ func (p *PinTanSignatureProvider) SignMessage(signedMessage SignedHBCIMessage) e
 	return nil
 }
 
-func NewRDHSignatureProvider(signingKey *domain.RSAKey, signatureId int, hbciVersion segment.Version) SignatureProvider {
+func NewRDHSignatureProvider(signingKey *domain.RSAKey, signatureId int, hbciVersion segment.HBCIVersion) SignatureProvider {
 	controlReference := generateControlReference(signingKey)
 	return &RDHSignatureProvider{
 		signingKey:       signingKey,
@@ -97,7 +97,7 @@ func NewRDHSignatureProvider(signingKey *domain.RSAKey, signatureId int, hbciVer
 
 type RDHSignatureProvider struct {
 	signingKey       *domain.RSAKey
-	hbciVersion      segment.Version
+	hbciVersion      segment.HBCIVersion
 	clientSystemId   string
 	controlReference string
 	securityFn       string
