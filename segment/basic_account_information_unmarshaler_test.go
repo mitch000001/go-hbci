@@ -19,7 +19,7 @@ func TestAccountInformationSegmentUnmarshalHBCI(t *testing.T) {
 		t.Fail()
 	}
 
-	expected := &AccountInformationSegment{
+	v4 := &AccountInformationV4{
 		AccountConnection:           element.NewAccountConnection(domain.AccountConnection{AccountID: "123456", CountryCode: 280, BankID: "10000000"}),
 		UserID:                      element.NewIdentification("12345"),
 		AccountCurrency:             element.NewCurrency("EUR"),
@@ -28,7 +28,8 @@ func TestAccountInformationSegmentUnmarshalHBCI(t *testing.T) {
 		AccountProductID:            element.NewAlphaNumeric("Sichteinlagen", 30),
 		AllowedBusinessTransactions: element.NewAllowedBusinessTransactions(domain.BusinessTransaction{ID: "DKPAE", NeededSignatures: 1}),
 	}
-	expected.Segment = NewReferencingBasicSegment(1, 4, expected)
+	v4.Segment = NewReferencingBasicSegment(1, 4, v4)
+	expected := &AccountInformationSegment{v4}
 
 	expectedString := expected.String()
 	actualString := account.String()

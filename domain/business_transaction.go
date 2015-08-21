@@ -8,7 +8,5 @@ type Amount struct {
 type BusinessTransaction struct {
 	ID               string
 	NeededSignatures int
-	LimitKind        string
-	LimitAmount      Amount
-	LimitDays        int
+	Limit            *AccountLimit
 }

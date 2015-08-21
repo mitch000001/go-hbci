@@ -12,9 +12,8 @@ type CommonBankParameterSegment struct {
 }
 
 type commonBankParameterSegment interface {
-	Segment
+	BankSegment
 	BankParameterData() domain.BankParameterData
-	UnmarshalHBCI([]byte) error
 }
 
 type CommonBankParameterV2 struct {
@@ -46,13 +45,16 @@ func (c *CommonBankParameterV2) elements() []element.DataElement {
 }
 
 func (c *CommonBankParameterV2) BankParameterData() domain.BankParameterData {
-	return domain.BankParameterData{
+	bpd := domain.BankParameterData{
 		Version:                   c.BPDVersion.Val(),
 		BankID:                    c.BankID.Val(),
 		BankName:                  c.BankName.Val(),
 		MaxTransactionsPerMessage: c.BusinessTransactionCount.Val(),
-		MaxMessageSize:            c.MaxMessageSize.Val(),
 	}
+	if c.MaxMessageSize != nil {
+		bpd.MaxMessageSize = c.MaxMessageSize.Val()
+	}
+	return bpd
 }
 
 type CommonBankParameterV3 struct {
@@ -82,17 +84,26 @@ func (c *CommonBankParameterV3) elements() []element.DataElement {
 		c.SupportedLanguages,
 		c.SupportedHBCIVersions,
 		c.MaxMessageSize,
+		c.MinTimeoutValue,
+		c.MaxTimeoutValue,
 	}
 }
 
 func (c *CommonBankParameterV3) BankParameterData() domain.BankParameterData {
-	return domain.BankParameterData{
+	bpd := domain.BankParameterData{
 		Version:                   c.BPDVersion.Val(),
 		BankID:                    c.BankID.Val(),
 		BankName:                  c.BankName.Val(),
 		MaxTransactionsPerMessage: c.BusinessTransactionCount.Val(),
-		MaxMessageSize:            c.MaxMessageSize.Val(),
-		MinTimeout:                c.MinTimeoutValue.Val(),
-		MaxTimeout:                c.MaxTimeoutValue.Val(),
 	}
+	if c.MaxMessageSize != nil {
+		bpd.MaxMessageSize = c.MaxMessageSize.Val()
+	}
+	if c.MinTimeoutValue != nil {
+		bpd.MinTimeout = c.MinTimeoutValue.Val()
+	}
+	if c.MaxTimeoutValue != nil {
+		bpd.MaxTimeout = c.MaxTimeoutValue.Val()
+	}
+	return bpd
 }

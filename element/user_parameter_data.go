@@ -3,9 +3,7 @@ package element
 import (
 	"bytes"
 	"fmt"
-	"strconv"
 
-	"github.com/mitch000001/go-hbci/charset"
 	"github.com/mitch000001/go-hbci/domain"
 )
 
@@ -93,9 +91,11 @@ func NewAllowedBusinessTransaction(businessTransaction domain.BusinessTransactio
 	a := &AllowedBusinessTransactionDataElement{
 		BusinessTransactionID: NewAlphaNumeric(businessTransaction.ID, 6),
 		NeededSignatures:      NewNumber(businessTransaction.NeededSignatures, 2),
-		Kind:                  NewAlphaNumeric(businessTransaction.LimitKind, 1),
-		Amount:                NewAmount(businessTransaction.LimitAmount.Amount, businessTransaction.LimitAmount.Currency),
-		Days:                  NewNumber(businessTransaction.LimitDays, 3),
+	}
+	if businessTransaction.Limit != nil {
+		a.Kind = NewAlphaNumeric(businessTransaction.Limit.Kind, 1)
+		a.Amount = NewAmount(businessTransaction.Limit.Amount.Amount, businessTransaction.Limit.Amount.Currency)
+		a.Days = NewNumber(businessTransaction.Limit.Days, 3)
 	}
 	a.DataElement = NewDataElementGroup(AllowedBusinessTransactionDEG, 5, a)
 	return a
@@ -122,32 +122,41 @@ func (a *AllowedBusinessTransactionDataElement) UnmarshalHBCI(value []byte) erro
 	if err != nil {
 		return err
 	}
-	businessTransaction := domain.BusinessTransaction{}
-	businessTransaction.ID = charset.ToUtf8(elements[0])
-	neededSignatures, err := strconv.Atoi(charset.ToUtf8(elements[1]))
+	if len(elements) < 2 {
+		return fmt.Errorf("Malformed marshaled value")
+	}
+	a.DataElement = NewDataElementGroup(AllowedBusinessTransactionDEG, 5, a)
+	a.BusinessTransactionID = &AlphaNumericDataElement{}
+	err = a.BusinessTransactionID.UnmarshalHBCI(elements[0])
 	if err != nil {
-		return fmt.Errorf("%T: Error while unmarshaling NeededSignatures: %T:%v", a, err, err)
+		return err
 	}
-	businessTransaction.NeededSignatures = neededSignatures
-	if len(elements) >= 3 {
-		businessTransaction.LimitKind = charset.ToUtf8(elements[2])
+	a.NeededSignatures = &NumberDataElement{}
+	err = a.NeededSignatures.UnmarshalHBCI(elements[1])
+	if err != nil {
+		return err
 	}
-	if len(elements) >= 5 {
-		amountVal, err := strconv.ParseFloat(charset.ToUtf8(elements[3]), 64)
+	if len(elements) > 2 && len(elements[2]) > 0 {
+		a.Kind = &AlphaNumericDataElement{}
+		err = a.Kind.UnmarshalHBCI(elements[2])
 		if err != nil {
-			return fmt.Errorf("%T: Error while unmarshaling Amount: %T:%v", a, err, err)
+			return err
 		}
-		currency := charset.ToUtf8(elements[4])
-		businessTransaction.LimitAmount = domain.Amount{amountVal, currency}
 	}
-	if len(elements) == 6 {
-		days, err := strconv.Atoi(charset.ToUtf8(elements[5]))
+	if len(elements) > 3 && len(elements[3]) > 0 {
+		a.Amount = &AmountDataElement{}
+		err = a.Amount.UnmarshalHBCI(elements[3])
 		if err != nil {
-			return fmt.Errorf("%T: Error while unmarshaling LimitDays: %T:%v", a, err, err)
+			return err
 		}
-		businessTransaction.LimitDays = days
 	}
-	*a = *NewAllowedBusinessTransaction(businessTransaction)
+	if len(elements) > 4 && len(elements[4]) > 0 {
+		a.Days = &NumberDataElement{}
+		err = a.Days.UnmarshalHBCI(elements[4])
+		if err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
@@ -157,13 +166,14 @@ func (a *AllowedBusinessTransactionDataElement) Val() domain.BusinessTransaction
 		NeededSignatures: a.NeededSignatures.Val(),
 	}
 	if a.Kind != nil {
-		tr.LimitKind = a.Kind.Val()
+		tr.Limit = &domain.AccountLimit{}
+		tr.Limit.Kind = a.Kind.Val()
 	}
-	if a.Amount != nil {
-		tr.LimitAmount = a.Amount.Val()
+	if a.Amount != nil && tr.Limit != nil {
+		tr.Limit.Amount = a.Amount.Val()
 	}
-	if a.Days != nil {
-		tr.LimitDays = a.Days.Val()
+	if a.Days != nil && tr.Limit != nil {
+		tr.Limit.Days = a.Days.Val()
 	}
 	return tr
 }

@@ -18,12 +18,13 @@ func TestCommonUserParameterDataSegmentUnmarshalHBCI(t *testing.T) {
 		t.Fail()
 	}
 
-	expected := &CommonUserParameterDataSegment{
+	v2 := &CommonUserParameterDataV2{
 		UserID:     element.NewIdentification("12345"),
 		UPDVersion: element.NewNumber(4, 3),
 		UPDUsage:   element.NewNumber(0, 1),
 	}
-	expected.Segment = NewReferencingBasicSegment(5, 7, expected)
+	v2.Segment = NewReferencingBasicSegment(5, 7, v2)
+	expected := &CommonUserParameterDataSegment{v2}
 
 	expectedString := expected.String()
 	actualString := segment.String()

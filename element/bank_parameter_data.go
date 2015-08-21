@@ -84,7 +84,7 @@ func NewSupportedHBCIVersions(versions ...int) *SupportedHBCIVersionsDataElement
 	return s
 }
 
-var validHBCIVersions = []int{201, 210, 220}
+var validHBCIVersions = []int{201, 210, 220, 300}
 
 type SupportedHBCIVersionsDataElement struct {
 	*arrayElementGroup
@@ -103,9 +103,6 @@ func (s *SupportedHBCIVersionsDataElement) UnmarshalHBCI(value []byte) error {
 		version, err := strconv.Atoi(charset.ToUtf8(elem))
 		if err != nil {
 			return err
-		}
-		if sort.SearchInts(validHBCIVersions, version) >= len(validHBCIVersions) {
-			return fmt.Errorf("Unsupported HBCI version: %d", version)
 		}
 		versions[i] = NewNumber(version, 3)
 	}

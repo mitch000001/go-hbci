@@ -164,10 +164,24 @@ func (c *CommonBankParameterV3) UnmarshalHBCI(value []byte) error {
 	}
 	if len(elements) > 7 && len(elements[7]) > 0 {
 		c.MaxMessageSize = &element.NumberDataElement{}
-		if len(elements)+1 > 7 {
-			err = c.MaxMessageSize.UnmarshalHBCI(bytes.Join(elements[7:], []byte("+")))
+		err = c.MaxMessageSize.UnmarshalHBCI(elements[7])
+		if err != nil {
+			return err
+		}
+	}
+	if len(elements) > 8 && len(elements[8]) > 0 {
+		c.MinTimeoutValue = &element.NumberDataElement{}
+		err = c.MinTimeoutValue.UnmarshalHBCI(elements[8])
+		if err != nil {
+			return err
+		}
+	}
+	if len(elements) > 9 && len(elements[9]) > 0 {
+		c.MaxTimeoutValue = &element.NumberDataElement{}
+		if len(elements)+1 > 9 {
+			err = c.MaxTimeoutValue.UnmarshalHBCI(bytes.Join(elements[9:], []byte("+")))
 		} else {
-			err = c.MaxMessageSize.UnmarshalHBCI(elements[7])
+			err = c.MaxTimeoutValue.UnmarshalHBCI(elements[9])
 		}
 		if err != nil {
 			return err

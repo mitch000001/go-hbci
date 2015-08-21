@@ -403,14 +403,20 @@ func (d *dialog) request(clientMessage message.ClientMessage) (message.BankMessa
 		if err != nil {
 			return nil, fmt.Errorf("Error while decrypting message: %v", err)
 		}
-		internal.Debug.Printf("Response:\n %s\n\n", bytes.Join(decryptedMessage.Segments(), []byte("\n")))
+		internal.Debug.Printf("Response:\n %s\n", decryptedMessage.MessageHeader())
+		for _, seg := range decryptedMessage.Segments() {
+			internal.Debug.Printf("%s\n", seg)
+		}
 		bankMessage = decryptedMessage
 	} else {
 		decryptedMessage, err := extractUnencryptedMessage(response)
 		if err != nil {
 			return nil, err
 		}
-		internal.Debug.Printf("Response:\n %s\n\n", bytes.Join(decryptedMessage.Segments(), []byte("\n")))
+		internal.Debug.Printf("Response:\n %s\n", decryptedMessage.MessageHeader())
+		for _, seg := range decryptedMessage.Segments() {
+			internal.Debug.Printf("%s\n", seg)
+		}
 		bankMessage = decryptedMessage
 	}
 

@@ -88,7 +88,7 @@ func TestClientAccounts(t *testing.T) {
 }
 
 func newClient() *client.Client {
-	configFile, err := os.Open("../.fints300.json")
+	configFile, err := os.Open("../.fints300_haspa.json")
 	if err != nil && !os.IsNotExist(err) {
 		panic(err)
 	}
