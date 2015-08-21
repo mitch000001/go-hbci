@@ -84,7 +84,7 @@ func (e *EncryptionHeaderV2) elements() []element.DataElement {
 	}
 }
 
-func NewFINTS3PinTanEncryptionHeaderSegment(clientSystemId string, keyName domain.KeyName) *EncryptionHeaderSegment {
+func NewPinTanEncryptionHeaderSegmentV3(clientSystemId string, keyName domain.KeyName) *EncryptionHeaderSegment {
 	e := &EncryptionHeaderSegmentV3{
 		SecurityProfile:      element.NewPinTanSecurityProfile(1),
 		SecurityFunction:     element.NewCode("998", 3, []string{"4", "998"}),

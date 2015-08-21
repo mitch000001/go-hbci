@@ -170,7 +170,7 @@ func (s *SignatureEndV1) SetPinTan(pin, tan string) {
 	s.PinTan = element.NewPinTan(pin, tan)
 }
 
-func NewFINTS3PinTanSignatureHeaderSegment(controlReference string, clientSystemId string, keyName domain.KeyName) *SignatureHeaderSegment {
+func NewPinTanSignatureHeaderSegmentV4(controlReference string, clientSystemId string, keyName domain.KeyName) *SignatureHeaderSegment {
 	s := &SignatureHeaderSegmentV4{
 		SecurityProfile:          element.NewPinTanSecurityProfile(1),
 		SecurityFunction:         element.NewCode("999", 3, []string{"1", "2", "999"}),
@@ -246,7 +246,7 @@ func (s *SignatureHeaderSegmentV4) elements() []element.DataElement {
 	}
 }
 
-func NewFINTS3SignatureEndSegment(number int, controlReference string) *SignatureEndSegment {
+func NewSignatureEndSegmentV2(number int, controlReference string) *SignatureEndSegment {
 	s := &SignatureEndV2{
 		SecurityControlRef: element.NewAlphaNumeric(controlReference, 14),
 	}
@@ -262,7 +262,7 @@ type SignatureEndV2 struct {
 	ClientSegment
 	SecurityControlRef *element.AlphaNumericDataElement
 	Signature          *element.BinaryDataElement
-	PinTan             *element.PinTanDataElement
+	CustomSignature    *element.CustomSignatureDataElement
 }
 
 func (s *SignatureEndV2) Version() int         { return 1 }
@@ -274,7 +274,7 @@ func (s *SignatureEndV2) elements() []element.DataElement {
 	return []element.DataElement{
 		s.SecurityControlRef,
 		s.Signature,
-		s.PinTan,
+		s.CustomSignature,
 	}
 }
 
@@ -283,5 +283,5 @@ func (s *SignatureEndV2) SetSignature(signature []byte) {
 }
 
 func (s *SignatureEndV2) SetPinTan(pin, tan string) {
-	s.PinTan = element.NewFINTSPinTan(pin, tan)
+	s.CustomSignature = element.NewCustomSignature(pin, tan)
 }
