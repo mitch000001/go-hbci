@@ -12,7 +12,7 @@ import (
 
 func NewPinTanDialog(bankId domain.BankId, hbciUrl string, userId string, hbciVersion segment.HBCIVersion) *PinTanDialog {
 	pinKey := domain.NewPinKey("", domain.NewPinTanKeyName(bankId, userId, "S"))
-	signatureProvider := message.NewPinTanSignatureProvider(pinKey, "0", hbciVersion)
+	signatureProvider := message.NewPinTanSignatureProvider(pinKey, "0")
 	pinKey = domain.NewPinKey("", domain.NewPinTanKeyName(bankId, userId, "V"))
 	cryptoProvider := message.NewPinTanCryptoProvider(pinKey, "0")
 	d := &PinTanDialog{
@@ -35,7 +35,7 @@ type PinTanDialog struct {
 
 func (d *PinTanDialog) SetPin(pin string) {
 	pinKey := domain.NewPinKey(pin, domain.NewPinTanKeyName(d.BankID, d.UserID, "S"))
-	d.signatureProvider = message.NewPinTanSignatureProvider(pinKey, d.ClientSystemID, d.hbciVersion)
+	d.signatureProvider = message.NewPinTanSignatureProvider(pinKey, d.ClientSystemID)
 	pinKey = domain.NewPinKey(pin, domain.NewPinTanKeyName(d.BankID, d.UserID, "V"))
 	d.cryptoProvider = message.NewPinTanCryptoProvider(pinKey, d.ClientSystemID)
 }

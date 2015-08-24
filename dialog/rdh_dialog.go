@@ -12,7 +12,7 @@ func NewRDHDialog(bankId domain.BankId, hbciUrl string, clientId string, hbciVer
 		panic(err)
 	}
 	signingKey := domain.NewRSAKey(key, domain.NewInitialKeyName(bankId.CountryCode, bankId.ID, clientId, "S"))
-	provider := message.NewRDHSignatureProvider(signingKey, 12345, hbciVersion)
+	provider := message.NewRDHSignatureProvider(signingKey, 12345)
 	d := &rdhDialog{
 		dialog: newDialog(bankId, hbciUrl, clientId, hbciVersion, provider, nil),
 	}
