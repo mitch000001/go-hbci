@@ -14,7 +14,7 @@ func NewPinTanDialog(bankId domain.BankId, hbciUrl string, userId string, hbciVe
 	pinKey := domain.NewPinKey("", domain.NewPinTanKeyName(bankId, userId, "S"))
 	signatureProvider := message.NewPinTanSignatureProvider(pinKey, "0", hbciVersion)
 	pinKey = domain.NewPinKey("", domain.NewPinTanKeyName(bankId, userId, "V"))
-	cryptoProvider := message.NewPinTanCryptoProvider(pinKey, "0", hbciVersion)
+	cryptoProvider := message.NewPinTanCryptoProvider(pinKey, "0")
 	d := &PinTanDialog{
 		dialog: newDialog(
 			bankId,
@@ -37,7 +37,7 @@ func (d *PinTanDialog) SetPin(pin string) {
 	pinKey := domain.NewPinKey(pin, domain.NewPinTanKeyName(d.BankID, d.UserID, "S"))
 	d.signatureProvider = message.NewPinTanSignatureProvider(pinKey, d.ClientSystemID, d.hbciVersion)
 	pinKey = domain.NewPinKey(pin, domain.NewPinTanKeyName(d.BankID, d.UserID, "V"))
-	d.cryptoProvider = message.NewPinTanCryptoProvider(pinKey, d.ClientSystemID, d.hbciVersion)
+	d.cryptoProvider = message.NewPinTanCryptoProvider(pinKey, d.ClientSystemID)
 }
 
 func (d *PinTanDialog) CommunicationAccess() (string, error) {
@@ -59,7 +59,7 @@ func (d *PinTanDialog) CommunicationAccess() (string, error) {
 }
 
 func (d *PinTanDialog) Anonymous(fn func() (string, error)) (string, error) {
-	initMessage := message.NewDialogInitializationClientMessage()
+	initMessage := message.NewDialogInitializationClientMessage(d.hbciVersion)
 	messageNum := d.nextMessageNumber()
 	initMessage.Header = segment.NewMessageHeaderSegment(-1, 220, initialDialogID, messageNum)
 	initMessage.End = segment.NewMessageEndSegment(8, messageNum)

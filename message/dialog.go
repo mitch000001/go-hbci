@@ -2,8 +2,10 @@ package message
 
 import "github.com/mitch000001/go-hbci/segment"
 
-func NewDialogInitializationClientMessage() *DialogInitializationClientMessage {
-	d := &DialogInitializationClientMessage{}
+func NewDialogInitializationClientMessage(hbciVersion segment.HBCIVersion) *DialogInitializationClientMessage {
+	d := &DialogInitializationClientMessage{
+		hbciVersion: hbciVersion,
+	}
 	d.BasicMessage = NewBasicMessage(d)
 	return d
 }
@@ -15,6 +17,11 @@ type DialogInitializationClientMessage struct {
 	PublicSigningKeyRequest    *segment.PublicKeyRequestSegment
 	PublicEncryptionKeyRequest *segment.PublicKeyRequestSegment
 	PublicKeyRequest           *segment.PublicKeyRequestSegment
+	hbciVersion                segment.HBCIVersion
+}
+
+func (d *DialogInitializationClientMessage) HBCIVersion() segment.HBCIVersion {
+	return d.hbciVersion
 }
 
 func (d *DialogInitializationClientMessage) HBCISegments() []segment.ClientSegment {
@@ -36,9 +43,23 @@ func (d *DialogInitializationClientMessage) jobs() []segment.Segment {
 	}
 }
 
+func NewDialogFinishingMessage(hbciVersion segment.HBCIVersion, dialogID string) *DialogFinishingMessage {
+	d := &DialogFinishingMessage{
+		DialogEnd:   segment.NewDialogEndSegment(dialogID),
+		hbciVersion: hbciVersion,
+	}
+	d.BasicMessage = NewBasicMessage(d)
+	return d
+}
+
 type DialogFinishingMessage struct {
 	*BasicMessage
-	DialogEnd *segment.DialogEndSegment
+	DialogEnd   *segment.DialogEndSegment
+	hbciVersion segment.HBCIVersion
+}
+
+func (d *DialogFinishingMessage) HBCIVersion() segment.HBCIVersion {
+	return d.hbciVersion
 }
 
 func (d *DialogFinishingMessage) HBCISegments() []segment.ClientSegment {

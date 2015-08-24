@@ -17,7 +17,7 @@ func (e *EncryptionHeaderSegment) UnmarshalHBCI(value []byte) error {
 	if err != nil {
 		return err
 	}
-	var segment CommonSegment
+	var segment encryptionHeaderSegment
 	switch header.Version.Val() {
 	case 2:
 		segment = &EncryptionHeaderV2{}
@@ -34,7 +34,7 @@ func (e *EncryptionHeaderSegment) UnmarshalHBCI(value []byte) error {
 	default:
 		return fmt.Errorf("Unknown segment version: %d", header.Version.Val())
 	}
-	e.CommonSegment = segment
+	e.encryptionHeaderSegment = segment
 	return nil
 }
 

@@ -122,11 +122,10 @@ func (d *dialog) SendMessage(clientMessage message.HBCIMessage) (message.BankMes
 }
 
 func (d *dialog) SyncClientSystemID() (string, error) {
-	syncMessage := &message.SynchronisationMessage{
-		Identification:        segment.NewIdentificationSegment(d.BankID, d.clientID, initialClientSystemID, true),
-		ProcessingPreparation: segment.NewProcessingPreparationSegment(0, 0, 1),
-		Sync: d.hbciVersion.SynchronisationRequest(0),
-	}
+	syncMessage := message.NewSynchronisationMessage(d.hbciVersion)
+	syncMessage.Identification = segment.NewIdentificationSegment(d.BankID, d.clientID, initialClientSystemID, true)
+	syncMessage.ProcessingPreparation = segment.NewProcessingPreparationSegment(0, 0, 1)
+	syncMessage.Sync = d.hbciVersion.SynchronisationRequest(0)
 	syncMessage.BasicMessage = d.newBasicMessage(syncMessage)
 	signedSyncMessage, err := syncMessage.Sign(d.signatureProvider)
 	if err != nil {
@@ -203,10 +202,9 @@ func (d *dialog) init() error {
 	}
 	d.dialogID = initialDialogID
 	d.messageCount = 0
-	initMessage := &message.DialogInitializationClientMessage{
-		Identification:        segment.NewIdentificationSegment(d.BankID, d.clientID, d.ClientSystemID, true),
-		ProcessingPreparation: segment.NewProcessingPreparationSegment(d.BankParameterDataVersion(), d.UserParameterDataVersion(), d.Language),
-	}
+	initMessage := message.NewDialogInitializationClientMessage(d.hbciVersion)
+	initMessage.Identification = segment.NewIdentificationSegment(d.BankID, d.clientID, d.ClientSystemID, true)
+	initMessage.ProcessingPreparation = segment.NewProcessingPreparationSegment(d.BankParameterDataVersion(), d.UserParameterDataVersion(), d.Language)
 	initMessage.BasicMessage = d.newBasicMessage(initMessage)
 	signedInitMessage, err := initMessage.Sign(d.signatureProvider)
 	if err != nil {
@@ -275,9 +273,7 @@ func (d *dialog) init() error {
 }
 
 func (d *dialog) end() error {
-	dialogEnd := &message.DialogFinishingMessage{
-		DialogEnd: segment.NewDialogEndSegment(d.dialogID),
-	}
+	dialogEnd := message.NewDialogFinishingMessage(d.hbciVersion, d.dialogID)
 	dialogEnd.BasicMessage = d.newBasicMessage(dialogEnd)
 	signedDialogEnd, err := dialogEnd.Sign(d.signatureProvider)
 	if err != nil {
@@ -394,7 +390,7 @@ func (d *dialog) request(clientMessage message.ClientMessage) (message.BankMessa
 
 	var bankMessage message.BankMessage
 	if response.IsEncrypted() {
-		encMessage, err := extractEncryptedMessage(response)
+		encMessage, err := d.extractEncryptedMessage(response)
 		if err != nil {
 			return nil, err
 		}
@@ -423,7 +419,7 @@ func (d *dialog) request(clientMessage message.ClientMessage) (message.BankMessa
 	return bankMessage, err
 }
 
-func extractEncryptedMessage(response *transport.Response) (*message.EncryptedMessage, error) {
+func (d *dialog) extractEncryptedMessage(response *transport.Response) (*message.EncryptedMessage, error) {
 	messageHeader := response.FindSegment("HNHBK")
 	if messageHeader == nil {
 		return nil, fmt.Errorf("Malformed response: missing Message Header")
@@ -436,7 +432,7 @@ func extractEncryptedMessage(response *transport.Response) (*message.EncryptedMe
 	// TODO: parse messageEnd
 	// TODO: parse encryptionHeader
 
-	encMessage := message.NewEncryptedMessage(header, nil)
+	encMessage := message.NewEncryptedMessage(header, nil, d.hbciVersion)
 
 	encryptedData := response.FindSegment("HNVSD")
 	if encryptedData != nil {

@@ -48,7 +48,7 @@ func TestPinTanDialogSendMessage(t *testing.T) {
 
 	accountBalanceRequest := segment.NewAccountBalanceRequestSegment(account.AccountConnection, false)
 
-	res, err := d.SendMessage(message.NewHBCIMessage(accountBalanceRequest))
+	res, err := d.SendMessage(message.NewHBCIMessage(d.hbciVersion, accountBalanceRequest))
 
 	if err != nil {
 		t.Logf("Expected no error, got %T:%v\n", err, err)

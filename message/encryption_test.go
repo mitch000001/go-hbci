@@ -12,7 +12,7 @@ func TestEncryptedPinTanMessageDecrypt(t *testing.T) {
 	keyName := domain.NewPinTanKeyName(domain.BankId{CountryCode: 280, ID: "1"}, "userID", "V")
 	pinKey := domain.NewPinKey("abcde", keyName)
 
-	provider := NewPinTanCryptoProvider(pinKey, "clientSystemID", segment.HBCI220)
+	provider := NewPinTanCryptoProvider(pinKey, "clientSystemID")
 
 	syncSegment := "HISYN:2:3:8+newClientSystemID'"
 	acknowledgement := "HIRMG:2:2:1+0100::Dialog beendet'"
@@ -21,8 +21,9 @@ func TestEncryptedPinTanMessageDecrypt(t *testing.T) {
 
 	header := segment.NewMessageHeaderSegment(1, 220, "abcde", 1)
 	end := segment.NewMessageEndSegment(4, 1)
-	encryptedMessage := NewEncryptedMessage(header, end)
-	provider.WriteEncryptionHeader(encryptedMessage)
+	encryptedMessage := NewEncryptedMessage(header, end, segment.HBCI220)
+	encryptedMessage.EncryptionHeader = segment.HBCI220.PinTanEncryptionHeader("0", *keyName)
+	provider.WriteEncryptionHeader(encryptedMessage.EncryptionHeader)
 	encryptedMessage.EncryptedData = segment.NewEncryptedDataSegment([]byte(body))
 
 	decryptedMessage, err := encryptedMessage.Decrypt(provider)

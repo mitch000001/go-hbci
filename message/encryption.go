@@ -15,7 +15,7 @@ type CryptoProvider interface {
 	SetClientSystemID(clientSystemId string)
 	Encrypt(message []byte) ([]byte, error)
 	Decrypt(encryptedMessage []byte) ([]byte, error)
-	WriteEncryptionHeader(message *EncryptedMessage)
+	WriteEncryptionHeader(header segment.EncryptionHeader)
 }
 
 const encryptionInitializationVector = "\x00\x00\x00\x00\x00\x00\x00\x00"
@@ -29,16 +29,23 @@ func GenerateMessageKey() ([]byte, error) {
 	return b, nil
 }
 
-func NewEncryptedMessage(header *segment.MessageHeaderSegment, end *segment.MessageEndSegment) *EncryptedMessage {
-	e := &EncryptedMessage{}
+func NewEncryptedMessage(header *segment.MessageHeaderSegment, end *segment.MessageEndSegment, hbciVersion segment.HBCIVersion) *EncryptedMessage {
+	e := &EncryptedMessage{
+		hbciVersion: hbciVersion,
+	}
 	e.ClientMessage = NewBasicMessageWithHeaderAndEnd(header, end, e)
 	return e
 }
 
 type EncryptedMessage struct {
 	ClientMessage
-	EncryptionHeader *segment.EncryptionHeaderSegment
+	EncryptionHeader segment.EncryptionHeader
 	EncryptedData    *segment.EncryptedDataSegment
+	hbciVersion      segment.HBCIVersion
+}
+
+func (e *EncryptedMessage) HBCIVersion() segment.HBCIVersion {
+	return e.hbciVersion
 }
 
 func (e *EncryptedMessage) HBCISegments() []segment.ClientSegment {
@@ -87,14 +94,19 @@ func NewDecryptedMessage(header *segment.MessageHeaderSegment, end *segment.Mess
 		}
 		acknowledgements = append(acknowledgements, segmentAcknowledgement.Acknowledgements()...)
 	}
+	version, ok := segment.SupportedHBCIVersions[header.HBCIVersion.Val()]
+	if !ok {
+		return nil, fmt.Errorf("Unknown HBCI version: %d", header.HBCIVersion.Val())
+	}
 	decryptedMessage := &DecryptedMessage{
 		rawMessage:       rawMessage,
 		acknowledgements: acknowledgements,
 		segmentExtractor: segmentExtractor,
 		unmarshaler:      NewUnmarshaler(rawMessage),
+		hbciVersion:      version,
 	}
 	// TODO: set hbci message appropriate, if possible
-	decryptedMessage.message = NewBasicMessageWithHeaderAndEnd(header, end, nil)
+	decryptedMessage.message = NewBasicMessageWithHeaderAndEnd(header, end, decryptedMessage)
 	return decryptedMessage, nil
 }
 
@@ -104,6 +116,7 @@ type DecryptedMessage struct {
 	acknowledgements []domain.Acknowledgement
 	segmentExtractor *segment.SegmentExtractor
 	unmarshaler      *Unmarshaler
+	hbciVersion      segment.HBCIVersion
 }
 
 func (d *DecryptedMessage) MarshalHBCI() ([]byte, error) {
@@ -154,20 +167,26 @@ func (d *DecryptedMessage) SegmentNumber(segmentID string) int {
 	return num
 }
 
+func (d *DecryptedMessage) HBCISegments() []segment.ClientSegment {
+	return []segment.ClientSegment{}
+}
+
+func (d *DecryptedMessage) HBCIVersion() segment.HBCIVersion {
+	return d.hbciVersion
+}
+
 func (d *DecryptedMessage) Acknowledgements() []domain.Acknowledgement {
 	return d.acknowledgements
 }
 
-func NewPinTanCryptoProvider(key *domain.PinKey, clientSystemId string, hbciVersion segment.HBCIVersion) *PinTanCryptoProvider {
+func NewPinTanCryptoProvider(key *domain.PinKey, clientSystemId string) *PinTanCryptoProvider {
 	return &PinTanCryptoProvider{
-		hbciVersion:    hbciVersion,
 		key:            key,
 		clientSystemId: clientSystemId,
 	}
 }
 
 type PinTanCryptoProvider struct {
-	hbciVersion    segment.HBCIVersion
 	key            *domain.PinKey
 	clientSystemId string
 }
@@ -187,6 +206,7 @@ func (p *PinTanCryptoProvider) Decrypt(encryptedMessage []byte) ([]byte, error) 
 	return p.key.Decrypt(encryptedMessage)
 }
 
-func (p *PinTanCryptoProvider) WriteEncryptionHeader(message *EncryptedMessage) {
-	message.EncryptionHeader = p.hbciVersion.PinTanEncryptionHeader(p.clientSystemId, p.key.KeyName())
+func (p *PinTanCryptoProvider) WriteEncryptionHeader(header segment.EncryptionHeader) {
+	header.SetClientSystemID(p.clientSystemId)
+	header.SetEncryptionKeyName(p.key.KeyName())
 }

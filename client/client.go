@@ -68,7 +68,7 @@ func (c *Client) AccountTransactions(account domain.AccountConnection, timeframe
 	if aufsetzpunkt != "" {
 		accountTransactionRequest.SetAufsetzpunkt(aufsetzpunkt)
 	}
-	decryptedMessage, err := c.pinTanDialog.SendMessage(message.NewHBCIMessage(accountTransactionRequest))
+	decryptedMessage, err := c.pinTanDialog.SendMessage(message.NewHBCIMessage(c.hbciVersion, accountTransactionRequest))
 	if err != nil {
 		return nil, err
 	}
@@ -121,7 +121,7 @@ func (c *Client) AccountTransactions(account domain.AccountConnection, timeframe
 
 func (c *Client) AccountInformation(account domain.AccountConnection, allAccounts bool) error {
 	accountInformationRequest := segment.NewAccountInformationRequestSegment(account, allAccounts)
-	decryptedMessage, err := c.pinTanDialog.SendMessage(message.NewHBCIMessage(accountInformationRequest))
+	decryptedMessage, err := c.pinTanDialog.SendMessage(message.NewHBCIMessage(c.hbciVersion, accountInformationRequest))
 	if err != nil {
 		return err
 	}
@@ -137,7 +137,7 @@ func (c *Client) AccountInformation(account domain.AccountConnection, allAccount
 
 func (c *Client) AccountBalances(account domain.AccountConnection, allAccounts bool) ([]domain.AccountBalance, error) {
 	accountBalanceRequest := segment.NewAccountBalanceRequestSegment(account, allAccounts)
-	decryptedMessage, err := c.pinTanDialog.SendMessage(message.NewHBCIMessage(accountBalanceRequest))
+	decryptedMessage, err := c.pinTanDialog.SendMessage(message.NewHBCIMessage(c.hbciVersion, accountBalanceRequest))
 	if err != nil {
 		return nil, err
 	}

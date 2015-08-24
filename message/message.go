@@ -34,6 +34,7 @@ type BankMessage interface {
 }
 
 type HBCIMessage interface {
+	HBCIVersion() segment.HBCIVersion
 	HBCISegments() []segment.ClientSegment
 }
 
@@ -44,14 +45,21 @@ type SignedHBCIMessage interface {
 	SetSignatureEnd(*segment.SignatureEndSegment)
 }
 
-func NewHBCIMessage(segments ...segment.ClientSegment) HBCIMessage {
-	return hbciSegments(segments)
+func NewHBCIMessage(hbciVersion segment.HBCIVersion, segments ...segment.ClientSegment) HBCIMessage {
+	return &hbciMessage{hbciSegments: segments, hbciVersion: hbciVersion}
 }
 
-type hbciSegments []segment.ClientSegment
+type hbciMessage struct {
+	hbciSegments []segment.ClientSegment
+	hbciVersion  segment.HBCIVersion
+}
 
-func (h hbciSegments) HBCISegments() []segment.ClientSegment {
-	return h
+func (h *hbciMessage) HBCIVersion() segment.HBCIVersion {
+	return h.hbciVersion
+}
+
+func (h *hbciMessage) HBCISegments() []segment.ClientSegment {
+	return h.hbciSegments
 }
 
 func NewHBCIClientMessage(segments ...segment.ClientSegment) *BasicClientMessage {
@@ -69,6 +77,7 @@ func NewBasicMessageWithHeaderAndEnd(header *segment.MessageHeaderSegment, end *
 		Header:      header,
 		End:         end,
 		HBCIMessage: message,
+		hbciVersion: message.HBCIVersion(),
 	}
 	return b
 }
@@ -76,6 +85,7 @@ func NewBasicMessageWithHeaderAndEnd(header *segment.MessageHeaderSegment, end *
 func NewBasicMessage(message HBCIMessage) *BasicMessage {
 	b := &BasicMessage{
 		HBCIMessage: message,
+		hbciVersion: message.HBCIVersion(),
 	}
 	return b
 }
@@ -86,6 +96,7 @@ type BasicMessage struct {
 	SignatureBegin *segment.SignatureHeaderSegment
 	SignatureEnd   *segment.SignatureEndSegment
 	HBCIMessage
+	hbciVersion      segment.HBCIVersion
 	marshaledContent []byte
 }
 
@@ -251,8 +262,9 @@ func (b *BasicMessage) Encrypt(provider CryptoProvider) (*EncryptedMessage, erro
 	if err != nil {
 		return nil, err
 	}
-	encryptionMessage := NewEncryptedMessage(b.Header, b.End)
-	provider.WriteEncryptionHeader(encryptionMessage)
+	encryptionMessage := NewEncryptedMessage(b.Header, b.End, b.hbciVersion)
+	encryptionMessage.EncryptionHeader = b.hbciVersion.PinTanEncryptionHeader("", domain.KeyName{})
+	provider.WriteEncryptionHeader(encryptionMessage.EncryptionHeader)
 	encryptionMessage.EncryptedData = segment.NewEncryptedDataSegment(encryptedMessage)
 	return encryptionMessage, nil
 }
@@ -316,6 +328,10 @@ func (b *BasicSignedMessage) SetSignatureHeader(sigBegin *segment.SignatureHeade
 
 func (b *BasicSignedMessage) SetSignatureEnd(sigEnd *segment.SignatureEndSegment) {
 	b.message.SignatureEnd = sigEnd
+}
+
+func (b *BasicSignedMessage) HBCIVersion() segment.HBCIVersion {
+	return b.message.HBCIVersion()
 }
 
 func (b *BasicSignedMessage) HBCISegments() []segment.ClientSegment {

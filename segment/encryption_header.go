@@ -7,6 +7,12 @@ import (
 	"github.com/mitch000001/go-hbci/element"
 )
 
+type EncryptionHeader interface {
+	ClientSegment
+	SetClientSystemID(clientSystemID string)
+	SetEncryptionKeyName(keyName domain.KeyName)
+}
+
 func NewPinTanEncryptionHeaderSegment(clientSystemId string, keyName domain.KeyName) *EncryptionHeaderSegment {
 	e := &EncryptionHeaderV2{
 		SecurityFunction:     element.NewAlphaNumeric("998", 3),
@@ -20,7 +26,7 @@ func NewPinTanEncryptionHeaderSegment(clientSystemId string, keyName domain.KeyN
 	e.ClientSegment = NewBasicSegment(998, e)
 
 	segment := &EncryptionHeaderSegment{
-		CommonSegment: e,
+		encryptionHeaderSegment: e,
 	}
 	return segment
 }
@@ -38,15 +44,20 @@ func NewEncryptionHeaderSegment(clientSystemId string, keyName domain.KeyName, k
 	e.ClientSegment = NewBasicSegment(998, e)
 
 	segment := &EncryptionHeaderSegment{
-		CommonSegment: e,
+		encryptionHeaderSegment: e,
 	}
 	return segment
 }
 
-//go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment EncryptionHeaderSegment -segment_interface CommonSegment -segment_versions="EncryptionHeaderV2:2:ClientSegment,EncryptionHeaderSegmentV3:3:ClientSegment"
+//go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment EncryptionHeaderSegment -segment_interface encryptionHeaderSegment -segment_versions="EncryptionHeaderV2:2:ClientSegment,EncryptionHeaderSegmentV3:3:ClientSegment"
 
 type EncryptionHeaderSegment struct {
-	CommonSegment
+	encryptionHeaderSegment
+}
+
+type encryptionHeaderSegment interface {
+	EncryptionHeader
+	Unmarshaler
 }
 
 type EncryptionHeaderV2 struct {
@@ -84,6 +95,14 @@ func (e *EncryptionHeaderV2) elements() []element.DataElement {
 	}
 }
 
+func (e *EncryptionHeaderV2) SetEncryptionKeyName(keyName domain.KeyName) {
+	e.KeyName = element.NewKeyName(keyName)
+}
+
+func (e *EncryptionHeaderV2) SetClientSystemID(clientSystemId string) {
+	e.SecurityID = element.NewRDHSecurityIdentification(element.SecurityHolderMessageSender, clientSystemId)
+}
+
 func NewPinTanEncryptionHeaderSegmentV3(clientSystemId string, keyName domain.KeyName) *EncryptionHeaderSegment {
 	e := &EncryptionHeaderSegmentV3{
 		SecurityProfile:      element.NewPinTanSecurityProfile(1),
@@ -98,7 +117,7 @@ func NewPinTanEncryptionHeaderSegmentV3(clientSystemId string, keyName domain.Ke
 	e.ClientSegment = NewBasicSegment(998, e)
 
 	segment := &EncryptionHeaderSegment{
-		CommonSegment: e,
+		encryptionHeaderSegment: e,
 	}
 	return segment
 }
@@ -147,4 +166,12 @@ func (e *EncryptionHeaderSegmentV3) elements() []element.DataElement {
 		e.CompressionFunction,
 		e.Certificate,
 	}
+}
+
+func (e *EncryptionHeaderSegmentV3) SetEncryptionKeyName(keyName domain.KeyName) {
+	e.KeyName = element.NewKeyName(keyName)
+}
+
+func (e *EncryptionHeaderSegmentV3) SetClientSystemID(clientSystemId string) {
+	e.SecurityID = element.NewRDHSecurityIdentification(element.SecurityHolderMessageSender, clientSystemId)
 }
