@@ -76,10 +76,13 @@ func (p *PinTanSignatureProvider) WriteSignatureHeader(header segment.SignatureH
 	header.SetSecurityFunction(p.securityFn)
 	header.SetClientSystemID(p.clientSystemId)
 	header.SetSigningKeyName(p.key.KeyName())
+	header.SetControlReference(p.controlReference)
+	header.SetSignatureID(0)
 }
 
 func (p *PinTanSignatureProvider) WriteSignature(end segment.SignatureEnd, signature []byte) {
 	end.SetPinTan(p.key.Pin(), "")
+	end.SetControlReference(p.controlReference)
 }
 
 func NewRDHSignatureProvider(signingKey *domain.RSAKey, signatureId int) SignatureProvider {
@@ -117,8 +120,11 @@ func (r *RDHSignatureProvider) WriteSignatureHeader(header segment.SignatureHead
 	header.SetSecurityFunction(r.securityFn)
 	header.SetClientSystemID(r.clientSystemId)
 	header.SetSigningKeyName(r.signingKey.KeyName())
+	header.SetSignatureID(r.signatureId)
+	header.SetControlReference(r.controlReference)
 }
 
 func (r *RDHSignatureProvider) WriteSignature(end segment.SignatureEnd, signature []byte) {
 	end.SetSignature(signature)
+	end.SetControlReference(r.controlReference)
 }

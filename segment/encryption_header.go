@@ -11,6 +11,7 @@ type EncryptionHeader interface {
 	ClientSegment
 	SetClientSystemID(clientSystemID string)
 	SetEncryptionKeyName(keyName domain.KeyName)
+	SetEncryptionAlgorithm(algorithm *element.EncryptionAlgorithmDataElement)
 }
 
 func NewPinTanEncryptionHeaderSegment(clientSystemId string, keyName domain.KeyName) *EncryptionHeaderSegment {
@@ -99,6 +100,10 @@ func (e *EncryptionHeaderV2) SetEncryptionKeyName(keyName domain.KeyName) {
 	e.KeyName = element.NewKeyName(keyName)
 }
 
+func (e *EncryptionHeaderV2) SetEncryptionAlgorithm(algorithm *element.EncryptionAlgorithmDataElement) {
+	e.EncryptionAlgorithm = algorithm
+}
+
 func (e *EncryptionHeaderV2) SetClientSystemID(clientSystemId string) {
 	e.SecurityID = element.NewRDHSecurityIdentification(element.SecurityHolderMessageSender, clientSystemId)
 }
@@ -170,6 +175,10 @@ func (e *EncryptionHeaderSegmentV3) elements() []element.DataElement {
 
 func (e *EncryptionHeaderSegmentV3) SetEncryptionKeyName(keyName domain.KeyName) {
 	e.KeyName = element.NewKeyName(keyName)
+}
+
+func (e *EncryptionHeaderSegmentV3) SetEncryptionAlgorithm(algorithm *element.EncryptionAlgorithmDataElement) {
+	e.EncryptionAlgorithm = algorithm
 }
 
 func (e *EncryptionHeaderSegmentV3) SetClientSystemID(clientSystemId string) {

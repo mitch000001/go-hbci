@@ -11,8 +11,25 @@ type SignatureHeader interface {
 	ClientSegment
 	SetClientSystemID(clientSystemID string)
 	SetSigningKeyName(keyName domain.KeyName)
+	SetSignatureID(signatureId int)
 	SetSecurityFunction(string)
 	SetControlReference(string)
+}
+
+func NewSignatureHeaderSegmentV3() *SignatureHeaderSegment {
+	s := &SignatureHeaderV3{
+		SecurityApplicationRange: element.NewAlphaNumeric("1", 3),
+		SecuritySupplierRole:     element.NewAlphaNumeric("1", 3),
+		SecurityDate:             element.NewSecurityDate(element.SecurityTimestamp, time.Now()),
+		HashAlgorithm:            element.NewDefaultHashAlgorithm(),
+		SignatureAlgorithm:       element.NewRDHSignatureAlgorithm(),
+	}
+	s.ClientSegment = NewBasicSegment(2, s)
+
+	segment := &SignatureHeaderSegment{
+		signatureHeaderSegment: s,
+	}
+	return segment
 }
 
 func NewPinTanSignatureHeaderSegment(controlReference string, clientSystemId string, keyName domain.KeyName) *SignatureHeaderSegment {
@@ -107,6 +124,10 @@ func (s *SignatureHeaderV3) SetClientSystemID(clientSystemId string) {
 	s.SecurityID = element.NewRDHSecurityIdentification(element.SecurityHolderMessageSender, clientSystemId)
 }
 
+func (s *SignatureHeaderV3) SetSignatureID(signatureId int) {
+	s.SecurityRefNumber = element.NewNumber(signatureId, 16)
+}
+
 func (s *SignatureHeaderV3) Version() int         { return 3 }
 func (s *SignatureHeaderV3) ID() string           { return "HNSHK" }
 func (s *SignatureHeaderV3) referencedId() string { return "" }
@@ -126,6 +147,22 @@ func (s *SignatureHeaderV3) elements() []element.DataElement {
 		s.KeyName,
 		s.Certificate,
 	}
+}
+
+func NewSignatureHeaderSegmentV4() *SignatureHeaderSegment {
+	s := &SignatureHeaderSegmentV4{
+		SecurityApplicationRange: element.NewCode("1", 3, []string{"1", "2"}),
+		SecuritySupplierRole:     element.NewCode("1", 3, []string{"1", "3", "4"}),
+		SecurityDate:             element.NewSecurityDate(element.SecurityTimestamp, time.Now()),
+		HashAlgorithm:            element.NewDefaultHashAlgorithm(),
+		SignatureAlgorithm:       element.NewRDHSignatureAlgorithm(),
+	}
+	s.ClientSegment = NewBasicSegment(2, s)
+
+	segment := &SignatureHeaderSegment{
+		signatureHeaderSegment: s,
+	}
+	return segment
 }
 
 func NewPinTanSignatureHeaderSegmentV4(controlReference string, clientSystemId string, keyName domain.KeyName) *SignatureHeaderSegment {
@@ -192,6 +229,10 @@ func (s *SignatureHeaderSegmentV4) SetSigningKeyName(keyName domain.KeyName) {
 
 func (s *SignatureHeaderSegmentV4) SetClientSystemID(clientSystemId string) {
 	s.SecurityID = element.NewRDHSecurityIdentification(element.SecurityHolderMessageSender, clientSystemId)
+}
+
+func (s *SignatureHeaderSegmentV4) SetSignatureID(signatureId int) {
+	s.SecurityRefNumber = element.NewNumber(signatureId, 16)
 }
 
 func (s *SignatureHeaderSegmentV4) Version() int         { return 4 }

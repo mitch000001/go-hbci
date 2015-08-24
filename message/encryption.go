@@ -209,4 +209,5 @@ func (p *PinTanCryptoProvider) Decrypt(encryptedMessage []byte) ([]byte, error) 
 func (p *PinTanCryptoProvider) WriteEncryptionHeader(header segment.EncryptionHeader) {
 	header.SetClientSystemID(p.clientSystemId)
 	header.SetEncryptionKeyName(p.key.KeyName())
+	header.SetEncryptionAlgorithm(element.NewPinTanEncryptionAlgorithm())
 }

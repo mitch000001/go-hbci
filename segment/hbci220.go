@@ -4,9 +4,10 @@ var HBCI220 = HBCIVersion{
 	version:                   220,
 	PinTanEncryptionHeader:    NewPinTanEncryptionHeaderSegment,
 	RDHEncryptionHeader:       NewEncryptionHeaderSegment,
+	SignatureHeader:           NewSignatureHeaderSegmentV3,
 	PinTanSignatureHeader:     NewPinTanSignatureHeaderSegment,
 	RDHSignatureHeader:        NewRDHSignatureHeaderSegment,
-	SignatureEnd:              NewSignatureEndSegment,
+	SignatureEnd:              NewSignatureEndSegmentV1,
 	SynchronisationRequest:    NewSynchronisationSegmentV2,
 	AccountTransactionRequest: NewAccountTransactionRequestSegmentV5,
 }

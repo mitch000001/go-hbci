@@ -3,15 +3,14 @@ package segment
 import "github.com/mitch000001/go-hbci/element"
 
 type SignatureEnd interface {
+	SetControlReference(controlReference string)
 	SetSignature(signature []byte)
 	SetPinTan(pin, tan string)
 }
 
-func NewSignatureEndSegment(number int, controlReference string) *SignatureEndSegment {
-	s := &SignatureEndV1{
-		SecurityControlRef: element.NewAlphaNumeric(controlReference, 14),
-	}
-	s.ClientSegment = NewBasicSegment(number, s)
+func NewSignatureEndSegmentV1() *SignatureEndSegment {
+	s := &SignatureEndV1{}
+	s.ClientSegment = NewBasicSegment(-1, s)
 
 	segment := &SignatureEndSegment{
 		signatureEndSegment: s,
@@ -26,14 +25,6 @@ type signatureEndSegment interface {
 
 type SignatureEndSegment struct {
 	signatureEndSegment
-}
-
-func (s *SignatureEndSegment) SetSignature(signature []byte) {
-	s.signatureEndSegment.SetSignature(signature)
-}
-
-func (s *SignatureEndSegment) SetPinTan(pin, tan string) {
-	s.signatureEndSegment.SetPinTan(pin, tan)
 }
 
 type SignatureEndV1 struct {
@@ -56,6 +47,10 @@ func (s *SignatureEndV1) elements() []element.DataElement {
 	}
 }
 
+func (s *SignatureEndV1) SetControlReference(controlReference string) {
+	s.SecurityControlRef = element.NewAlphaNumeric(controlReference, 14)
+}
+
 func (s *SignatureEndV1) SetSignature(signature []byte) {
 	s.Signature = element.NewBinary(signature, 512)
 }
@@ -63,11 +58,9 @@ func (s *SignatureEndV1) SetSignature(signature []byte) {
 func (s *SignatureEndV1) SetPinTan(pin, tan string) {
 	s.PinTan = element.NewPinTan(pin, tan)
 }
-func NewSignatureEndSegmentV2(number int, controlReference string) *SignatureEndSegment {
-	s := &SignatureEndV2{
-		SecurityControlRef: element.NewAlphaNumeric(controlReference, 14),
-	}
-	s.ClientSegment = NewBasicSegment(number, s)
+func NewSignatureEndSegmentV2() *SignatureEndSegment {
+	s := &SignatureEndV2{}
+	s.ClientSegment = NewBasicSegment(-1, s)
 
 	segment := &SignatureEndSegment{
 		signatureEndSegment: s,
@@ -93,6 +86,10 @@ func (s *SignatureEndV2) elements() []element.DataElement {
 		s.Signature,
 		s.CustomSignature,
 	}
+}
+
+func (s *SignatureEndV2) SetControlReference(controlReference string) {
+	s.SecurityControlRef = element.NewAlphaNumeric(controlReference, 14)
 }
 
 func (s *SignatureEndV2) SetSignature(signature []byte) {

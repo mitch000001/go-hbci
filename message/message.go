@@ -223,9 +223,9 @@ func (b *BasicMessage) Sign(provider SignatureProvider) (*BasicSignedMessage, er
 		panic(fmt.Errorf("HBCIMessage must be set"))
 	}
 	// TODO: fix only PinTan segments!!!
-	b.SignatureBegin = b.hbciVersion.PinTanSignatureHeader("", "", domain.KeyName{})
+	b.SignatureBegin = b.hbciVersion.SignatureHeader()
 	provider.WriteSignatureHeader(b.SignatureBegin)
-	b.SignatureEnd = b.hbciVersion.SignatureEnd(-1, "")
+	b.SignatureEnd = b.hbciVersion.SignatureEnd()
 	b.SetNumbers()
 	var buffer bytes.Buffer
 	buffer.WriteString(b.SignatureBegin.String())
