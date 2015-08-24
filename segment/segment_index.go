@@ -2,9 +2,18 @@ package segment
 
 import "fmt"
 
-type SegmentIndex map[string]func() Segment
+type VersionedSegment struct {
+	ID      string
+	Version int
+}
 
-func (s SegmentIndex) UnmarshalerForSegment(segmentId string) (Unmarshaler, error) {
+func (v VersionedSegment) String() string {
+	return fmt.Sprintf("%s:%d", v.ID, v.Version)
+}
+
+type SegmentIndex map[VersionedSegment]func() Segment
+
+func (s SegmentIndex) UnmarshalerForSegment(segmentId VersionedSegment) (Unmarshaler, error) {
 	segmentFn, ok := s[segmentId]
 	if ok {
 		unmarshaler, ok := segmentFn().(Unmarshaler)
@@ -18,12 +27,12 @@ func (s SegmentIndex) UnmarshalerForSegment(segmentId string) (Unmarshaler, erro
 	}
 }
 
-func (s SegmentIndex) IsIndexed(segmentId string) bool {
+func (s SegmentIndex) IsIndexed(segmentId VersionedSegment) bool {
 	_, ok := s[segmentId]
 	return ok
 }
 
-func (s SegmentIndex) IsUnmarshaler(segmentId string) bool {
+func (s SegmentIndex) IsUnmarshaler(segmentId VersionedSegment) bool {
 	segmentFn, ok := s[segmentId]
 	if ok {
 		_, ok := segmentFn().(Unmarshaler)
@@ -33,11 +42,14 @@ func (s SegmentIndex) IsUnmarshaler(segmentId string) bool {
 	}
 }
 
-var knownSegments = SegmentIndex{
-	"HNHBK": func() Segment { return &MessageHeaderSegment{} },
-	"HNHBS": func() Segment { return &MessageEndSegment{} },
-	"HNVSK": func() Segment { return &EncryptionHeaderSegment{} },
-	"HNVSD": func() Segment { return &EncryptedDataSegment{} },
-	"HIRMG": func() Segment { return &MessageAcknowledgement{} },
-	"HIRMS": func() Segment { return &SegmentAcknowledgement{} },
+var KnownSegments = SegmentIndex{
+	VersionedSegment{"HNHBK", 3}: func() Segment { return &MessageHeaderSegment{} },
+	VersionedSegment{"HNHBS", 1}: func() Segment { return &MessageEndSegment{} },
+	VersionedSegment{"HNVSK", 2}: func() Segment { return &EncryptionHeaderV2{} },
+	VersionedSegment{"HNVSK", 3}: func() Segment { return &EncryptionHeaderSegmentV3{} },
+	VersionedSegment{"HNVSD", 1}: func() Segment { return &EncryptedDataSegment{} },
+	VersionedSegment{"HIRMG", 2}: func() Segment { return &MessageAcknowledgement{} },
+	VersionedSegment{"HIRMS", 2}: func() Segment { return &SegmentAcknowledgement{} },
+	VersionedSegment{"HISYN", 3}: func() Segment { return &SynchronisationResponseSegment{} },
+	VersionedSegment{"HIKIM", 2}: func() Segment { return &BankAnnouncementSegment{} },
 }

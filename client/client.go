@@ -73,7 +73,7 @@ func (c *Client) AccountTransactions(account domain.AccountConnection, timeframe
 		return nil, err
 	}
 	var accountTransactions []domain.AccountTransaction
-	accountTransactionResponses := decryptedMessage.FindSegments("HIKAZ")
+	accountTransactionResponses := decryptedMessage.FindMarshaledSegments("HIKAZ")
 	if accountTransactionResponses != nil {
 		type response struct {
 			transactions []domain.AccountTransaction
@@ -125,7 +125,7 @@ func (c *Client) AccountInformation(account domain.AccountConnection, allAccount
 	if err != nil {
 		return err
 	}
-	accountInfoResponse := decryptedMessage.FindSegment("HIKIF")
+	accountInfoResponse := decryptedMessage.FindMarshaledSegment("HIKIF")
 	if accountInfoResponse != nil {
 		fmt.Printf("Account Info: %s\n", accountInfoResponse)
 		return nil
@@ -142,7 +142,7 @@ func (c *Client) AccountBalances(account domain.AccountConnection, allAccounts b
 		return nil, err
 	}
 	var balances []domain.AccountBalance
-	balanceResponses := decryptedMessage.FindSegments("HISAL")
+	balanceResponses := decryptedMessage.FindMarshaledSegments("HISAL")
 	if balanceResponses != nil {
 		for _, marshaledSegment := range balanceResponses {
 			balanceSegment := &segment.AccountBalanceResponseSegment{}

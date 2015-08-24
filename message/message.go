@@ -16,8 +16,10 @@ var bankSegments = map[string]segment.Segment{
 type Message interface {
 	MessageHeader() *segment.MessageHeaderSegment
 	MessageEnd() *segment.MessageEndSegment
-	FindSegment(segmentID string) []byte
-	FindSegments(segmentID string) [][]byte
+	FindMarshaledSegment(segmentID string) []byte
+	FindMarshaledSegments(segmentID string) [][]byte
+	FindSegment(segmentID string) segment.Segment
+	FindSegments(segmentID string) []segment.Segment
 	SegmentNumber(segmentID string) int
 }
 
@@ -290,7 +292,26 @@ func (b *BasicMessage) MessageEnd() *segment.MessageEndSegment {
 	return b.End
 }
 
-func (b *BasicMessage) FindSegment(segmentID string) []byte {
+func (b *BasicMessage) FindSegment(segmentID string) segment.Segment {
+	for _, segment := range b.HBCIMessage.HBCISegments() {
+		if segment.Header().ID.Val() == segmentID {
+			return segment
+		}
+	}
+	return nil
+}
+
+func (b *BasicMessage) FindSegments(segmentID string) []segment.Segment {
+	var segments []segment.Segment
+	for _, segment := range b.HBCIMessage.HBCISegments() {
+		if segment.Header().ID.Val() == segmentID {
+			segments = append(segments, segment)
+		}
+	}
+	return segments
+}
+
+func (b *BasicMessage) FindMarshaledSegment(segmentID string) []byte {
 	for _, segment := range b.HBCIMessage.HBCISegments() {
 		if segment.Header().ID.Val() == segmentID {
 			return []byte(segment.String())
@@ -299,7 +320,7 @@ func (b *BasicMessage) FindSegment(segmentID string) []byte {
 	return nil
 }
 
-func (b *BasicMessage) FindSegments(segmentID string) [][]byte {
+func (b *BasicMessage) FindMarshaledSegments(segmentID string) [][]byte {
 	var segments [][]byte
 	for _, segment := range b.HBCIMessage.HBCISegments() {
 		if segment.Header().ID.Val() == segmentID {

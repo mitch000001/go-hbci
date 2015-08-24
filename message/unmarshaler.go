@@ -3,39 +3,15 @@ package message
 import (
 	"fmt"
 
-	"github.com/mitch000001/go-hbci"
+	"github.com/mitch000001/go-hbci/element"
 	"github.com/mitch000001/go-hbci/segment"
-	"github.com/mitch000001/go-hbci/token"
 )
-
-func RegisterUnmarshaler(segmentId string, unmarshalerFn func() hbci.Unmarshaler) {
-	knownUnmarshalers[segmentId] = unmarshalerFn
-}
-
-type unmarshalerIndex map[string]func() hbci.Unmarshaler
-
-func (u unmarshalerIndex) Unmarshaler(segmentId string) (hbci.Unmarshaler, bool) {
-	unmarhsalerFn, ok := u[segmentId]
-	if ok {
-		return unmarhsalerFn(), ok
-	} else {
-		return nil, ok
-	}
-}
-
-var knownUnmarshalers = unmarshalerIndex{
-	"HNHBK": func() hbci.Unmarshaler { return &segment.MessageHeaderSegment{} },
-	"HIRMG": func() hbci.Unmarshaler { return &segment.MessageAcknowledgement{} },
-	"HIRMS": func() hbci.Unmarshaler { return &segment.SegmentAcknowledgement{} },
-	"HNVSD": func() hbci.Unmarshaler { return &segment.EncryptedDataSegment{} },
-	"HISYN": func() hbci.Unmarshaler { return &segment.SynchronisationResponseSegment{} },
-	"HIUPD": func() hbci.Unmarshaler { return &segment.AccountInformationSegment{} },
-}
 
 func NewUnmarshaler(message []byte) *Unmarshaler {
 	return &Unmarshaler{
 		rawMessage:       message,
 		segmentExtractor: segment.NewSegmentExtractor(message),
+		segments:         make(map[string][]segment.Segment),
 	}
 }
 
@@ -45,9 +21,8 @@ type Unmarshaler struct {
 	segments         map[string][]segment.Segment
 }
 
-func (u *Unmarshaler) CanUnmarshal(segmentId string) bool {
-	_, ok := knownUnmarshalers[segmentId]
-	return ok
+func (u *Unmarshaler) CanUnmarshal(segmentId string, version int) bool {
+	return segment.KnownSegments.IsUnmarshaler(segment.VersionedSegment{segmentId, version})
 }
 
 func (u *Unmarshaler) Unmarshal() error {
@@ -56,31 +31,34 @@ func (u *Unmarshaler) Unmarshal() error {
 		return err
 	}
 	for _, seg := range rawSegments {
-		segmentId, err := extractSegmentID(seg)
+		segmentId, err := extractVersionedSegmentIdentifier(seg)
 		if err != nil {
 			return err
 		}
-		unmarshaler, ok := knownUnmarshalers.Unmarshaler(segmentId)
-		if ok {
+		if segment.KnownSegments.IsUnmarshaler(segmentId) {
+			unmarshaler, err := segment.KnownSegments.UnmarshalerForSegment(segmentId)
+			if err != nil {
+				return err
+			}
 			err = unmarshaler.UnmarshalHBCI(seg)
 			if err != nil {
 				return err
 			}
-			segments, ok := u.segments[segmentId]
+			segments, ok := u.segments[segmentId.ID]
 			if !ok {
 				segments = make([]segment.Segment, 0)
 			}
 			segments = append(segments, unmarshaler.(segment.Segment))
-			u.segments[segmentId] = segments
+			u.segments[segmentId.ID] = segments
 		}
 	}
 	return nil
 }
 
-func (u *Unmarshaler) UnmarshalSegment(segmentId string) (segment.Segment, error) {
-	unmarshaler, ok := knownUnmarshalers.Unmarshaler(segmentId)
-	if !ok {
-		return nil, fmt.Errorf("Unknown segment: %q", segmentId)
+func (u *Unmarshaler) UnmarshalSegment(segmentId string, version int) (segment.Segment, error) {
+	unmarshaler, err := segment.KnownSegments.UnmarshalerForSegment(segment.VersionedSegment{segmentId, version})
+	if err != nil {
+		return nil, err
 	}
 	segmentBytes, err := u.extractSegment(segmentId)
 	if err != nil {
@@ -117,16 +95,29 @@ func (u *Unmarshaler) SegmentById(segmentId string) segment.Segment {
 	return nil
 }
 
-func extractSegmentID(segment []byte) (string, error) {
-	lexer := token.NewStringLexer("SegmentIdExtractor", string(segment))
-	if lexer.HasNext() {
-		idToken := lexer.Next()
-		if idToken.Type() != token.ALPHA_NUMERIC {
-			return "", fmt.Errorf("Malformed segment: segment ID not alphanumeric")
-		} else {
-			return idToken.Value(), nil
-		}
-	} else {
-		return "", fmt.Errorf("Malformed segment: empty")
+func (u *Unmarshaler) MarshaledSegmentsById(segmentId string) [][]byte {
+	return u.segmentExtractor.FindSegments(segmentId)
+}
+
+func (u *Unmarshaler) MarshaledSegmentById(segmentId string) []byte {
+	return u.segmentExtractor.FindSegment(segmentId)
+}
+
+func (u *Unmarshaler) MarshaledSegments() [][]byte {
+	return u.segmentExtractor.Segments()
+}
+
+func extractVersionedSegmentIdentifier(segmentBytes []byte) (segment.VersionedSegment, error) {
+	var id segment.VersionedSegment
+	elements, err := segment.ExtractElements(segmentBytes)
+	if err != nil {
+		return id, err
 	}
+	header := &element.SegmentHeader{}
+	err = header.UnmarshalHBCI(elements[0])
+	if err != nil {
+		return id, err
+	}
+	id = segment.VersionedSegment{header.ID.Val(), header.Version.Val()}
+	return id, nil
 }

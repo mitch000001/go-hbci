@@ -33,7 +33,7 @@ func TestEncryptedPinTanMessageDecrypt(t *testing.T) {
 		t.Fail()
 	}
 
-	actualSyncSegment := decryptedMessage.FindSegment("HISYN")
+	actualSyncSegment := decryptedMessage.FindMarshaledSegment("HISYN")
 
 	if syncSegment != string(actualSyncSegment) {
 		t.Logf("Expected decrypted message to include SynchronisationResponse, but had not\n")

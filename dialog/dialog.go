@@ -164,11 +164,7 @@ func (d *dialog) SyncClientSystemID() (string, error) {
 
 	syncResponse := decryptedMessage.FindSegment("HISYN")
 	if syncResponse != nil {
-		syncSegment := &segment.SynchronisationResponseSegment{}
-		err = syncSegment.UnmarshalHBCI(syncResponse)
-		if err != nil {
-			return "", fmt.Errorf("Error while unmarshaling sync response: %v", err)
-		}
+		syncSegment := syncResponse.(*segment.SynchronisationResponseSegment)
 		d.SetClientSystemID(syncSegment.ClientSystemID.Val())
 	} else {
 		return "", fmt.Errorf("Malformed message: missing SynchronisationResponse")
@@ -235,8 +231,11 @@ func (d *dialog) init() error {
 		return err
 	}
 
-	bankInfoMessageBytes := decryptedMessage.FindSegment("HIKIM")
-	internal.Info.Printf("INFO:\n%q\n", bankInfoMessageBytes)
+	bankInfoMessage := decryptedMessage.FindSegment("HIKIM")
+	if bankInfoMessage != nil {
+		bankInfoSegment := bankInfoMessage.(*segment.BankAnnouncementSegment)
+		internal.Info.Printf("INFO:\n%s\n%s\n", bankInfoSegment.Subject.Val(), bankInfoSegment.Body.Val())
+	}
 
 	newSecurityFn := d.securityFn
 	errors := make([]string, 0)
@@ -316,7 +315,7 @@ func (d *dialog) newBasicMessage(hbciMessage message.HBCIMessage) *message.Basic
 }
 
 func (d *dialog) parseBankParameterData(bankMessage message.BankMessage) error {
-	bankParamData := bankMessage.FindSegment("HIBPA")
+	bankParamData := bankMessage.FindMarshaledSegment("HIBPA")
 	if bankParamData != nil {
 		paramSegment := &segment.CommonBankParameterSegment{}
 		err := paramSegment.UnmarshalHBCI(bankParamData)
@@ -325,7 +324,7 @@ func (d *dialog) parseBankParameterData(bankMessage message.BankMessage) error {
 		}
 		d.BankParameterData = paramSegment.BankParameterData()
 	}
-	pinTanTransactions := bankMessage.FindSegment("DIPINS")
+	pinTanTransactions := bankMessage.FindMarshaledSegment("DIPINS")
 	if pinTanTransactions != nil {
 		pinTanTransactionSegment := &segment.PinTanBusinessTransactionParamsSegment{}
 		err := pinTanTransactionSegment.UnmarshalHBCI(pinTanTransactions)
@@ -342,7 +341,7 @@ func (d *dialog) parseBankParameterData(bankMessage message.BankMessage) error {
 }
 
 func (d *dialog) parseUserParameterData(bankMessage message.BankMessage) error {
-	userParamData := bankMessage.FindSegment("HIUPA")
+	userParamData := bankMessage.FindMarshaledSegment("HIUPA")
 	if userParamData != nil {
 		paramSegment := &segment.CommonUserParameterDataSegment{}
 		err := paramSegment.UnmarshalHBCI(userParamData)
@@ -353,7 +352,7 @@ func (d *dialog) parseUserParameterData(bankMessage message.BankMessage) error {
 		d.clientID = d.UserParameterData.UserID
 	}
 
-	accountData := bankMessage.FindSegments("HIUPD")
+	accountData := bankMessage.FindMarshaledSegments("HIUPD")
 	if accountData != nil {
 		for _, acc := range accountData {
 			infoSegment := &segment.AccountInformationSegment{}
@@ -400,7 +399,7 @@ func (d *dialog) request(clientMessage message.ClientMessage) (message.BankMessa
 			return nil, fmt.Errorf("Error while decrypting message: %v", err)
 		}
 		internal.Debug.Printf("Response:\n %s\n", decryptedMessage.MessageHeader())
-		for _, seg := range decryptedMessage.Segments() {
+		for _, seg := range decryptedMessage.MarshaledSegments() {
 			internal.Debug.Printf("%s\n", seg)
 		}
 		bankMessage = decryptedMessage
@@ -410,7 +409,7 @@ func (d *dialog) request(clientMessage message.ClientMessage) (message.BankMessa
 			return nil, err
 		}
 		internal.Debug.Printf("Response:\n %s\n", decryptedMessage.MessageHeader())
-		for _, seg := range decryptedMessage.Segments() {
+		for _, seg := range decryptedMessage.MarshaledSegments() {
 			internal.Debug.Printf("%s\n", seg)
 		}
 		bankMessage = decryptedMessage

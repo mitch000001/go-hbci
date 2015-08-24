@@ -7,12 +7,12 @@ import (
 	"github.com/mitch000001/go-hbci/segment"
 )
 
-func TestUnmarshalerUnmarshal(t *testing.T) {
+func TestUnmarshalerUnmarshalSegment(t *testing.T) {
 	test := "HNHBK:1:3+000000000273+220+abcde+1+'HISYN:1:3+abcde++'"
 
 	unmarshaler := NewUnmarshaler([]byte(test))
 
-	seg, err := unmarshaler.UnmarshalSegment("HNHBK")
+	seg, err := unmarshaler.UnmarshalSegment("HNHBK", 3)
 
 	if err != nil {
 		t.Logf("Expected no error, got %T:%v\n", err, err)
@@ -34,7 +34,7 @@ func TestUnmarshalerUnmarshal(t *testing.T) {
 	}
 
 	// Test another segment
-	seg, err = unmarshaler.UnmarshalSegment("HISYN")
+	seg, err = unmarshaler.UnmarshalSegment("HISYN", 3)
 
 	if err != nil {
 		t.Logf("Expected no error, got %T:%v\n", err, err)
@@ -62,16 +62,16 @@ func TestUnmarshalerUnmarshal(t *testing.T) {
 
 	unmarshaler = NewUnmarshaler([]byte(test))
 
-	seg, err = unmarshaler.UnmarshalSegment("HXXXX")
+	seg, err = unmarshaler.UnmarshalSegment("HXXXX", 3)
 
 	if err == nil {
 		t.Logf("Expected error, got nil\n")
 		t.Fail()
 	} else {
 		errMessage := err.Error()
-		expectedMessage := "Unknown segment: \"HXXXX\""
+		expectedMessage := "Segment not in index: \"HXXXX:3\""
 		if expectedMessage != errMessage {
-			t.Logf("Expected message to equal %q, got %q\n")
+			t.Logf("Expected message to equal %s, got %s\n", expectedMessage, errMessage)
 			t.Fail()
 		}
 	}
@@ -81,16 +81,16 @@ func TestUnmarshalerUnmarshal(t *testing.T) {
 
 	unmarshaler = NewUnmarshaler([]byte(test))
 
-	seg, err = unmarshaler.UnmarshalSegment("HXXXX")
+	seg, err = unmarshaler.UnmarshalSegment("HNHBK", 3)
 
 	if err == nil {
 		t.Logf("Expected error, got nil\n")
 		t.Fail()
 	} else {
 		errMessage := err.Error()
-		expectedMessage := "Unknown segment: \"HXXXX\""
+		expectedMessage := "Segment not found in message: \"HNHBK\""
 		if expectedMessage != errMessage {
-			t.Logf("Expected message to equal %q, got %q\n")
+			t.Logf("Expected message to equal %q, got %q\n", expectedMessage, errMessage)
 			t.Fail()
 		}
 	}
