@@ -5,6 +5,11 @@ import (
 	"github.com/mitch000001/go-hbci/element"
 )
 
+type AccountInformation interface {
+	BankSegment
+	Account() domain.AccountInformation
+}
+
 //go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment AccountInformationSegment -segment_interface accountInformationSegment -segment_versions="AccountInformationV4:4:Segment,AccountInformationV5:5:Segment,AccountInformationV6:6:Segment"
 
 type AccountInformationSegment struct {

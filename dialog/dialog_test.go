@@ -70,7 +70,7 @@ func TestPinTanDialogSyncClientSystemID(t *testing.T) {
 		"newDialogID",
 		"HIRMG:2:2:1+0100::Dialog beendet'",
 		"HIBPA:3:2:+12+280:10000000+Bank Name+3+1+201:210:220+0'",
-		"DIPINS:4:2:+1+1+HKSAL:N:HKUEB:J'",
+		"DIPINS:4:1:+1+1+HKSAL:N:HKUEB:J'",
 		"HISYN:5:3:8+newClientSystemID'",
 		"HIUPA:6:2:7+12345+4+0'",
 		"HIUPD:7:4:8+12345::280:1000000+54321+EUR+Muster+Max+++HKTAN:1+HKKAZ:1'",

@@ -57,6 +57,11 @@ func (b *BusinessTransactionParamsSegment) UnmarshalHBCI(value []byte) error {
 	return nil
 }
 
+type PinTanBusinessTransactionParams interface {
+	BankSegment
+	PinTanBusinessTransactions() []domain.PinTanBusinessTransaction
+}
+
 type PinTanBusinessTransactionParamsSegment struct {
 	*BusinessTransactionParamsSegment
 }

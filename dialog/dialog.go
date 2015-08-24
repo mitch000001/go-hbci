@@ -315,22 +315,14 @@ func (d *dialog) newBasicMessage(hbciMessage message.HBCIMessage) *message.Basic
 }
 
 func (d *dialog) parseBankParameterData(bankMessage message.BankMessage) error {
-	bankParamData := bankMessage.FindMarshaledSegment("HIBPA")
+	bankParamData := bankMessage.FindSegment("HIBPA")
 	if bankParamData != nil {
-		paramSegment := &segment.CommonBankParameterSegment{}
-		err := paramSegment.UnmarshalHBCI(bankParamData)
-		if err != nil {
-			return fmt.Errorf("Error while unmarshaling Bank Parameter Data: %v", err)
-		}
+		paramSegment := bankParamData.(segment.CommonBankParameter)
 		d.BankParameterData = paramSegment.BankParameterData()
 	}
-	pinTanTransactions := bankMessage.FindMarshaledSegment("DIPINS")
+	pinTanTransactions := bankMessage.FindSegment("DIPINS")
 	if pinTanTransactions != nil {
-		pinTanTransactionSegment := &segment.PinTanBusinessTransactionParamsSegment{}
-		err := pinTanTransactionSegment.UnmarshalHBCI(pinTanTransactions)
-		if err != nil {
-			return fmt.Errorf("Error while unmarshaling PinTan Segment Parameter Data: %v", err)
-		}
+		pinTanTransactionSegment := pinTanTransactions.(segment.PinTanBusinessTransactionParams)
 		pinTransactions := make(map[string]bool)
 		for _, transaction := range pinTanTransactionSegment.PinTanBusinessTransactions() {
 			pinTransactions[transaction.SegmentID] = transaction.NeedsTan
@@ -341,25 +333,17 @@ func (d *dialog) parseBankParameterData(bankMessage message.BankMessage) error {
 }
 
 func (d *dialog) parseUserParameterData(bankMessage message.BankMessage) error {
-	userParamData := bankMessage.FindMarshaledSegment("HIUPA")
+	userParamData := bankMessage.FindSegment("HIUPA")
 	if userParamData != nil {
-		paramSegment := &segment.CommonUserParameterDataSegment{}
-		err := paramSegment.UnmarshalHBCI(userParamData)
-		if err != nil {
-			return fmt.Errorf("Error while unmarshaling User Parameter Data: %v", err)
-		}
+		paramSegment := userParamData.(segment.CommonUserParameterData)
 		d.UserParameterData = paramSegment.UserParameterData()
 		d.clientID = d.UserParameterData.UserID
 	}
 
-	accountData := bankMessage.FindMarshaledSegments("HIUPD")
+	accountData := bankMessage.FindSegments("HIUPD")
 	if accountData != nil {
 		for _, acc := range accountData {
-			infoSegment := &segment.AccountInformationSegment{}
-			err := infoSegment.UnmarshalHBCI(acc)
-			if err != nil {
-				return fmt.Errorf("Error while unmarshaling Accounts: %v", err)
-			}
+			infoSegment := acc.(segment.AccountInformation)
 			d.Accounts = append(d.Accounts, infoSegment.Account())
 		}
 	}

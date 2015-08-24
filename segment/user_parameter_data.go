@@ -7,6 +7,11 @@ import (
 
 //go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment CommonUserParameterDataSegment -segment_interface commonUserParameterDataSegment -segment_versions="CommonUserParameterDataV2:2:Segment,CommonUserParameterDataV3:3:Segment,CommonUserParameterDataV4:4:Segment"
 
+type CommonUserParameterData interface {
+	BankSegment
+	UserParameterData() domain.UserParameterData
+}
+
 type CommonUserParameterDataSegment struct {
 	commonUserParameterDataSegment
 }

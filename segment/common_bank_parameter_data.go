@@ -5,6 +5,11 @@ import (
 	"github.com/mitch000001/go-hbci/element"
 )
 
+type CommonBankParameter interface {
+	BankSegment
+	BankParameterData() domain.BankParameterData
+}
+
 //go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment CommonBankParameterSegment -segment_interface commonBankParameterSegment -segment_versions="CommonBankParameterV2:2,CommonBankParameterV3:3"
 
 type CommonBankParameterSegment struct {
