@@ -27,6 +27,7 @@ const (
 	AmountGDEG
 	BankIdentificationGDEG
 	AccountConnectionGDEG
+	InternationalAccountConnectionGDEG
 	BalanceGDEG
 	AddressGDEG
 	SecurityMethodVersionGDEG
@@ -77,6 +78,7 @@ var typeName = map[DataElementType]string{
 	AmountGDEG:                             "btg",
 	BankIdentificationGDEG:                 "kik",
 	AccountConnectionGDEG:                  "ktv",
+	InternationalAccountConnectionGDEG:     "kti",
 	BalanceGDEG:                            "sdo",
 	AddressGDEG:                            "addr",
 	SecurityMethodVersionGDEG:              "Unterstützte Sicherheitsverfahren",

@@ -46,7 +46,7 @@ func TestPinTanDialogSendMessage(t *testing.T) {
 		dialogEndResponseMessage,
 	})
 
-	accountBalanceRequest := segment.NewAccountBalanceRequestSegment(account.AccountConnection, false)
+	accountBalanceRequest := segment.NewAccountBalanceRequestV5(account.AccountConnection, false)
 
 	res, err := d.SendMessage(message.NewHBCIMessage(d.hbciVersion, accountBalanceRequest))
 

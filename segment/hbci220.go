@@ -9,5 +9,6 @@ var HBCI220 = HBCIVersion{
 	RDHSignatureHeader:        NewRDHSignatureHeaderSegment,
 	SignatureEnd:              NewSignatureEndSegmentV1,
 	SynchronisationRequest:    NewSynchronisationSegmentV2,
+	AccountBalanceRequest:     NewAccountBalanceRequestV5,
 	AccountTransactionRequest: NewAccountTransactionRequestSegmentV5,
 }

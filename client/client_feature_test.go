@@ -50,8 +50,7 @@ func TestPinTanDialogAccountInformation(t *testing.T) {
 	}
 }
 
-func TestPinTanDialogBalances(t *testing.T) {
-	t.Skip()
+func TestClientAccountBalances(t *testing.T) {
 	c := newClient()
 
 	balances, err := c.AccountBalances(testAccount, true)
@@ -64,6 +63,10 @@ func TestPinTanDialogBalances(t *testing.T) {
 	if balances == nil {
 		t.Logf("Expected balances not to be nil\n")
 		t.Fail()
+	}
+
+	for _, balance := range balances {
+		t.Logf("Balance: %s\n", balance)
 	}
 }
 
@@ -92,7 +95,7 @@ func TestClientAccounts(t *testing.T) {
 }
 
 func newClient() *client.Client {
-	configFile, err := os.Open("../.fints300_haspa.json")
+	configFile, err := os.Open("../.hbci220.json")
 	if err != nil && !os.IsNotExist(err) {
 		panic(err)
 	}

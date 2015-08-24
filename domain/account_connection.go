@@ -6,3 +6,11 @@ type AccountConnection struct {
 	CountryCode               int
 	BankID                    string
 }
+
+type InternationalAccountConnection struct {
+	IBAN                      string
+	BIC                       string
+	AccountID                 string
+	SubAccountCharacteristics string
+	BankID                    BankId
+}

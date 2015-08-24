@@ -16,6 +16,7 @@ type HBCIVersion struct {
 	RDHSignatureHeader        func(controlReference string, signatureId int, clientSystemId string, keyName domain.KeyName) *SignatureHeaderSegment
 	SignatureEnd              func() *SignatureEndSegment
 	SynchronisationRequest    func(modus int) *SynchronisationRequestSegment
+	AccountBalanceRequest     func(account domain.AccountConnection, allAccounts bool) AccountBalanceRequest
 	AccountTransactionRequest func(account domain.AccountConnection, allAccounts bool) *AccountTransactionRequestSegment
 }
 

@@ -167,6 +167,104 @@ func (a *AccountConnectionDataElement) Val() domain.AccountConnection {
 	}
 }
 
+func NewInternationalAccountConnection(conn domain.InternationalAccountConnection) *InternationalAccountConnectionDataElement {
+	i := &InternationalAccountConnectionDataElement{
+		IBAN:                      NewAlphaNumeric(conn.IBAN, 34),
+		BIC:                       NewAlphaNumeric(conn.BIC, 11),
+		AccountID:                 NewIdentification(conn.AccountID),
+		SubAccountCharacteristics: NewIdentification(conn.SubAccountCharacteristics),
+		BankID: NewBankIndentification(conn.BankID),
+	}
+	i.DataElement = NewGroupDataElementGroup(InternationalAccountConnectionGDEG, 5, i)
+	return i
+}
+
+type InternationalAccountConnectionDataElement struct {
+	DataElement
+	IBAN                      *AlphaNumericDataElement
+	BIC                       *AlphaNumericDataElement
+	AccountID                 *IdentificationDataElement
+	SubAccountCharacteristics *IdentificationDataElement
+	BankID                    *BankIdentificationDataElement
+}
+
+func (i *InternationalAccountConnectionDataElement) Elements() []DataElement {
+	return []DataElement{
+		i.IBAN,
+		i.BIC,
+		i.AccountID,
+		i.SubAccountCharacteristics,
+		i.BankID,
+	}
+}
+
+func (i *InternationalAccountConnectionDataElement) UnmarshalHBCI(value []byte) error {
+	elements, err := ExtractElements(value)
+	if err != nil {
+		return err
+	}
+	if len(elements) == 0 {
+		return fmt.Errorf("Malformed AccountConnection")
+	}
+	i.DataElement = NewGroupDataElementGroup(InternationalAccountConnectionGDEG, 5, i)
+	if len(elements) > 0 && len(elements[0]) > 0 {
+		i.IBAN = &AlphaNumericDataElement{}
+		err = i.IBAN.UnmarshalHBCI(elements[0])
+		if err != nil {
+			return err
+		}
+	}
+	if len(elements) > 1 && len(elements[1]) > 0 {
+		i.BIC = &AlphaNumericDataElement{}
+		err = i.BIC.UnmarshalHBCI(elements[1])
+		if err != nil {
+			return err
+		}
+	}
+	if len(elements) > 2 && len(elements[2]) > 0 {
+		i.AccountID = &IdentificationDataElement{}
+		err = i.AccountID.UnmarshalHBCI(elements[2])
+		if err != nil {
+			return err
+		}
+	}
+	if len(elements) > 3 && len(elements[3]) > 0 {
+		i.SubAccountCharacteristics = &IdentificationDataElement{}
+		err = i.SubAccountCharacteristics.UnmarshalHBCI(elements[3])
+		if err != nil {
+			return err
+		}
+	}
+	if len(elements) > 4 && len(elements[4]) > 0 {
+		i.BankID = &BankIdentificationDataElement{}
+		err = i.BankID.UnmarshalHBCI(elements[4])
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (i *InternationalAccountConnectionDataElement) Val() domain.InternationalAccountConnection {
+	conn := domain.InternationalAccountConnection{}
+	if i.IBAN != nil {
+		conn.IBAN = i.IBAN.Val()
+	}
+	if i.BIC != nil {
+		conn.BIC = i.BIC.Val()
+	}
+	if i.AccountID != nil {
+		conn.AccountID = i.AccountID.Val()
+	}
+	if i.SubAccountCharacteristics != nil {
+		conn.SubAccountCharacteristics = i.SubAccountCharacteristics.Val()
+	}
+	if i.BankID != nil {
+		conn.BankID = i.BankID.Val()
+	}
+	return conn
+}
+
 func NewBalance(amount domain.Amount, date time.Time, withTime bool) *BalanceDataElement {
 	var debitCredit string
 	if amount.Amount < 0 {

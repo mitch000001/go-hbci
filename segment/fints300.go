@@ -7,5 +7,6 @@ var FINTS300 = HBCIVersion{
 	SignatureHeader:           NewSignatureHeaderSegmentV4,
 	PinTanSignatureHeader:     NewPinTanSignatureHeaderSegmentV4,
 	SignatureEnd:              NewSignatureEndSegmentV2,
+	AccountBalanceRequest:     NewAccountBalanceRequestV6,
 	AccountTransactionRequest: NewAccountTransactionRequestSegmentV6,
 }

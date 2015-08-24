@@ -7,8 +7,13 @@ import (
 	"github.com/mitch000001/go-hbci/element"
 )
 
-func NewAccountBalanceRequestSegment(account domain.AccountConnection, allAccounts bool) *AccountBalanceRequestSegment {
-	a := &AccountBalanceRequestSegment{
+type AccountBalanceRequest interface {
+	ClientSegment
+	SetContinuationMark(continuationMark string)
+}
+
+func NewAccountBalanceRequestV5(account domain.AccountConnection, allAccounts bool) AccountBalanceRequest {
+	a := &AccountBalanceRequestSegmentV5{
 		AccountConnection: element.NewAccountConnection(account),
 		AllAccounts:       element.NewBoolean(allAccounts),
 	}
@@ -16,7 +21,7 @@ func NewAccountBalanceRequestSegment(account domain.AccountConnection, allAccoun
 	return a
 }
 
-type AccountBalanceRequestSegment struct {
+type AccountBalanceRequestSegmentV5 struct {
 	ClientSegment
 	AccountConnection *element.AccountConnectionDataElement
 	AllAccounts       *element.BooleanDataElement
@@ -24,18 +29,57 @@ type AccountBalanceRequestSegment struct {
 	Aufsetzpunkt      *element.AlphaNumericDataElement
 }
 
-func (a *AccountBalanceRequestSegment) Version() int         { return 5 }
-func (a *AccountBalanceRequestSegment) ID() string           { return "HKSAL" }
-func (a *AccountBalanceRequestSegment) referencedId() string { return "" }
-func (a *AccountBalanceRequestSegment) sender() string       { return senderUser }
+func (a *AccountBalanceRequestSegmentV5) Version() int         { return 5 }
+func (a *AccountBalanceRequestSegmentV5) ID() string           { return "HKSAL" }
+func (a *AccountBalanceRequestSegmentV5) referencedId() string { return "" }
+func (a *AccountBalanceRequestSegmentV5) sender() string       { return senderUser }
 
-func (a *AccountBalanceRequestSegment) elements() []element.DataElement {
+func (a *AccountBalanceRequestSegmentV5) elements() []element.DataElement {
 	return []element.DataElement{
 		a.AccountConnection,
 		a.AllAccounts,
 		a.MaxEntries,
 		a.Aufsetzpunkt,
 	}
+}
+
+func (a *AccountBalanceRequestSegmentV5) SetContinuationMark(continuationMark string) {
+	a.Aufsetzpunkt = element.NewAlphaNumeric(continuationMark, 35)
+}
+
+func NewAccountBalanceRequestV6(account domain.AccountConnection, allAccounts bool) AccountBalanceRequest {
+	a := &AccountBalanceRequestSegmentV6{
+		AccountConnection: element.NewAccountConnection(account),
+		AllAccounts:       element.NewBoolean(allAccounts),
+	}
+	a.ClientSegment = NewBasicSegment(1, a)
+	return a
+}
+
+type AccountBalanceRequestSegmentV6 struct {
+	ClientSegment
+	AccountConnection *element.AccountConnectionDataElement
+	AllAccounts       *element.BooleanDataElement
+	MaxEntries        *element.NumberDataElement
+	Aufsetzpunkt      *element.AlphaNumericDataElement
+}
+
+func (a *AccountBalanceRequestSegmentV6) Version() int         { return 6 }
+func (a *AccountBalanceRequestSegmentV6) ID() string           { return "HKSAL" }
+func (a *AccountBalanceRequestSegmentV6) referencedId() string { return "" }
+func (a *AccountBalanceRequestSegmentV6) sender() string       { return senderUser }
+
+func (a *AccountBalanceRequestSegmentV6) elements() []element.DataElement {
+	return []element.DataElement{
+		a.AccountConnection,
+		a.AllAccounts,
+		a.MaxEntries,
+		a.Aufsetzpunkt,
+	}
+}
+
+func (a *AccountBalanceRequestSegmentV6) SetContinuationMark(continuationMark string) {
+	a.Aufsetzpunkt = element.NewAlphaNumeric(continuationMark, 35)
 }
 
 //go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment AccountBalanceResponseSegment

@@ -5,8 +5,13 @@ import (
 	"github.com/mitch000001/go-hbci/element"
 )
 
-func NewAccountInformationRequestSegment(account domain.AccountConnection, allAccounts bool) *AccountInformationRequestSegment {
-	a := &AccountInformationRequestSegment{
+type AccountInformationRequest interface {
+	ClientSegment
+	SetContinuationMark(continuationMark string)
+}
+
+func NewAccountInformationRequestSegmentV1(account domain.AccountConnection, allAccounts bool) AccountInformationRequest {
+	a := &AccountInformationRequestSegmentV1{
 		AccountConnection: element.NewAccountConnection(account),
 		AllAccounts:       element.NewBoolean(allAccounts),
 	}
@@ -14,7 +19,7 @@ func NewAccountInformationRequestSegment(account domain.AccountConnection, allAc
 	return a
 }
 
-type AccountInformationRequestSegment struct {
+type AccountInformationRequestSegmentV1 struct {
 	ClientSegment
 	AccountConnection *element.AccountConnectionDataElement
 	AllAccounts       *element.BooleanDataElement
@@ -22,18 +27,197 @@ type AccountInformationRequestSegment struct {
 	Aufsetzpunkt      *element.AlphaNumericDataElement
 }
 
-func (a *AccountInformationRequestSegment) Version() int         { return 1 }
-func (a *AccountInformationRequestSegment) ID() string           { return "HKKIF" }
-func (a *AccountInformationRequestSegment) referencedId() string { return "" }
-func (a *AccountInformationRequestSegment) sender() string       { return senderUser }
+func (a *AccountInformationRequestSegmentV1) Version() int         { return 1 }
+func (a *AccountInformationRequestSegmentV1) ID() string           { return "HKKIF" }
+func (a *AccountInformationRequestSegmentV1) referencedId() string { return "" }
+func (a *AccountInformationRequestSegmentV1) sender() string       { return senderUser }
 
-func (a *AccountInformationRequestSegment) elements() []element.DataElement {
+func (a *AccountInformationRequestSegmentV1) elements() []element.DataElement {
 	return []element.DataElement{
 		a.AccountConnection,
 		a.AllAccounts,
 		a.MaxEntries,
 		a.Aufsetzpunkt,
 	}
+}
+
+func (a *AccountInformationRequestSegmentV1) SetContinuationMark(continuationMark string) {
+	a.Aufsetzpunkt = element.NewAlphaNumeric(continuationMark, 35)
+}
+
+func NewAccountInformationRequestSegmentV2(account domain.AccountConnection, allAccounts bool) AccountInformationRequest {
+	a := &AccountInformationRequestSegmentV2{
+		AccountConnection: element.NewAccountConnection(account),
+		AllAccounts:       element.NewBoolean(allAccounts),
+	}
+	a.ClientSegment = NewBasicSegment(1, a)
+	return a
+}
+
+type AccountInformationRequestSegmentV2 struct {
+	ClientSegment
+	AccountConnection *element.AccountConnectionDataElement
+	AllAccounts       *element.BooleanDataElement
+	MaxEntries        *element.NumberDataElement
+	Aufsetzpunkt      *element.AlphaNumericDataElement
+}
+
+func (a *AccountInformationRequestSegmentV2) Version() int         { return 2 }
+func (a *AccountInformationRequestSegmentV2) ID() string           { return "HKKIF" }
+func (a *AccountInformationRequestSegmentV2) referencedId() string { return "" }
+func (a *AccountInformationRequestSegmentV2) sender() string       { return senderUser }
+
+func (a *AccountInformationRequestSegmentV2) elements() []element.DataElement {
+	return []element.DataElement{
+		a.AccountConnection,
+		a.AllAccounts,
+		a.MaxEntries,
+		a.Aufsetzpunkt,
+	}
+}
+
+func (a *AccountInformationRequestSegmentV2) SetContinuationMark(continuationMark string) {
+	a.Aufsetzpunkt = element.NewAlphaNumeric(continuationMark, 35)
+}
+
+func NewAccountInformationRequestSegmentV3(account domain.InternationalAccountConnection, allAccounts bool) AccountInformationRequest {
+	a := &AccountInformationRequestSegmentV3{
+		AccountConnection: element.NewInternationalAccountConnection(account),
+		AllAccounts:       element.NewBoolean(allAccounts),
+	}
+	a.ClientSegment = NewBasicSegment(1, a)
+	return a
+}
+
+type AccountInformationRequestSegmentV3 struct {
+	ClientSegment
+	AccountConnection *element.InternationalAccountConnectionDataElement
+	AllAccounts       *element.BooleanDataElement
+	MaxEntries        *element.NumberDataElement
+	Aufsetzpunkt      *element.AlphaNumericDataElement
+}
+
+func (a *AccountInformationRequestSegmentV3) Version() int         { return 3 }
+func (a *AccountInformationRequestSegmentV3) ID() string           { return "HKKIF" }
+func (a *AccountInformationRequestSegmentV3) referencedId() string { return "" }
+func (a *AccountInformationRequestSegmentV3) sender() string       { return senderUser }
+
+func (a *AccountInformationRequestSegmentV3) elements() []element.DataElement {
+	return []element.DataElement{
+		a.AccountConnection,
+		a.AllAccounts,
+		a.MaxEntries,
+		a.Aufsetzpunkt,
+	}
+}
+
+func (a *AccountInformationRequestSegmentV3) SetContinuationMark(continuationMark string) {
+	a.Aufsetzpunkt = element.NewAlphaNumeric(continuationMark, 35)
+}
+
+func NewAccountInformationRequestSegmentV4(account domain.InternationalAccountConnection, allAccounts bool) AccountInformationRequest {
+	a := &AccountInformationRequestSegmentV4{
+		AccountConnection: element.NewInternationalAccountConnection(account),
+		AllAccounts:       element.NewBoolean(allAccounts),
+	}
+	a.ClientSegment = NewBasicSegment(1, a)
+	return a
+}
+
+type AccountInformationRequestSegmentV4 struct {
+	ClientSegment
+	AccountConnection *element.InternationalAccountConnectionDataElement
+	AllAccounts       *element.BooleanDataElement
+	MaxEntries        *element.NumberDataElement
+	Aufsetzpunkt      *element.AlphaNumericDataElement
+}
+
+func (a *AccountInformationRequestSegmentV4) Version() int         { return 4 }
+func (a *AccountInformationRequestSegmentV4) ID() string           { return "HKKIF" }
+func (a *AccountInformationRequestSegmentV4) referencedId() string { return "" }
+func (a *AccountInformationRequestSegmentV4) sender() string       { return senderUser }
+
+func (a *AccountInformationRequestSegmentV4) elements() []element.DataElement {
+	return []element.DataElement{
+		a.AccountConnection,
+		a.AllAccounts,
+		a.MaxEntries,
+		a.Aufsetzpunkt,
+	}
+}
+
+func (a *AccountInformationRequestSegmentV4) SetContinuationMark(continuationMark string) {
+	a.Aufsetzpunkt = element.NewAlphaNumeric(continuationMark, 35)
+}
+
+func NewAccountInformationRequestSegmentV5(account domain.InternationalAccountConnection, allAccounts bool) AccountInformationRequest {
+	a := &AccountInformationRequestSegmentV5{
+		AccountConnection: element.NewInternationalAccountConnection(account),
+		AllAccounts:       element.NewBoolean(allAccounts),
+	}
+	a.ClientSegment = NewBasicSegment(1, a)
+	return a
+}
+
+type AccountInformationRequestSegmentV5 struct {
+	ClientSegment
+	AccountConnection *element.InternationalAccountConnectionDataElement
+	AllAccounts       *element.BooleanDataElement
+	MaxEntries        *element.NumberDataElement
+	Aufsetzpunkt      *element.AlphaNumericDataElement
+}
+
+func (a *AccountInformationRequestSegmentV5) Version() int         { return 5 }
+func (a *AccountInformationRequestSegmentV5) ID() string           { return "HKKIF" }
+func (a *AccountInformationRequestSegmentV5) referencedId() string { return "" }
+func (a *AccountInformationRequestSegmentV5) sender() string       { return senderUser }
+
+func (a *AccountInformationRequestSegmentV5) elements() []element.DataElement {
+	return []element.DataElement{
+		a.AccountConnection,
+		a.AllAccounts,
+		a.MaxEntries,
+		a.Aufsetzpunkt,
+	}
+}
+
+func (a *AccountInformationRequestSegmentV5) SetContinuationMark(continuationMark string) {
+	a.Aufsetzpunkt = element.NewAlphaNumeric(continuationMark, 35)
+}
+
+func NewAccountInformationRequestSegmentV6(account domain.InternationalAccountConnection, allAccounts bool) AccountInformationRequest {
+	a := &AccountInformationRequestSegmentV6{
+		AccountConnection: element.NewInternationalAccountConnection(account),
+		AllAccounts:       element.NewBoolean(allAccounts),
+	}
+	a.ClientSegment = NewBasicSegment(1, a)
+	return a
+}
+
+type AccountInformationRequestSegmentV6 struct {
+	ClientSegment
+	AccountConnection *element.InternationalAccountConnectionDataElement
+	AllAccounts       *element.BooleanDataElement
+	MaxEntries        *element.NumberDataElement
+	Aufsetzpunkt      *element.AlphaNumericDataElement
+}
+
+func (a *AccountInformationRequestSegmentV6) Version() int         { return 6 }
+func (a *AccountInformationRequestSegmentV6) ID() string           { return "HKKIF" }
+func (a *AccountInformationRequestSegmentV6) referencedId() string { return "" }
+func (a *AccountInformationRequestSegmentV6) sender() string       { return senderUser }
+
+func (a *AccountInformationRequestSegmentV6) elements() []element.DataElement {
+	return []element.DataElement{
+		a.AccountConnection,
+		a.AllAccounts,
+		a.MaxEntries,
+		a.Aufsetzpunkt,
+	}
+}
+
+func (a *AccountInformationRequestSegmentV6) SetContinuationMark(continuationMark string) {
+	a.Aufsetzpunkt = element.NewAlphaNumeric(continuationMark, 35)
 }
 
 //go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment AccountInformationResponseSegment
