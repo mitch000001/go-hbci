@@ -7,10 +7,12 @@ import (
 
 func NewCommunicationAccessRequestSegment(fromBank domain.BankId, toBank domain.BankId, maxEntries int, aufsetzpunkt string) *CommunicationAccessRequestSegment {
 	c := &CommunicationAccessRequestSegment{
-		FromBankID:   element.NewBankIndentification(fromBank),
-		ToBankID:     element.NewBankIndentification(toBank),
-		MaxEntries:   element.NewNumber(maxEntries, 4),
-		Aufsetzpunkt: element.NewAlphaNumeric(aufsetzpunkt, 35),
+		FromBankID: element.NewBankIndentification(fromBank),
+		ToBankID:   element.NewBankIndentification(toBank),
+		MaxEntries: element.NewNumber(maxEntries, 4),
+	}
+	if aufsetzpunkt != "" {
+		c.Aufsetzpunkt = element.NewAlphaNumeric(aufsetzpunkt, 35)
 	}
 	c.ClientSegment = NewBasicSegment(2, c)
 	return c

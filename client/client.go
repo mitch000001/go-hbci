@@ -154,3 +154,16 @@ func (c *Client) AccountBalances(account domain.AccountConnection, allAccounts b
 
 	return balances, nil
 }
+
+type AnonymousClient struct {
+	*Client
+}
+
+func (a *AnonymousClient) CommunicationAccess(from, to domain.BankId, maxEntries int) ([]byte, error) {
+	commRequest := segment.NewCommunicationAccessRequestSegment(from, to, maxEntries, "")
+	decryptedMessage, err := a.pinTanDialog.SendAnonymousMessage(message.NewHBCIMessage(a.hbciVersion, commRequest))
+	if err != nil {
+		return nil, err
+	}
+	return []byte(fmt.Sprintf("%+#v", decryptedMessage)), nil
+}

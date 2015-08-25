@@ -82,6 +82,7 @@ func (d *dialog) SetClientSystemID(clientSystemID string) {
 func (d *dialog) SetSecurityFunction(securityFn string) {
 	d.securityFn = securityFn
 	d.signatureProvider.SetSecurityFunction(d.securityFn)
+	d.cryptoProvider.SetSecurityFunction(d.securityFn)
 }
 
 func (d *dialog) SendMessage(clientMessage message.HBCIMessage) (message.BankMessage, error) {
@@ -186,6 +187,111 @@ func (d *dialog) SyncClientSystemID() (string, error) {
 	}
 
 	return d.ClientSystemID, nil
+}
+
+func (d *dialog) SendAnonymousMessage(clientMessage message.HBCIMessage) (message.BankMessage, error) {
+	err := d.anonymousInit()
+	if err != nil {
+		return nil, fmt.Errorf("Error while initating anonymous dialog: %v", err)
+	}
+	defer func() {
+		d.anonymousEnd()
+	}()
+	// TODO: add checks if job needs signature or not
+	requestMessage := d.newBasicMessage(clientMessage)
+	requestMessage.SetNumbers()
+	bankMessage, err := d.request(requestMessage)
+	if err != nil {
+		return nil, err
+	}
+	var errors []string
+	acknowledgements := bankMessage.Acknowledgements()
+	for _, ack := range acknowledgements {
+		if ack.IsWarning() {
+			fmt.Printf("%v\n", ack)
+		}
+		if ack.IsError() {
+			errors = append(errors, ack.String())
+		}
+	}
+	if len(errors) > 0 {
+		return nil, fmt.Errorf("Institute returned errors:\n%s", strings.Join(errors, "\n"))
+	}
+	return bankMessage, nil
+}
+
+func (d *dialog) anonymousInit() error {
+	d.dialogID = initialDialogID
+	d.messageCount = 0
+	initMessage := message.NewDialogInitializationClientMessage(d.hbciVersion)
+	initMessage.Identification = segment.NewIdentificationSegment(d.BankID, anonymousClientID, initialClientSystemID, false)
+	initMessage.ProcessingPreparation = segment.NewProcessingPreparationSegment(d.BankParameterDataVersion(), d.UserParameterDataVersion(), d.Language)
+	initMessage.BasicMessage = d.newBasicMessage(initMessage)
+	initMessage.SetNumbers()
+	bankMessage, err := d.request(initMessage)
+	if err != nil {
+		return err
+	}
+	messageHeader := bankMessage.MessageHeader()
+	if messageHeader == nil {
+		return fmt.Errorf("Malformed response message: %q", bankMessage)
+	}
+	d.dialogID = messageHeader.DialogID.Val()
+
+	err = d.parseBankParameterData(bankMessage)
+	if err != nil {
+		return err
+	}
+
+	err = d.parseUserParameterData(bankMessage)
+	if err != nil {
+		return err
+	}
+
+	bankInfoMessage := bankMessage.FindSegment("HIKIM")
+	if bankInfoMessage != nil {
+		bankInfoSegment := bankInfoMessage.(*segment.BankAnnouncementSegment)
+		internal.Info.Printf("INFO:\n%s\n%s\n", bankInfoSegment.Subject.Val(), bankInfoSegment.Body.Val())
+	}
+
+	errors := make([]string, 0)
+	acknowledgements := bankMessage.Acknowledgements()
+	for _, ack := range acknowledgements {
+		if ack.IsWarning() {
+			fmt.Printf("%v\n", ack)
+		}
+		if ack.IsError() {
+			errors = append(errors, ack.String())
+		}
+	}
+	if len(errors) > 0 {
+		return fmt.Errorf("DialogEnd: Institute returned errors:\n%s", strings.Join(errors, "\n"))
+	}
+	return nil
+}
+
+func (d *dialog) anonymousEnd() error {
+	dialogEnd := message.NewDialogFinishingMessage(d.hbciVersion, d.dialogID)
+	dialogEnd.BasicMessage = d.newBasicMessage(dialogEnd)
+	dialogEnd.SetNumbers()
+
+	decryptedMessage, err := d.request(dialogEnd)
+	if err != nil {
+		return fmt.Errorf("Error while ending dialog: %v", err)
+	}
+
+	errors := make([]string, 0)
+	acknowledgements := decryptedMessage.Acknowledgements()
+	for _, ack := range acknowledgements {
+		if ack.IsError() {
+			errors = append(errors, ack.String())
+		}
+	}
+	if len(errors) > 0 {
+		return fmt.Errorf("DialogEnd: Institute returned errors:\n%s", strings.Join(errors, "\n"))
+	}
+
+	return nil
 }
 
 func (d *dialog) init() error {
@@ -368,7 +474,7 @@ func (d *dialog) request(clientMessage message.ClientMessage) (message.BankMessa
 
 	response, err := d.transport.Do(request)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Transport#Do: %v", err)
 	}
 
 	var bankMessage message.BankMessage

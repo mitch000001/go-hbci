@@ -10,6 +10,7 @@ import (
 type EncryptionHeader interface {
 	ClientSegment
 	SetClientSystemID(clientSystemID string)
+	SetSecurityProfile(securityFn string)
 	SetEncryptionKeyName(keyName domain.KeyName)
 	SetEncryptionAlgorithm(algorithm *element.EncryptionAlgorithmDataElement)
 }
@@ -108,6 +109,10 @@ func (e *EncryptionHeaderV2) SetClientSystemID(clientSystemId string) {
 	e.SecurityID = element.NewRDHSecurityIdentification(element.SecurityHolderMessageSender, clientSystemId)
 }
 
+func (e *EncryptionHeaderV2) SetSecurityProfile(securityFn string) {
+	// NO OP
+}
+
 func NewPinTanEncryptionHeaderSegmentV3(clientSystemId string, keyName domain.KeyName) *EncryptionHeaderSegment {
 	e := &EncryptionHeaderSegmentV3{
 		SecurityProfile:      element.NewPinTanSecurityProfile(1),
@@ -183,4 +188,12 @@ func (e *EncryptionHeaderSegmentV3) SetEncryptionAlgorithm(algorithm *element.En
 
 func (e *EncryptionHeaderSegmentV3) SetClientSystemID(clientSystemId string) {
 	e.SecurityID = element.NewRDHSecurityIdentification(element.SecurityHolderMessageSender, clientSystemId)
+}
+
+func (e *EncryptionHeaderSegmentV3) SetSecurityProfile(securityFn string) {
+	if securityFn == "999" {
+		e.SecurityProfile = element.NewPinTanSecurityProfile(1)
+	} else {
+		e.SecurityProfile = element.NewPinTanSecurityProfile(2)
+	}
 }

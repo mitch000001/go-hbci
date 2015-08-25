@@ -38,8 +38,7 @@ func TestClientAccountTransactions(t *testing.T) {
 	}
 }
 
-func TestPinTanDialogAccountInformation(t *testing.T) {
-	t.Skip()
+func TestClientAccountInformation(t *testing.T) {
 	c := newClient()
 
 	err := c.AccountInformation(testAccount, true)
@@ -91,6 +90,26 @@ func TestClientAccounts(t *testing.T) {
 		for _, allowedTransaction := range account.AllowedBusinessTransactions {
 			t.Logf("ID: %s\tNeeded signatures: %d\n", allowedTransaction.ID, allowedTransaction.NeededSignatures)
 		}
+	}
+}
+
+func TestAnonymousClientCommunicationAccess(t *testing.T) {
+	a := &client.AnonymousClient{
+		Client: newClient(),
+	}
+
+	from := domain.BankId{280, "78050000"}
+	to := domain.BankId{280, "78050000"}
+
+	res, err := a.CommunicationAccess(from, to, 10)
+
+	if err != nil {
+		t.Logf("Expected error to be nil, got %T:%v\n", err, err)
+		t.Fail()
+	}
+
+	if res != nil {
+		t.Logf("Response: %s\n", res)
 	}
 }
 
