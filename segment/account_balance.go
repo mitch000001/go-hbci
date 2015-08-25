@@ -84,6 +84,11 @@ func (a *AccountBalanceRequestSegmentV6) SetContinuationMark(continuationMark st
 
 //go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment AccountBalanceResponseSegment
 
+type AccountBalanceResponse interface {
+	BankSegment
+	AccountBalance() domain.AccountBalance
+}
+
 type AccountBalanceResponseSegment struct {
 	Segment
 	AccountConnection  *element.AccountConnectionDataElement

@@ -23,7 +23,7 @@ type Segment interface {
 
 type ClientSegment interface {
 	Segment
-	MarshalHBCI() ([]byte, error)
+	Marshaler
 }
 
 type BankSegment interface {
@@ -33,7 +33,7 @@ type BankSegment interface {
 
 type CommonSegment interface {
 	Segment
-	MarshalHBCI() ([]byte, error)
+	Marshaler
 	Unmarshaler
 }
 
@@ -43,6 +43,10 @@ type basicSegment interface {
 	referencedId() string
 	sender() string
 	elements() []element.DataElement
+}
+
+type Marshaler interface {
+	MarshalHBCI() ([]byte, error)
 }
 
 type Unmarshaler interface {
