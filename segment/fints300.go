@@ -9,4 +9,5 @@ var FINTS300 = HBCIVersion{
 	SignatureEnd:              NewSignatureEndSegmentV2,
 	AccountBalanceRequest:     NewAccountBalanceRequestV6,
 	AccountTransactionRequest: NewAccountTransactionRequestSegmentV6,
+	StatusProtocolRequest:     NewStatusProtocolRequestV4,
 }

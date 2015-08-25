@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"strings"
+	"time"
 )
 
 func NewMessageAcknowledgement(code int, referenceDataElement, text string, params []string) Acknowledgement {
@@ -80,4 +81,31 @@ func (a Acknowledgement) IsWarning() bool {
 
 func (a Acknowledgement) IsSuccess() bool {
 	return a.Code > 0 && a.Code < 1000
+}
+
+type StatusAcknowledgement struct {
+	Acknowledgement
+	TransmittedAt time.Time
+}
+
+func (s StatusAcknowledgement) String() string {
+	var buf bytes.Buffer
+	fmt.Fprintf(&buf, "%s for message %d (%s)", s.Type, s.ReferencingMessage.MessageNumber, s.ReferencingMessage.DialogID)
+	if s.ReferencingSegmentNumber > 0 {
+		fmt.Fprintf(&buf, ", segment %d: ", s.ReferencingSegmentNumber)
+	} else {
+		fmt.Fprintf(&buf, ": ")
+	}
+	fmt.Fprintf(&buf, "Transmitted at: %s, ", s.TransmittedAt)
+	fmt.Fprintf(&buf, "Code: %d, ", s.Code)
+	if s.ReferenceDataElement != "" {
+		fmt.Fprintf(&buf, "Position: %s, ", s.ReferenceDataElement)
+	} else {
+		fmt.Fprintf(&buf, "Position: none, ")
+	}
+	fmt.Fprintf(&buf, "Text: '%s'", s.Text)
+	if len(s.Params) != 0 {
+		fmt.Fprintf(&buf, ", Parameters: %s", strings.Join(s.Params, ", "))
+	}
+	return buf.String()
 }

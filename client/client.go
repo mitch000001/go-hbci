@@ -3,6 +3,7 @@ package client
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/mitch000001/go-hbci/dialog"
 	"github.com/mitch000001/go-hbci/domain"
@@ -153,6 +154,23 @@ func (c *Client) AccountBalances(account domain.AccountConnection, allAccounts b
 	}
 
 	return balances, nil
+}
+
+func (c *Client) Status(from, to time.Time, maxEntries int, aufsetzpunkt string) ([]domain.StatusAcknowledgement, error) {
+	statusRequest := c.hbciVersion.StatusProtocolRequest(from, to, maxEntries, aufsetzpunkt)
+	bankMessage, err := c.pinTanDialog.SendMessage(message.NewHBCIMessage(c.hbciVersion, statusRequest))
+	if err != nil {
+		return nil, err
+	}
+	var statusAcknowledgements []domain.StatusAcknowledgement
+	statusResponses := bankMessage.FindSegments("HIPRO")
+	if statusResponses != nil {
+		for _, seg := range statusResponses {
+			statusResponse := seg.(segment.StatusProtocolResponse)
+			statusAcknowledgements = append(statusAcknowledgements, statusResponse.Status())
+		}
+	}
+	return statusAcknowledgements, nil
 }
 
 type AnonymousClient struct {

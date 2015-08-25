@@ -93,6 +93,21 @@ func TestClientAccounts(t *testing.T) {
 	}
 }
 
+func TestClientStatus(t *testing.T) {
+	c := newClient()
+
+	statuus, err := c.Status(time.Now().Add(-48*time.Hour), time.Now(), 10, "")
+
+	if err != nil {
+		t.Logf("Expected error to be nil, got %T:%v\n", err, err)
+		t.Fail()
+	}
+
+	for _, status := range statuus {
+		t.Logf("Status: %s\n", status)
+	}
+}
+
 func TestAnonymousClientCommunicationAccess(t *testing.T) {
 	a := &client.AnonymousClient{
 		Client: newClient(),
@@ -114,7 +129,7 @@ func TestAnonymousClientCommunicationAccess(t *testing.T) {
 }
 
 func newClient() *client.Client {
-	configFile, err := os.Open("../.hbci220.json")
+	configFile, err := os.Open("../.fints300_haspa.json")
 	if err != nil && !os.IsNotExist(err) {
 		panic(err)
 	}

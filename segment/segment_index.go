@@ -86,4 +86,6 @@ func init() {
 	KnownSegments.mustAddToIndex(VersionedSegment{"HIKAZ", 5}, func() Segment { return &AccountTransactionResponseSegmentV5{} })
 	KnownSegments.mustAddToIndex(VersionedSegment{"HIKAZ", 6}, func() Segment { return &AccountTransactionResponseSegmentV6{} })
 	KnownSegments.mustAddToIndex(VersionedSegment{"HIKAZ", 7}, func() Segment { return &AccountTransactionResponseSegmentV7{} })
+	KnownSegments.mustAddToIndex(VersionedSegment{"HIPRO", 3}, func() Segment { return &StatusProtocolResponseSegmentV3{} })
+	KnownSegments.mustAddToIndex(VersionedSegment{"HIPRO", 4}, func() Segment { return &StatusProtocolResponseSegmentV4{} })
 }

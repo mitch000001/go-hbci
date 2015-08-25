@@ -1,6 +1,10 @@
 package segment
 
-import "github.com/mitch000001/go-hbci/domain"
+import (
+	"time"
+
+	"github.com/mitch000001/go-hbci/domain"
+)
 
 var SupportedHBCIVersions = map[int]HBCIVersion{
 	220: HBCI220,
@@ -18,6 +22,7 @@ type HBCIVersion struct {
 	SynchronisationRequest    func(modus int) *SynchronisationRequestSegment
 	AccountBalanceRequest     func(account domain.AccountConnection, allAccounts bool) AccountBalanceRequest
 	AccountTransactionRequest func(account domain.AccountConnection, allAccounts bool) *AccountTransactionRequestSegment
+	StatusProtocolRequest     func(from, to time.Time, maxEntries int, aufsetzpunkt string) StatusProtocolRequest
 }
 
 func (v HBCIVersion) Version() int {
