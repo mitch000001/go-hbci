@@ -73,7 +73,7 @@ func (c *Client) AccountTransactions(account domain.AccountConnection, timeframe
 		return nil, err
 	}
 	var accountTransactions []domain.AccountTransaction
-	accountTransactionResponses := decryptedMessage.FindMarshaledSegments("HIKAZ")
+	accountTransactionResponses := decryptedMessage.FindSegments("HIKAZ")
 	if accountTransactionResponses != nil {
 		type response struct {
 			transactions []domain.AccountTransaction
@@ -83,14 +83,10 @@ func (c *Client) AccountTransactions(account domain.AccountConnection, timeframe
 			return response{tr, err}
 		}
 		responses := make(chan response, len(accountTransactionResponses))
-		for _, marshaledSegment := range accountTransactionResponses {
-			segment := &segment.AccountTransactionResponseSegment{}
-			err = segment.UnmarshalHBCI(marshaledSegment)
-			if err != nil {
-				return nil, err
-			}
-			accountTransactions = append(accountTransactions, segment.Transactions()...)
-			if segment != nil {
+		for _, unmarshaledSegment := range accountTransactionResponses {
+			seg := unmarshaledSegment.(segment.AccountTransactionResponse)
+			accountTransactions = append(accountTransactions, seg.Transactions()...)
+			if seg != nil {
 				go func() {
 					responses <- resFn(c.AccountTransactions(account, timeframe, allAccounts, aufsetzpunkt))
 				}()

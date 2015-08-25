@@ -69,7 +69,8 @@ func init() {
 	KnownSegments.mustAddToIndex(VersionedSegment{"HNVSD", 1}, func() Segment { return &EncryptedDataSegment{} })
 	KnownSegments.mustAddToIndex(VersionedSegment{"HIRMG", 2}, func() Segment { return &MessageAcknowledgement{} })
 	KnownSegments.mustAddToIndex(VersionedSegment{"HIRMS", 2}, func() Segment { return &SegmentAcknowledgement{} })
-	KnownSegments.mustAddToIndex(VersionedSegment{"HISYN", 3}, func() Segment { return &SynchronisationResponseSegment{} })
+	KnownSegments.mustAddToIndex(VersionedSegment{"HISYN", 3}, func() Segment { return &SynchronisationResponseSegmentV3{} })
+	KnownSegments.mustAddToIndex(VersionedSegment{"HISYN", 4}, func() Segment { return &SynchronisationResponseSegmentV4{} })
 	KnownSegments.mustAddToIndex(VersionedSegment{"HIKIM", 2}, func() Segment { return &BankAnnouncementSegment{} })
 	KnownSegments.mustAddToIndex(VersionedSegment{"HIBPA", 2}, func() Segment { return &CommonBankParameterV2{} })
 	KnownSegments.mustAddToIndex(VersionedSegment{"HIBPA", 3}, func() Segment { return &CommonBankParameterV3{} })
@@ -82,4 +83,7 @@ func init() {
 	KnownSegments.mustAddToIndex(VersionedSegment{"HIUPD", 6}, func() Segment { return &AccountInformationV6{} })
 	KnownSegments.mustAddToIndex(VersionedSegment{"HISAL", 5}, func() Segment { return &AccountBalanceResponseSegment{} })
 	KnownSegments.mustAddToIndex(VersionedSegment{"HIKIF", 1}, func() Segment { return &AccountInformationResponseSegment{} })
+	KnownSegments.mustAddToIndex(VersionedSegment{"HIKAZ", 5}, func() Segment { return &AccountTransactionResponseSegmentV5{} })
+	KnownSegments.mustAddToIndex(VersionedSegment{"HIKAZ", 6}, func() Segment { return &AccountTransactionResponseSegmentV6{} })
+	KnownSegments.mustAddToIndex(VersionedSegment{"HIKAZ", 7}, func() Segment { return &AccountTransactionResponseSegmentV7{} })
 }

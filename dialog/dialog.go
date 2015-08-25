@@ -164,10 +164,10 @@ func (d *dialog) SyncClientSystemID() (string, error) {
 
 	syncResponse := decryptedMessage.FindSegment("HISYN")
 	if syncResponse != nil {
-		syncSegment := syncResponse.(*segment.SynchronisationResponseSegment)
-		d.SetClientSystemID(syncSegment.ClientSystemID.Val())
+		syncSegment := syncResponse.(segment.SynchronisationResponse)
+		d.SetClientSystemID(syncSegment.ClientSystemID())
 	} else {
-		return "", fmt.Errorf("Malformed message: missing SynchronisationResponse")
+		return "", fmt.Errorf("Malformed message: missing unmarshaler for SynchronisationResponse")
 	}
 
 	err = d.parseBankParameterData(decryptedMessage)

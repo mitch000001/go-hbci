@@ -76,24 +76,79 @@ func (s *SynchronisationRequestV3) elements() []element.DataElement {
 	}
 }
 
-//go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment SynchronisationResponseSegment
+//go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment SynchronisationResponseSegment -segment_interface SynchronisationResponse -segment_versions="SynchronisationResponseSegmentV3:3,SynchronisationResponseSegmentV4:4"
 
-type SynchronisationResponseSegment struct {
-	Segment
-	ClientSystemID *element.IdentificationDataElement
-	MessageNumber  *element.NumberDataElement
-	SignatureID    *element.NumberDataElement
+type SynchronisationResponse interface {
+	BankSegment
+	ClientSystemID() string
+	LastMessageNumber() int
+	SignatureID() int
 }
 
-func (s *SynchronisationResponseSegment) Version() int         { return 3 }
-func (s *SynchronisationResponseSegment) ID() string           { return "HISYN" }
-func (s *SynchronisationResponseSegment) referencedId() string { return "HKSYN" }
-func (s *SynchronisationResponseSegment) sender() string       { return senderBank }
+type SynchronisationResponseSegment struct {
+	SynchronisationResponse
+}
 
-func (s *SynchronisationResponseSegment) elements() []element.DataElement {
+type SynchronisationResponseSegmentV3 struct {
+	Segment
+	ClientSystemIDResponse *element.IdentificationDataElement
+	MessageNumberResponse  *element.NumberDataElement
+	SignatureIDResponse    *element.NumberDataElement
+}
+
+func (s *SynchronisationResponseSegmentV3) Version() int         { return 3 }
+func (s *SynchronisationResponseSegmentV3) ID() string           { return "HISYN" }
+func (s *SynchronisationResponseSegmentV3) referencedId() string { return "HKSYN" }
+func (s *SynchronisationResponseSegmentV3) sender() string       { return senderBank }
+
+func (s *SynchronisationResponseSegmentV3) elements() []element.DataElement {
 	return []element.DataElement{
-		s.ClientSystemID,
-		s.MessageNumber,
-		s.SignatureID,
+		s.ClientSystemIDResponse,
+		s.MessageNumberResponse,
+		s.SignatureIDResponse,
 	}
+}
+
+func (s *SynchronisationResponseSegmentV3) ClientSystemID() string {
+	return s.ClientSystemIDResponse.Val()
+}
+
+func (s *SynchronisationResponseSegmentV3) LastMessageNumber() int {
+	return s.MessageNumberResponse.Val()
+}
+
+func (s *SynchronisationResponseSegmentV3) SignatureID() int {
+	return s.SignatureIDResponse.Val()
+}
+
+type SynchronisationResponseSegmentV4 struct {
+	Segment
+	ClientSystemIDResponse *element.IdentificationDataElement
+	MessageNumberResponse  *element.NumberDataElement
+	SignatureIDResponse    *element.NumberDataElement
+}
+
+func (s *SynchronisationResponseSegmentV4) Version() int         { return 4 }
+func (s *SynchronisationResponseSegmentV4) ID() string           { return "HISYN" }
+func (s *SynchronisationResponseSegmentV4) referencedId() string { return "HKSYN" }
+func (s *SynchronisationResponseSegmentV4) sender() string       { return senderBank }
+
+func (s *SynchronisationResponseSegmentV4) elements() []element.DataElement {
+	return []element.DataElement{
+		s.ClientSystemIDResponse,
+		s.MessageNumberResponse,
+		s.SignatureIDResponse,
+	}
+}
+
+func (s *SynchronisationResponseSegmentV4) ClientSystemID() string {
+	return s.ClientSystemIDResponse.Val()
+}
+
+func (s *SynchronisationResponseSegmentV4) LastMessageNumber() int {
+	return s.MessageNumberResponse.Val()
+}
+
+func (s *SynchronisationResponseSegmentV4) SignatureID() int {
+	return s.SignatureIDResponse.Val()
 }

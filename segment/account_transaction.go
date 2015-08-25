@@ -5,7 +5,6 @@ import (
 
 	"github.com/mitch000001/go-hbci/domain"
 	"github.com/mitch000001/go-hbci/element"
-	"github.com/mitch000001/go-hbci/swift"
 )
 
 type AccountTransactionRequestSegment struct {
@@ -130,27 +129,133 @@ func (a *AccountTransactionRequestV6) elements() []element.DataElement {
 	}
 }
 
-type AccountTransactionResponseSegment struct {
-	Segment
-	BookedTransactions   *element.BinaryDataElement
-	UnbookedTransactions *element.BinaryDataElement
-	bookedTransactions   []*swift.MT940
-}
-
-func (a *AccountTransactionResponseSegment) Transactions() []domain.AccountTransaction {
-	var transactions []domain.AccountTransaction
-	for _, bookedTr := range a.bookedTransactions {
-		transactions = append(transactions, bookedTr.AccountTransactions()...)
+func NewAccountTransactionRequestSegmentV7(account domain.InternationalAccountConnection, allAccounts bool) *AccountTransactionRequestSegment {
+	v7 := &AccountTransactionRequestV7{
+		InternationalAccount: element.NewInternationalAccountConnection(account),
+		AllAccounts:          element.NewBoolean(allAccounts),
 	}
-	return transactions
+	v7.ClientSegment = NewBasicSegment(1, v7)
+
+	segment := &AccountTransactionRequestSegment{
+		accountTransactionRequestSegment: v7,
+	}
+	return segment
 }
 
-func (a *AccountTransactionResponseSegment) Version() int         { return 5 }
-func (a *AccountTransactionResponseSegment) ID() string           { return "HIKAZ" }
-func (a *AccountTransactionResponseSegment) referencedId() string { return "HKKAZ" }
-func (a *AccountTransactionResponseSegment) sender() string       { return senderBank }
+type AccountTransactionRequestV7 struct {
+	ClientSegment
+	InternationalAccount *element.InternationalAccountConnectionDataElement
+	AllAccounts          *element.BooleanDataElement
+	From                 *element.DateDataElement
+	To                   *element.DateDataElement
+	MaxEntries           *element.NumberDataElement
+	Aufsetzpunkt         *element.AlphaNumericDataElement
+}
 
-func (a *AccountTransactionResponseSegment) elements() []element.DataElement {
+func (a *AccountTransactionRequestV7) SetAufsetzpunkt(aufsetzpoint string) {
+	a.Aufsetzpunkt = element.NewAlphaNumeric(aufsetzpoint, len(aufsetzpoint))
+}
+
+func (a *AccountTransactionRequestV7) SetTransactionRange(timeframe domain.Timeframe) {
+	from := timeframe.StartDate
+	to := timeframe.EndDate
+	if to.IsZero() {
+		to = domain.NewShortDate(time.Now())
+	}
+	if from.IsZero() { // use sane defaults
+		from = domain.NewShortDate(time.Now().AddDate(0, -1, 0))
+	}
+	a.From = element.NewDate(from.Time)
+	a.To = element.NewDate(to.Time)
+}
+
+func (a *AccountTransactionRequestV7) Version() int         { return 7 }
+func (a *AccountTransactionRequestV7) ID() string           { return "HKKAZ" }
+func (a *AccountTransactionRequestV7) referencedId() string { return "" }
+func (a *AccountTransactionRequestV7) sender() string       { return senderUser }
+
+func (a *AccountTransactionRequestV7) elements() []element.DataElement {
+	return []element.DataElement{
+		a.InternationalAccount,
+		a.AllAccounts,
+		a.From,
+		a.To,
+		a.MaxEntries,
+		a.Aufsetzpunkt,
+	}
+}
+
+type AccountTransactionResponse interface {
+	BankSegment
+	Transactions() []domain.AccountTransaction
+}
+
+//go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment AccountTransactionResponseSegment -segment_interface AccountTransactionResponse -segment_versions="AccountTransactionResponseSegmentV5:5:Segment,AccountTransactionResponseSegmentV6:6:Segment,AccountTransactionResponseSegmentV7:7:Segment"
+
+type AccountTransactionResponseSegment struct {
+	AccountTransactionResponse
+}
+
+type AccountTransactionResponseSegmentV5 struct {
+	Segment
+	BookedTransactions   *element.SwiftMT940DataElement
+	UnbookedTransactions *element.BinaryDataElement
+}
+
+func (a *AccountTransactionResponseSegmentV5) Transactions() []domain.AccountTransaction {
+	return a.BookedTransactions.Val()
+}
+
+func (a *AccountTransactionResponseSegmentV5) Version() int         { return 5 }
+func (a *AccountTransactionResponseSegmentV5) ID() string           { return "HIKAZ" }
+func (a *AccountTransactionResponseSegmentV5) referencedId() string { return "HKKAZ" }
+func (a *AccountTransactionResponseSegmentV5) sender() string       { return senderBank }
+
+func (a *AccountTransactionResponseSegmentV5) elements() []element.DataElement {
+	return []element.DataElement{
+		a.BookedTransactions,
+		a.UnbookedTransactions,
+	}
+}
+
+type AccountTransactionResponseSegmentV6 struct {
+	Segment
+	BookedTransactions   *element.SwiftMT940DataElement
+	UnbookedTransactions *element.BinaryDataElement
+}
+
+func (a *AccountTransactionResponseSegmentV6) Transactions() []domain.AccountTransaction {
+	return a.BookedTransactions.Val()
+}
+
+func (a *AccountTransactionResponseSegmentV6) Version() int         { return 6 }
+func (a *AccountTransactionResponseSegmentV6) ID() string           { return "HIKAZ" }
+func (a *AccountTransactionResponseSegmentV6) referencedId() string { return "HKKAZ" }
+func (a *AccountTransactionResponseSegmentV6) sender() string       { return senderBank }
+
+func (a *AccountTransactionResponseSegmentV6) elements() []element.DataElement {
+	return []element.DataElement{
+		a.BookedTransactions,
+		a.UnbookedTransactions,
+	}
+}
+
+type AccountTransactionResponseSegmentV7 struct {
+	Segment
+	BookedTransactions   *element.SwiftMT940DataElement
+	UnbookedTransactions *element.BinaryDataElement
+}
+
+func (a *AccountTransactionResponseSegmentV7) Transactions() []domain.AccountTransaction {
+	return a.BookedTransactions.Val()
+}
+
+func (a *AccountTransactionResponseSegmentV7) Version() int         { return 7 }
+func (a *AccountTransactionResponseSegmentV7) ID() string           { return "HIKAZ" }
+func (a *AccountTransactionResponseSegmentV7) referencedId() string { return "HKKAZ" }
+func (a *AccountTransactionResponseSegmentV7) sender() string       { return senderBank }
+
+func (a *AccountTransactionResponseSegmentV7) elements() []element.DataElement {
 	return []element.DataElement{
 		a.BookedTransactions,
 		a.UnbookedTransactions,

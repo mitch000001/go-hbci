@@ -41,7 +41,7 @@ func TestUnmarshalerUnmarshalSegment(t *testing.T) {
 		t.Fail()
 	}
 
-	syncSegment := &segment.SynchronisationResponseSegment{ClientSystemID: element.NewIdentification("abcde")}
+	syncSegment := &segment.SynchronisationResponseSegmentV3{ClientSystemIDResponse: element.NewIdentification("abcde")}
 	syncSegment.Segment = segment.NewBasicSegment(1, syncSegment)
 	expected = syncSegment.String()
 
