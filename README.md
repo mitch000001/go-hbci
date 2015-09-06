@@ -1,5 +1,6 @@
 # go-hbci
 [![Build Status](https://travis-ci.org/mitch000001/go-hbci.svg)](https://travis-ci.org/mitch000001/go-hbci)
+[![Coverage Status](https://coveralls.io/repos/mitch000001/go-hbci/badge.svg?branch=master&service=github)](https://coveralls.io/github/mitch000001/go-hbci?branch=master)
 
 A client library to use the [Home Banking Computer Interface](https://de.wikipedia.org/wiki/Homebanking_Computer_Interface) (german only)
 
