@@ -10,7 +10,7 @@ For an exhausted reference of HBCI visit the website of [The German Banking Indu
 Due to the massive amount of the standard this library is only at the beginning of being useful to use.
 Also, there is no client interface yet in terms of entry point for the library or management of pin/tan or any other data.
 
-The implemented standard conforms to HBCI 2.2.
+The implemented standard conforms to HBCI 2.2 and FINTS 3.0.
 
 ## Roadmap
 - [x] Parsing Accounts
