@@ -53,12 +53,6 @@ func main() {
 		fmt.Printf("Error while generating Unmarshaler: %v\n", err)
 		os.Exit(1)
 	}
-	var buf bytes.Buffer
-	_, err = io.Copy(&buf, generated)
-	if err != nil {
-		fmt.Printf("Error while copying Unmarshaler: %T:%v\n", err, err)
-		os.Exit(1)
-	}
 	newFileName := strings.TrimSuffix(filename, ".go") + "_unmarshaler.go"
 	file, err := os.Create(newFileName)
 	if err != nil {
@@ -67,7 +61,7 @@ func main() {
 	}
 	defer file.Close()
 	fileSet = token.NewFileSet()
-	newAstFile, err := parser.ParseFile(fileSet, newFileName, buf.String(), 0)
+	newAstFile, err := parser.ParseFile(fileSet, newFileName, generated, 0)
 	if err != nil {
 		fmt.Println(err)
 	}
