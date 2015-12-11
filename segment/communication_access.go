@@ -5,14 +5,14 @@ import (
 	"github.com/mitch000001/go-hbci/element"
 )
 
-func NewCommunicationAccessRequestSegment(fromBank domain.BankId, toBank domain.BankId, maxEntries int, aufsetzpunkt string) *CommunicationAccessRequestSegment {
+func NewCommunicationAccessRequestSegment(fromBank domain.BankId, toBank domain.BankId, maxEntries int, continuationReference string) *CommunicationAccessRequestSegment {
 	c := &CommunicationAccessRequestSegment{
 		FromBankID: element.NewBankIndentification(fromBank),
 		ToBankID:   element.NewBankIndentification(toBank),
 		MaxEntries: element.NewNumber(maxEntries, 4),
 	}
-	if aufsetzpunkt != "" {
-		c.Aufsetzpunkt = element.NewAlphaNumeric(aufsetzpunkt, 35)
+	if continuationReference != "" {
+		c.ContinuationReference = element.NewAlphaNumeric(continuationReference, 35)
 	}
 	c.ClientSegment = NewBasicSegment(2, c)
 	return c
@@ -20,11 +20,10 @@ func NewCommunicationAccessRequestSegment(fromBank domain.BankId, toBank domain.
 
 type CommunicationAccessRequestSegment struct {
 	ClientSegment
-	FromBankID *element.BankIdentificationDataElement
-	ToBankID   *element.BankIdentificationDataElement
-	MaxEntries *element.NumberDataElement
-	// TODO: find a fitting name
-	Aufsetzpunkt *element.AlphaNumericDataElement
+	FromBankID            *element.BankIdentificationDataElement
+	ToBankID              *element.BankIdentificationDataElement
+	MaxEntries            *element.NumberDataElement
+	ContinuationReference *element.AlphaNumericDataElement
 }
 
 func (c *CommunicationAccessRequestSegment) Version() int         { return 3 }
@@ -37,7 +36,7 @@ func (c *CommunicationAccessRequestSegment) elements() []element.DataElement {
 		c.FromBankID,
 		c.ToBankID,
 		c.MaxEntries,
-		c.Aufsetzpunkt,
+		c.ContinuationReference,
 	}
 }
 

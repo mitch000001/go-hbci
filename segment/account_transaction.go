@@ -13,7 +13,7 @@ type AccountTransactionRequestSegment struct {
 
 type accountTransactionRequestSegment interface {
 	ClientSegment
-	SetAufsetzpunkt(string)
+	SetContinuationReference(string)
 	SetTransactionRange(domain.Timeframe)
 }
 
@@ -32,16 +32,16 @@ func NewAccountTransactionRequestSegmentV5(account domain.AccountConnection, all
 
 type AccountTransactionRequestV5 struct {
 	ClientSegment
-	Account      *element.AccountConnectionDataElement
-	AllAccounts  *element.BooleanDataElement
-	From         *element.DateDataElement
-	To           *element.DateDataElement
-	MaxEntries   *element.NumberDataElement
-	Aufsetzpunkt *element.AlphaNumericDataElement
+	Account               *element.AccountConnectionDataElement
+	AllAccounts           *element.BooleanDataElement
+	From                  *element.DateDataElement
+	To                    *element.DateDataElement
+	MaxEntries            *element.NumberDataElement
+	ContinuationReference *element.AlphaNumericDataElement
 }
 
-func (a *AccountTransactionRequestV5) SetAufsetzpunkt(aufsetzpoint string) {
-	a.Aufsetzpunkt = element.NewAlphaNumeric(aufsetzpoint, len(aufsetzpoint))
+func (a *AccountTransactionRequestV5) SetContinuationReference(aufsetzpoint string) {
+	a.ContinuationReference = element.NewAlphaNumeric(aufsetzpoint, len(aufsetzpoint))
 }
 
 func (a *AccountTransactionRequestV5) SetTransactionRange(timeframe domain.Timeframe) {
@@ -69,7 +69,7 @@ func (a *AccountTransactionRequestV5) elements() []element.DataElement {
 		a.From,
 		a.To,
 		a.MaxEntries,
-		a.Aufsetzpunkt,
+		a.ContinuationReference,
 	}
 }
 
@@ -88,16 +88,16 @@ func NewAccountTransactionRequestSegmentV6(account domain.AccountConnection, all
 
 type AccountTransactionRequestV6 struct {
 	ClientSegment
-	Account      *element.AccountConnectionDataElement
-	AllAccounts  *element.BooleanDataElement
-	From         *element.DateDataElement
-	To           *element.DateDataElement
-	MaxEntries   *element.NumberDataElement
-	Aufsetzpunkt *element.AlphaNumericDataElement
+	Account               *element.AccountConnectionDataElement
+	AllAccounts           *element.BooleanDataElement
+	From                  *element.DateDataElement
+	To                    *element.DateDataElement
+	MaxEntries            *element.NumberDataElement
+	ContinuationReference *element.AlphaNumericDataElement
 }
 
-func (a *AccountTransactionRequestV6) SetAufsetzpunkt(aufsetzpoint string) {
-	a.Aufsetzpunkt = element.NewAlphaNumeric(aufsetzpoint, len(aufsetzpoint))
+func (a *AccountTransactionRequestV6) SetContinuationReference(aufsetzpoint string) {
+	a.ContinuationReference = element.NewAlphaNumeric(aufsetzpoint, len(aufsetzpoint))
 }
 
 func (a *AccountTransactionRequestV6) SetTransactionRange(timeframe domain.Timeframe) {
@@ -125,7 +125,7 @@ func (a *AccountTransactionRequestV6) elements() []element.DataElement {
 		a.From,
 		a.To,
 		a.MaxEntries,
-		a.Aufsetzpunkt,
+		a.ContinuationReference,
 	}
 }
 
@@ -144,16 +144,16 @@ func NewAccountTransactionRequestSegmentV7(account domain.InternationalAccountCo
 
 type AccountTransactionRequestV7 struct {
 	ClientSegment
-	InternationalAccount *element.InternationalAccountConnectionDataElement
-	AllAccounts          *element.BooleanDataElement
-	From                 *element.DateDataElement
-	To                   *element.DateDataElement
-	MaxEntries           *element.NumberDataElement
-	Aufsetzpunkt         *element.AlphaNumericDataElement
+	InternationalAccount  *element.InternationalAccountConnectionDataElement
+	AllAccounts           *element.BooleanDataElement
+	From                  *element.DateDataElement
+	To                    *element.DateDataElement
+	MaxEntries            *element.NumberDataElement
+	ContinuationReference *element.AlphaNumericDataElement
 }
 
-func (a *AccountTransactionRequestV7) SetAufsetzpunkt(aufsetzpoint string) {
-	a.Aufsetzpunkt = element.NewAlphaNumeric(aufsetzpoint, len(aufsetzpoint))
+func (a *AccountTransactionRequestV7) SetContinuationReference(aufsetzpoint string) {
+	a.ContinuationReference = element.NewAlphaNumeric(aufsetzpoint, len(aufsetzpoint))
 }
 
 func (a *AccountTransactionRequestV7) SetTransactionRange(timeframe domain.Timeframe) {
@@ -181,7 +181,7 @@ func (a *AccountTransactionRequestV7) elements() []element.DataElement {
 		a.From,
 		a.To,
 		a.MaxEntries,
-		a.Aufsetzpunkt,
+		a.ContinuationReference,
 	}
 }
 

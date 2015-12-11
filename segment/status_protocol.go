@@ -11,14 +11,14 @@ type StatusProtocolRequest interface {
 	ClientSegment
 }
 
-func NewStatusProtocolRequestV3(from, to time.Time, maxEntries int, aufsetzpunkt string) StatusProtocolRequest {
+func NewStatusProtocolRequestV3(from, to time.Time, maxEntries int, continuationReference string) StatusProtocolRequest {
 	s := &StatusProtocolRequestSegmentV3{
 		From:       element.NewDate(from),
 		To:         element.NewDate(to),
 		MaxEntries: element.NewNumber(maxEntries, 4),
 	}
-	if aufsetzpunkt != "" {
-		s.Aufsetzpunkt = element.NewAlphaNumeric(aufsetzpunkt, 35)
+	if continuationReference != "" {
+		s.ContinuationReference = element.NewAlphaNumeric(continuationReference, 35)
 	}
 	s.ClientSegment = NewBasicSegment(1, s)
 	return s
@@ -26,10 +26,10 @@ func NewStatusProtocolRequestV3(from, to time.Time, maxEntries int, aufsetzpunkt
 
 type StatusProtocolRequestSegmentV3 struct {
 	ClientSegment
-	From         *element.DateDataElement
-	To           *element.DateDataElement
-	MaxEntries   *element.NumberDataElement
-	Aufsetzpunkt *element.AlphaNumericDataElement
+	From                  *element.DateDataElement
+	To                    *element.DateDataElement
+	MaxEntries            *element.NumberDataElement
+	ContinuationReference *element.AlphaNumericDataElement
 }
 
 func (s *StatusProtocolRequestSegmentV3) ID() string           { return "HKPRO" }
@@ -42,18 +42,18 @@ func (s *StatusProtocolRequestSegmentV3) elements() []element.DataElement {
 		s.From,
 		s.To,
 		s.MaxEntries,
-		s.Aufsetzpunkt,
+		s.ContinuationReference,
 	}
 }
 
-func NewStatusProtocolRequestV4(from, to time.Time, maxEntries int, aufsetzpunkt string) StatusProtocolRequest {
+func NewStatusProtocolRequestV4(from, to time.Time, maxEntries int, continuationReference string) StatusProtocolRequest {
 	s := &StatusProtocolRequestSegmentV4{
 		From:       element.NewDate(from),
 		To:         element.NewDate(to),
 		MaxEntries: element.NewNumber(maxEntries, 4),
 	}
-	if aufsetzpunkt != "" {
-		s.Aufsetzpunkt = element.NewAlphaNumeric(aufsetzpunkt, 35)
+	if continuationReference != "" {
+		s.ContinuationReference = element.NewAlphaNumeric(continuationReference, 35)
 	}
 	s.ClientSegment = NewBasicSegment(1, s)
 	return s
@@ -61,10 +61,10 @@ func NewStatusProtocolRequestV4(from, to time.Time, maxEntries int, aufsetzpunkt
 
 type StatusProtocolRequestSegmentV4 struct {
 	ClientSegment
-	From         *element.DateDataElement
-	To           *element.DateDataElement
-	MaxEntries   *element.NumberDataElement
-	Aufsetzpunkt *element.AlphaNumericDataElement
+	From                  *element.DateDataElement
+	To                    *element.DateDataElement
+	MaxEntries            *element.NumberDataElement
+	ContinuationReference *element.AlphaNumericDataElement
 }
 
 func (s *StatusProtocolRequestSegmentV4) ID() string           { return "HKPRO" }
@@ -77,7 +77,7 @@ func (s *StatusProtocolRequestSegmentV4) elements() []element.DataElement {
 		s.From,
 		s.To,
 		s.MaxEntries,
-		s.Aufsetzpunkt,
+		s.ContinuationReference,
 	}
 }
 

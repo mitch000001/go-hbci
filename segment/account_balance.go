@@ -23,10 +23,10 @@ func NewAccountBalanceRequestV5(account domain.AccountConnection, allAccounts bo
 
 type AccountBalanceRequestSegmentV5 struct {
 	ClientSegment
-	AccountConnection *element.AccountConnectionDataElement
-	AllAccounts       *element.BooleanDataElement
-	MaxEntries        *element.NumberDataElement
-	Aufsetzpunkt      *element.AlphaNumericDataElement
+	AccountConnection     *element.AccountConnectionDataElement
+	AllAccounts           *element.BooleanDataElement
+	MaxEntries            *element.NumberDataElement
+	ContinuationReference *element.AlphaNumericDataElement
 }
 
 func (a *AccountBalanceRequestSegmentV5) Version() int         { return 5 }
@@ -39,12 +39,12 @@ func (a *AccountBalanceRequestSegmentV5) elements() []element.DataElement {
 		a.AccountConnection,
 		a.AllAccounts,
 		a.MaxEntries,
-		a.Aufsetzpunkt,
+		a.ContinuationReference,
 	}
 }
 
 func (a *AccountBalanceRequestSegmentV5) SetContinuationMark(continuationMark string) {
-	a.Aufsetzpunkt = element.NewAlphaNumeric(continuationMark, 35)
+	a.ContinuationReference = element.NewAlphaNumeric(continuationMark, 35)
 }
 
 func NewAccountBalanceRequestV6(account domain.AccountConnection, allAccounts bool) AccountBalanceRequest {
@@ -58,10 +58,10 @@ func NewAccountBalanceRequestV6(account domain.AccountConnection, allAccounts bo
 
 type AccountBalanceRequestSegmentV6 struct {
 	ClientSegment
-	AccountConnection *element.AccountConnectionDataElement
-	AllAccounts       *element.BooleanDataElement
-	MaxEntries        *element.NumberDataElement
-	Aufsetzpunkt      *element.AlphaNumericDataElement
+	AccountConnection     *element.AccountConnectionDataElement
+	AllAccounts           *element.BooleanDataElement
+	MaxEntries            *element.NumberDataElement
+	ContinuationReference *element.AlphaNumericDataElement
 }
 
 func (a *AccountBalanceRequestSegmentV6) Version() int         { return 6 }
@@ -74,12 +74,12 @@ func (a *AccountBalanceRequestSegmentV6) elements() []element.DataElement {
 		a.AccountConnection,
 		a.AllAccounts,
 		a.MaxEntries,
-		a.Aufsetzpunkt,
+		a.ContinuationReference,
 	}
 }
 
 func (a *AccountBalanceRequestSegmentV6) SetContinuationMark(continuationMark string) {
-	a.Aufsetzpunkt = element.NewAlphaNumeric(continuationMark, 35)
+	a.ContinuationReference = element.NewAlphaNumeric(continuationMark, 35)
 }
 
 //go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment AccountBalanceResponseSegment

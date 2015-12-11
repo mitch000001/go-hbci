@@ -63,11 +63,11 @@ func (c *Client) Accounts() ([]domain.AccountInformation, error) {
 	return c.pinTanDialog.Accounts, nil
 }
 
-func (c *Client) AccountTransactions(account domain.AccountConnection, timeframe domain.Timeframe, allAccounts bool, aufsetzpunkt string) ([]domain.AccountTransaction, error) {
+func (c *Client) AccountTransactions(account domain.AccountConnection, timeframe domain.Timeframe, allAccounts bool, continuationReference string) ([]domain.AccountTransaction, error) {
 	accountTransactionRequest := c.hbciVersion.AccountTransactionRequest(account, allAccounts)
 	accountTransactionRequest.SetTransactionRange(timeframe)
-	if aufsetzpunkt != "" {
-		accountTransactionRequest.SetAufsetzpunkt(aufsetzpunkt)
+	if continuationReference != "" {
+		accountTransactionRequest.SetContinuationReference(continuationReference)
 	}
 	decryptedMessage, err := c.pinTanDialog.SendMessage(message.NewHBCIMessage(c.hbciVersion, accountTransactionRequest))
 	if err != nil {
@@ -89,7 +89,7 @@ func (c *Client) AccountTransactions(account domain.AccountConnection, timeframe
 			accountTransactions = append(accountTransactions, seg.Transactions()...)
 			if seg != nil {
 				go func() {
-					responses <- resFn(c.AccountTransactions(account, timeframe, allAccounts, aufsetzpunkt))
+					responses <- resFn(c.AccountTransactions(account, timeframe, allAccounts, continuationReference))
 				}()
 			} else {
 				responses <- resFn([]domain.AccountTransaction{}, nil)
@@ -156,8 +156,8 @@ func (c *Client) AccountBalances(account domain.AccountConnection, allAccounts b
 	return balances, nil
 }
 
-func (c *Client) Status(from, to time.Time, maxEntries int, aufsetzpunkt string) ([]domain.StatusAcknowledgement, error) {
-	statusRequest := c.hbciVersion.StatusProtocolRequest(from, to, maxEntries, aufsetzpunkt)
+func (c *Client) Status(from, to time.Time, maxEntries int, continuationReference string) ([]domain.StatusAcknowledgement, error) {
+	statusRequest := c.hbciVersion.StatusProtocolRequest(from, to, maxEntries, continuationReference)
 	bankMessage, err := c.pinTanDialog.SendMessage(message.NewHBCIMessage(c.hbciVersion, statusRequest))
 	if err != nil {
 		return nil, err

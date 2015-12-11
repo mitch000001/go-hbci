@@ -22,7 +22,7 @@ type HBCIVersion struct {
 	SynchronisationRequest    func(modus int) *SynchronisationRequestSegment
 	AccountBalanceRequest     func(account domain.AccountConnection, allAccounts bool) AccountBalanceRequest
 	AccountTransactionRequest func(account domain.AccountConnection, allAccounts bool) *AccountTransactionRequestSegment
-	StatusProtocolRequest     func(from, to time.Time, maxEntries int, aufsetzpunkt string) StatusProtocolRequest
+	StatusProtocolRequest     func(from, to time.Time, maxEntries int, continuationReference string) StatusProtocolRequest
 }
 
 func (v HBCIVersion) Version() int {
