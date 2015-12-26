@@ -3,7 +3,7 @@ package bankinfo
 import "testing"
 
 func TestFindByBankId(t *testing.T) {
-	data = BankData{
+	data = []BankInfo{
 		BankInfo{BankId: "1000000", URL: "1"},
 		BankInfo{BankId: "2000000", URL: "2"},
 		BankInfo{BankId: "3000000", URL: "3"},
@@ -36,39 +36,39 @@ func TestFindByBankId(t *testing.T) {
 func TestHbciVersion(t *testing.T) {
 	tests := []struct {
 		versionNumber string
-		versionString string
+		versionName   string
 		result        int
 	}{
 		{
 			versionNumber: "3.0",
-			versionString: "FinTS V3.0",
+			versionName:   "FinTS V3.0",
 			result:        300,
 		},
 		{
 			versionNumber: "2.2",
-			versionString: "HBCI 2.2 Erweiterung PIN/TAN V1.01",
+			versionName:   "HBCI 2.2 Erweiterung PIN/TAN V1.01",
 			result:        220,
 		},
 		{
 			versionNumber: "",
-			versionString: "FinTS V3.0",
+			versionName:   "FinTS V3.0",
 			result:        300,
 		},
 		{
 			versionNumber: "",
-			versionString: "HBCI 2.2 Erweiterung PIN/TAN V1.01",
+			versionName:   "HBCI 2.2 Erweiterung PIN/TAN V1.01",
 			result:        220,
 		},
 		{
 			versionNumber: "2.2",
-			versionString: "FinTS V3.0",
+			versionName:   "FinTS V3.0",
 			result:        300,
 		},
 	}
 
 	for _, test := range tests {
 
-		version, err := hbciVersion(test.versionString, test.versionNumber)
+		version, err := hbciVersion(test.versionName, test.versionNumber)
 
 		if err != nil {
 			t.Logf("Expected no error, got %q\n", err)
