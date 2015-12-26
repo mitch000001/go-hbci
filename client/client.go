@@ -5,6 +5,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/mitch000001/go-hbci/bankinfo"
 	"github.com/mitch000001/go-hbci/dialog"
 	"github.com/mitch000001/go-hbci/domain"
 	"github.com/mitch000001/go-hbci/message"
@@ -32,12 +33,30 @@ func New(config Config) (*Client, error) {
 		CountryCode: 280,
 		ID:          config.BankID,
 	}
-	var d *dialog.PinTanDialog
-	hbciVersion, err := config.hbciVersion()
-	if err != nil {
-		return nil, err
+	bankInfo := bankinfo.FindByBankId(config.BankID)
+	var (
+		url         string
+		hbciVersion segment.HBCIVersion
+	)
+	if config.URL != "" {
+		url = config.URL
+	} else {
+		url = bankInfo.URL
 	}
-	d = dialog.NewPinTanDialog(bankId, config.URL, config.AccountID, hbciVersion)
+	if config.HBCIVersion > 0 {
+		version, err := config.hbciVersion()
+		if err != nil {
+			return nil, err
+		}
+		hbciVersion = version
+	} else {
+		version, ok := segment.SupportedHBCIVersions[bankInfo.HbciVersion()]
+		if !ok {
+			return nil, fmt.Errorf("Unsupported HBCI version. Supported versions are %s", domain.SupportedHBCIVersions)
+		}
+		hbciVersion = version
+	}
+	d := dialog.NewPinTanDialog(bankId, url, config.AccountID, hbciVersion)
 	d.SetPin(config.PIN)
 	client := &Client{
 		config:       config,
