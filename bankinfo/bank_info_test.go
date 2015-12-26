@@ -33,7 +33,7 @@ func TestFindByBankId(t *testing.T) {
 	}
 }
 
-func TestBankInfoHbciVersion(t *testing.T) {
+func TestHbciVersion(t *testing.T) {
 	tests := []struct {
 		versionNumber string
 		versionString string
@@ -67,12 +67,13 @@ func TestBankInfoHbciVersion(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		bankInfo := BankInfo{
-			VersionNumber: test.versionNumber,
-			VersionString: test.versionString,
-		}
 
-		version := bankInfo.HbciVersion()
+		version, err := hbciVersion(test.versionString, test.versionNumber)
+
+		if err != nil {
+			t.Logf("Expected no error, got %q\n", err)
+			t.Fail()
+		}
 
 		expectedVersion := test.result
 

@@ -11,7 +11,7 @@ const (
 	BANK_IDENTIFIER       = "BLZ"
 	VERSION_NUMBER_HEADER = "HBCI-Version"
 	URL_HEADER            = "PIN/TAN-Zugang URL"
-	VERSION_HEADER        = "Version"
+	VERSION_NAME_HEADER   = "Version"
 )
 
 type Parser struct {
@@ -36,7 +36,7 @@ func (p Parser) Parse(reader io.Reader) ([]BankInfo, error) {
 			BankId:        record.Get(BANK_IDENTIFIER),
 			VersionNumber: record.Get(VERSION_NUMBER_HEADER),
 			URL:           record.Get(URL_HEADER),
-			VersionString: record.Get(VERSION_HEADER),
+			VersionName:   record.Get(VERSION_NAME_HEADER),
 		}
 		bankInfos = append(bankInfos, bankInfo)
 	}

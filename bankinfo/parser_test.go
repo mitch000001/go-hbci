@@ -11,7 +11,7 @@ func TestParserParse(t *testing.T) {
 	bankData := fmt.Sprintf(
 		`%s;BLA;%s;%s;XYZ;%s
 		1000000;xxx;3.0;https://foo.example.com;FOO;FinTS V3.0`,
-		BANK_IDENTIFIER, VERSION_NUMBER_HEADER, URL_HEADER, VERSION_HEADER,
+		BANK_IDENTIFIER, VERSION_NUMBER_HEADER, URL_HEADER, VERSION_NAME_HEADER,
 	)
 	parser := Parser{}
 	var result []BankInfo
@@ -28,7 +28,7 @@ func TestParserParse(t *testing.T) {
 			BankId:        "1000000",
 			VersionNumber: "3.0",
 			URL:           "https://foo.example.com",
-			VersionString: "FinTS V3.0",
+			VersionName:   "FinTS V3.0",
 		},
 	}
 

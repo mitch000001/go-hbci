@@ -3,9 +3,11 @@ package bankinfo
 import (
 	"fmt"
 	"math"
+	"strings"
 )
 
 const (
+	version210       = "2.1"
 	version220       = "2.2"
 	version300       = "3.0"
 	version400       = "4.0"
@@ -15,8 +17,6 @@ const (
 	versionString400 = "FinTS V4.0"
 	versionString410 = "FinTS V4.1"
 )
-
-type BankData []BankInfo
 
 func FindByBankId(bankId string) BankInfo {
 	var bankInfo BankInfo
@@ -32,45 +32,65 @@ type BankInfo struct {
 	BankId        string
 	VersionNumber string
 	URL           string
-	VersionString string
+	VersionName   string
 }
 
 func (b BankInfo) HbciVersion() int {
-	parsedVersionNumber := b.parseVersionNumber()
-	parsedVersionString := b.parseVersionString()
-	return int(math.Max(float64(parsedVersionNumber), float64(parsedVersionString)))
+	version, err := hbciVersion(b.VersionNumber, b.VersionName)
+	if err != nil {
+		panic(err)
+	}
+	return version
 }
 
-func (b BankInfo) parseVersionString() int {
-	switch b.VersionString {
+func hbciVersion(versionName, versionNumber string) (int, error) {
+	var errs []string
+	parsedVersionName, err := parseVersionName(versionName)
+	if err != nil {
+		errs = append(errs, err.Error())
+	}
+	parsedVersionNumber, err := parseVersionNumber(versionNumber)
+	if err != nil {
+		errs = append(errs, err.Error())
+	}
+	if len(errs) != 0 {
+		return 0, fmt.Errorf(strings.Join(errs, "\n"))
+	}
+	return int(math.Max(float64(parsedVersionNumber), float64(parsedVersionName))), nil
+}
+
+func parseVersionName(versionName string) (int, error) {
+	switch versionName {
 	case versionString220:
-		return 220
+		return 220, nil
 	case versionString300:
-		return 300
+		return 300, nil
 	case versionString400:
-		return 400
+		return 400, nil
 	case versionString410:
-		return 410
+		return 410, nil
 	case "":
-		return -1
+		return -1, nil
 	default:
-		panic(fmt.Errorf("Unknown HBCI Version String: %q", b.VersionString))
+		return 0, fmt.Errorf("Unknown HBCI Version Name: %q", versionName)
 	}
 }
 
-func (b BankInfo) parseVersionNumber() int {
-	switch b.VersionNumber {
+func parseVersionNumber(versionNumber string) (int, error) {
+	switch versionNumber {
+	case version210:
+		return 210, nil
 	case version220:
-		return 220
+		return 220, nil
 	case version300:
-		return 300
+		return 300, nil
 	case version400:
-		return 400
+		return 400, nil
 	case version410:
-		return 410
+		return 410, nil
 	case "":
-		return -1
+		return -1, nil
 	default:
-		panic(fmt.Errorf("Unknown HBCI Version: %q", b.VersionNumber))
+		return 0, fmt.Errorf("Unknown HBCI Version Number: %q", versionNumber)
 	}
 }
