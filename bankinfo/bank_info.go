@@ -43,7 +43,7 @@ func (b BankInfo) HbciVersion() int {
 	return version
 }
 
-func hbciVersion(versionName, versionNumber string) (int, error) {
+func hbciVersion(versionNumber, versionName string) (int, error) {
 	var errs []string
 	parsedVersionName, err := parseVersionName(versionName)
 	if err != nil {
