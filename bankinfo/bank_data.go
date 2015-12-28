@@ -1558,7 +1558,7 @@ var data = []BankInfo{
 	BankInfo{
 		BankId:        "20050550",
 		VersionNumber: "2.2",
-		URL:           "https://ssl2.haspa.de/OnlineBankingFinTS/pintan   ",
+		URL:           "https://ssl2.haspa.de/OnlineBankingFinTS/pintan",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -1840,7 +1840,7 @@ var data = []BankInfo{
 	BankInfo{
 		BankId:        "21050000",
 		VersionNumber: "",
-		URL:           "https://homebanking.hsh-nordbank-banking.de/tristan/hbci ",
+		URL:           "https://homebanking.hsh-nordbank-banking.de/tristan/hbci",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{

@@ -3,6 +3,7 @@ package bankinfo
 import (
 	Csv "encoding/csv"
 	"io"
+	"strings"
 
 	"github.com/wildducktheories/go-csv"
 )
@@ -33,10 +34,10 @@ func (p Parser) Parse(reader io.Reader) ([]BankInfo, error) {
 			continue
 		}
 		bankInfo := BankInfo{
-			BankId:        record.Get(BANK_IDENTIFIER),
-			VersionNumber: record.Get(VERSION_NUMBER_HEADER),
-			URL:           record.Get(URL_HEADER),
-			VersionName:   record.Get(VERSION_NAME_HEADER),
+			BankId:        strings.TrimSpace(record.Get(BANK_IDENTIFIER)),
+			VersionNumber: strings.TrimSpace(record.Get(VERSION_NUMBER_HEADER)),
+			URL:           strings.TrimSpace(record.Get(URL_HEADER)),
+			VersionName:   strings.TrimSpace(record.Get(VERSION_NAME_HEADER)),
 		}
 		bankInfos = append(bankInfos, bankInfo)
 	}
