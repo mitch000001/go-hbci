@@ -1,5 +1,7 @@
 package hbci
 
+const Version = "0.0.3"
+
 type Marshaler interface {
 	MarshalHBCI() ([]byte, error)
 }

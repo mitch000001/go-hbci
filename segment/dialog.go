@@ -1,12 +1,13 @@
 package segment
 
 import (
+	"github.com/mitch000001/go-hbci"
 	"github.com/mitch000001/go-hbci/domain"
 	"github.com/mitch000001/go-hbci/element"
 )
 
 const productName = "go-hbci library"
-const productVersion = "0.0.2"
+const productVersion = hbci.Version
 
 func NewDialogEndSegment(dialogId string) *DialogEndSegment {
 	d := &DialogEndSegment{
