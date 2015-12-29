@@ -36,14 +36,14 @@ type BankInfo struct {
 }
 
 func (b BankInfo) HbciVersion() int {
-	version, err := hbciVersion(b.VersionNumber, b.VersionName)
+	version, err := hbciVersion(b.VersionName, b.VersionNumber)
 	if err != nil {
 		panic(err)
 	}
 	return version
 }
 
-func hbciVersion(versionNumber, versionName string) (int, error) {
+func hbciVersion(versionName, versionNumber string) (int, error) {
 	var errs []string
 	parsedVersionName, err := parseVersionName(versionName)
 	if err != nil {
