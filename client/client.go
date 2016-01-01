@@ -142,6 +142,36 @@ func (c *Client) AccountTransactions(account domain.AccountConnection, timeframe
 	return accountTransactions, nil
 }
 
+func (c *Client) SepaAccountTransactions(account domain.InternationalAccountConnection, timeframe domain.Timeframe, allAccounts bool, continuationReference string) ([]domain.AccountTransaction, error) {
+	accountTransactionRequest := c.hbciVersion.SepaAccountTransactionRequest(account, allAccounts)
+	accountTransactionRequest.SetTransactionRange(timeframe)
+	if continuationReference != "" {
+		accountTransactionRequest.SetContinuationReference(continuationReference)
+	}
+	decryptedMessage, err := c.pinTanDialog.SendMessage(message.NewHBCIMessage(c.hbciVersion, accountTransactionRequest))
+	if err != nil {
+		return nil, err
+	}
+	acknowledgements := decryptedMessage.Acknowledgements()
+	for _, ack := range acknowledgements {
+		if ack.Code == element.AcknowledgementAdditionalInformation {
+			fmt.Printf("Additional information: %+v\n", ack)
+		}
+	}
+	var accountTransactions []domain.AccountTransaction
+	accountTransactionResponses := decryptedMessage.FindSegments("HIKAZ")
+	if accountTransactionResponses != nil {
+		for _, unmarshaledSegment := range accountTransactionResponses {
+			seg := unmarshaledSegment.(segment.AccountTransactionResponse)
+			accountTransactions = append(accountTransactions, seg.Transactions()...)
+		}
+	} else {
+		return nil, fmt.Errorf("Malformed response: expected HIKAZ segment")
+	}
+
+	return accountTransactions, nil
+}
+
 func (c *Client) AccountInformation(account domain.AccountConnection, allAccounts bool) error {
 	accountInformationRequest := segment.NewAccountInformationRequestSegmentV1(account, allAccounts)
 	decryptedMessage, err := c.pinTanDialog.SendMessage(message.NewHBCIMessage(c.hbciVersion, accountInformationRequest))

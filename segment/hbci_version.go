@@ -12,17 +12,18 @@ var SupportedHBCIVersions = map[int]HBCIVersion{
 }
 
 type HBCIVersion struct {
-	version                   int
-	PinTanEncryptionHeader    func(clientSystemId string, keyName domain.KeyName) *EncryptionHeaderSegment
-	RDHEncryptionHeader       func(clientSystemId string, keyName domain.KeyName, key []byte) *EncryptionHeaderSegment
-	SignatureHeader           func() *SignatureHeaderSegment
-	PinTanSignatureHeader     func(controlReference string, clientSystemId string, keyName domain.KeyName) *SignatureHeaderSegment
-	RDHSignatureHeader        func(controlReference string, signatureId int, clientSystemId string, keyName domain.KeyName) *SignatureHeaderSegment
-	SignatureEnd              func() *SignatureEndSegment
-	SynchronisationRequest    func(modus int) *SynchronisationRequestSegment
-	AccountBalanceRequest     func(account domain.AccountConnection, allAccounts bool) AccountBalanceRequest
-	AccountTransactionRequest func(account domain.AccountConnection, allAccounts bool) *AccountTransactionRequestSegment
-	StatusProtocolRequest     func(from, to time.Time, maxEntries int, continuationReference string) StatusProtocolRequest
+	version                       int
+	PinTanEncryptionHeader        func(clientSystemId string, keyName domain.KeyName) *EncryptionHeaderSegment
+	RDHEncryptionHeader           func(clientSystemId string, keyName domain.KeyName, key []byte) *EncryptionHeaderSegment
+	SignatureHeader               func() *SignatureHeaderSegment
+	PinTanSignatureHeader         func(controlReference string, clientSystemId string, keyName domain.KeyName) *SignatureHeaderSegment
+	RDHSignatureHeader            func(controlReference string, signatureId int, clientSystemId string, keyName domain.KeyName) *SignatureHeaderSegment
+	SignatureEnd                  func() *SignatureEndSegment
+	SynchronisationRequest        func(modus int) *SynchronisationRequestSegment
+	AccountBalanceRequest         func(account domain.AccountConnection, allAccounts bool) AccountBalanceRequest
+	AccountTransactionRequest     func(account domain.AccountConnection, allAccounts bool) *AccountTransactionRequestSegment
+	SepaAccountTransactionRequest func(account domain.InternationalAccountConnection, allAccounts bool) *AccountTransactionRequestSegment
+	StatusProtocolRequest         func(from, to time.Time, maxEntries int, continuationReference string) StatusProtocolRequest
 }
 
 func (v HBCIVersion) Version() int {

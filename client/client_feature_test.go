@@ -11,17 +11,42 @@ import (
 
 	"github.com/mitch000001/go-hbci/client"
 	"github.com/mitch000001/go-hbci/domain"
+	"github.com/mitch000001/go-hbci/iban"
 )
 
 var testAccount domain.AccountConnection
+var sepaTestAccount domain.InternationalAccountConnection
 
 func TestClientAccountTransactions(t *testing.T) {
 	c := newClient()
 
 	timeframe := domain.Timeframe{
-		StartDate: domain.NewShortDate(time.Now().AddDate(0, 0, -10)),
+		StartDate: domain.NewShortDate(time.Now().AddDate(0, 0, -190)),
 	}
 	transactions, err := c.AccountTransactions(testAccount, timeframe, false, "")
+
+	if err != nil {
+		t.Logf("Expected error to be nil, got %T:%v\n", err, err)
+		t.Fail()
+	}
+
+	if transactions == nil {
+		t.Logf("Expected transactions not to be nil\n")
+		t.Fail()
+	}
+
+	for _, tr := range transactions {
+		fmt.Printf("Transaction: %s\n", tr)
+	}
+}
+
+func TestClientSepaAccountTransactions(t *testing.T) {
+	c := newClient()
+
+	timeframe := domain.Timeframe{
+		StartDate: domain.NewShortDate(time.Now().AddDate(0, 0, -190)),
+	}
+	transactions, err := c.SepaAccountTransactions(sepaTestAccount, timeframe, false, "")
 
 	if err != nil {
 		t.Logf("Expected error to be nil, got %T:%v\n", err, err)
@@ -150,6 +175,11 @@ func newClient() *client.Client {
 		}
 	}
 	testAccount = domain.AccountConnection{AccountID: config.AccountID, CountryCode: 280, BankID: config.BankID}
+	i, err := iban.New(config.BankID, config.AccountID)
+	if err != nil {
+		panic(err)
+	}
+	sepaTestAccount = domain.InternationalAccountConnection{IBAN: string(i), AccountID: config.AccountID, BankID: domain.BankId{CountryCode: 280, ID: config.BankID}}
 	c, err := client.New(config)
 	if err != nil {
 		panic(err)
