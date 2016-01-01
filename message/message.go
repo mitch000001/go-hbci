@@ -9,10 +9,6 @@ import (
 	"github.com/mitch000001/go-hbci/segment"
 )
 
-var bankSegments = map[string]segment.Segment{
-	"HIRMG": &segment.MessageAcknowledgement{},
-}
-
 type Message interface {
 	MessageHeader() *segment.MessageHeaderSegment
 	MessageEnd() *segment.MessageEndSegment
