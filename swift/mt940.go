@@ -211,6 +211,9 @@ func (t *TransactionTag) Unmarshal(value []byte) error {
 			return err
 		}
 		t.BookingDate = domain.NewShortDate(date)
+		if t.BookingDate.Year() > t.ValutaDate.Year() {
+			t.BookingDate = domain.NewShortDate(t.BookingDate.AddDate(-1, 0, 0))
+		}
 	}
 	var runes []rune
 	for {
