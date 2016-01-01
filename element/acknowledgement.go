@@ -8,6 +8,11 @@ import (
 	"github.com/mitch000001/go-hbci/domain"
 )
 
+const (
+	AcknowledgementAdditionalInformation     = 3040
+	AcknowledgementSupportedSecurityFunction = 3920
+)
+
 func NewAcknowledgement(acknowledgement domain.Acknowledgement) *AcknowledgementDataElement {
 	a := &AcknowledgementDataElement{
 		Code:                 NewDigit(acknowledgement.Code, 4),

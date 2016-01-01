@@ -58,7 +58,7 @@ func (a Acknowledgement) String() string {
 	}
 	fmt.Fprintf(&buf, "Text: '%s'", a.Text)
 	if len(a.Params) != 0 {
-		fmt.Fprintf(&buf, ", Parameters: %s", strings.Join(a.Params, ", "))
+		fmt.Fprintf(&buf, ", Parameters: %q", strings.Join(a.Params, ", "))
 	}
 	return buf.String()
 }

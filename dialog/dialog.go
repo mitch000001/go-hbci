@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/mitch000001/go-hbci/domain"
+	"github.com/mitch000001/go-hbci/element"
 	"github.com/mitch000001/go-hbci/internal"
 	"github.com/mitch000001/go-hbci/message"
 	"github.com/mitch000001/go-hbci/segment"
@@ -347,7 +348,7 @@ func (d *dialog) init() error {
 	errors := make([]string, 0)
 	acknowledgements := decryptedMessage.Acknowledgements()
 	for _, ack := range acknowledgements {
-		if ack.Code == 3920 {
+		if ack.Code == element.AcknowledgementSupportedSecurityFunction {
 			supportedSecurityFns := ack.Params
 			if len(supportedSecurityFns) != 0 {
 				internal.Info.Printf("Supported securityFunctions: %q\n", supportedSecurityFns)

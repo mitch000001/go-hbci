@@ -8,6 +8,7 @@ import (
 	"github.com/mitch000001/go-hbci/bankinfo"
 	"github.com/mitch000001/go-hbci/dialog"
 	"github.com/mitch000001/go-hbci/domain"
+	"github.com/mitch000001/go-hbci/element"
 	"github.com/mitch000001/go-hbci/message"
 	"github.com/mitch000001/go-hbci/segment"
 )
@@ -91,6 +92,12 @@ func (c *Client) AccountTransactions(account domain.AccountConnection, timeframe
 	decryptedMessage, err := c.pinTanDialog.SendMessage(message.NewHBCIMessage(c.hbciVersion, accountTransactionRequest))
 	if err != nil {
 		return nil, err
+	}
+	acknowledgements := decryptedMessage.Acknowledgements()
+	for _, ack := range acknowledgements {
+		if ack.Code == element.AcknowledgementAdditionalInformation {
+			fmt.Printf("Additional information: %+v\n", ack)
+		}
 	}
 	var accountTransactions []domain.AccountTransaction
 	accountTransactionResponses := decryptedMessage.FindSegments("HIKAZ")
