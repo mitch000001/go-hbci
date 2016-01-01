@@ -29,6 +29,12 @@ func (c Config) hbciVersion() (segment.HBCIVersion, error) {
 	return version, nil
 }
 
+// New creates a new HBCI client. It returns an error if the provided
+// HBCI-Version of the config is not supported or if there is no entry in the
+// bank institute database for the provided BankID.
+//
+// If the provided Config does not provide a URL or a HBCI-Version it will be
+// looked up in the bankinfo database.
 func New(config Config) (*Client, error) {
 	bankId := domain.BankId{
 		CountryCode: 280,
