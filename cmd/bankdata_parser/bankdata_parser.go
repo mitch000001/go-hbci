@@ -18,7 +18,6 @@ func main() {
 	flag.Parse()
 	bankdataFiles := flag.Args()
 
-	parser := bankinfo.Parser{}
 	var bankInfos []bankinfo.BankInfo
 	for _, bankdata := range bankdataFiles {
 		file, err := os.Open(bankdata)
@@ -26,7 +25,7 @@ func main() {
 			log.Fatal("Cannot open file: %q", bankdata)
 			os.Exit(1)
 		}
-		infos, err := parser.Parse(file)
+		infos, err := bankinfo.ParseBankInfos(file)
 		if err != nil {
 			log.Fatal("Parse error: %q", err)
 			os.Exit(1)
@@ -38,7 +37,7 @@ func main() {
 		log.Fatal("Error while parsing expression: %q", err)
 		os.Exit(1)
 	}
-	goFile, err := os.Create("bankinfo/bank_data.go")
+	goFile, err := os.Create("bankinfo/data.go")
 	if err != nil {
 		log.Fatal("Cannot create file: %q", err)
 		os.Exit(1)

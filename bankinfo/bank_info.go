@@ -43,6 +43,12 @@ func (b BankInfo) HbciVersion() int {
 	return version
 }
 
+type SortableBankInfos []BankInfo
+
+func (s SortableBankInfos) Len() int           { return len(s) }
+func (s SortableBankInfos) Swap(a, b int)      { s[a], s[b] = s[b], s[a] }
+func (s SortableBankInfos) Less(a, b int) bool { return s[a].BankId < s[b].BankId }
+
 func hbciVersion(versionName, versionNumber string) (int, error) {
 	var errs []string
 	parsedVersionName, err := parseVersionName(versionName)

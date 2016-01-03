@@ -15,10 +15,12 @@ const (
 	VERSION_NAME_HEADER   = "Version"
 )
 
-type Parser struct {
-}
+const (
+	BIC_BANK_IDENTIFIER = "Bank-leitzahl"
+	BIC_IDENTIFIER      = "BIC"
+)
 
-func (p Parser) Parse(reader io.Reader) ([]BankInfo, error) {
+func ParseBankInfos(reader io.Reader) ([]BankInfo, error) {
 	CsvReader := Csv.NewReader(reader)
 	CsvReader.Comma = ';'
 	CsvReader.FieldsPerRecord = -1
@@ -42,4 +44,28 @@ func (p Parser) Parse(reader io.Reader) ([]BankInfo, error) {
 		bankInfos = append(bankInfos, bankInfo)
 	}
 	return bankInfos, nil
+}
+
+func ParseBicData(reader io.Reader) ([]BicInfo, error) {
+	CsvReader := Csv.NewReader(reader)
+	CsvReader.Comma = ';'
+	CsvReader.FieldsPerRecord = -1
+	CsvReader.TrimLeadingSpace = true
+	csvReader, err := csv.WithCsvReader(CsvReader)
+	if err != nil {
+		return nil, err
+	}
+	records, err := csv.ReadAll(csvReader)
+	var bicInfos []BicInfo
+	for _, record := range records {
+		if record.Get(BIC_BANK_IDENTIFIER) == "" {
+			continue
+		}
+		bicInfo := BicInfo{
+			BankId: strings.TrimSpace(record.Get(BIC_BANK_IDENTIFIER)),
+			BIC:    strings.TrimSpace(record.Get(BIC_IDENTIFIER)),
+		}
+		bicInfos = append(bicInfos, bicInfo)
+	}
+	return bicInfos, nil
 }
