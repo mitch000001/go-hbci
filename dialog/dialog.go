@@ -3,11 +3,8 @@ package dialog
 import (
 	"bufio"
 	"bytes"
-	"encoding/base64"
 	"fmt"
-	"io/ioutil"
 	"net"
-	"net/http"
 	"strconv"
 	"strings"
 	"time"
@@ -29,9 +26,15 @@ type Dialog interface {
 	SendMessage(clientMessage message.HBCIMessage) (message.BankMessage, error)
 }
 
-func newDialog(bankId domain.BankId, hbciUrl string, userId string, hbciVersion segment.HBCIVersion, signatureProvider message.SignatureProvider, cryptoProvider message.CryptoProvider) *dialog {
+func newDialog(
+	bankId domain.BankId,
+	hbciUrl string,
+	userId string,
+	hbciVersion segment.HBCIVersion,
+	signatureProvider message.SignatureProvider,
+	cryptoProvider message.CryptoProvider,
+) *dialog {
 	return &dialog{
-		httpClient:        http.DefaultClient,
 		hbciUrl:           hbciUrl,
 		BankID:            bankId,
 		UserID:            userId,
@@ -48,7 +51,6 @@ func newDialog(bankId domain.BankId, hbciUrl string, userId string, hbciVersion 
 
 type dialog struct {
 	transport         transport.Transport
-	httpClient        *http.Client
 	hbciUrl           string
 	BankID            domain.BankId
 	UserID            string
@@ -559,29 +561,6 @@ func extractUnencryptedMessage(response *transport.Response) (*message.Decrypted
 func (d *dialog) nextMessageNumber() int {
 	d.messageCount += 1
 	return d.messageCount
-}
-
-func (d *dialog) post(message []byte) ([]byte, error) {
-	encodedMessage := base64.StdEncoding.EncodeToString(message)
-	response, err := d.httpClient.Post(d.hbciUrl, "application/vnd.hbci", strings.NewReader(encodedMessage))
-	if err != nil {
-		return nil, err
-	}
-	defer response.Body.Close()
-	if response.StatusCode == http.StatusOK {
-		decodedReader := base64.NewDecoder(base64.StdEncoding, response.Body)
-		bodyBytes, err := ioutil.ReadAll(decodedReader)
-		if err != nil {
-			return nil, err
-		}
-		return bodyBytes, nil
-	} else {
-		bodyBytes, err := ioutil.ReadAll(response.Body)
-		if err != nil {
-			return nil, err
-		}
-		return bodyBytes, nil
-	}
 }
 
 func (d *dialog) dial(message []byte) ([]byte, error) {
