@@ -5,6 +5,7 @@ import (
 	"io"
 	"strings"
 
+	"github.com/mitch000001/go-hbci/internal"
 	"github.com/wildducktheories/go-csv"
 )
 
@@ -33,6 +34,7 @@ func ParseBankInfos(reader io.Reader) ([]BankInfo, error) {
 	var bankInfos []BankInfo
 	for _, record := range records {
 		if record.Get(BANK_IDENTIFIER) == "" {
+			internal.Debug.Printf("No BankIdentifier found for record: %v\n", record)
 			continue
 		}
 		bankInfo := BankInfo{
@@ -59,6 +61,7 @@ func ParseBicData(reader io.Reader) ([]BicInfo, error) {
 	var bicInfos []BicInfo
 	for _, record := range records {
 		if record.Get(BIC_BANK_IDENTIFIER) == "" {
+			internal.Debug.Printf("No BankIdentifier found for record: %v\n", record)
 			continue
 		}
 		bicInfo := BicInfo{
