@@ -26,11 +26,11 @@ func ParseBankInfos(reader io.Reader) ([]BankInfo, error) {
 	CsvReader.Comma = ';'
 	CsvReader.FieldsPerRecord = -1
 	CsvReader.TrimLeadingSpace = true
-	csvReader, err := csv.WithCsvReader(CsvReader)
+	csvReader := csv.WithCsvReader(CsvReader, nil)
+	records, err := csv.ReadAll(csvReader)
 	if err != nil {
 		return nil, err
 	}
-	records, err := csv.ReadAll(csvReader)
 	var bankInfos []BankInfo
 	for _, record := range records {
 		if record.Get(BANK_IDENTIFIER) == "" {
@@ -53,11 +53,11 @@ func ParseBicData(reader io.Reader) ([]BicInfo, error) {
 	CsvReader.Comma = ';'
 	CsvReader.FieldsPerRecord = -1
 	CsvReader.TrimLeadingSpace = true
-	csvReader, err := csv.WithCsvReader(CsvReader)
+	csvReader := csv.WithCsvReader(CsvReader, nil)
+	records, err := csv.ReadAll(csvReader)
 	if err != nil {
 		return nil, err
 	}
-	records, err := csv.ReadAll(csvReader)
 	var bicInfos []BicInfo
 	for _, record := range records {
 		if record.Get(BIC_BANK_IDENTIFIER) == "" {
