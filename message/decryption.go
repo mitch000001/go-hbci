@@ -26,7 +26,7 @@ func NewDecryptedMessage(header *segment.MessageHeaderSegment, end *segment.Mess
 	}
 	version, ok := segment.SupportedHBCIVersions[header.HBCIVersion.Val()]
 	if !ok {
-		return nil, fmt.Errorf("Unknown HBCI version: %d", header.HBCIVersion.Val())
+		return nil, fmt.Errorf("Unsupported HBCI version: %d", header.HBCIVersion.Val())
 	}
 	decryptedMessage := &DecryptedMessage{
 		rawMessage:       rawMessage,
