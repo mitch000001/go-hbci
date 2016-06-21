@@ -130,22 +130,10 @@ type tokenLexerStateFn func(*TokenLexer) tokenLexerStateFn
 
 // The first state function which is called
 func lexStart(l *TokenLexer) tokenLexerStateFn {
-	// Perform one run to see if there are escape sequences within the token set
-	includesEscapeSequence := false
-	for _, t := range l.input {
-		if includes(t, ESCAPE_SEQUENCE) {
-			includesEscapeSequence = true
-			break
-		}
-	}
-	if includesEscapeSequence {
-		return lexEscapeSequenceToken
+	if t := l.peek(); t.Type() == DATA_ELEMENT_GROUP {
+		return lexSegmentHeader
 	} else {
-		if t := l.peek(); t.Type() == DATA_ELEMENT_GROUP {
-			return lexSegmentHeader
-		} else {
-			return lexTokens
-		}
+		return lexTokens
 	}
 }
 
@@ -168,35 +156,6 @@ func lexTokens(l *TokenLexer) tokenLexerStateFn {
 			l.emit(EOF)
 			return nil
 		}
-	}
-	return l.errorf("Syntax error")
-}
-
-func lexEscapeSequenceToken(l *TokenLexer) tokenLexerStateFn {
-	t := l.next()
-	switch t.Type() {
-	case ALPHA_NUMERIC:
-		if l.accept(ESCAPE_SEQUENCE) {
-			l.accept(ALPHA_NUMERIC, TEXT, NUMERIC, DIGIT)
-			l.emit(ALPHA_NUMERIC_WITH_ESCAPE_SEQUENCE)
-		} else {
-			l.emitToken(t)
-		}
-		return lexEscapeSequenceToken
-	case TEXT:
-		if l.accept(ESCAPE_SEQUENCE) {
-			l.accept(ALPHA_NUMERIC, TEXT, NUMERIC, DIGIT)
-			l.emit(TEXT_WITH_ESCAPE_SEQUENCE)
-		} else {
-			l.emitToken(t)
-		}
-		return lexEscapeSequenceToken
-	case EOF:
-		l.emit(EOF)
-		return nil
-	default:
-		l.emitToken(t)
-		return lexEscapeSequenceToken
 	}
 	return l.errorf("Syntax error")
 }

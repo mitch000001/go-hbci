@@ -14,11 +14,6 @@ type tokenLexerTestData struct {
 func TestTokenLexer(t *testing.T) {
 	tests := []tokenLexerTestData{
 		{
-			"ab??2'",
-			testTokens(ALPHA_NUMERIC, ESCAPE_SEQUENCE, NUMERIC, SEGMENT_END_MARKER, EOF),
-			testTokens(ALPHA_NUMERIC_WITH_ESCAPE_SEQUENCE, SEGMENT_END_MARKER, EOF),
-		},
-		{
 			"ab:23'",
 			testTokens(ALPHA_NUMERIC, GROUP_DATA_ELEMENT_SEPARATOR, NUMERIC, SEGMENT_END_MARKER, EOF),
 			testTokens(GROUP_DATA_ELEMENT, GROUP_DATA_ELEMENT_SEPARATOR, GROUP_DATA_ELEMENT, SEGMENT_END_MARKER, EOF),
