@@ -9,9 +9,9 @@ import (
 
 const (
 	eof                       = -1
-	dataElementSeparator      = '+'
-	groupDataElementSeparator = ':'
-	segmentEnd                = '\''
+	dataElementDelimiter      = '+'
+	groupDataElementDelimiter = ':'
+	segmentDelimiter          = '\''
 	escapeCharacter           = '?'
 	binaryIdentifier          = '@'
 )
@@ -156,13 +156,13 @@ func (l *StringLexer) errorf(format string, args ...interface{}) StringLexerStat
 
 func lexText(l *StringLexer) StringLexerStateFn {
 	switch r := l.next(); {
-	case r == dataElementSeparator:
+	case r == dataElementDelimiter:
 		l.emit(DATA_ELEMENT_SEPARATOR)
 		return lexText
-	case r == segmentEnd:
+	case r == segmentDelimiter:
 		l.emit(SEGMENT_END_MARKER)
 		return lexText
-	case r == groupDataElementSeparator:
+	case r == groupDataElementDelimiter:
 		l.emit(GROUP_DATA_ELEMENT_SEPARATOR)
 		return lexText
 	case r == binaryIdentifier:
@@ -191,7 +191,7 @@ func lexAlphaNumeric(l *StringLexer) StringLexerStateFn {
 			} else {
 				return l.errorf("Unexpected escape character")
 			}
-		case isSyntaxSymbol(r):
+		case isDelimiter(r):
 			l.backup()
 			if text {
 				l.emit(TEXT)
@@ -224,10 +224,14 @@ func lexBinaryData(l *StringLexer) StringLexerStateFn {
 		return l.errorf("Binary length must contain of digits only")
 	}
 	l.pos += length
-	if p := l.peek(); isSyntaxSymbol(p) {
+	p := l.peek()
+	if isDelimiter(p) {
 		l.emit(BINARY_DATA)
 		return lexText
 	} else {
+		if p == eof {
+			return l.errorf("Unexpected end of input")
+		}
 		return l.errorf("Expected syntax symbol after binary data")
 	}
 }
@@ -236,7 +240,7 @@ func lexDigit(l *StringLexer) StringLexerStateFn {
 	leadingZero := l.accept("0")
 	if leadingZero {
 		// Only valid number with leading 0 is 0
-		if r := l.peek(); isSyntaxSymbol(r) {
+		if r := l.peek(); isDelimiter(r) {
 			l.emit(NUMERIC)
 			return lexText
 		}
@@ -244,7 +248,7 @@ func lexDigit(l *StringLexer) StringLexerStateFn {
 		if l.accept(",") {
 			digits := "0123456789"
 			l.acceptRun(digits)
-			if p := l.peek(); isSyntaxSymbol(p) {
+			if p := l.peek(); isDelimiter(p) {
 				l.emit(FLOAT)
 				return lexText
 			} else {
@@ -256,7 +260,7 @@ func lexDigit(l *StringLexer) StringLexerStateFn {
 		if p := l.peek(); p == ',' {
 			return l.errorf("Malformed float")
 		}
-		if p := l.peek(); isSyntaxSymbol(p) {
+		if p := l.peek(); isDelimiter(p) {
 			l.emit(DIGIT)
 			return lexText
 		} else {
@@ -268,14 +272,14 @@ func lexDigit(l *StringLexer) StringLexerStateFn {
 		// is it a float?
 		if l.accept(",") {
 			l.acceptRun(digits)
-			if p := l.peek(); isSyntaxSymbol(p) {
+			if p := l.peek(); isDelimiter(p) {
 				l.emit(FLOAT)
 				return lexText
 			} else {
 				return lexAlphaNumeric
 			}
 		}
-		if p := l.peek(); isSyntaxSymbol(p) {
+		if p := l.peek(); isDelimiter(p) {
 			l.emit(NUMERIC)
 			return lexText
 		} else {
@@ -284,6 +288,10 @@ func lexDigit(l *StringLexer) StringLexerStateFn {
 	}
 }
 
+func isDelimiter(r rune) bool {
+	return r == dataElementDelimiter || r == segmentDelimiter || r == groupDataElementDelimiter
+}
+
 func isSyntaxSymbol(r rune) bool {
-	return r == dataElementSeparator || r == segmentEnd || r == groupDataElementSeparator || r == binaryIdentifier || r == escapeCharacter
+	return r == dataElementDelimiter || r == segmentDelimiter || r == groupDataElementDelimiter || r == escapeCharacter || r == binaryIdentifier
 }

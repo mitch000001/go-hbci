@@ -44,6 +44,7 @@ func TestLexText(t *testing.T) {
 		{"ab\ncd'", TEXT, "ab\ncd"},
 		{"ab\r\ncd'", TEXT, "ab\r\ncd"},
 		{"ab\n\rcd'", TEXT, "ab\n\rcd"},
+		{"ab\n\rcd", ERROR, "Unexpected end of input"},
 	}
 	for _, test := range tests {
 		l := NewStringLexer("", test.text)
@@ -70,8 +71,10 @@ func TestLexAlphaNumeric(t *testing.T) {
 		{"ab!):", ALPHA_NUMERIC, "ab!)"},
 		{"ab!)+", ALPHA_NUMERIC, "ab!)"},
 		{"ab?''", ALPHA_NUMERIC, "ab?'"},
+		{"ab?@'", ALPHA_NUMERIC, "ab?@"},
 		{"ab?e", ERROR, "Unexpected escape character"},
 		{"ab", ERROR, "Unexpected end of input"},
+		{"ab??", ERROR, "Unexpected end of input"},
 	}
 	for _, test := range tests {
 		l := NewStringLexer("", test.text)
@@ -115,9 +118,10 @@ func TestLexBinaryData(t *testing.T) {
 	tests := []testData{
 		{"@2@ab'", BINARY_DATA, "@2@ab"},
 		{"@@ab'", ERROR, "Binary length can't be empty"},
-		{"@2@a'", ERROR, "Expected syntax symbol after binary data"},
+		{"@2@a1@", ERROR, "Expected syntax symbol after binary data"},
 		{"@2@abc'", ERROR, "Expected syntax symbol after binary data"},
 		{"@2x@ab'", ERROR, "Binary length must contain of digits only"},
+		{"@2@ab", ERROR, "Unexpected end of input"},
 	}
 	for _, test := range tests {
 		l := NewStringLexer("", test.text)
@@ -149,6 +153,8 @@ func TestLexDigit(t *testing.T) {
 		{"1,23a'", ALPHA_NUMERIC, "1,23a"},
 		{"012a'", ALPHA_NUMERIC, "012a"},
 		{"12a'", ALPHA_NUMERIC, "12a"},
+		{"12?+'", ALPHA_NUMERIC, "12?+"},
+		{"12", ERROR, "Unexpected end of input"},
 	}
 	for _, test := range tests {
 		l := NewStringLexer("", test.text)
