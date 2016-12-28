@@ -23,6 +23,7 @@ type Middleware func(Transport) Transport
 type Request struct {
 	URL              string
 	MarshaledMessage []byte
+	Body             io.ReadCloser
 }
 
 func ReadResponse(marshaledMessage []byte, request *Request) (*Response, error) {
@@ -31,10 +32,12 @@ func ReadResponse(marshaledMessage []byte, request *Request) (*Response, error) 
 	if err != nil {
 		return nil, err
 	}
+	buf := bytes.NewBuffer(marshaledMessage)
 	response := &Response{
 		Request:           request,
 		MarshaledResponse: marshaledMessage,
 		SegmentExtractor:  extractor,
+		Body:              ioutil.NopCloser(buf),
 	}
 	return response, nil
 }
@@ -43,6 +46,7 @@ type Response struct {
 	*segment.SegmentExtractor
 	Request           *Request
 	MarshaledResponse []byte
+	Body              io.ReadCloser
 }
 
 func (h *Response) IsEncrypted() bool {

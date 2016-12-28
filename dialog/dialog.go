@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
+	"io/ioutil"
 	"net"
 	"strconv"
 	"strings"
@@ -470,9 +471,12 @@ func (d *dialog) request(clientMessage message.ClientMessage) (message.BankMessa
 		internal.Debug.Printf("%q\n", seg)
 	}
 
+	buf := bytes.NewBuffer(marshaledMessage)
+
 	request := &transport.Request{
 		URL:              d.hbciUrl,
 		MarshaledMessage: marshaledMessage,
+		Body:             ioutil.NopCloser(buf),
 	}
 
 	response, err := d.transport.Do(request)
