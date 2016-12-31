@@ -1,7 +1,6 @@
 package transport
 
 import (
-	"bufio"
 	"bytes"
 	"encoding/base64"
 	"io"
@@ -36,7 +35,7 @@ func (h *HttpsBase64Transport) Do(request *Request) (*Response, error) {
 	} else {
 		reader = httpResponse.Body
 	}
-	return ReadResponse(bufio.NewReader(reader), request)
+	return &Response{Body: ioutil.NopCloser(reader), Request: request}, nil
 }
 
 func NewHttpsTransport() Transport {
