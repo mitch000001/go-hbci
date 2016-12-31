@@ -3,23 +3,27 @@ package charset
 import (
 	"bytes"
 	"io"
+
+	"golang.org/x/text/encoding/charmap"
 )
 
-func ToUtf8(iso8859_1_buf []byte) string {
-	buf := make([]rune, len(iso8859_1_buf))
-	for i, b := range iso8859_1_buf {
-		buf[i] = rune(b)
+func mustConvert(b []byte, err error) []byte {
+	if err != nil {
+		panic(err)
 	}
-	return string(buf)
+	return b
+}
+
+func ToUtf8(iso8859_1_buf []byte) string {
+	decoder := charmap.ISO8859_1.NewDecoder()
+	// TODO: propagate errors
+	return string(mustConvert(decoder.Bytes(iso8859_1_buf)))
 }
 
 func ToISO8859_1(utf8String string) []byte {
-	buf := make([]byte, 0)
-	runes := bytes.Runes([]byte(utf8String))
-	for _, r := range runes {
-		buf = append(buf, byte(r))
-	}
-	return buf
+	encoder := charmap.ISO8859_1.NewEncoder()
+	// TODO: propagate errors
+	return mustConvert(encoder.Bytes([]byte(utf8String)))
 }
 
 func NewISO8859_1Writer() io.Writer {
