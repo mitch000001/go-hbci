@@ -54,5 +54,5 @@ type Response struct {
 }
 
 func (h *Response) IsEncrypted() bool {
-	return h.FindSegment("HNVSK") != nil
+	return h.SegmentExtractor.FindSegment(segment.EncryptionHeaderSegmentID) != nil
 }
