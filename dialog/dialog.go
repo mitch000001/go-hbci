@@ -471,12 +471,11 @@ func (d *dialog) request(clientMessage message.ClientMessage) (message.BankMessa
 		internal.Debug.Printf("%q\n", seg)
 	}
 
-	buf := bytes.NewBuffer(marshaledMessage)
+	reqBody := bytes.NewReader(marshaledMessage)
 
 	request := &transport.Request{
-		URL:              d.hbciUrl,
-		MarshaledMessage: marshaledMessage,
-		Body:             ioutil.NopCloser(buf),
+		URL:  d.hbciUrl,
+		Body: ioutil.NopCloser(reqBody),
 	}
 
 	response, err := d.transport.Do(request)

@@ -1,13 +1,45 @@
 package transport
 
 import (
+	"bufio"
+	"bytes"
 	"encoding/base64"
-	"io/ioutil"
+	"io"
 	"net/http"
-	"strings"
 )
 
-func NewHttpsTransport() *HttpsTransport {
+func NewHttpsBase64Transport() Transport {
+	return &HttpsBase64Transport{
+		httpClient: http.DefaultClient,
+	}
+}
+
+type HttpsBase64Transport struct {
+	httpClient *http.Client
+}
+
+func (h *HttpsBase64Transport) Do(request *Request) (*Response, error) {
+	var buf bytes.Buffer
+	encodingWriter := base64.NewEncoder(base64.StdEncoding, &buf)
+	_, err := io.Copy(encodingWriter, request.Body)
+	if err != nil {
+		return nil, err
+	}
+	encodingWriter.Close()
+	httpResponse, err := h.httpClient.Post(request.URL, "application/vnd.hbci", &buf)
+	if err != nil {
+		return nil, err
+	}
+	var reader io.Reader
+	if httpResponse.StatusCode == http.StatusOK {
+		reader = base64.NewDecoder(base64.StdEncoding, httpResponse.Body)
+	} else {
+		reader = httpResponse.Body
+	}
+	return ReadResponse(bufio.NewReader(reader), request)
+}
+
+func NewHttpsTransport() Transport {
 	return &HttpsTransport{
 		httpClient: http.DefaultClient,
 	}
@@ -18,24 +50,9 @@ type HttpsTransport struct {
 }
 
 func (h *HttpsTransport) Do(request *Request) (*Response, error) {
-	encodedMessage := base64.StdEncoding.EncodeToString(request.MarshaledMessage)
-	httpResponse, err := h.httpClient.Post(request.URL, "application/vnd.hbci", strings.NewReader(encodedMessage))
+	httpResponse, err := h.httpClient.Post(request.URL, "application/vnd.hbci", request.Body)
 	if err != nil {
 		return nil, err
 	}
-	defer httpResponse.Body.Close()
-	var marshaledResponse []byte
-	if httpResponse.StatusCode == http.StatusOK {
-		decodedReader := base64.NewDecoder(base64.StdEncoding, httpResponse.Body)
-		marshaledResponse, err = ioutil.ReadAll(decodedReader)
-		if err != nil {
-			return nil, err
-		}
-	} else {
-		marshaledResponse, err = ioutil.ReadAll(httpResponse.Body)
-		if err != nil {
-			return nil, err
-		}
-	}
-	return ReadResponse(marshaledResponse, request)
+	return &Response{Body: httpResponse.Body, Request: request}, nil
 }

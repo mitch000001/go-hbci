@@ -1,6 +1,7 @@
 package transport
 
 import (
+	"bufio"
 	"bytes"
 	"io"
 	"io/ioutil"
@@ -21,23 +22,26 @@ func (fn TransportFunc) Do(req *Request) (*Response, error) {
 type Middleware func(Transport) Transport
 
 type Request struct {
-	URL              string
-	MarshaledMessage []byte
-	Body             io.ReadCloser
+	URL  string
+	Body io.ReadCloser
 }
 
-func ReadResponse(marshaledMessage []byte, request *Request) (*Response, error) {
-	extractor := segment.NewSegmentExtractor(marshaledMessage)
-	_, err := extractor.Extract()
+func ReadResponse(r *bufio.Reader, req *Request) (*Response, error) {
+	var buf bytes.Buffer
+	marshaledMessage, err := ioutil.ReadAll(io.TeeReader(r, &buf))
 	if err != nil {
 		return nil, err
 	}
-	buf := bytes.NewBuffer(marshaledMessage)
+	extractor := segment.NewSegmentExtractor(marshaledMessage)
+	_, err = extractor.Extract()
+	if err != nil {
+		return nil, err
+	}
 	response := &Response{
-		Request:           request,
+		Request:           req,
 		MarshaledResponse: marshaledMessage,
 		SegmentExtractor:  extractor,
-		Body:              ioutil.NopCloser(buf),
+		Body:              ioutil.NopCloser(&buf),
 	}
 	return response, nil
 }

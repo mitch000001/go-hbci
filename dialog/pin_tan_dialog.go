@@ -22,7 +22,7 @@ func NewPinTanDialog(bankId domain.BankId, hbciUrl string, userId string, hbciVe
 			cryptoProvider,
 		),
 	}
-	d.transport = transport.NewHttpsTransport()
+	d.transport = transport.NewHttpsBase64Transport()
 	return d
 }
 

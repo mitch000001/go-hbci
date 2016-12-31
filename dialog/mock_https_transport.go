@@ -1,7 +1,10 @@
 package dialog
 
 import (
+	"bufio"
+	"bytes"
 	"fmt"
+	"io/ioutil"
 
 	"github.com/mitch000001/go-hbci/transport"
 )
@@ -22,7 +25,7 @@ func (m *MockHttpsTransport) Do(request *transport.Request) (*transport.Response
 }
 
 func (m *MockHttpsTransport) SetResponseMessage(message []byte) {
-	response, err := transport.ReadResponse(message, &transport.Request{})
+	response, err := transport.ReadResponse(bufio.NewReader(bytes.NewReader(message)), &transport.Request{})
 	if err != nil {
 		panic(err)
 	}
@@ -36,7 +39,7 @@ func (m *MockHttpsTransport) SetResponseMessages(responses [][]byte) {
 	m.responses = make([]*transport.Response, len(responses))
 	m.errors = make([]error, len(responses))
 	for i, response := range responses {
-		res, err := transport.ReadResponse(response, &transport.Request{})
+		res, err := transport.ReadResponse(bufio.NewReader(bytes.NewReader(response)), &transport.Request{})
 		if err != nil {
 			panic(err)
 		}
@@ -114,6 +117,11 @@ func (m *MockHttpsTransport) checkAndAdaptBoundaries(req *transport.Request) {
 		if m.errors == nil {
 			m.errors = make([]error, m.callCount)
 		}
-		m.errors = append(m.errors, fmt.Errorf("Unexpected request: %+#v\nBody: %q", req, req.MarshaledMessage))
+		reqBytes, err := ioutil.ReadAll(req.Body)
+		if err != nil {
+			m.errors = append(m.errors, fmt.Errorf("Unexpected request: %+#v\nBody: %v", req, err))
+		} else {
+			m.errors = append(m.errors, fmt.Errorf("Unexpected request: %+#v\nBody: %q", req, reqBytes))
+		}
 	}
 }
