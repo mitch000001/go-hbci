@@ -14,12 +14,26 @@ func mustConvert(b []byte, err error) []byte {
 	return b
 }
 
+// ToUtf8 decodes the provided buffer from the ISO8859_1 encoding to UTF8.
+// The result is returned as string.
+// Any error from the decoder will cause a panic.
+//
+// This function hasn't change its signature as it is used in almost any package.
+// To address the issues with panicing errors this package will most likely get
+// a new decoding function which return possible decoding errors.
 func ToUtf8(iso8859_1_buf []byte) string {
 	decoder := charmap.ISO8859_1.NewDecoder()
 	// TODO: propagate errors
 	return string(mustConvert(decoder.Bytes(iso8859_1_buf)))
 }
 
+// ToISO8859_1 encodes the provided utf8String to the ISO8859_1 encoding.
+// The result is returned as byte slice.
+// Any error from the encoder will cause a panic.
+//
+// This function hasn't change its signature as it is used in almost any package.
+// To address the issues with panicing errors this package will most likely get
+// a new encoding function which return possible encoding errors.
 func ToISO8859_1(utf8String string) []byte {
 	encoder := charmap.ISO8859_1.NewEncoder()
 	// TODO: propagate errors
