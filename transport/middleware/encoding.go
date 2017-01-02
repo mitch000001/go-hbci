@@ -6,12 +6,14 @@ import (
 	"io"
 	"io/ioutil"
 
+	"github.com/mitch000001/go-hbci/transport"
+
 	"golang.org/x/text/encoding"
 )
 
-func UTF8Encoding(encoding encoding.Encoding) Middleware {
-	return func(t Transport) Transport {
-		return TransportFunc(func(req *Request) (*Response, error) {
+func UTF8Encoding(encoding encoding.Encoding) transport.Middleware {
+	return func(t transport.Transport) transport.Transport {
+		return transport.TransportFunc(func(req *transport.Request) (*transport.Response, error) {
 			var buf bytes.Buffer
 			encodingWriter := encoding.NewEncoder().Writer(&buf)
 			_, err := io.Copy(encodingWriter, req.Body)
@@ -32,9 +34,9 @@ func UTF8Encoding(encoding encoding.Encoding) Middleware {
 	}
 }
 
-func Base64Encoding(encoding *base64.Encoding) Middleware {
-	return func(t Transport) Transport {
-		return TransportFunc(func(req *Request) (*Response, error) {
+func Base64Encoding(encoding *base64.Encoding) transport.Middleware {
+	return func(t transport.Transport) transport.Transport {
+		return transport.TransportFunc(func(req *transport.Request) (*transport.Response, error) {
 			var buf bytes.Buffer
 			encodingWriter := base64.NewEncoder(encoding, &buf)
 			_, err := io.Copy(encodingWriter, req.Body)

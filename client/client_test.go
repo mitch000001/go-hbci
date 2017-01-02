@@ -7,11 +7,11 @@ import (
 	"time"
 
 	"github.com/mitch000001/go-hbci/domain"
-	"github.com/mitch000001/go-hbci/transport"
+	https "github.com/mitch000001/go-hbci/transport/https"
 )
 
 func TestClientBalances(t *testing.T) {
-	transport := &transport.MockHttpTransport{}
+	transport := &https.MockHttpTransport{}
 	defer setMockHttpTransport(transport)()
 
 	c := newTestClient()

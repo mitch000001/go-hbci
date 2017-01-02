@@ -8,6 +8,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/mitch000001/go-hbci/transport"
+
 	"golang.org/x/text/encoding"
 	"golang.org/x/text/transform"
 )
@@ -44,9 +46,9 @@ func (m *mockTransform) Reset() {
 
 func TestUTF8Encoding(t *testing.T) {
 	called := false
-	transportResponse := Response{Body: ioutil.NopCloser(strings.NewReader("qux"))}
-	var transportRequest *Request
-	transport := TransportFunc(func(req *Request) (*Response, error) {
+	transportResponse := transport.Response{Body: ioutil.NopCloser(strings.NewReader("qux"))}
+	var transportRequest *transport.Request
+	innerTransport := transport.TransportFunc(func(req *transport.Request) (*transport.Response, error) {
 		called = true
 		transportRequest = req
 		response := transportResponse
@@ -65,9 +67,9 @@ func TestUTF8Encoding(t *testing.T) {
 
 	middleware := UTF8Encoding(encoding)
 
-	wrappedTransport := middleware(transport)
+	wrappedTransport := middleware(innerTransport)
 
-	request := &Request{
+	request := &transport.Request{
 		URL:  "foo",
 		Body: ioutil.NopCloser(strings.NewReader("bar")),
 	}
@@ -139,11 +141,11 @@ func TestBase64Encoding(t *testing.T) {
 	encoding := base64.StdEncoding
 
 	called := false
-	transportResponse := Response{
+	transportResponse := transport.Response{
 		Body: ioutil.NopCloser(strings.NewReader(encoding.EncodeToString([]byte("qux")))),
 	}
-	var transportRequest *Request
-	transport := TransportFunc(func(req *Request) (*Response, error) {
+	var transportRequest *transport.Request
+	innerTransport := transport.TransportFunc(func(req *transport.Request) (*transport.Response, error) {
 		called = true
 		transportRequest = req
 		response := transportResponse
@@ -152,9 +154,9 @@ func TestBase64Encoding(t *testing.T) {
 
 	middleware := Base64Encoding(encoding)
 
-	wrappedTransport := middleware(transport)
+	wrappedTransport := middleware(innerTransport)
 
-	request := &Request{
+	request := &transport.Request{
 		URL:  "foo",
 		Body: ioutil.NopCloser(strings.NewReader("bar")),
 	}

@@ -7,6 +7,9 @@ import (
 	"net/http"
 	"strings"
 	"testing"
+
+	"github.com/mitch000001/go-hbci/transport"
+	middleware "github.com/mitch000001/go-hbci/transport/middleware"
 )
 
 func TestHttpsBase64Transport(t *testing.T) {
@@ -18,15 +21,15 @@ func TestHttpsBase64Transport(t *testing.T) {
 	})
 	httpClient := &http.Client{Transport: roundtripper}
 
-	httpsTransport := Base64Encoding(base64.StdEncoding)(&HttpsTransport{httpClient})
+	httpsTransport := middleware.Base64Encoding(base64.StdEncoding)(&HttpsTransport{httpClient})
 	httpsBase64Transport := &HttpsBase64Transport{httpClient}
 
-	httpReq := &Request{
+	httpReq := &transport.Request{
 		URL:  "foo",
 		Body: ioutil.NopCloser(strings.NewReader("bar")),
 	}
 
-	httpBase64Req := &Request{
+	httpBase64Req := &transport.Request{
 		URL:  "foo",
 		Body: ioutil.NopCloser(strings.NewReader("bar")),
 	}
