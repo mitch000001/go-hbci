@@ -23,6 +23,8 @@ const (
 	BIC_IDENTIFIER      = "BIC"
 )
 
+// ParseBankInfos extracts all bank information from the given reader. It
+// expects the reader contents to be a CSV file with ';' as separator.
 func ParseBankInfos(reader io.Reader) ([]BankInfo, error) {
 	CsvReader := Csv.NewReader(reader)
 	CsvReader.Comma = ';'
@@ -40,7 +42,7 @@ func ParseBankInfos(reader io.Reader) ([]BankInfo, error) {
 			continue
 		}
 		bankInfo := BankInfo{
-			BankId:        strings.TrimSpace(record.Get(BANK_IDENTIFIER_HEADER)),
+			BankID:        strings.TrimSpace(record.Get(BANK_IDENTIFIER_HEADER)),
 			VersionNumber: strings.TrimSpace(record.Get(VERSION_NUMBER_HEADER)),
 			URL:           strings.TrimSpace(record.Get(URL_HEADER)),
 			VersionName:   strings.TrimSpace(record.Get(VERSION_NAME_HEADER)),
@@ -52,6 +54,8 @@ func ParseBankInfos(reader io.Reader) ([]BankInfo, error) {
 	return bankInfos, nil
 }
 
+// ParseBicData extracts all bic information from the given reader. It
+// expects the reader contents to be a CSV file with ';' as separator.
 func ParseBicData(reader io.Reader) ([]BicInfo, error) {
 	CsvReader := Csv.NewReader(reader)
 	CsvReader.Comma = ';'
@@ -68,11 +72,11 @@ func ParseBicData(reader io.Reader) ([]BicInfo, error) {
 			internal.Debug.Printf("No BankIdentifier found for record:\n%#v\n", record.AsMap())
 			continue
 		}
-		bicInfo := BicInfo{
-			BankId: strings.TrimSpace(record.Get(BIC_BANK_IDENTIFIER)),
+		bic := BicInfo{
+			BankID: strings.TrimSpace(record.Get(BIC_BANK_IDENTIFIER)),
 			BIC:    strings.TrimSpace(record.Get(BIC_IDENTIFIER)),
 		}
-		bicInfos = append(bicInfos, bicInfo)
+		bicInfos = append(bicInfos, bic)
 	}
 	return bicInfos, nil
 }

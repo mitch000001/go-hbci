@@ -80,7 +80,7 @@ const dataTemplate = `package bankinfo
 
 var data = []BankInfo{
 	{{range $element := .}}BankInfo{
-		BankId: "{{.BankId}}",
+		BankID: "{{.BankID}}",
 		VersionNumber: "{{.VersionNumber}}",
 		URL: "{{.URL}}",
 		VersionName: "{{.VersionName}}",

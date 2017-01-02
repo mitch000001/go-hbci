@@ -40,7 +40,7 @@ func New(config Config) (*Client, error) {
 		CountryCode: 280,
 		ID:          config.BankID,
 	}
-	bankInfo := bankinfo.FindByBankId(config.BankID)
+	bankInfo := bankinfo.FindByBankID(config.BankID)
 	var (
 		url         string
 		hbciVersion segment.HBCIVersion

@@ -3,10 +3,10 @@ package bankinfo
 import "testing"
 
 func TestSortableBicInfosSortInterface(t *testing.T) {
-	sorted := SortableBicInfos{
-		BicInfo{BankId: "30000000"},
-		BicInfo{BankId: "10000000"},
-		BicInfo{BankId: "20000000"},
+	sorted := sortableBicInfos{
+		BicInfo{BankID: "30000000"},
+		BicInfo{BankID: "10000000"},
+		BicInfo{BankID: "20000000"},
 	}
 
 	length := sorted.Len()
@@ -25,13 +25,13 @@ func TestSortableBicInfosSortInterface(t *testing.T) {
 
 	sorted.Swap(0, 1)
 
-	if sorted[0].BankId != "10000000" {
-		t.Logf("Expected first entry to have BankId '10000000', but was %q\n", sorted[0].BankId)
+	if sorted[0].BankID != "10000000" {
+		t.Logf("Expected first entry to have BankId '10000000', but was %q\n", sorted[0].BankID)
 		t.Fail()
 	}
 
-	if sorted[1].BankId != "30000000" {
-		t.Logf("Expected first entry to have BankId '30000000', but was %q\n", sorted[1].BankId)
+	if sorted[1].BankID != "30000000" {
+		t.Logf("Expected first entry to have BankId '30000000', but was %q\n", sorted[1].BankID)
 		t.Fail()
 	}
 }

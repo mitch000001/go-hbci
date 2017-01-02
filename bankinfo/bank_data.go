@@ -1,8 +1,8 @@
 package bankinfo
 
-type BankData struct {
+type bankData struct {
 	BIC     string
-	BankId  string
+	BankID  string
 	Version int
 	URL     string
 }

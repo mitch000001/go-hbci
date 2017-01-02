@@ -45,7 +45,7 @@ func TestParseBankInfos(t *testing.T) {
 
 	var expectedResult = []BankInfo{
 		BankInfo{
-			BankId:        "1000000",
+			BankID:        "1000000",
 			VersionNumber: "3.0",
 			URL:           "https://foo.example.com",
 			VersionName:   "FinTS V3.0",
@@ -77,7 +77,7 @@ func TestParseBicData(t *testing.T) {
 
 	var expectedResult = []BicInfo{
 		{
-			BankId: "1000000",
+			BankID: "1000000",
 			BIC:    "MARKDEF1100",
 		},
 	}

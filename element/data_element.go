@@ -413,7 +413,10 @@ func (b *BinaryDataElement) UnmarshalHBCI(value []byte) error {
 		return fmt.Errorf("Error while parsing binary size: %T:%v", err, err)
 	}
 	binData := make([]byte, binSize)
-	buf.Read(binData)
+	_, err = buf.Read(binData)
+	if err != nil {
+		return fmt.Errorf("Error while reading binary data: %T:%v", err, err)
+	}
 	*b = BinaryDataElement{&basicDataElement{binData, BinaryDE, binSize, false}}
 	return nil
 }

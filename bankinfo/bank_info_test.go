@@ -4,28 +4,28 @@ import "testing"
 
 func TestFindByBankId(t *testing.T) {
 	data = []BankInfo{
-		BankInfo{BankId: "1000000", URL: "1"},
-		BankInfo{BankId: "2000000", URL: "2"},
-		BankInfo{BankId: "3000000", URL: "3"},
+		BankInfo{BankID: "1000000", URL: "1"},
+		BankInfo{BankID: "2000000", URL: "2"},
+		BankInfo{BankID: "3000000", URL: "3"},
 	}
 
 	var url string
 
-	url = FindByBankId("1000000").URL
+	url = FindByBankID("1000000").URL
 
 	if url != "1" {
 		t.Logf("Expected url to equal %q, got %q\n", "1", url)
 		t.Fail()
 	}
 
-	url = FindByBankId("2000000").URL
+	url = FindByBankID("2000000").URL
 
 	if url != "2" {
 		t.Logf("Expected url to equal %q, got %q\n", "2", url)
 		t.Fail()
 	}
 
-	url = FindByBankId("3000000").URL
+	url = FindByBankID("3000000").URL
 
 	if url != "3" {
 		t.Logf("Expected url to equal %q, got %q\n", "3", url)
@@ -86,9 +86,9 @@ func TestHbciVersion(t *testing.T) {
 
 func TestSortableBankInfosSortInterface(t *testing.T) {
 	sorted := SortableBankInfos{
-		BankInfo{BankId: "30000000"},
-		BankInfo{BankId: "10000000"},
-		BankInfo{BankId: "20000000"},
+		BankInfo{BankID: "30000000"},
+		BankInfo{BankID: "10000000"},
+		BankInfo{BankID: "20000000"},
 	}
 
 	length := sorted.Len()
@@ -107,13 +107,13 @@ func TestSortableBankInfosSortInterface(t *testing.T) {
 
 	sorted.Swap(0, 1)
 
-	if sorted[0].BankId != "10000000" {
-		t.Logf("Expected first entry to have BankId '10000000', but was %q\n", sorted[0].BankId)
+	if sorted[0].BankID != "10000000" {
+		t.Logf("Expected first entry to have BankId '10000000', but was %q\n", sorted[0].BankID)
 		t.Fail()
 	}
 
-	if sorted[1].BankId != "30000000" {
-		t.Logf("Expected first entry to have BankId '30000000', but was %q\n", sorted[1].BankId)
+	if sorted[1].BankID != "30000000" {
+		t.Logf("Expected first entry to have BankId '30000000', but was %q\n", sorted[1].BankID)
 		t.Fail()
 	}
 }

@@ -1,12 +1,13 @@
 package bankinfo
 
+// BicInfo holds the BIC data associated with a given bank institute.
 type BicInfo struct {
 	BIC    string
-	BankId string
+	BankID string
 }
 
-type SortableBicInfos []BicInfo
+type sortableBicInfos []BicInfo
 
-func (s SortableBicInfos) Len() int           { return len(s) }
-func (s SortableBicInfos) Swap(a, b int)      { s[a], s[b] = s[b], s[a] }
-func (s SortableBicInfos) Less(a, b int) bool { return s[a].BankId < s[b].BankId }
+func (s sortableBicInfos) Len() int           { return len(s) }
+func (s sortableBicInfos) Swap(a, b int)      { s[a], s[b] = s[b], s[a] }
+func (s sortableBicInfos) Less(a, b int) bool { return s[a].BankID < s[b].BankID }

@@ -18,18 +18,22 @@ const (
 	versionString410 = "FinTS V4.1"
 )
 
-func FindByBankId(bankId string) BankInfo {
+// FindByBankID returns the BankInfo found for the provided bankID. If no value
+// is found an zero value is returned.
+func FindByBankID(bankID string) BankInfo {
 	var bankInfo BankInfo
 	for _, entry := range data {
-		if entry.BankId == bankId {
+		if entry.BankID == bankID {
 			bankInfo = entry
 		}
 	}
 	return bankInfo
 }
 
+// BankInfo contains information about the HBCI settings and supported version
+// of a given bank institute. The institute is referenced by its BankID.
 type BankInfo struct {
-	BankId        string
+	BankID        string
 	VersionNumber string
 	URL           string
 	VersionName   string
@@ -37,6 +41,11 @@ type BankInfo struct {
 	City          string
 }
 
+// HbciVersion tries to parse the HBCI version out of VersionName and
+// VersionNumber. It panics if there is any error while getting a version out
+// of the name or the number.
+//
+// The returned number will be a 3 digit integer, like 200, 210, 220, 300, 400.
 func (b BankInfo) HbciVersion() int {
 	version, err := hbciVersion(b.VersionName, b.VersionNumber)
 	if err != nil {
@@ -49,7 +58,7 @@ type SortableBankInfos []BankInfo
 
 func (s SortableBankInfos) Len() int           { return len(s) }
 func (s SortableBankInfos) Swap(a, b int)      { s[a], s[b] = s[b], s[a] }
-func (s SortableBankInfos) Less(a, b int) bool { return s[a].BankId < s[b].BankId }
+func (s SortableBankInfos) Less(a, b int) bool { return s[a].BankID < s[b].BankID }
 
 func hbciVersion(versionName, versionNumber string) (int, error) {
 	var errs []string
