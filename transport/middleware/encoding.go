@@ -34,6 +34,11 @@ func UTF8Encoding(encoding encoding.Encoding) transport.Middleware {
 	}
 }
 
+// Base64Encoding represents a middleware encoding the request passed to it with
+// Base64 encoding and decoding the response from the wrapped transport from
+// Base64.
+// If the wrapped Transport returns an error, the error will be passed as is
+// without any transformation applied.
 func Base64Encoding(encoding *base64.Encoding) transport.Middleware {
 	return func(t transport.Transport) transport.Transport {
 		return transport.TransportFunc(func(req *transport.Request) (*transport.Response, error) {
