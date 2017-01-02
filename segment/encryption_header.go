@@ -7,6 +7,8 @@ import (
 	"github.com/mitch000001/go-hbci/element"
 )
 
+const EncryptionHeaderSegmentID = "HNVSK"
+
 type EncryptionHeader interface {
 	ClientSegment
 	SetClientSystemID(clientSystemID string)
@@ -80,7 +82,7 @@ type EncryptionHeaderV2 struct {
 }
 
 func (e *EncryptionHeaderV2) Version() int         { return 2 }
-func (e *EncryptionHeaderV2) ID() string           { return "HNVSK" }
+func (e *EncryptionHeaderV2) ID() string           { return EncryptionHeaderSegmentID }
 func (e *EncryptionHeaderV2) referencedId() string { return "" }
 func (e *EncryptionHeaderV2) sender() string       { return senderBoth }
 
@@ -160,7 +162,7 @@ type EncryptionHeaderSegmentV3 struct {
 }
 
 func (e *EncryptionHeaderSegmentV3) Version() int         { return 3 }
-func (e *EncryptionHeaderSegmentV3) ID() string           { return "HNVSK" }
+func (e *EncryptionHeaderSegmentV3) ID() string           { return EncryptionHeaderSegmentID }
 func (e *EncryptionHeaderSegmentV3) referencedId() string { return "" }
 func (e *EncryptionHeaderSegmentV3) sender() string       { return senderBoth }
 

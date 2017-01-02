@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
+	"io/ioutil"
 	"net"
 	"strconv"
 	"strings"
@@ -470,14 +471,20 @@ func (d *dialog) request(clientMessage message.ClientMessage) (message.BankMessa
 		internal.Debug.Printf("%q\n", seg)
 	}
 
+	reqBody := bytes.NewReader(marshaledMessage)
+
 	request := &transport.Request{
-		URL:              d.hbciUrl,
-		MarshaledMessage: marshaledMessage,
+		URL:  d.hbciUrl,
+		Body: ioutil.NopCloser(reqBody),
 	}
 
 	response, err := d.transport.Do(request)
 	if err != nil {
 		return nil, fmt.Errorf("Transport#Do: %v", err)
+	}
+	response, err = transport.ReadResponse(bufio.NewReader(response.Body), response.Request)
+	if err != nil {
+		return nil, fmt.Errorf("Transport#ReadRequest: %v", err)
 	}
 
 	var bankMessage message.BankMessage

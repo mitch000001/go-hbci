@@ -8,7 +8,7 @@ import (
 )
 
 func NewMessageExtractor(swiftMessage []byte) *MessageExtractor {
-	lexer := token.NewSwiftLexer("MessageExtractor", charset.ToUtf8(swiftMessage))
+	lexer := token.NewSwiftLexer("MessageExtractor", charset.ToUTF8(swiftMessage))
 	return &MessageExtractor{
 		lexer:           lexer,
 		rawSwiftMessage: swiftMessage,

@@ -36,6 +36,7 @@ func (m *MockHttpTransport) SetResponsePayload(payload []byte) {
 		ProtoMajor:    1,
 		ProtoMinor:    0,
 	})
+	m.errors = append(m.errors, nil)
 }
 
 func (m *MockHttpTransport) SetResponsePayloads(payloads [][]byte) {

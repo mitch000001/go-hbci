@@ -21,7 +21,7 @@ func TestClientAccountTransactions(t *testing.T) {
 	c := newClient()
 
 	timeframe := domain.Timeframe{
-		StartDate: domain.NewShortDate(time.Now().AddDate(0, 0, -190)),
+		StartDate: domain.NewShortDate(time.Now().AddDate(0, 0, -90)),
 	}
 	transactions, err := c.AccountTransactions(testAccount, timeframe, false, "")
 
@@ -44,7 +44,7 @@ func TestClientSepaAccountTransactions(t *testing.T) {
 	c := newClient()
 
 	timeframe := domain.Timeframe{
-		StartDate: domain.NewShortDate(time.Now().AddDate(0, 0, -190)),
+		StartDate: domain.NewShortDate(time.Now().AddDate(0, 0, -90)),
 	}
 	transactions, err := c.SepaAccountTransactions(sepaTestAccount, timeframe, false, "")
 

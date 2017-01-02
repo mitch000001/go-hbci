@@ -64,8 +64,8 @@ var KnownSegments = SegmentIndex{segmentMap: make(map[VersionedSegment]func() Se
 func init() {
 	KnownSegments.mustAddToIndex(VersionedSegment{"HNHBK", 3}, func() Segment { return &MessageHeaderSegment{} })
 	KnownSegments.mustAddToIndex(VersionedSegment{"HNHBS", 1}, func() Segment { return &MessageEndSegment{} })
-	KnownSegments.mustAddToIndex(VersionedSegment{"HNVSK", 2}, func() Segment { return &EncryptionHeaderV2{} })
-	KnownSegments.mustAddToIndex(VersionedSegment{"HNVSK", 3}, func() Segment { return &EncryptionHeaderSegmentV3{} })
+	KnownSegments.mustAddToIndex(VersionedSegment{EncryptionHeaderSegmentID, 2}, func() Segment { return &EncryptionHeaderV2{} })
+	KnownSegments.mustAddToIndex(VersionedSegment{EncryptionHeaderSegmentID, 3}, func() Segment { return &EncryptionHeaderSegmentV3{} })
 	KnownSegments.mustAddToIndex(VersionedSegment{"HNVSD", 1}, func() Segment { return &EncryptedDataSegment{} })
 	KnownSegments.mustAddToIndex(VersionedSegment{"HIRMG", 2}, func() Segment { return &MessageAcknowledgement{} })
 	KnownSegments.mustAddToIndex(VersionedSegment{"HIRMS", 2}, func() Segment { return &SegmentAcknowledgement{} })
