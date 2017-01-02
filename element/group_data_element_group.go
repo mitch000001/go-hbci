@@ -104,7 +104,7 @@ func (b *BankIdentificationDataElement) UnmarshalHBCI(value []byte) error {
 		return err
 	}
 	b.CountryCode = countryCode
-	b.BankID = NewAlphaNumeric(charset.ToUtf8(elements[1]), 30)
+	b.BankID = NewAlphaNumeric(charset.ToUTF8(elements[1]), 30)
 	return nil
 }
 
@@ -144,15 +144,15 @@ func (a *AccountConnectionDataElement) UnmarshalHBCI(value []byte) error {
 	if len(elements) < 4 {
 		return fmt.Errorf("Malformed AccountConnection")
 	}
-	countryCode, err := strconv.Atoi(charset.ToUtf8(elements[2]))
+	countryCode, err := strconv.Atoi(charset.ToUTF8(elements[2]))
 	if err != nil {
 		return fmt.Errorf("%T: Malformed CountryCode: %q", a, elements[2])
 	}
 	accountConnection := domain.AccountConnection{
-		AccountID:                 charset.ToUtf8(elements[0]),
-		SubAccountCharacteristics: charset.ToUtf8(elements[1]),
+		AccountID:                 charset.ToUTF8(elements[0]),
+		SubAccountCharacteristics: charset.ToUTF8(elements[1]),
 		CountryCode:               countryCode,
-		BankID:                    charset.ToUtf8(elements[3]),
+		BankID:                    charset.ToUTF8(elements[3]),
 	}
 	*a = *NewAccountConnection(accountConnection)
 	return nil

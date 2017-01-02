@@ -236,7 +236,7 @@ func (a *AlphaNumericDataElement) MarshalHBCI() ([]byte, error) {
 }
 
 func (a *AlphaNumericDataElement) UnmarshalHBCI(value []byte) error {
-	decoded := charset.ToUtf8(value)
+	decoded := charset.ToUTF8(value)
 	unescaped := unescape(decoded)
 	*a = AlphaNumericDataElement{&basicDataElement{unescaped, AlphaNumericDE, len(unescaped), false}}
 	return nil
@@ -261,7 +261,7 @@ func (a *TextDataElement) MarshalHBCI() ([]byte, error) {
 }
 
 func (a *TextDataElement) UnmarshalHBCI(value []byte) error {
-	decoded := charset.ToUtf8(value)
+	decoded := charset.ToUTF8(value)
 	unescaped := unescape(decoded)
 	*a = TextDataElement{&basicDataElement{unescaped, TextDE, len(unescaped), false}}
 	return nil
@@ -287,7 +287,7 @@ func (d *DigitDataElement) MarshalHBCI() ([]byte, error) {
 }
 
 func (d *DigitDataElement) UnmarshalHBCI(value []byte) error {
-	val, err := strconv.Atoi(charset.ToUtf8(value))
+	val, err := strconv.Atoi(charset.ToUTF8(value))
 	if err != nil {
 		return err
 	}
@@ -310,7 +310,7 @@ func (n *NumberDataElement) MarshalHBCI() ([]byte, error) {
 }
 
 func (n *NumberDataElement) UnmarshalHBCI(value []byte) error {
-	val, err := strconv.Atoi(charset.ToUtf8(value))
+	val, err := strconv.Atoi(charset.ToUTF8(value))
 	if err != nil {
 		return err
 	}
@@ -342,7 +342,7 @@ func (f *FloatDataElement) MarshalHBCI() ([]byte, error) {
 }
 
 func (f *FloatDataElement) UnmarshalHBCI(value []byte) error {
-	str := strings.Replace(charset.ToUtf8(value), ",", ".", 1)
+	str := strings.Replace(charset.ToUTF8(value), ",", ".", 1)
 	val, err := strconv.ParseFloat(str, 64)
 	if err != nil {
 		return err
@@ -443,7 +443,7 @@ func (b *BooleanDataElement) MarshalHBCI() ([]byte, error) {
 }
 
 func (b *BooleanDataElement) UnmarshalHBCI(value []byte) error {
-	val := charset.ToUtf8(value)
+	val := charset.ToUTF8(value)
 	if val == "J" {
 		*b = BooleanDataElement{&basicDataElement{true, BooleanDE, 1, false}}
 	} else if val == "N" {
@@ -509,7 +509,7 @@ func (d *DateDataElement) MarshalHBCI() ([]byte, error) {
 }
 
 func (d *DateDataElement) UnmarshalHBCI(value []byte) error {
-	t, err := time.Parse("20060102", charset.ToUtf8(value))
+	t, err := time.Parse("20060102", charset.ToUTF8(value))
 	if err != nil {
 		return err
 	}
@@ -557,7 +557,7 @@ func (t *TimeDataElement) MarshalHBCI() ([]byte, error) {
 }
 
 func (t *TimeDataElement) UnmarshalHBCI(value []byte) error {
-	parsedTime, err := time.Parse("150405", charset.ToUtf8(value))
+	parsedTime, err := time.Parse("150405", charset.ToUTF8(value))
 	if err != nil {
 		return err
 	}

@@ -85,17 +85,17 @@ func (a *AcknowledgementDataElement) UnmarshalHBCI(value []byte) error {
 	if len(chunks) < 3 {
 		return fmt.Errorf("Malformed acknowledgment to unmarshal")
 	}
-	code, err := strconv.Atoi(charset.ToUtf8(chunks[0]))
+	code, err := strconv.Atoi(charset.ToUTF8(chunks[0]))
 	if err != nil {
 		return fmt.Errorf("%T: Malformed code", a)
 	}
 	acknowledgement.Code = code
-	acknowledgement.ReferenceDataElement = charset.ToUtf8(chunks[1])
-	acknowledgement.Text = charset.ToUtf8(chunks[2])
+	acknowledgement.ReferenceDataElement = charset.ToUTF8(chunks[1])
+	acknowledgement.Text = charset.ToUTF8(chunks[2])
 	if len(chunks) > 3 {
 		params := make([]string, len(chunks[3:]))
 		for i, chunk := range chunks[3:] {
-			params[i] = charset.ToUtf8(chunk)
+			params[i] = charset.ToUTF8(chunk)
 		}
 		acknowledgement.Params = params
 	}
@@ -133,7 +133,7 @@ func (p *ParamsDataElement) UnmarshalHBCI(value []byte) error {
 	}
 	dataElements := make([]DataElement, len(elements))
 	for i, elem := range elements {
-		dataElements[i] = NewAlphaNumeric(charset.ToUtf8(elem), 35)
+		dataElements[i] = NewAlphaNumeric(charset.ToUTF8(elem), 35)
 	}
 	p.arrayElementGroup = NewArrayElementGroup(AcknowlegdementParamsGDEG, 10, 10, dataElements)
 	return nil

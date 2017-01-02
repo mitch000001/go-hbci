@@ -44,12 +44,12 @@ func (b *BusinessTransactionParamsSegment) UnmarshalHBCI(value []byte) error {
 	if len(elements) < 4 {
 		return fmt.Errorf("%T: Malformed marshaled value", b)
 	}
-	maxJobs, err := strconv.Atoi(charset.ToUtf8(elements[1]))
+	maxJobs, err := strconv.Atoi(charset.ToUTF8(elements[1]))
 	if err != nil {
 		return fmt.Errorf("%T: Malformed max jobs: %v", b, err)
 	}
 	b.MaxJobs = element.NewNumber(maxJobs, 4)
-	minSignatures, err := strconv.Atoi(charset.ToUtf8(elements[2]))
+	minSignatures, err := strconv.Atoi(charset.ToUTF8(elements[2]))
 	if err != nil {
 		return fmt.Errorf("%T: Malformed min signatures: %v", b, err)
 	}

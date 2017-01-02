@@ -100,7 +100,7 @@ func (s *SupportedHBCIVersionsDataElement) UnmarshalHBCI(value []byte) error {
 	}
 	versions := make([]DataElement, len(elements))
 	for i, elem := range elements {
-		version, err := strconv.Atoi(charset.ToUtf8(elem))
+		version, err := strconv.Atoi(charset.ToUTF8(elem))
 		if err != nil {
 			return err
 		}
@@ -144,7 +144,7 @@ func (s *SupportedLanguagesDataElement) UnmarshalHBCI(value []byte) error {
 	}
 	languages := make([]DataElement, len(elements))
 	for i, elem := range elements {
-		lang, err := strconv.Atoi(charset.ToUtf8(elem))
+		lang, err := strconv.Atoi(charset.ToUTF8(elem))
 		if err != nil {
 			return err
 		}
@@ -244,7 +244,7 @@ func (p *PinTanBusinessTransactionParameter) UnmarshalHBCI(value []byte) error {
 	if err != nil {
 		return err
 	}
-	p.SegmentID = NewAlphaNumeric(charset.ToUtf8(elements[0]), 6)
+	p.SegmentID = NewAlphaNumeric(charset.ToUTF8(elements[0]), 6)
 	needsTan := &BooleanDataElement{}
 	err = needsTan.UnmarshalHBCI(elements[1])
 	if err != nil {

@@ -41,7 +41,7 @@ func ExtractTagID(tag []byte) ([]byte, error) {
 }
 
 func NewTagExtractor(swiftMessage []byte) *TagExtractor {
-	lexer := token.NewSwiftLexer("TagExtractor", charset.ToUtf8(swiftMessage))
+	lexer := token.NewSwiftLexer("TagExtractor", charset.ToUTF8(swiftMessage))
 	return &TagExtractor{
 		lexer:           lexer,
 		rawSwiftMessage: swiftMessage,

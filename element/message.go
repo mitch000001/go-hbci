@@ -43,8 +43,8 @@ func (r *ReferencingMessageDataElement) UnmarshalHBCI(value []byte) error {
 	if len(elements) != 2 {
 		return fmt.Errorf("Malformed marshaled value")
 	}
-	dialogId := charset.ToUtf8(elements[0])
-	num, err := strconv.Atoi(charset.ToUtf8(elements[1]))
+	dialogId := charset.ToUTF8(elements[0])
+	num, err := strconv.Atoi(charset.ToUTF8(elements[1]))
 	if err != nil {
 		return fmt.Errorf("%T: Malformed message number: %v", r, err)
 	}

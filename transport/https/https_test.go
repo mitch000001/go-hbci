@@ -21,8 +21,8 @@ func TestHttpsBase64Transport(t *testing.T) {
 	})
 	httpClient := &http.Client{Transport: roundtripper}
 
-	httpsTransport := middleware.Base64Encoding(base64.StdEncoding)(&HttpsTransport{httpClient})
-	httpsBase64Transport := &HttpsBase64Transport{httpClient}
+	httpsTransport := middleware.Base64Encoding(base64.StdEncoding)(&HTTPSTransport{httpClient})
+	httpsBase64Transport := &HTTPSBase64Transport{httpClient}
 
 	httpReq := &transport.Request{
 		URL:  "foo",
