@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/kr/pretty"
 	"github.com/mitch000001/go-hbci/domain"
 )
 
@@ -39,6 +40,38 @@ func TestTransactionTagUnmarshal(t *testing.T) {
 		marshaledValue string
 		expectedTag    *TransactionTag
 	}{
+		{
+			"All attributes set, booking in next month",
+			":61:1511301202DR4,52N024NONREF//ABC\r\n/DEF",
+			&TransactionTag{
+				Tag:                   ":61:",
+				ValutaDate:            domain.ShortDate{domain.Date(2015, time.November, 30, time.Local).Truncate(24 * time.Hour)},
+				BookingDate:           domain.ShortDate{domain.Date(2015, time.December, 2, time.Local).Truncate(24 * time.Hour)},
+				DebitCreditIndicator:  "D",
+				CurrencyKind:          "R",
+				Amount:                4.52,
+				BookingKey:            "024",
+				Reference:             "NONREF",
+				BankReference:         "ABC",
+				AdditionalInformation: "DEF",
+			},
+		},
+		{
+			"All attributes set, booking in new year",
+			":61:1512300102DR4,52N024NONREF//ABC\r\n/DEF",
+			&TransactionTag{
+				Tag:                   ":61:",
+				ValutaDate:            domain.ShortDate{domain.Date(2015, time.December, 30, time.Local).Truncate(24 * time.Hour)},
+				BookingDate:           domain.ShortDate{domain.Date(2016, time.January, 2, time.Local).Truncate(24 * time.Hour)},
+				DebitCreditIndicator:  "D",
+				CurrencyKind:          "R",
+				Amount:                4.52,
+				BookingKey:            "024",
+				Reference:             "NONREF",
+				BankReference:         "ABC",
+				AdditionalInformation: "DEF",
+			},
+		},
 		{
 			"All attributes set",
 			":61:1508010803DR4,52N024NONREF//ABC\r\n/DEF",
@@ -112,6 +145,7 @@ func TestTransactionTagUnmarshal(t *testing.T) {
 		}
 
 		if !reflect.DeepEqual(test.expectedTag, tag) {
+			pretty.Ldiff(t, test.expectedTag, tag)
 			t.Logf("Expected tag to equal\n%#v\n\tgot\n%#v\n", test.expectedTag, tag)
 			t.Fail()
 		}

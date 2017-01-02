@@ -3,6 +3,7 @@ package swift
 import (
 	"bytes"
 	"fmt"
+	"math"
 	"strconv"
 	"strings"
 	"time"
@@ -150,7 +151,7 @@ func (b *BalanceTag) Unmarshal(value []byte) error {
 	buf := bytes.NewBuffer(elements[1])
 	b.DebitCreditIndicator = string(buf.Next(1))
 	dateBytes := buf.Next(6)
-	date, err := parseDate(dateBytes)
+	date, err := parseDate(dateBytes, time.Now().Year())
 	if err != nil {
 		return err
 	}
@@ -194,7 +195,7 @@ func (t *TransactionTag) Unmarshal(value []byte) error {
 	t.Tag = string(elements[0])
 	buf := bytes.NewBuffer(elements[1])
 	dateBytes := buf.Next(6)
-	date, err := parseDate(dateBytes)
+	date, err := parseDate(dateBytes, time.Now().Year())
 	if err != nil {
 		return err
 	}
@@ -206,13 +207,14 @@ func (t *TransactionTag) Unmarshal(value []byte) error {
 	if unicode.IsDigit(r) {
 		buf.UnreadRune()
 		dateBytes = buf.Next(4)
-		date, err = parseDate(dateBytes)
+		date, err = parseDate(dateBytes, t.ValutaDate.Year())
 		if err != nil {
 			return err
 		}
 		t.BookingDate = domain.NewShortDate(date)
-		if t.BookingDate.Year() > t.ValutaDate.Year() {
-			t.BookingDate = domain.NewShortDate(t.BookingDate.AddDate(-1, 0, 0))
+		monthDiff := int(math.Abs(float64(t.ValutaDate.Month() - t.BookingDate.Month())))
+		if monthDiff > 1 {
+			t.BookingDate = domain.NewShortDate(t.BookingDate.AddDate(1, 0, 0))
 		}
 	}
 	var runes []rune
@@ -279,14 +281,14 @@ func (t *TransactionTag) Unmarshal(value []byte) error {
 	return nil
 }
 
-func parseDate(value []byte) (time.Time, error) {
+func parseDate(value []byte, referenceYear int) (time.Time, error) {
 	var offset int
 	if len(value) == 6 {
 		offset = 2
 	} else {
 		offset = 4
 	}
-	yearBegin := fmt.Sprintf("%d", time.Now().Year())[:offset]
+	yearBegin := fmt.Sprintf("%d", referenceYear)[:offset]
 	dateString := yearBegin + string(value)
 	date, err := time.Parse("20060102", dateString)
 	if err != nil {
