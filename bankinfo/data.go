@@ -86,9 +86,27 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "10050000",
+		BankId:        "10070000",
 		VersionNumber: "3.0",
-		URL:           "https://banking-be3.s-fints-pt-be.de/fints30",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "10070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "10070100",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "10070124",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -116,24 +134,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "10120760",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "10120900",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "10120999",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "10130800",
 		VersionNumber: "3.0",
 		URL:           "https://konto.biw-bank.de/hbci/",
@@ -146,15 +146,15 @@ var data = []BankInfo{
 		VersionName:   "",
 	},
 	BankInfo{
-		BankId:        "12020300",
+		BankId:        "12030000",
 		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
+		URL:           "https://banking-dkb.s-fints-pt-dkb.de/fints30",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
 		BankId:        "12030000",
 		VersionNumber: "3.0",
-		URL:           "https://banking-dkb.s-fints-pt-dkb.de/fints30",
+		URL:           "https://banking-sl2.s-fints-pt-sl.de/fints30",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -387,6 +387,18 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "12070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "12070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "12070024",
 		VersionNumber: "3.0",
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
@@ -668,15 +680,429 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "13061108",
+		BankId:        "13061128",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "13061128",
+		BankId:        "13070000",
 		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "13070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -765,12 +1191,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "15061638",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "15061658",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -917,12 +1337,6 @@ var data = []BankInfo{
 		BankId:        "18055000",
 		VersionNumber: "3.0",
 		URL:           "https://banking-bb6.s-fints-pt-bb.de/fints30",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "18062638",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -1558,7 +1972,7 @@ var data = []BankInfo{
 	BankInfo{
 		BankId:        "20050550",
 		VersionNumber: "2.2",
-		URL:           "https://ssl2.haspa.de/OnlineBankingFinTS/pintan",
+		URL:           "https://banking.haspa.de/OnlineBankingFinTS/pintan",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -1575,12 +1989,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "20069130",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "20069140",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -1605,12 +2013,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "20069641",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "20069780",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -1646,12 +2048,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "20069836",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "20069861",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
@@ -1676,6 +2072,186 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
+		BankId:        "20070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "20070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "20070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "20070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "20070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "20070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "20070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "20070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "20070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "20070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "20070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "20070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "20070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "20070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "20070000",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "20070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "20070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "20070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "20070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "20070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "20070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "20070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "20070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "20070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "20070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "20070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "20070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "20070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "20070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "20070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
 		BankId:        "20090400",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
@@ -1697,6 +2273,12 @@ var data = []BankInfo{
 		BankId:        "20090745",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "20090900",
+		VersionNumber: "",
+		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -1766,75 +2348,15 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "20730000",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "20730051",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "20730053",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "20730054",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "20750000",
 		VersionNumber: "3.0",
 		URL:           "https://banking-ni3.s-fints-pt-ni.de/fints30",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "21010228",
-		VersionNumber: "",
-		URL:           "https://www.bv-activebanking.de/hbciTunnel/hbciTransfer.jsp",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "21020600",
 		VersionNumber: "3.0",
 		URL:           "https://www.bv-activebanking.de/hbciTunnel/hbciTransfer.jsp",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "21030000",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "21030092",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "21030093",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "21030094",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "21030095",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -1856,25 +2378,31 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "21060237",
+		BankId:        "21070020",
 		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
+		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "21064045",
+		BankId:        "21070020",
 		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "21070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "21070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
 		BankId:        "21090007",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "21090801",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -1892,15 +2420,15 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "21230085",
+		BankId:        "21270020",
 		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
+		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "21230086",
+		BankId:        "21270024",
 		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
+		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -1934,12 +2462,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "21430070",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "21450000",
 		VersionNumber: "3.0",
 		URL:           "https://banking-sh1.s-fints-pt-sh.de/fints30",
@@ -1970,45 +2492,33 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "21530080",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "21565316",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "21566356",
+		BankId:        "21570011",
 		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
+		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "21630060",
+		BankId:        "21570011",
 		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
+		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "21630061",
+		BankId:        "21570024",
 		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
+		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "21630062",
+		BankId:        "21570024",
 		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "21630063",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
+		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -2018,51 +2528,9 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "21663723",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "21690020",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "21730040",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "21730042",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "21730043",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "21730044",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "21730045",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "21730046",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -2084,9 +2552,15 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "21791601",
+		BankId:        "21770011",
 		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "21770024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -2099,36 +2573,6 @@ var data = []BankInfo{
 		BankId:        "21791906",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "21830030",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "21830032",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "21830033",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "21830034",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "21830035",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -2147,12 +2591,6 @@ var data = []BankInfo{
 		BankId:        "21890022",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "22130075",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -2192,30 +2630,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "22230020",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "22230022",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "22230023",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "22230025",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "22250020",
 		VersionNumber: "3.0",
 		URL:           "https://banking-sh2.s-fints-pt-sh.de/fints30",
@@ -2225,12 +2639,6 @@ var data = []BankInfo{
 		BankId:        "22290031",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "23030000",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -2276,12 +2684,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "23062807",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "23063129",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
@@ -2294,15 +2696,99 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "23090142",
+		BankId:        "23070700",
 		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
+		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "24030000",
+		BankId:        "23070700",
 		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "23070700",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "23070700",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "23070700",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "23070700",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "23070700",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "23070700",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "23070700",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "23070700",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "23070700",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "23070700",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "23070700",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "23070700",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "23070710",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "23090142",
+		VersionNumber: "3.0",
+		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -2318,15 +2804,33 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "24121000",
+		BankId:        "24070024",
 		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
+		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "24130000",
+		BankId:        "24070024",
 		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "24070075",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "24070075",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "24121000",
+		VersionNumber: "3.0",
+		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -2384,12 +2888,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "25030000",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "25050000",
 		VersionNumber: "3.0",
 		URL:           "https://banking-li1.s-fints-pt-li.de/fints30",
@@ -2405,12 +2903,6 @@ var data = []BankInfo{
 		BankId:        "25060180",
 		VersionNumber: "3.0",
 		URL:           "https://ebanking.bankhaus-hallbaum.de/fints",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "25060701",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -2432,21 +2924,129 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "25069370",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "25069503",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "25069880",
+		BankId:        "25070024",
 		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "25070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "25070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "25070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "25070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "25070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "25070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "25070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "25070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "25070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "25070066",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "25070070",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "25070070",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "25070070",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "25070070",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "25070070",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "25070077",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "25070084",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "25070084",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "25070086",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -2504,24 +3104,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "25260010",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "25430000",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "25450001",
-		VersionNumber: "3.0",
-		URL:           "https://banking-ni2.s-fints-pt-ni.de/fints30",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "25450110",
 		VersionNumber: "3.0",
 		URL:           "https://banking-ni2.s-fints-pt-ni.de/fints30",
@@ -2546,13 +3128,37 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "25491273",
+		BankId:        "25470024",
 		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
+		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "25491744",
+		BankId:        "25470024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "25470073",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "25471024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "25471073",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "25491273",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -2606,12 +3212,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "25730000",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "25750001",
 		VersionNumber: "3.0",
 		URL:           "https://banking-ni2.s-fints-pt-ni.de/fints30",
@@ -2624,15 +3224,21 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "25791516",
+		BankId:        "25770024",
 		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
+		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "25791635",
+		BankId:        "25770069",
 		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "25791516",
+		VersionNumber: "3.0",
+		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -2678,21 +3284,9 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "25868425",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "25891636",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "25930000",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -2744,21 +3338,9 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "25990011",
-		VersionNumber: "",
-		URL:           "",
-		VersionName:   "",
-	},
-	BankInfo{
 		BankId:        "25991528",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "26030000",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -2798,19 +3380,7 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "26061826",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "26062433",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "26062575",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -2888,12 +3458,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "26264884",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "26271424",
 		VersionNumber: "3.0",
 		URL:           "https://fints.deutsche-bank.de/",
@@ -2927,12 +3491,6 @@ var data = []BankInfo{
 		BankId:        "26351445",
 		VersionNumber: "3.0",
 		URL:           "https://banking-ni2.s-fints-pt-ni.de/fints30",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "26361299",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -3302,12 +3860,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "27030000",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "27032500",
 		VersionNumber: "3.0",
 		URL:           "https://banking.seeligerbank.de/eBankingProxy/",
@@ -3518,12 +4070,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "27190082",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "27240004",
 		VersionNumber: "3.0",
 		URL:           "",
@@ -3531,18 +4077,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "27290087",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "27291216",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "27362207",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -3590,12 +4124,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "28061036",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "28061410",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
@@ -3638,12 +4166,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "28062740",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "28062913",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
@@ -3669,12 +4191,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "28064179",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "28064465",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -3735,12 +4251,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "28068218",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "28069020",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -3818,12 +4328,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "28069955",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "28069956",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
@@ -3831,12 +4335,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "28069956",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "28069959",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -3855,12 +4353,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "28069994",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "28069998",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -3909,12 +4401,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "28262673",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "28262794",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -4418,12 +4904,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "29168522",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "29172624",
 		VersionNumber: "3.0",
 		URL:           "https://fints.deutsche-bank.de/",
@@ -4448,12 +4928,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "29220200",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "29240024",
 		VersionNumber: "3.0",
 		URL:           "",
@@ -4463,18 +4937,6 @@ var data = []BankInfo{
 		BankId:        "29250000",
 		VersionNumber: "3.0",
 		URL:           "https://banking-ni1.s-fints-pt-ni.de/fints30",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "29261224",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "29262646",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -4500,12 +4962,6 @@ var data = []BankInfo{
 		VersionNumber: "3.0",
 		URL:           "https://www.bv-activebanking.de/hbciTunnel/hbciTransfer.jsp",
 		VersionName:   "FinTS V4.0",
-	},
-	BankInfo{
-		BankId:        "30020800",
-		VersionNumber: "",
-		URL:           "",
-		VersionName:   "",
 	},
 	BankInfo{
 		BankId:        "30030500",
@@ -4703,12 +5159,6 @@ var data = []BankInfo{
 		BankId:        "30070024",
 		VersionNumber: "3.0",
 		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "30120764",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -5588,12 +6038,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "35251000",
-		VersionNumber: "3.0",
-		URL:           "https://banking-rl2.s-fints-pt-rl.de/fints30",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "35261248",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
@@ -5984,12 +6428,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "37069210",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "37069252",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
@@ -6032,18 +6470,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "37069381",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "37069401",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "37069405",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
@@ -6075,24 +6501,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "37069520",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "37069521",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "37069524",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "37069620",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -6536,6 +6944,18 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
+		BankId:        "38070724",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "38077724",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
 		BankId:        "38160220",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
@@ -6587,12 +7007,6 @@ var data = []BankInfo{
 		BankId:        "38452490",
 		VersionNumber: "3.0",
 		URL:           "https://banking-rl5.s-fints-pt-rl.de/fints30",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "38460081",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -7034,12 +7448,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "40069537",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "40069546",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
@@ -7163,12 +7571,6 @@ var data = []BankInfo{
 		BankId:        "40153768",
 		VersionNumber: "3.0",
 		URL:           "https://banking-wl1.s-fints-pt-wl.de/fints30",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "40154006",
-		VersionNumber: "3.0",
-		URL:           "https://banking-wl3.s-fints-pt-wl.de/fints30",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -7385,12 +7787,6 @@ var data = []BankInfo{
 		BankId:        "41050095",
 		VersionNumber: "3.0",
 		URL:           "https://banking-wl5.s-fints-pt-wl.de/fints30",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "41051605",
-		VersionNumber: "3.0",
-		URL:           "https://banking-wl1.s-fints-pt-wl.de/fints30",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -8138,7 +8534,7 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "44090900",
+		BankId:        "44090920",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -9596,19 +9992,7 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "48070046",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "48070050",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "48070051",
 		VersionNumber: "3.0",
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
@@ -9681,12 +10065,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "49061510",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "49063296",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -9812,6 +10190,12 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
+		BankId:        "50010517",
+		VersionNumber: "",
+		URL:           "https://fints.ing-diba.de/fints/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
 		BankId:        "50010700",
 		VersionNumber: "",
 		URL:           "https://fints.degussa-bank.de",
@@ -9824,21 +10208,15 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "50020160",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "50020200",
 		VersionNumber: "3.0",
 		URL:           "https://www.bv-activebanking.de/hbciTunnel/hbciTransfer.jsp",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "50030400",
+		BankId:        "50030100",
 		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
+		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -9962,7 +10340,7 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "50060500",
+		BankId:        "50060474",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -10004,19 +10382,7 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "50069384",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "50069455",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "50069464",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -10029,18 +10395,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "50069693",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "50069828",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "50069842",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -10089,6 +10443,18 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "50070010",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "50070010",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "50070024",
 		VersionNumber: "3.0",
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
@@ -10190,12 +10556,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "50092700",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "50092900",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -10244,22 +10604,10 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "50190300",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "50190400",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "50220800",
-		VersionNumber: "",
-		URL:           "",
-		VersionName:   "",
 	},
 	BankInfo{
 		BankId:        "50220900",
@@ -10286,12 +10634,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "50320200",
-		VersionNumber: "",
-		URL:           "https://www.bv-activebanking.de/hbciTunnel/hbciTransfer.jsp",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "50520190",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
@@ -10305,12 +10647,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "50530000",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "50530001",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -10347,12 +10683,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "50561315",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "50561908",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -10580,12 +10910,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "50762649",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "50763319",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -10712,31 +11036,13 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "50863317",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "50863513",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "50863906",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "50864322",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "50864421",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -10832,12 +11138,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "50960101",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "50961206",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -10883,12 +11183,6 @@ var data = []BankInfo{
 		BankId:        "50970024",
 		VersionNumber: "3.0",
 		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "50991400",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -11108,24 +11402,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "51361704",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "51362514",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "51363407",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "51370008",
 		VersionNumber: "3.0",
 		URL:           "https://fints.deutsche-bank.de/",
@@ -11252,12 +11528,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "51862677",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "51961023",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -11277,12 +11547,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "51990000",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "52020000",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -11348,19 +11612,7 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "52060400",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "52060410",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "52061210",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -11402,18 +11654,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "52064558",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "52065220",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "52069013",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -11426,37 +11666,13 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "52069065",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "52069103",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "52069129",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "52069149",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "52069183",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "52069503",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -11600,6 +11816,12 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
+		BankId:        "53061230",
+		VersionNumber: "3.0",
+		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
 		BankId:        "53061313",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -11702,18 +11924,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "53261700",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "53262073",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "53262455",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -11774,19 +11984,7 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "53390000",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "54020090",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "54020474",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
@@ -11819,12 +12017,6 @@ var data = []BankInfo{
 		BankId:        "54051990",
 		VersionNumber: "3.0",
 		URL:           "https://banking-rp3.s-fints-pt-rp.de/fints30",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "54061650",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -11888,12 +12080,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "54220576",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "54240032",
 		VersionNumber: "3.0",
 		URL:           "",
@@ -11912,18 +12098,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "54261900",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "54262330",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "54270024",
 		VersionNumber: "3.0",
 		URL:           "https://fints.deutsche-bank.de/",
@@ -11945,12 +12119,6 @@ var data = []BankInfo{
 		BankId:        "54270096",
 		VersionNumber: "3.0",
 		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "54290000",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -11963,12 +12131,6 @@ var data = []BankInfo{
 		BankId:        "54510067",
 		VersionNumber: "",
 		URL:           "https://hbci.postbank.de/banking/hbci.do",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "54520071",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -12074,12 +12236,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "54560320",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "54561310",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -12164,12 +12320,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "54620574",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "54640035",
 		VersionNumber: "3.0",
 		URL:           "",
@@ -12236,33 +12386,9 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "54760900",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "54761411",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "54790000",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "54790300",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "54820674",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -12506,25 +12632,7 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "55360784",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "55361202",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "55361313",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "55361422",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -12579,12 +12687,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "56062227",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "56062577",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -12686,12 +12788,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "57063478",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "57064221",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
@@ -12723,12 +12819,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "57069361",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "57069372",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -12818,6 +12908,12 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
+		BankId:        "57090900",
+		VersionNumber: "",
+		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
 		BankId:        "57091000",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -12825,18 +12921,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "57091100",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "57091500",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "57092400",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -12891,12 +12975,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "57460117",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "57461759",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -12980,12 +13058,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "57762265",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "58520086",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
@@ -13011,12 +13083,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "58560103",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "58561594",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -13070,6 +13136,12 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
+		BankId:        "58590900",
+		VersionNumber: "3.0",
+		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
 		BankId:        "58650030",
 		VersionNumber: "3.0",
 		URL:           "https://banking-rp1.s-fints-pt-rp.de/fints30",
@@ -13101,18 +13173,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "58662653",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "58663628",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "58691500",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -13292,12 +13352,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "59052020",
-		VersionNumber: "3.0",
-		URL:           "https://banking-sl2.s-fints-pt-sl.de/fints30",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "59070070",
 		VersionNumber: "3.0",
 		URL:           "https://fints.deutsche-bank.de/",
@@ -13346,8 +13400,8 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "59091000",
-		VersionNumber: "3.0",
+		BankId:        "59090900",
+		VersionNumber: "",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
 	},
@@ -13370,18 +13424,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "59099480",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "59099530",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "59099550",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -13389,12 +13431,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "59190000",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "59190100",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -13418,12 +13454,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "59290100",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "59291000",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -13431,12 +13461,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "59291200",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "59291300",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -13472,19 +13496,7 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "59391100",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "59391200",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "59391800",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -13502,19 +13514,7 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "59392400",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "59393000",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "59394200",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -13526,19 +13526,7 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "59491000",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "59491114",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "59491200",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -13602,12 +13590,6 @@ var data = []BankInfo{
 		VersionNumber: "3.0",
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "60020800",
-		VersionNumber: "",
-		URL:           "",
-		VersionName:   "",
 	},
 	BankInfo{
 		BankId:        "60030100",
@@ -13688,18 +13670,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "60060606",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "60060893",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "60062775",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -13712,12 +13682,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "60069017",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "60069066",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -13725,12 +13689,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "60069075",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "60069126",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -13814,12 +13772,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "60069325",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "60069336",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -13850,18 +13802,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "60069357",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "60069371",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "60069378",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -13869,12 +13809,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "60069387",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "60069417",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -13940,19 +13874,7 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "60069485",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "60069505",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "60069511",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -13964,19 +13886,7 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "60069520",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "60069527",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "60069538",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -13994,12 +13904,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "60069549",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "60069553",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -14012,25 +13916,7 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "60069593",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "60069595",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "60069639",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "60069647",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -14043,12 +13929,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "60069669",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "60069670",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -14067,18 +13947,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "60069685",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "60069692",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "60069699",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -14108,12 +13976,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "60069716",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "60069724",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -14133,18 +13995,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "60069766",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "60069773",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "60069780",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -14241,18 +14091,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "60069950",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "60069971",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "60069972",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -14366,9 +14204,9 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "60120050",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
+		BankId:        "60090900",
+		VersionNumber: "",
+		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -14402,18 +14240,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "60261329",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "60261622",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "60261818",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -14426,49 +14252,7 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "60262693",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "60270024",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "60270024",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "60270024",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "60270024",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "60270073",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "60270073",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "60270073",
 		VersionNumber: "3.0",
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
@@ -14487,18 +14271,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "60291120",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "60291410",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "60291510",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -14588,12 +14360,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "60461809",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "60462808",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -14631,6 +14397,18 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "60470024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "60470024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "60470082",
 		VersionNumber: "3.0",
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
@@ -14684,12 +14462,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "60661369",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "60661906",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -14702,9 +14474,15 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "60691440",
+		BankId:        "60670024",
 		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "60670070",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -14871,12 +14649,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "61261339",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "61262258",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -15158,12 +14930,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "62091400",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "62091600",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -15195,12 +14961,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "62291020",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "62361274",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -15243,12 +15003,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "63020086",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "63020450",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
@@ -15363,12 +15117,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "63290110",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "63291210",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -15608,12 +15356,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "64263273",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "64290120",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -15806,12 +15548,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "65091400",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "65091600",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -15839,12 +15575,6 @@ var data = []BankInfo{
 		BankId:        "65110200",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "65120091",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -16010,12 +15740,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "65490130",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "65491320",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -16031,12 +15755,6 @@ var data = []BankInfo{
 		BankId:        "66010075",
 		VersionNumber: "",
 		URL:           "https://hbci.postbank.de/banking/hbci.do",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "66020150",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -16088,12 +15806,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "66060800",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "66061059",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -16136,37 +15848,7 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "66069117",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "66069265",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "66069323",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "66069342",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "66069573",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "66069617",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -16226,25 +15908,19 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
+		BankId:        "66090900",
+		VersionNumber: "3.0",
+		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
 		BankId:        "66091200",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "66091500",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "66190000",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "66190100",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -16340,19 +16016,7 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "66270099",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "66290000",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "66291300",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -16373,42 +16037,6 @@ var data = []BankInfo{
 		BankId:        "66350036",
 		VersionNumber: "3.0",
 		URL:           "https://banking-bw2.s-fints-pt-bw.de/fints30",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "66361178",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "66361335",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "66361588",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "66362345",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "66363487",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "66390000",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -16526,12 +16154,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "66492300",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "66492600",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -16557,12 +16179,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "66562300",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "66562419",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -16605,12 +16221,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "66662220",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "66663439",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -16677,12 +16287,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "67020190",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "67020259",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
@@ -16814,18 +16418,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "67091300",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "67091500",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "67092300",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -16833,12 +16425,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "67220286",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "67220464",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
@@ -16868,19 +16454,7 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "67261909",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "67262243",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "67262402",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -16935,12 +16509,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "67290100",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "67291500",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -17036,12 +16604,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "68020460",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "68030000",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
@@ -17115,12 +16677,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "68062730",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "68063254",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -17204,8 +16760,8 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "68091700",
-		VersionNumber: "3.0",
+		BankId:        "68090900",
+		VersionNumber: "",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
 	},
@@ -17285,12 +16841,6 @@ var data = []BankInfo{
 		BankId:        "68351865",
 		VersionNumber: "3.0",
 		URL:           "https://banking-bw1.s-fints-pt-bw.de/fints30",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "68361394",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -17420,12 +16970,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "68491500",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "68492200",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -17516,12 +17060,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "69230010",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "69240075",
 		VersionNumber: "3.0",
 		URL:           "",
@@ -17609,24 +17147,6 @@ var data = []BankInfo{
 		BankId:        "69450065",
 		VersionNumber: "3.0",
 		URL:           "https://banking-bw6.s-fints-pt-bw.de/fints30",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "69461312",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "69461803",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "69462647",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -17741,12 +17261,6 @@ var data = []BankInfo{
 		BankId:        "70017000",
 		VersionNumber: "",
 		URL:           "https://fints.paycenter.de",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "70020001",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -18032,18 +17546,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "70040038",
-		VersionNumber: "3.0",
-		URL:           "",
-		VersionName:   "",
-	},
-	BankInfo{
-		BankId:        "70040039",
-		VersionNumber: "3.0",
-		URL:           "",
-		VersionName:   "",
-	},
-	BankInfo{
 		BankId:        "70040041",
 		VersionNumber: "3.0",
 		URL:           "",
@@ -18254,6 +17756,18 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
+		BankId:        "70070010",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "70070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
 		BankId:        "70070024",
 		VersionNumber: "3.0",
 		URL:           "https://fints.deutsche-bank.de/",
@@ -18380,12 +17894,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "70090300",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "70090500",
 		VersionNumber: "",
 		URL:           "https://fints.bankingonline.de/fints/FinTs30PinTanHttpGate",
@@ -18422,21 +17930,21 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "70120700",
-		VersionNumber: "3.0",
-		URL:           "https://www.bv-activebanking.de/hbciTunnel/hbciTransfer.jsp",
+		BankId:        "70120400",
+		VersionNumber: "",
+		URL:           "https://brokerage-hbci.consorsbank.de/hbci",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "70120800",
+		BankId:        "70120400",
 		VersionNumber: "",
-		URL:           "",
-		VersionName:   "",
+		URL:           "https://brokerage-hbci.consorsbank.de/hbci",
+		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "70120900",
+		BankId:        "70120700",
 		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
+		URL:           "https://www.bv-activebanking.de/hbciTunnel/hbciTransfer.jsp",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -18476,25 +17984,7 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "70169110",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "70169132",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "70169144",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "70169162",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -18507,24 +17997,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "70169168",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "70169174",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "70169179",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "70169182",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -18555,12 +18027,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "70169310",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "70169322",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -18602,12 +18068,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "70169384",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "70169388",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -18627,18 +18087,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "70169413",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "70169433",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "70169444",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -18680,12 +18128,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "70169472",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "70169474",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -18699,18 +18141,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "70169493",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "70169495",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "70169505",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -18776,12 +18206,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "70169570",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "70169571",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -18801,18 +18225,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "70169585",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "70169590",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "70169596",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -18903,12 +18315,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "70320090",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "70320305",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
@@ -19070,12 +18476,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "71062194",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "71062802",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -19083,12 +18483,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "71090000",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "71093000",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -19364,12 +18758,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "72020240",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "72020700",
 		VersionNumber: "3.0",
 		URL:           "",
@@ -19392,12 +18780,6 @@ var data = []BankInfo{
 		VersionNumber: "3.0",
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "72030014",
-		VersionNumber: "3.0",
-		URL:           "",
-		VersionName:   "",
 	},
 	BankInfo{
 		BankId:        "72030014",
@@ -19442,12 +18824,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "72060300",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "72062152",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -19484,25 +18860,7 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "72069081",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "72069090",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "72069105",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "72069108",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -19520,19 +18878,7 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "72069116",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "72069119",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "72069121",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -19562,31 +18908,7 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "72069138",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "72069139",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "72069141",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "72069155",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "72069168",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -19598,31 +18920,13 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "72069181",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "72069193",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "72069209",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "72069220",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "72069233",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -19652,37 +18956,13 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "72069325",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "72069329",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "72069330",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "72069736",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "72069742",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "72069748",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -19784,15 +19064,15 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "72090300",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "72090500",
 		VersionNumber: "",
 		URL:           "https://fints.bankingonline.de/fints/FinTs30PinTanHttpGate",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "72090900",
+		VersionNumber: "",
+		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -19857,18 +19137,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "72120078",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "72120079",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "72120207",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
@@ -19964,12 +19232,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "72169753",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "72169756",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -20048,25 +19310,7 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "72191500",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "72191600",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "72191800",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "72192000",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -20102,19 +19346,7 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "72261754",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "72262401",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "72262901",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -20198,12 +19430,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "73161455",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "73190000",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -20223,12 +19449,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "73320073",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "73320442",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
@@ -20288,12 +19508,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "73361592",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "73362421",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -20306,12 +19520,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "73369750",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "73369821",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -20319,12 +19527,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "73369823",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "73369824",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -20366,25 +19568,7 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "73369881",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "73369888",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "73369902",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "73369915",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -20409,12 +19593,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "73369936",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "73369951",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -20451,6 +19629,18 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "73370008",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "73370008",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "73370024",
 		VersionNumber: "3.0",
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
@@ -20528,12 +19718,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "73420546",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "73421478",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
@@ -20559,12 +19743,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "73460046",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "73491300",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -20624,12 +19802,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "74020414",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "74040082",
 		VersionNumber: "3.0",
 		URL:           "",
@@ -20678,12 +19850,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "74062555",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "74062786",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -20691,18 +19857,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "74064593",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "74064742",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "74065782",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -20720,37 +19874,13 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "74069186",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "74069738",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "74069744",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "74069752",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "74069758",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "74069763",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -20768,12 +19898,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "74090300",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "74092400",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -20781,12 +19905,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "74120071",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "74120514",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
@@ -20816,19 +19934,7 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "74164149",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "74165013",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "74167099",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -20960,12 +20066,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "74320307",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "74340077",
 		VersionNumber: "3.0",
 		URL:           "",
@@ -21026,12 +20126,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "74369091",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "74369130",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -21075,12 +20169,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "74391300",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "74391400",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -21141,12 +20229,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "75020073",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "75020314",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
@@ -21230,12 +20312,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "75069043",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "75069050",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -21260,12 +20336,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "75069074",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "75069076",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -21284,18 +20354,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "75069090",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "75069092",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "75069094",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -21303,12 +20361,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "75069110",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "75069164",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -21383,6 +20435,12 @@ var data = []BankInfo{
 		BankId:        "75090500",
 		VersionNumber: "",
 		URL:           "https://fints.bankingonline.de/fints/FinTs30PinTanHttpGate",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "75090900",
+		VersionNumber: "",
+		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -21554,27 +20612,9 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "76020214",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "76020800",
-		VersionNumber: "",
-		URL:           "",
-		VersionName:   "",
-	},
-	BankInfo{
 		BankId:        "76026000",
 		VersionNumber: "",
 		URL:           "https://fints.norisbank.de/",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "76030080",
-		VersionNumber: "",
-		URL:           "https://brokerage-hbci.consorsbank.de/hbci",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -21608,12 +20648,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "76060561",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "76060618",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -21627,12 +20661,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "76061482",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "76069359",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -21656,12 +20684,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "76069393",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "76069404",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -21675,18 +20697,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "76069410",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "76069411",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "76069412",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -21728,12 +20738,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "76069483",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "76069486",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -21741,12 +20745,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "76069512",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "76069539",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -21788,12 +20786,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "76069598",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "76069601",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -21813,12 +20805,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "76069635",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "76069654",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -22028,18 +21014,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "76090100",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "76090300",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "76090400",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -22049,6 +21023,12 @@ var data = []BankInfo{
 		BankId:        "76090500",
 		VersionNumber: "",
 		URL:           "https://fints.bankingonline.de/fints/FinTs30PinTanHttpGate",
+		VersionName:   "FinTS V3.0",
+	},
+	BankInfo{
+		BankId:        "76090900",
+		VersionNumber: "",
+		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -22103,12 +21083,6 @@ var data = []BankInfo{
 		BankId:        "76251020",
 		VersionNumber: "3.0",
 		URL:           "https://banking-by1.s-fints-pt-by.de/fints30",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "76260451",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -22358,12 +21332,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "77063048",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "77065141",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -22394,12 +21362,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "77069084",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "77069091",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -22407,12 +21369,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "77069110",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "77069128",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -22472,18 +21428,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "77069879",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "77069893",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "77069906",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -22491,12 +21435,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "77069908",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "77090100",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -22640,24 +21578,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "78020429",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "78030080",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "78030081",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "78040081",
 		VersionNumber: "3.0",
 		URL:           "",
@@ -22676,25 +21596,7 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "78062488",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "78090000",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "78160069",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "78161232",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -22754,12 +21656,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "78390000",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "79020076",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
@@ -22803,12 +21699,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "79020076",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "79020325",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
@@ -22946,12 +21836,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "79061153",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "79062106",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -22976,18 +21860,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "79065160",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "79066082",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "79069001",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -23006,19 +21878,7 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "79069078",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "79069090",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "79069110",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -23049,18 +21909,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "79069188",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "79069192",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "79069199",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -23115,12 +21963,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "79090000",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "79090300",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -23210,12 +22052,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "79320432",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "79330111",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -23264,18 +22100,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "79362425",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "79363016",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "79363151",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -23288,18 +22112,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "79364406",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "79364406",
-		VersionNumber: "",
-		URL:           "",
-		VersionName:   "",
-	},
-	BankInfo{
 		BankId:        "79520070",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
@@ -23337,12 +22149,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "79520070",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "79520533",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
@@ -23361,12 +22167,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "79561348",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "79562225",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -23438,12 +22238,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "79662558",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "79665540",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -23457,12 +22251,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "79668509",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "79690000",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -23612,12 +22400,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "80063678",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "80063718",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
@@ -23745,12 +22527,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "81063238",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "81069049",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -23942,12 +22718,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "81093134",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "81093274",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
@@ -24095,12 +22865,6 @@ var data = []BankInfo{
 		BankId:        "82057070",
 		VersionNumber: "3.0",
 		URL:           "https://banking-th5.s-fints-pt-th.de/fints30",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "82060800",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -24494,12 +23258,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "82094224",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "83020086",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
@@ -24578,12 +23336,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "83064538",
-		VersionNumber: "",
-		URL:           "",
-		VersionName:   "",
-	},
-	BankInfo{
 		BankId:        "83064568",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -24617,18 +23369,6 @@ var data = []BankInfo{
 		BankId:        "83094494",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "83095424",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "84020086",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -24680,19 +23420,7 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "84069065",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "84094754",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "84094764",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -24717,18 +23445,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "85020086",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "85020300",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "85020890",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
@@ -24818,12 +23534,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "85090300",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "85094984",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -24831,12 +23541,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "85095004",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "85095164",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -24866,12 +23570,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
-		BankId:        "85595500",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
 		BankId:        "86010090",
 		VersionNumber: "",
 		URL:           "https://hbci.postbank.de/banking/hbci.do",
@@ -24879,18 +23577,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "86020086",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "86020200",
-		VersionNumber: "3.0",
-		URL:           "https://www.bv-activebanking.de/hbciTunnel/hbciTransfer.jsp",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "86020880",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
@@ -24975,12 +23661,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "86065483",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "86065548",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
@@ -25155,30 +23835,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "86070000",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "86070000",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "86070000",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "86070024",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "86070024",
 		VersionNumber: "3.0",
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
@@ -25469,18 +24125,6 @@ var data = []BankInfo{
 		BankId:        "87058000",
 		VersionNumber: "3.0",
 		URL:           "https://banking-sn4.s-fints-pt-sn.de/fints30",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "87065893",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "87065918",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
 	},
 	BankInfo{
@@ -26031,12 +24675,6 @@ var data = []BankInfo{
 	},
 	BankInfo{
 		BankId:        "87096034",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-	},
-	BankInfo{
-		BankId:        "87096074",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
