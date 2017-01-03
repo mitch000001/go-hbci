@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net"
 	"strconv"
 	"strings"
@@ -94,9 +95,7 @@ func (d *dialog) SendMessage(clientMessage message.HBCIMessage) (message.BankMes
 	if err != nil {
 		return nil, err
 	}
-	defer func() {
-		d.end()
-	}()
+	defer func() { logErr(d.end()) }()
 	requestMessage := d.newBasicMessage(clientMessage)
 	signedMessage, err := requestMessage.Sign(d.signatureProvider)
 	if err != nil {
@@ -198,9 +197,7 @@ func (d *dialog) SendAnonymousMessage(clientMessage message.HBCIMessage) (messag
 	if err != nil {
 		return nil, fmt.Errorf("Error while initating anonymous dialog: %v", err)
 	}
-	defer func() {
-		d.anonymousEnd()
-	}()
+	defer func() { logErr(d.anonymousEnd()) }()
 	// TODO: add checks if job needs signature or not
 	requestMessage := d.newBasicMessage(clientMessage)
 	requestMessage.SetNumbers()
@@ -575,8 +572,11 @@ func (d *dialog) dial(message []byte) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer conn.Close()
-	conn.SetReadDeadline(time.Now().Add(2 * time.Second))
+	defer func() { logErr(conn.Close()) }()
+	err = conn.SetReadDeadline(time.Now().Add(2 * time.Second))
+	if err != nil {
+		return nil, err
+	}
 	fmt.Fprintf(conn, "%s\r\n\r\n", string(message))
 	buf := bufio.NewReader(conn)
 	// read answer header
@@ -594,9 +594,18 @@ func (d *dialog) dial(message []byte) ([]byte, error) {
 		return nil, fmt.Errorf("Error while parsing message size: %T:%v\n", err, err)
 	}
 	messageBuf := make([]byte, size)
-	buf.Read(messageBuf)
+	_, err = buf.Read(messageBuf)
+	if err != nil {
+		return nil, fmt.Errorf("Error while reading message: %T:%v\n", err, err)
+	}
 	var retBuf bytes.Buffer
 	retBuf.WriteString(header)
 	retBuf.Write(messageBuf)
 	return retBuf.Bytes(), err
+}
+
+func logErr(err error) {
+	if err != nil {
+		log.Println(err)
+	}
 }
