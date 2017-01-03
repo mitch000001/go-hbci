@@ -34,13 +34,13 @@ type mockTransform struct {
 }
 
 func (m *mockTransform) Transform(dst, src []byte, atEOF bool) (nDst, nSrc int, err error) {
-	m.transformCallCount += 1
+	m.transformCallCount++
 	buf := bytes.ToUpper(src)
 	return m.Transformer.Transform(dst, buf, atEOF)
 }
 
 func (m *mockTransform) Reset() {
-	m.resetCallCount += 1
+	m.resetCallCount++
 	m.Transformer.Reset()
 }
 
@@ -48,7 +48,7 @@ func TestUTF8Encoding(t *testing.T) {
 	called := false
 	transportResponse := transport.Response{Body: ioutil.NopCloser(strings.NewReader("qux"))}
 	var transportRequest *transport.Request
-	innerTransport := transport.TransportFunc(func(req *transport.Request) (*transport.Response, error) {
+	innerTransport := transport.Func(func(req *transport.Request) (*transport.Response, error) {
 		called = true
 		transportRequest = req
 		response := transportResponse
@@ -145,7 +145,7 @@ func TestBase64Encoding(t *testing.T) {
 		Body: ioutil.NopCloser(strings.NewReader(encoding.EncodeToString([]byte("qux")))),
 	}
 	var transportRequest *transport.Request
-	innerTransport := transport.TransportFunc(func(req *transport.Request) (*transport.Response, error) {
+	innerTransport := transport.Func(func(req *transport.Request) (*transport.Response, error) {
 		called = true
 		transportRequest = req
 		response := transportResponse

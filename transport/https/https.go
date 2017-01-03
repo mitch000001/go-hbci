@@ -10,8 +10,8 @@ import (
 	"github.com/mitch000001/go-hbci/transport"
 )
 
-// New returns a HTTPSBase64Transport. It sets http.DefaultClient as http.Client
-// to perform requests to the HBCI server.
+// NewBase64 returns a HTTPSBase64Transport. It sets http.DefaultClient as
+// http.Client to perform requests to the HBCI server.
 //
 // Each request will be encoded and each response will be decoded with Base64
 // encoding.
@@ -21,7 +21,7 @@ func NewBase64() transport.Transport {
 	}
 }
 
-// A HTTPSTransport inplements transport.Transport and performs request over
+// A HTTPSBase64Transport implements transport.Transport and performs request over
 // HTTPS with also encoding requests and responses with Base64 encoding.
 type HTTPSBase64Transport struct {
 	httpClient *http.Client
@@ -42,7 +42,10 @@ func (h *HTTPSBase64Transport) Do(request *transport.Request) (*transport.Respon
 	if err != nil {
 		return nil, err
 	}
-	encodingWriter.Close()
+	err = encodingWriter.Close()
+	if err != nil {
+		return nil, err
+	}
 	httpResponse, err := h.httpClient.Post(request.URL, "application/vnd.hbci", &buf)
 	if err != nil {
 		return nil, err
@@ -64,7 +67,7 @@ func New() transport.Transport {
 	}
 }
 
-// A HTTPSTransport inplements transport.Transport and performs request over HTTPS
+// A HTTPSTransport implements transport.Transport and performs request over HTTPS
 type HTTPSTransport struct {
 	httpClient *http.Client
 }

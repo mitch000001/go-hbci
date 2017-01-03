@@ -16,13 +16,13 @@ type Transport interface {
 	Do(*Request) (*Response, error)
 }
 
-// The TransportFunc type is an adapter to allow the use of ordinary functions
+// The Func type is an adapter to allow the use of ordinary functions
 // as Transport handlers. If f is a function with the appropriate signature,
-// TransportFunc(f) is a Transport that calls f.
-type TransportFunc func(*Request) (*Response, error)
+// Func(f) is a Transport that calls f.
+type Func func(*Request) (*Response, error)
 
 // Do calls fn(req).
-func (fn TransportFunc) Do(req *Request) (*Response, error) {
+func (fn Func) Do(req *Request) (*Response, error) {
 	return fn(req)
 }
 
@@ -83,6 +83,8 @@ type Response struct {
 	Body io.ReadCloser
 }
 
+// IsEncrypted returns whether the response contains an encrypted message.
+// This method will panic when the SegmentExtractor is not populated.
 func (h *Response) IsEncrypted() bool {
 	return h.SegmentExtractor.FindSegment(segment.EncryptionHeaderSegmentID) != nil
 }

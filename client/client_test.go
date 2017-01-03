@@ -11,7 +11,7 @@ import (
 )
 
 func TestClientBalances(t *testing.T) {
-	transport := &https.MockHttpTransport{}
+	transport := &https.MockHTTPTransport{}
 	defer setMockHTTPTransport(transport)()
 
 	c := newTestClient()

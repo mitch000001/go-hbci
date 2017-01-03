@@ -11,9 +11,14 @@ import (
 	"golang.org/x/text/encoding"
 )
 
+// UTF8Encoding represents a middleware encoding the request passed to it with
+// the provided UTF8 encoding and decoding the response from the wrapped
+// transport from the provided encoding into UTF8.
+// If the wrapped Transport returns an error, the error will be passed as is
+// without any transformation applied.
 func UTF8Encoding(encoding encoding.Encoding) transport.Middleware {
 	return func(t transport.Transport) transport.Transport {
-		return transport.TransportFunc(func(req *transport.Request) (*transport.Response, error) {
+		return transport.Func(func(req *transport.Request) (*transport.Response, error) {
 			var buf bytes.Buffer
 			encodingWriter := encoding.NewEncoder().Writer(&buf)
 			_, err := io.Copy(encodingWriter, req.Body)
@@ -41,14 +46,17 @@ func UTF8Encoding(encoding encoding.Encoding) transport.Middleware {
 // without any transformation applied.
 func Base64Encoding(encoding *base64.Encoding) transport.Middleware {
 	return func(t transport.Transport) transport.Transport {
-		return transport.TransportFunc(func(req *transport.Request) (*transport.Response, error) {
+		return transport.Func(func(req *transport.Request) (*transport.Response, error) {
 			var buf bytes.Buffer
 			encodingWriter := base64.NewEncoder(encoding, &buf)
 			_, err := io.Copy(encodingWriter, req.Body)
 			if err != nil {
 				return nil, err
 			}
-			encodingWriter.Close()
+			err = encodingWriter.Close()
+			if err != nil {
+				return nil, err
+			}
 			encodedRequest := req
 			encodedRequest.Body = ioutil.NopCloser(&buf)
 			response, err := t.Do(encodedRequest)

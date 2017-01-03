@@ -8,22 +8,33 @@ import (
 	"strings"
 )
 
-type MockHttpTransport struct {
+// MockHTTPTransport implements a http.RoundTripper.
+// It can be used to mock http.Client details.
+type MockHTTPTransport struct {
 	requests  []*http.Request
 	responses []*http.Response
 	errors    []error
 	callCount int
 }
 
-func (m *MockHttpTransport) RoundTrip(req *http.Request) (*http.Response, error) {
+// RoundTrip satisties the http.RoundTripper interface.
+//
+// it will store the request to later retrospects and return the stored response
+// or the stored error respectively.
+// callCount will be incremented on each call.
+func (m *MockHTTPTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	m.checkAndAdaptBoundaries(req)
 	m.requests = append(m.requests, req)
 	response, err := m.responses[m.callCount], m.errors[m.callCount]
-	m.callCount += 1
+	m.callCount++
 	return response, err
 }
 
-func (m *MockHttpTransport) SetResponsePayload(payload []byte) {
+// SetResponsePayload registers a given payload in the transport.
+// The payload will be encoded as Base64 and wrapped into a io.Reader. This also
+// sets a status code of 200 and the error for the given call will be nil.
+// The index of the response will be returned.
+func (m *MockHTTPTransport) SetResponsePayload(payload []byte) int {
 	m.init()
 	encodedMessage := base64.StdEncoding.EncodeToString(payload)
 	reader := strings.NewReader(encodedMessage)
@@ -37,9 +48,14 @@ func (m *MockHttpTransport) SetResponsePayload(payload []byte) {
 		ProtoMinor:    0,
 	})
 	m.errors = append(m.errors, nil)
+	return len(m.responses) - 1
 }
 
-func (m *MockHttpTransport) SetResponsePayloads(payloads [][]byte) {
+// SetResponsePayloads registers multiple payloads in the transport.
+// The payloads will be encoded as Base64 and wrapped into a io.Reader. This also
+// sets a status code of 200 and the errors for the given calls will be nil.
+// This method will reset any responses or errors previously registered.
+func (m *MockHTTPTransport) SetResponsePayloads(payloads [][]byte) {
 	m.init()
 	m.responses = make([]*http.Response, len(payloads))
 	m.errors = make([]error, len(payloads))
@@ -58,50 +74,57 @@ func (m *MockHttpTransport) SetResponsePayloads(payloads [][]byte) {
 	}
 }
 
-func (m *MockHttpTransport) CallCount() int {
+// CallCount returns the number of calls received by the transport.
+func (m *MockHTTPTransport) CallCount() int {
 	return m.callCount
 }
 
-func (m *MockHttpTransport) Request(index int) *http.Request {
+// Request returns the http.Request for the current index. If there are less
+// requests than the index nil is returned.
+func (m *MockHTTPTransport) Request(index int) *http.Request {
 	if len(m.requests) < index {
 		return nil
-	} else {
-		return m.requests[index]
 	}
+	return m.requests[index]
 }
 
-func (m *MockHttpTransport) Requests() []*http.Request {
+// Requests returns all http.Requests the transport has received. If there are
+// no requests, an empty slice is returned.
+func (m *MockHTTPTransport) Requests() []*http.Request {
 	if m.requests == nil {
 		return make([]*http.Request, 0)
-	} else {
-		return m.requests
 	}
+	return m.requests
 }
 
-func (m *MockHttpTransport) Error(index int) error {
+// Error returns the error for the given index. If there are less errors than
+// the index nil is returned.
+func (m *MockHTTPTransport) Error(index int) error {
 	if len(m.errors) < index {
 		return nil
-	} else {
-		return m.errors[index]
 	}
+	return m.errors[index]
 }
 
-func (m *MockHttpTransport) Errors() []error {
+// Errors returns all errors registered in the transport. If there is no
+// registered error, an empty slice is returned.
+func (m *MockHTTPTransport) Errors() []error {
 	if m.errors == nil {
 		return make([]error, 0)
-	} else {
-		return m.errors
 	}
+	return m.errors
 }
 
-func (m *MockHttpTransport) Reset() {
+// Reset resets the registered responses and the received requests. It also sets
+// the callCount to zero.
+func (m *MockHTTPTransport) Reset() {
 	m.requests = make([]*http.Request, 0)
 	m.responses = make([]*http.Response, 0)
 	m.errors = make([]error, 0)
 	m.callCount = 0
 }
 
-func (m *MockHttpTransport) init() {
+func (m *MockHTTPTransport) init() {
 	if m.requests == nil {
 		m.requests = make([]*http.Request, 0)
 	}
@@ -114,7 +137,7 @@ func (m *MockHttpTransport) init() {
 	m.callCount = 0
 }
 
-func (m *MockHttpTransport) checkAndAdaptBoundaries(req *http.Request) {
+func (m *MockHTTPTransport) checkAndAdaptBoundaries(req *http.Request) {
 	if m.requests == nil {
 		m.requests = make([]*http.Request, m.callCount)
 	}

@@ -14,7 +14,7 @@ import (
 
 func TestHttpsBase64Transport(t *testing.T) {
 	response := []byte("HNHBK:1:3+abc'HNDGC:2:3+def'")
-	roundtripper := &MockHttpTransport{}
+	roundtripper := &MockHTTPTransport{}
 	roundtripper.SetResponsePayloads([][]byte{
 		response,
 		response,
