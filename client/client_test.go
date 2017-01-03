@@ -12,7 +12,7 @@ import (
 
 func TestClientBalances(t *testing.T) {
 	transport := &https.MockHttpTransport{}
-	defer setMockHttpTransport(transport)()
+	defer setMockHTTPTransport(transport)()
 
 	c := newTestClient()
 
@@ -100,10 +100,10 @@ func newTestClient() *Client {
 	return c
 }
 
-func setMockHttpTransport(transport http.RoundTripper) func() {
-	originHttpTransport := http.DefaultTransport
+func setMockHTTPTransport(transport http.RoundTripper) func() {
+	originHTTPTransport := http.DefaultTransport
 	http.DefaultTransport = transport
 	return func() {
-		http.DefaultTransport = originHttpTransport
+		http.DefaultTransport = originHTTPTransport
 	}
 }

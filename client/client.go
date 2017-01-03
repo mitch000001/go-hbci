@@ -13,6 +13,7 @@ import (
 	"github.com/mitch000001/go-hbci/segment"
 )
 
+// Config defines the basic configuration needed for a Client to work.
 type Config struct {
 	BankID      string `json:"bank_id"`
 	AccountID   string `json:"account_id"`
@@ -36,7 +37,7 @@ func (c Config) hbciVersion() (segment.HBCIVersion, error) {
 // If the provided Config does not provide a URL or a HBCI-Version it will be
 // looked up in the bankinfo database.
 func New(config Config) (*Client, error) {
-	bankId := domain.BankId{
+	bankID := domain.BankId{
 		CountryCode: 280,
 		ID:          config.BankID,
 	}
@@ -63,7 +64,7 @@ func New(config Config) (*Client, error) {
 		}
 		hbciVersion = version
 	}
-	d := dialog.NewPinTanDialog(bankId, url, config.AccountID, hbciVersion)
+	d := dialog.NewPinTanDialog(bankID, url, config.AccountID, hbciVersion)
 	d.SetPin(config.PIN)
 	client := &Client{
 		config:       config,
@@ -73,12 +74,17 @@ func New(config Config) (*Client, error) {
 	return client, nil
 }
 
+// Client is the main entrypoint to perform high level HBCI requests.
+//
+// Its methods reflect possible actions and abstract the lower level dialog
+// methods.
 type Client struct {
 	config       Config
 	hbciVersion  segment.HBCIVersion
 	pinTanDialog *dialog.PinTanDialog
 }
 
+// Accounts return the basic account information for the provided client config.
 func (c *Client) Accounts() ([]domain.AccountInformation, error) {
 	if c.pinTanDialog.UserParameterDataVersion() == 0 {
 		_, err := c.pinTanDialog.SyncClientSystemID()
@@ -89,6 +95,10 @@ func (c *Client) Accounts() ([]domain.AccountInformation, error) {
 	return c.pinTanDialog.Accounts, nil
 }
 
+// AccountTransactions return all transactions for the provided timeframe.
+// If allAccouts is true, it will fetch all transactions associated with the
+// proviced account. For the initial request no continuationReference is
+// needed, as this method will be called recursivly if the server sends one.
 func (c *Client) AccountTransactions(account domain.AccountConnection, timeframe domain.Timeframe, allAccounts bool, continuationReference string) ([]domain.AccountTransaction, error) {
 	accountTransactionRequest := c.hbciVersion.AccountTransactionRequest(account, allAccounts)
 	accountTransactionRequest.SetTransactionRange(timeframe)
@@ -148,6 +158,10 @@ func (c *Client) AccountTransactions(account domain.AccountConnection, timeframe
 	return accountTransactions, nil
 }
 
+// SepaAccountTransactions return all transactions for the provided timeframe.
+// If allAccouts is true, it will fetch all transactions associated with the
+// provided account. For the initial request no continuationReference is
+// needed, as this method will be called recursivly if the server sends one.
 func (c *Client) SepaAccountTransactions(account domain.InternationalAccountConnection, timeframe domain.Timeframe, allAccounts bool, continuationReference string) ([]domain.AccountTransaction, error) {
 	accountTransactionRequest := c.hbciVersion.SepaAccountTransactionRequest(account, allAccounts)
 	accountTransactionRequest.SetTransactionRange(timeframe)
@@ -178,6 +192,9 @@ func (c *Client) SepaAccountTransactions(account domain.InternationalAccountConn
 	return accountTransactions, nil
 }
 
+// AccountInformation will print all information attached to the provided
+// account. If allAccounts is true it will fetch also the information
+// associated with the account.
 func (c *Client) AccountInformation(account domain.AccountConnection, allAccounts bool) error {
 	accountInformationRequest := segment.NewAccountInformationRequestSegmentV1(account, allAccounts)
 	decryptedMessage, err := c.pinTanDialog.SendMessage(message.NewHBCIMessage(c.hbciVersion, accountInformationRequest))
@@ -188,11 +205,13 @@ func (c *Client) AccountInformation(account domain.AccountConnection, allAccount
 	if accountInfoResponse != nil {
 		fmt.Printf("Account Info: %s\n", accountInfoResponse)
 		return nil
-	} else {
-		return fmt.Errorf("Malformed response: expected HIKIF segment")
 	}
+	return fmt.Errorf("Malformed response: expected HIKIF segment")
 }
 
+// AccountBalances retrieves the balance for the provided account.
+// If allAccounts is true it will fetch also the balances for all accounts
+// associated with the account.
 func (c *Client) AccountBalances(account domain.AccountConnection, allAccounts bool) ([]domain.AccountBalance, error) {
 	accountBalanceRequest := c.hbciVersion.AccountBalanceRequest(account, allAccounts)
 	decryptedMessage, err := c.pinTanDialog.SendMessage(message.NewHBCIMessage(c.hbciVersion, accountBalanceRequest))
@@ -217,6 +236,9 @@ func (c *Client) AccountBalances(account domain.AccountConnection, allAccounts b
 	return balances, nil
 }
 
+// Status returns information about open jobs to fetch from the institute.
+// If a continuationReference is present, the status information attached to it
+// will be fetched.
 func (c *Client) Status(from, to time.Time, maxEntries int, continuationReference string) ([]domain.StatusAcknowledgement, error) {
 	statusRequest := c.hbciVersion.StatusProtocolRequest(from, to, maxEntries, continuationReference)
 	bankMessage, err := c.pinTanDialog.SendMessage(message.NewHBCIMessage(c.hbciVersion, statusRequest))
@@ -234,10 +256,14 @@ func (c *Client) Status(from, to time.Time, maxEntries int, continuationReferenc
 	return statusAcknowledgements, nil
 }
 
+// AnonymousClient wraps a Client and allows anonymous requests to bank
+// institutes. Examples for those jobs are stock exchange news.
 type AnonymousClient struct {
 	*Client
 }
 
+// CommunicationAccess returns data used to make calls to a given institute.
+// Not yet properly implemented, therefore only the raw data are returned.
 func (a *AnonymousClient) CommunicationAccess(from, to domain.BankId, maxEntries int) ([]byte, error) {
 	commRequest := segment.NewCommunicationAccessRequestSegment(from, to, maxEntries, "")
 	decryptedMessage, err := a.pinTanDialog.SendAnonymousMessage(message.NewHBCIMessage(a.hbciVersion, commRequest))
