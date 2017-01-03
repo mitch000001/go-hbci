@@ -42,6 +42,7 @@ type EncryptionAlgorithmDataElement struct {
 	InitializationValue        *BinaryDataElement
 }
 
+// GroupDataElements returns the grouped DataElements
 func (e *EncryptionAlgorithmDataElement) GroupDataElements() []DataElement {
 	return []DataElement{
 		e.Usage,

@@ -8,11 +8,14 @@ import (
 	"github.com/mitch000001/go-hbci/domain"
 )
 
+// These represent HBCI acknowledgement codes. Codes starting with 3 are meant
+// to be warnings.
 const (
 	AcknowledgementAdditionalInformation     = 3040
 	AcknowledgementSupportedSecurityFunction = 3920
 )
 
+// NewAcknowledgement returns a new acknowledgement DataElement
 func NewAcknowledgement(acknowledgement domain.Acknowledgement) *AcknowledgementDataElement {
 	a := &AcknowledgementDataElement{
 		Code:                 NewDigit(acknowledgement.Code, 4),
@@ -24,6 +27,8 @@ func NewAcknowledgement(acknowledgement domain.Acknowledgement) *Acknowledgement
 	return a
 }
 
+// An AcknowledgementDataElement defines a group of DataElements used to
+// transmit information from the bank institute to the client.
 type AcknowledgementDataElement struct {
 	DataElement
 	Code                     *DigitDataElement
@@ -35,18 +40,29 @@ type AcknowledgementDataElement struct {
 	typ                      string
 }
 
+// SetReferencingMessage is used by MessageAcknowledgements to set the reference
+// to the previously sent message. This is needed to identify the message within
+// an ongoing dialog.
 func (a *AcknowledgementDataElement) SetReferencingMessage(reference domain.ReferencingMessage) {
 	a.referencingMessage = reference
 }
 
+// SetReferencingSegmentNumber is a setter for setting the Segment number this
+// Acknowledgement is referring to.
 func (a *AcknowledgementDataElement) SetReferencingSegmentNumber(number int) {
 	a.referencingSegmentNumber = number
 }
 
+// SetType sets the type of the Acknowledgement. There are only two types of
+// Acknowledgements, message related ones and segment related ones.
+//
+// See domain.MessageAcknowledgements or domain.SegmentAcknowledgement for
+// details on semantics.
 func (a *AcknowledgementDataElement) SetType(acknowledgementType string) {
 	a.typ = acknowledgementType
 }
 
+// Val returns the underlying value of the acknowledgement.
 func (a *AcknowledgementDataElement) Val() domain.Acknowledgement {
 	return domain.Acknowledgement{
 		Code:                     a.Code.Val(),
@@ -59,14 +75,16 @@ func (a *AcknowledgementDataElement) Val() domain.Acknowledgement {
 	}
 }
 
+// IsValid returns true if the acknowledgment code and text is set and the
+// underlying value is valid.
 func (a *AcknowledgementDataElement) IsValid() bool {
 	if a.Code == nil || a.Text == nil {
 		return false
-	} else {
-		return a.DataElement.IsValid()
 	}
+	return a.DataElement.IsValid()
 }
 
+// GroupDataElements returns all grouped elements within the acknowledgment.
 func (a *AcknowledgementDataElement) GroupDataElements() []DataElement {
 	return []DataElement{
 		a.Code,
@@ -76,6 +94,7 @@ func (a *AcknowledgementDataElement) GroupDataElements() []DataElement {
 	}
 }
 
+// UnmarshalHBCI unmarshals the value into an acknowledgment.
 func (a *AcknowledgementDataElement) UnmarshalHBCI(value []byte) error {
 	acknowledgement := domain.Acknowledgement{}
 	chunks, err := ExtractElements(value)
@@ -103,6 +122,7 @@ func (a *AcknowledgementDataElement) UnmarshalHBCI(value []byte) error {
 	return nil
 }
 
+// NewParams returns a new ParamsDataElement.
 func NewParams(min, max int, params ...string) *ParamsDataElement {
 	var paramDE []DataElement
 	for _, p := range params {
@@ -111,10 +131,12 @@ func NewParams(min, max int, params ...string) *ParamsDataElement {
 	return &ParamsDataElement{arrayElementGroup: NewArrayElementGroup(AcknowlegdementParamsGDEG, min, max, paramDE)}
 }
 
+// ParamsDataElement defines a DataElement describing generic parameters
 type ParamsDataElement struct {
 	*arrayElementGroup
 }
 
+// Val returns the underlying value of the DataElement.
 func (p *ParamsDataElement) Val() []string {
 	params := make([]string, len(p.array))
 	for i, de := range p.array {
@@ -123,6 +145,7 @@ func (p *ParamsDataElement) Val() []string {
 	return params
 }
 
+// UnmarshalHBCI unmarshals the value into a ParamsDataElement
 func (p *ParamsDataElement) UnmarshalHBCI(value []byte) error {
 	elements, err := ExtractElements(value)
 	if err != nil {

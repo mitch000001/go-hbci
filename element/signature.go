@@ -37,6 +37,7 @@ type SecurityIdentificationDataElement struct {
 	ClientSystemID *IdentificationDataElement
 }
 
+// GroupDataElements returns the grouped DataElements
 func (s *SecurityIdentificationDataElement) GroupDataElements() []DataElement {
 	return []DataElement{
 		s.SecurityHolder,
@@ -75,6 +76,7 @@ type SecurityDateDataElement struct {
 	Time           *TimeDataElement
 }
 
+// GroupDataElements returns the grouped DataElements
 func (s *SecurityDateDataElement) GroupDataElements() []DataElement {
 	return []DataElement{
 		s.DateIdentifier,
@@ -105,6 +107,7 @@ type HashAlgorithmDataElement struct {
 	AlgorithmParamValue *BinaryDataElement
 }
 
+// GroupDataElements returns the grouped DataElements
 func (h *HashAlgorithmDataElement) GroupDataElements() []DataElement {
 	return []DataElement{
 		h.Usage,
@@ -136,6 +139,7 @@ type SignatureAlgorithmDataElement struct {
 	OperationMode *AlphaNumericDataElement
 }
 
+// GroupDataElements returns the grouped DataElements
 func (s *SignatureAlgorithmDataElement) GroupDataElements() []DataElement {
 	return []DataElement{
 		s.Usage,
@@ -179,6 +183,7 @@ func (k *KeyNameDataElement) Val() domain.KeyName {
 	}
 }
 
+// GroupDataElements returns the grouped DataElements
 func (k *KeyNameDataElement) GroupDataElements() []DataElement {
 	return []DataElement{
 		k.Bank,
@@ -207,6 +212,7 @@ type CertificateDataElement struct {
 	Content         *BinaryDataElement
 }
 
+// GroupDataElements returns the grouped DataElements
 func (c *CertificateDataElement) GroupDataElements() []DataElement {
 	return []DataElement{
 		c.CertificateType,

@@ -13,8 +13,12 @@ import (
 )
 
 type DataElement interface {
+	// Value returns the underlying value
 	Value() interface{}
+	// Type returns the DataElementType
 	Type() DataElementType
+	// IsValid returns true if the DataElement and all its grouped elements
+	// are valid, false otherwise
 	IsValid() bool
 	Length() int
 	String() string
@@ -29,6 +33,7 @@ type OptionalDataElement interface {
 
 type DataElementGroup interface {
 	DataElement
+	// GroupDataElements returns the grouped DataElements
 	GroupDataElements() []DataElement
 }
 
@@ -47,6 +52,7 @@ type basicDataElement struct {
 	optional  bool
 }
 
+// Value returns the underlying value
 func (d *basicDataElement) Value() interface{}    { return d.val }
 func (d *basicDataElement) Type() DataElementType { return d.typ }
 func (d *basicDataElement) IsValid() bool         { return d.Length() <= d.maxLength }
@@ -189,11 +195,11 @@ type arrayElementGroup struct {
 func (a *arrayElementGroup) IsValid() bool {
 	if len(a.array) < a.minLength || len(a.array) > a.maxLength {
 		return false
-	} else {
-		return a.DataElement.IsValid()
 	}
+	return a.DataElement.IsValid()
 }
 
+// GroupDataElements returns the grouped DataElements
 func (a *arrayElementGroup) GroupDataElements() []DataElement {
 	return a.array
 }
@@ -221,9 +227,8 @@ func (a *AlphaNumericDataElement) Val() string { return a.val.(string) }
 func (a *AlphaNumericDataElement) IsValid() bool {
 	if strings.ContainsAny(a.Val(), "\n & \r") {
 		return false
-	} else {
-		return a.basicDataElement.IsValid()
 	}
+	return a.basicDataElement.IsValid()
 }
 
 func (a *AlphaNumericDataElement) String() string {
@@ -474,6 +479,8 @@ func (c *CodeDataElement) Type() DataElementType {
 	return CodeDE
 }
 
+// IsValid returns true if the value is in the valid set and the underlying
+// AlphaNumericDataElement is valid, false otherwise.
 func (c *CodeDataElement) IsValid() bool {
 	if sort.SearchStrings(c.validSet, c.Val()) >= len(c.validSet) {
 		return false
@@ -520,6 +527,7 @@ func (d *DateDataElement) UnmarshalHBCI(value []byte) error {
 	return nil
 }
 
+// IsValid returns true if the underlying date is not Zero.
 func (d *DateDataElement) IsValid() bool {
 	return !d.Val().IsZero()
 }
@@ -568,6 +576,7 @@ func (t *TimeDataElement) UnmarshalHBCI(value []byte) error {
 	return nil
 }
 
+// IsValid returns true if the underlying date is not Zero.
 func (t *TimeDataElement) IsValid() bool {
 	return !t.Val().IsZero()
 }
@@ -630,6 +639,7 @@ type CurrencyDataElement struct {
 	*AlphaNumericDataElement
 }
 
+// IsValid returns true if the currency format matches ISO 4217 alpha-3
 func (c *CurrencyDataElement) IsValid() bool {
 	return c.Length() == 3
 }

@@ -3,11 +3,11 @@ package iban
 import "testing"
 
 func TestNew(t *testing.T) {
-	bankId := "10090044"
-	accountId := "532013018"
-	var result Iban
+	bankID := "10090044"
+	accountID := "532013018"
+	var result IBAN
 
-	result, err := New(bankId, accountId)
+	result, err := NewGerman(bankID, accountID)
 
 	if err != nil {
 		t.Logf("Expected no error, got %T:%v", err, err)
@@ -23,35 +23,35 @@ func TestNew(t *testing.T) {
 }
 
 func TestIbanBankId(t *testing.T) {
-	iban := Iban("DE10100900440532013018")
+	iban := IBAN("DE10100900440532013018")
 
-	bankId := iban.BankId()
+	bankID := iban.BankID()
 
-	expectedBankId := "10090044"
+	expectedBankID := "10090044"
 
-	if bankId != expectedBankId {
-		t.Logf("Expected bankId to equal %q, got %q\n", expectedBankId, bankId)
+	if bankID != expectedBankID {
+		t.Logf("Expected bankId to equal %q, got %q\n", expectedBankID, bankID)
 		t.Fail()
 	}
 }
 
 func TestIbanAccountId(t *testing.T) {
-	iban := Iban("DE10100900440532013018")
+	iban := IBAN("DE10100900440532013018")
 
-	accountId := iban.AccountId()
+	accountID := iban.AccountID()
 
-	expectedAccountId := "532013018"
+	expectedAccountID := "532013018"
 
-	if accountId != expectedAccountId {
-		t.Logf("Expected accountId to equal %q, got %q\n", expectedAccountId, accountId)
+	if accountID != expectedAccountID {
+		t.Logf("Expected accountId to equal %q, got %q\n", expectedAccountID, accountID)
 		t.Fail()
 	}
 }
 
 func TestIbanCountry(t *testing.T) {
-	iban := Iban("DE10100900440532013018")
+	iban := IBAN("DE10100900440532013018")
 
-	country := iban.Country()
+	country := iban.CountryCode()
 
 	expectedCountry := "DE"
 
@@ -62,7 +62,7 @@ func TestIbanCountry(t *testing.T) {
 }
 
 func TestIbanProofNumber(t *testing.T) {
-	iban := Iban("DE10100900440532013018")
+	iban := IBAN("DE10100900440532013018")
 
 	proofNumber := iban.ProofNumber()
 

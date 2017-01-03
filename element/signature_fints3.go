@@ -15,6 +15,7 @@ type SecurityProfileDataElement struct {
 	SecurityMethodVersion *NumberDataElement
 }
 
+// GroupDataElements returns the grouped DataElements
 func (s *SecurityProfileDataElement) GroupDataElements() []DataElement {
 	return []DataElement{
 		s.SecurityMethod,

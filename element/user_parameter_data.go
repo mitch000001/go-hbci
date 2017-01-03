@@ -39,6 +39,7 @@ func (a *AccountLimitDataElement) Val() domain.AccountLimit {
 	}
 }
 
+// GroupDataElements returns the grouped DataElements
 func (a *AccountLimitDataElement) GroupDataElements() []DataElement {
 	return []DataElement{
 		a.Kind,
@@ -178,6 +179,7 @@ func (a *AllowedBusinessTransactionDataElement) Val() domain.BusinessTransaction
 	return tr
 }
 
+// GroupDataElements returns the grouped DataElements
 func (a *AllowedBusinessTransactionDataElement) GroupDataElements() []DataElement {
 	return []DataElement{
 		a.BusinessTransactionID,

@@ -42,6 +42,8 @@ func (s *SegmentHeader) ReferencingSegment() int {
 	}
 }
 
+// IsValid returns true if the DataElement and all its grouped elements
+// are valid, false otherwise
 func (s *SegmentHeader) IsValid() bool {
 	if s.ID == nil || s.Number == nil || s.Version == nil {
 		return false
@@ -54,6 +56,7 @@ func (s *SegmentHeader) Value() interface{} {
 	return s
 }
 
+// GroupDataElements returns the grouped DataElements
 func (s *SegmentHeader) GroupDataElements() []DataElement {
 	return []DataElement{
 		s.ID,

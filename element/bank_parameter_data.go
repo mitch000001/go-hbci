@@ -10,6 +10,7 @@ import (
 	"github.com/mitch000001/go-hbci/domain"
 )
 
+// NewSupportedSecurityMethod returns a new SupportedSecurityMethodDataElement
 func NewSupportedSecurityMethod(methodCode string, versions ...int) *SupportedSecurityMethodDataElement {
 	s := &SupportedSecurityMethodDataElement{
 		MethodCode: NewAlphaNumeric(methodCode, 3),
@@ -19,6 +20,8 @@ func NewSupportedSecurityMethod(methodCode string, versions ...int) *SupportedSe
 	return s
 }
 
+// SupportedSecurityMethodDataElement defines a DataElement for supported
+// security methods
 type SupportedSecurityMethodDataElement struct {
 	DataElement
 	// Code | Bedeutung
@@ -30,6 +33,8 @@ type SupportedSecurityMethodDataElement struct {
 	Versions *SecurityMethodVersionsDataElement
 }
 
+// GroupDataElements returns the grouped DataElements within the
+// SupportedSecurityMethodDataElement
 func (s *SupportedSecurityMethodDataElement) GroupDataElements() []DataElement {
 	return []DataElement{
 		s.MethodCode,
@@ -37,11 +42,13 @@ func (s *SupportedSecurityMethodDataElement) GroupDataElements() []DataElement {
 	}
 }
 
+// UnmarshalHBCI unmarshals the value to a SupportedSecurityMethodDataElement
 func (s *SupportedSecurityMethodDataElement) UnmarshalHBCI(value []byte) error {
 	s.DataElement = NewDataElementGroup(SupportedSecurityMethodDEG, 2, s)
 	return s.DataElement.UnmarshalHBCI(value)
 }
 
+// NewSecurityMethodVersions returns a new SecurityMethodVersionsDataElement
 func NewSecurityMethodVersions(min, max int, versions ...int) *SecurityMethodVersionsDataElement {
 	versionDEs := make([]DataElement, len(versions))
 	for i, version := range versions {
@@ -52,20 +59,26 @@ func NewSecurityMethodVersions(min, max int, versions ...int) *SecurityMethodVer
 	return s
 }
 
+// SecurityMethodVersionsDataElement represents the possible versions of a
+// security method.
 type SecurityMethodVersionsDataElement struct {
 	*arrayElementGroup
 }
 
+// Elements returns the elements within the SecurityMethodVersionsDataElement
 func (s *SecurityMethodVersionsDataElement) Elements() []DataElement {
 	return s.arrayElementGroup.array
 }
 
+// UnmarshalHBCI unmarshals the value to a SecurityMethodVersionsDataElement
 func (s *SecurityMethodVersionsDataElement) UnmarshalHBCI(value []byte) error {
 	dataElements := make([]DataElement, 9)
 	s.arrayElementGroup = NewArrayElementGroup(SecurityMethodVersionGDEG, 1, 9, dataElements)
 	return s.arrayElementGroup.UnmarshalHBCI(value)
 }
 
+// Versions returns the possible versions packaged in a slice of
+// NumberDataElements
 func (s *SecurityMethodVersionsDataElement) Versions() []*NumberDataElement {
 	versions := make([]*NumberDataElement, len(s.arrayElementGroup.array))
 	for i, version := range s.arrayElementGroup.array {
@@ -74,6 +87,7 @@ func (s *SecurityMethodVersionsDataElement) Versions() []*NumberDataElement {
 	return versions
 }
 
+// NewSupportedHBCIVersions returns a new SupportedHBCIVersionsDataElement
 func NewSupportedHBCIVersions(versions ...int) *SupportedHBCIVersionsDataElement {
 	versionDEs := make([]DataElement, len(versions))
 	for i, version := range versions {
@@ -86,10 +100,13 @@ func NewSupportedHBCIVersions(versions ...int) *SupportedHBCIVersionsDataElement
 
 var validHBCIVersions = []int{201, 210, 220, 300}
 
+// SupportedHBCIVersionsDataElement represents a DataElement for supported HBCI
+// versions
 type SupportedHBCIVersionsDataElement struct {
 	*arrayElementGroup
 }
 
+// UnmarshalHBCI unmarshals the value to a SupportedHBCIVersionsDataElement
 func (s *SupportedHBCIVersionsDataElement) UnmarshalHBCI(value []byte) error {
 	elements, err := ExtractElements(value)
 	if err != nil {
@@ -110,6 +127,7 @@ func (s *SupportedHBCIVersionsDataElement) UnmarshalHBCI(value []byte) error {
 	return nil
 }
 
+// NewSupportedLanguages returns a new SupportedLanguagesDataElement
 func NewSupportedLanguages(languages ...int) *SupportedLanguagesDataElement {
 	languageDEs := make([]DataElement, len(languages))
 	for i, lang := range languages {
@@ -122,10 +140,14 @@ func NewSupportedLanguages(languages ...int) *SupportedLanguagesDataElement {
 
 var validLanguages = []int{1, 2, 3}
 
+// SupportedLanguagesDataElement represents the supported languages by the bank
+// institute
 type SupportedLanguagesDataElement struct {
 	*arrayElementGroup
 }
 
+// Languages returns the supported languages packaged within a slice of
+// NumberDataElements
 func (s *SupportedLanguagesDataElement) Languages() []*NumberDataElement {
 	languages := make([]*NumberDataElement, len(s.arrayElementGroup.array))
 	for i, lang := range s.arrayElementGroup.array {
@@ -134,6 +156,7 @@ func (s *SupportedLanguagesDataElement) Languages() []*NumberDataElement {
 	return languages
 }
 
+// UnmarshalHBCI unmarshals the value into the SupportedLanguagesDataElement
 func (s *SupportedLanguagesDataElement) UnmarshalHBCI(value []byte) error {
 	elements, err := ExtractElements(value)
 	if err != nil {
@@ -157,19 +180,26 @@ func (s *SupportedLanguagesDataElement) UnmarshalHBCI(value []byte) error {
 	return nil
 }
 
+// SupportedCompressionMethodsDataElement represents the compression methods
+// supported by the bank institute
 type SupportedCompressionMethodsDataElement struct {
 	*arrayElementGroup
 }
 
+// A BusinessTransactionParameter defines parameters for a specific business
+// transaction.
 type BusinessTransactionParameter struct {
 	DataElement
 	DataElements []DataElement
 }
 
+// GroupDataElements returns the grouped DataElements.
 func (b *BusinessTransactionParameter) GroupDataElements() []DataElement {
 	return b.DataElements
 }
 
+// NewPinTanBusinessTransactionParameters returns a new
+// PinTanBusinessTransactionParameters DataElement
 func NewPinTanBusinessTransactionParameters(pinTanTransactions []domain.PinTanBusinessTransaction) *PinTanBusinessTransactionParameters {
 	transactionsDEs := make([]DataElement, len(pinTanTransactions))
 	for i, transaction := range pinTanTransactions {
@@ -185,10 +215,13 @@ func NewPinTanBusinessTransactionParameters(pinTanTransactions []domain.PinTanBu
 	return p
 }
 
+// PinTanBusinessTransactionParameters represents a slice of
+// PinTanBusinessTransactionParameter DataElements
 type PinTanBusinessTransactionParameters struct {
 	*arrayElementGroup
 }
 
+// Val returns the underlying PinTanBusinessTransactions
 func (p *PinTanBusinessTransactionParameters) Val() []domain.PinTanBusinessTransaction {
 	transactions := make([]domain.PinTanBusinessTransaction, len(p.array))
 	for i, elem := range p.array {
@@ -197,6 +230,7 @@ func (p *PinTanBusinessTransactionParameters) Val() []domain.PinTanBusinessTrans
 	return transactions
 }
 
+// UnmarshalHBCI unmarshals value into the PinTanBusinessTransactionParameters
 func (p *PinTanBusinessTransactionParameters) UnmarshalHBCI(value []byte) error {
 	elements, err := ExtractElements(value)
 	if err != nil {
@@ -219,12 +253,15 @@ func (p *PinTanBusinessTransactionParameters) UnmarshalHBCI(value []byte) error 
 	return nil
 }
 
+// PinTanBusinessTransactionParameter defines a specific
+// PinTanBusinessTransactionParameter DataElement
 type PinTanBusinessTransactionParameter struct {
 	DataElement
 	SegmentID *AlphaNumericDataElement
 	NeedsTAN  *BooleanDataElement
 }
 
+// Elements returns the elements of this DataElement.
 func (p *PinTanBusinessTransactionParameter) Elements() []DataElement {
 	return []DataElement{
 		p.SegmentID,
@@ -232,6 +269,7 @@ func (p *PinTanBusinessTransactionParameter) Elements() []DataElement {
 	}
 }
 
+// Val returns the underlying PinTanBusinessTransaction
 func (p *PinTanBusinessTransactionParameter) Val() domain.PinTanBusinessTransaction {
 	return domain.PinTanBusinessTransaction{
 		SegmentID: p.SegmentID.Val(),
@@ -239,6 +277,7 @@ func (p *PinTanBusinessTransactionParameter) Val() domain.PinTanBusinessTransact
 	}
 }
 
+// UnmarshalHBCI unmarshals value into p
 func (p *PinTanBusinessTransactionParameter) UnmarshalHBCI(value []byte) error {
 	elements, err := ExtractElements(value)
 	if err != nil {

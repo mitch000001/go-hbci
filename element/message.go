@@ -30,6 +30,8 @@ func (r *ReferencingMessageDataElement) Val() domain.ReferencingMessage {
 	}
 }
 
+// IsValid returns true if the DialogID and MessageNumber are set and the
+// underlying value is valid.
 func (r *ReferencingMessageDataElement) IsValid() bool {
 	if r.DialogID == nil || r.MessageNumber == nil {
 		return false
@@ -56,6 +58,7 @@ func (r *ReferencingMessageDataElement) Value() interface{} {
 	return r
 }
 
+// GroupDataElements returns the grouped DataElements
 func (r *ReferencingMessageDataElement) GroupDataElements() []DataElement {
 	return []DataElement{
 		r.DialogID,

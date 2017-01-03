@@ -42,6 +42,7 @@ type PublicKeyDataElement struct {
 	ExponentID *AlphaNumericDataElement
 }
 
+// GroupDataElements returns the grouped DataElements
 func (p *PublicKeyDataElement) GroupDataElements() []DataElement {
 	return []DataElement{
 		p.Usage,

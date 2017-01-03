@@ -5,6 +5,8 @@ import (
 	"github.com/mitch000001/go-hbci/swift"
 )
 
+// SwiftMT940DataElement represents a DataElement containing SWIFT MT940
+// binary data
 type SwiftMT940DataElement struct {
 	*BinaryDataElement
 	swiftMT940Elements []*swift.MT940

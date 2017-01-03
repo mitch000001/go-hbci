@@ -2,6 +2,7 @@ package element
 
 import "github.com/mitch000001/go-hbci/domain"
 
+// NewCommunicationParameter returns a new CommunicationParameterDataElement
 func NewCommunicationParameter(params domain.CommunicationParameter) *CommunicationParameterDataElement {
 	c := &CommunicationParameterDataElement{
 		Protocol:              NewNumber(params.Protocol, 2),
@@ -14,6 +15,8 @@ func NewCommunicationParameter(params domain.CommunicationParameter) *Communicat
 	return c
 }
 
+// CommunicationParameterDataElement represents the supported way of
+// communicating with a HBCI server.
 type CommunicationParameterDataElement struct {
 	DataElement
 	// Code | Zugang   | Protokollstack
@@ -42,6 +45,7 @@ type CommunicationParameterDataElement struct {
 	FilterFunctionVersion *NumberDataElement
 }
 
+// GroupDataElements returns the grouped DataElements
 func (c *CommunicationParameterDataElement) GroupDataElements() []DataElement {
 	return []DataElement{
 		c.Protocol,

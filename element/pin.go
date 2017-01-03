@@ -37,6 +37,7 @@ type PinTanDataElement struct {
 	TAN *AlphaNumericDataElement
 }
 
+// GroupDataElements returns the grouped DataElements
 func (p *PinTanDataElement) GroupDataElements() []DataElement {
 	return []DataElement{
 		p.PIN,
