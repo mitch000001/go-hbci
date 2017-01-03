@@ -7,6 +7,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"sort"
 	"text/template"
 
 	"go/format"
@@ -36,6 +37,7 @@ func main() {
 		}
 		bankInfos = append(bankInfos, infos...)
 	}
+	sort.Sort(bankinfo.SortableBankInfos(bankInfos))
 	data, err := writeDataToGoFile(bankInfos)
 	if err != nil {
 		log.Fatal("Error while parsing expression: %q", err)
