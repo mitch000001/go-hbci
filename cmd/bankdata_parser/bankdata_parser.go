@@ -81,6 +81,8 @@ var data = []BankInfo{
 		VersionNumber: "{{.VersionNumber}}",
 		URL: "{{.URL}}",
 		VersionName: "{{.VersionName}}",
+		Institute: "{{.Institute}}",
+		City: "{{.City}}",
 	},
 	{{end}}
 }`

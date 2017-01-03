@@ -8,10 +8,31 @@ import (
 )
 
 func TestParseBankInfos(t *testing.T) {
-	bankData := fmt.Sprintf(
-		`%s;BLA;%s;%s;XYZ;%s
-		1000000;xxx;3.0;https://foo.example.com;FOO;FinTS V3.0`,
-		BANK_IDENTIFIER, VERSION_NUMBER_HEADER, URL_HEADER, VERSION_NAME_HEADER,
+	header := []string{
+		BANK_IDENTIFIER_HEADER,
+		"Another header",
+		BANK_INSTITUTE_HEADER,
+		VERSION_NUMBER_HEADER,
+		URL_HEADER,
+		"header of no interest",
+		VERSION_NAME_HEADER,
+		CITY_HEADER,
+	}
+	content := []string{
+		"1000000",
+		"xxx",
+		"Bank Institute",
+		"3.0",
+		"https://foo.example.com",
+		"FOO",
+		"FinTS V3.0",
+		"Hamburg",
+	}
+
+	bankData := fmt.Sprintf(`%s
+		%s`,
+		strings.Join(header, ";"),
+		strings.Join(content, ";"),
 	)
 	var result []BankInfo
 
@@ -28,11 +49,13 @@ func TestParseBankInfos(t *testing.T) {
 			VersionNumber: "3.0",
 			URL:           "https://foo.example.com",
 			VersionName:   "FinTS V3.0",
+			Institute:     "Bank Institute",
+			City:          "Hamburg",
 		},
 	}
 
 	if !reflect.DeepEqual(result, expectedResult) {
-		t.Logf("Expected result to equal\n%q\n\tgot:\n%q\n", expectedResult, result)
+		t.Logf("Expected result to equal\n%#v\n\tgot:\n%#v\n", expectedResult, result)
 		t.Fail()
 	}
 }

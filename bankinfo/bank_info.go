@@ -33,6 +33,8 @@ type BankInfo struct {
 	VersionNumber string
 	URL           string
 	VersionName   string
+	Institute     string
+	City          string
 }
 
 func (b BankInfo) HbciVersion() int {
