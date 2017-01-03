@@ -10,6 +10,8 @@ import (
 	"sort"
 	"text/template"
 
+	"golang.org/x/text/encoding/charmap"
+
 	"go/format"
 
 	"github.com/mitch000001/go-hbci/bankinfo"
@@ -24,13 +26,14 @@ func main() {
 	}
 
 	var bankInfos []bankinfo.BankInfo
+	decoder := charmap.ISO8859_1.NewDecoder()
 	for _, bankdata := range bankdataFiles {
 		file, err := os.Open(bankdata)
 		if err != nil {
 			log.Fatal("Cannot open file: %q", bankdata)
 			os.Exit(1)
 		}
-		infos, err := bankinfo.ParseBankInfos(file)
+		infos, err := bankinfo.ParseBankInfos(decoder.Reader(file))
 		if err != nil {
 			log.Fatal("Parse error: %q", err)
 			os.Exit(1)
