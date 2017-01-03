@@ -7,7 +7,7 @@ import (
 
 type testData struct {
 	text  string
-	typ   TokenType
+	typ   Type
 	value string
 }
 
@@ -19,11 +19,11 @@ func TestStringLexer(t *testing.T) {
 		item := l.Next()
 		items = append(items, item)
 	}
-	var itemTypes []TokenType
+	var itemTypes []Type
 	for _, item := range items {
 		itemTypes = append(itemTypes, item.Type())
 	}
-	expectedItemTypes := []TokenType{
+	expectedItemTypes := []Type{
 		TEXT,
 		DATA_ELEMENT_SEPARATOR,
 		NUMERIC,

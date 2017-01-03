@@ -1,11 +1,13 @@
 package token
 
+// NewSwiftLexer returns a SwiftLexer ready for parsing the given input string
 func NewSwiftLexer(name, input string) *SwiftLexer {
 	lexer := NewStringLexer(name, input)
 	lexer.SetEntryPoint(lexSwiftEntryPoint)
 	return &SwiftLexer{lexer}
 }
 
+// A SwiftLexer parses the given input and emits SWIFT tokens
 type SwiftLexer struct {
 	*StringLexer
 }
@@ -14,9 +16,8 @@ func lexSwiftEntryPoint(l *StringLexer) StringLexerStateFn {
 	if l.accept(string(carriageReturn)) && l.accept(string(lineFeed)) {
 		l.emit(SWIFT_DATASET_START)
 		return lexSwiftStart
-	} else {
-		return l.errorf("Malformed swift dataset")
 	}
+	return l.errorf("Malformed swift dataset")
 }
 
 func lexSwiftStart(l *StringLexer) StringLexerStateFn {
@@ -51,9 +52,8 @@ func lexSwiftSyntaxSymbol(l *StringLexer) StringLexerStateFn {
 			l.emit(SWIFT_TAG_SEPARATOR)
 		}
 		return lexSwiftStart
-	} else {
-		return l.errorf("Malformed syntax symbol")
 	}
+	return l.errorf("Malformed syntax symbol")
 }
 
 func lexSwiftDigit(l *StringLexer) StringLexerStateFn {
@@ -65,17 +65,14 @@ func lexSwiftDigit(l *StringLexer) StringLexerStateFn {
 		if p := l.peek(); p == carriageReturn {
 			l.emit(SWIFT_DECIMAL)
 			return lexSwiftStart
-		} else {
-			return lexSwiftAlphaNumeric
 		}
-	} else {
-		if isTagBoundary(l) {
-			l.emit(SWIFT_NUMERIC)
-			return lexSwiftStart
-		} else {
-			return lexSwiftCharacter
-		}
+		return lexSwiftAlphaNumeric
 	}
+	if isTagBoundary(l) {
+		l.emit(SWIFT_NUMERIC)
+		return lexSwiftStart
+	}
+	return lexSwiftCharacter
 }
 
 func lexSwiftAlpha(l *StringLexer) StringLexerStateFn {
@@ -124,10 +121,9 @@ func lexSwiftAlphaNumeric(l *StringLexer) StringLexerStateFn {
 		if isTagBoundary(l) { // are we really on a tag boundary
 			l.emit(SWIFT_ALPHANUMERIC)
 			return lexSwiftSyntaxSymbol
-		} else {
-			l.next()
-			return lexSwiftAlphaNumeric
 		}
+		l.next()
+		return lexSwiftAlphaNumeric
 	case r == eof:
 		return l.errorf("Unexpected end of input")
 	case isSwiftAlphaNumeric(r):
@@ -176,7 +172,7 @@ const (
 	SWIFT_MESSAGE_SEPARATOR
 )
 
-var swiftTokenName = map[TokenType]string{
+var swiftTokenName = map[Type]string{
 	SWIFT_ALPHA:     "a",
 	SWIFT_CHARACTER: "c",
 	SWIFT_DECIMAL:   "d",

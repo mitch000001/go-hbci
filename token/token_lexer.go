@@ -2,6 +2,8 @@ package token
 
 import "fmt"
 
+// NewTokenLexer returns a ready to use lexer which is fed by tokens and emits
+// grouped tokens.
 func NewTokenLexer(name string, input Tokens) *TokenLexer {
 	t := &TokenLexer{
 		name:   name,
@@ -12,6 +14,8 @@ func NewTokenLexer(name string, input Tokens) *TokenLexer {
 	return t
 }
 
+// TokenLexer represents a lexer which composes grouped tokens out of tokens.
+// It is also capable to componse tokens out of already composed tokens.
 type TokenLexer struct {
 	name   string // the name of the input; used only for error reports.
 	input  []Token
@@ -28,9 +32,8 @@ func (l *TokenLexer) Next() Token {
 		case item, ok := <-l.tokens:
 			if ok {
 				return item
-			} else {
-				panic("No items left")
 			}
+			panic("No items left")
 		default:
 			l.state = l.state(l)
 			if l.state == nil {
@@ -46,7 +49,7 @@ func (l *TokenLexer) HasNext() bool {
 }
 
 // emit passes a token back to the client.
-func (l *TokenLexer) emit(t TokenType) {
+func (l *TokenLexer) emit(t Type) {
 	l.tokens <- NewGroupToken(t, l.input[l.start:l.pos]...)
 	l.start = l.pos
 }
@@ -61,10 +64,10 @@ func (l *TokenLexer) emitToken(t Token) {
 // next returns the next Token in the input.
 func (l *TokenLexer) next() Token {
 	if l.pos >= len(l.input) {
-		return NewToken(EOF, "", l.pos)
+		return New(EOF, "", l.pos)
 	}
 	t := l.input[l.pos]
-	l.pos += 1
+	l.pos++
 	return t
 }
 
@@ -76,7 +79,7 @@ func (l *TokenLexer) ignore() {
 // backup steps back one Token.
 // Can be called only once per call of next.
 func (l *TokenLexer) backup() {
-	l.pos -= 1
+	l.pos--
 }
 
 // reset steps back until the last emited Token.
@@ -94,7 +97,7 @@ func (l *TokenLexer) peek() Token {
 
 // accept consumes the next Token
 // if it's from the valid set.
-func (l *TokenLexer) accept(valid ...TokenType) bool {
+func (l *TokenLexer) accept(valid ...Type) bool {
 	if includes(l.next(), valid...) {
 		return true
 	}
@@ -103,7 +106,7 @@ func (l *TokenLexer) accept(valid ...TokenType) bool {
 }
 
 // acceptRun consumes a run of Tokens from the valid set.
-func (l *TokenLexer) acceptRun(valid ...TokenType) {
+func (l *TokenLexer) acceptRun(valid ...Type) {
 	for includes(l.next(), valid...) {
 	}
 	l.backup()
@@ -112,11 +115,11 @@ func (l *TokenLexer) acceptRun(valid ...TokenType) {
 // error returns an error token and terminates the scan by passing
 // back a nil pointer that will be the next state, terminating l.run.
 func (l *TokenLexer) errorf(format string, args ...interface{}) tokenLexerStateFn {
-	l.tokens <- NewGroupToken(ERROR, NewToken(ERROR, fmt.Sprintf(format, args...), l.start))
+	l.tokens <- NewGroupToken(ERROR, New(ERROR, fmt.Sprintf(format, args...), l.start))
 	return nil
 }
 
-func includes(t Token, tokens ...TokenType) bool {
+func includes(t Token, tokens ...Type) bool {
 	for _, typ := range tokens {
 		if typ == t.Type() {
 			return true
@@ -131,9 +134,8 @@ type tokenLexerStateFn func(*TokenLexer) tokenLexerStateFn
 func lexStart(l *TokenLexer) tokenLexerStateFn {
 	if t := l.peek(); t.Type() == DATA_ELEMENT_GROUP {
 		return lexSegmentHeader
-	} else {
-		return lexTokens
 	}
+	return lexTokens
 }
 
 func lexTokens(l *TokenLexer) tokenLexerStateFn {
@@ -208,21 +210,19 @@ func lexSegmentHeader(l *TokenLexer) tokenLexerStateFn {
 			tokensWithoutSeparators = append(tokensWithoutSeparators, tok)
 		}
 	}
-	iter := NewTokenIterator(tokensWithoutSeparators)
+	iter := NewIterator(tokensWithoutSeparators)
 	if acceptTokenSequence(iter, ALPHA_NUMERIC, NUMERIC, NUMERIC) {
 		acceptToken(iter, NUMERIC)
 		if iter.HasNext() {
 			return l.errorf("Malformed Segment Header")
-		} else {
-			l.emit(SEGMENT_HEADER)
-			return lexSyntaxSymbolWithContext(lexTokens, l)
 		}
-	} else {
-		return l.errorf("Malformed Segment Header")
+		l.emit(SEGMENT_HEADER)
+		return lexSyntaxSymbolWithContext(lexTokens, l)
 	}
+	return l.errorf("Malformed Segment Header")
 }
 
-func acceptTokenSequence(tokens *TokenIterator, validSequence ...TokenType) bool {
+func acceptTokenSequence(tokens *Iterator, validSequence ...Type) bool {
 	for _, typ := range validSequence {
 		token := tokens.Next()
 		if typ != token.Type() {
@@ -232,7 +232,7 @@ func acceptTokenSequence(tokens *TokenIterator, validSequence ...TokenType) bool
 	return true
 }
 
-func acceptToken(tokens *TokenIterator, valid ...TokenType) bool {
+func acceptToken(tokens *Iterator, valid ...Type) bool {
 	if includes(tokens.Next(), valid...) {
 		return true
 	}

@@ -2,8 +2,9 @@ package token
 
 import "fmt"
 
+// Token represents a HBCI token.
 type Token interface {
-	Type() TokenType
+	Type() Type
 	Value() string
 	Pos() int
 	IsSyntaxSymbol() bool
@@ -11,16 +12,22 @@ type Token interface {
 	RawTokens() Tokens
 }
 
+// Tokens represent a collection of Token.
+// It defines convenient methods on top of the collection.
 type Tokens []Token
 
-func (t Tokens) Types() []TokenType {
-	var types []TokenType
+// Types returns a slice of TokenType in the order of the Tokens withing the
+// Token slice.
+func (t Tokens) Types() []Type {
+	var types []Type
 	for _, token := range t {
 		types = append(types, token.Type())
 	}
 	return types
 }
 
+// RawTokens returns all raw Tokens returned b RawTokens.
+// All RawTokens are appended to a big Tokens slice.
 func (t Tokens) RawTokens() Tokens {
 	var tokens Tokens
 	for _, token := range t {
@@ -29,33 +36,44 @@ func (t Tokens) RawTokens() Tokens {
 	return tokens
 }
 
-func NewTokenIterator(tokens Tokens) *TokenIterator {
-	return &TokenIterator{tokens: tokens, pos: 0}
+// NewIterator returns a fully populated TokenIterator
+func NewIterator(tokens Tokens) *Iterator {
+	return &Iterator{tokens: tokens, pos: 0}
 }
 
-type TokenIterator struct {
+// A Iterator iterates over a slice of Tokens
+type Iterator struct {
 	tokens Tokens
 	pos    int
 }
 
-func (t *TokenIterator) HasNext() bool {
+// HasNext returns true if there are tokens less to emit, false otherwise.
+func (t *Iterator) HasNext() bool {
 	return t.pos < len(t.tokens)
 }
 
-func (t *TokenIterator) Next() Token {
+// Next returns the next Token within the iterator. If there are no more tokens
+// it will return an EOF Token signalling that the iterator has reached the
+// last element.
+func (t *Iterator) Next() Token {
 	if t.pos >= len(t.tokens) {
-		return NewToken(EOF, "", t.pos)
+		return New(EOF, "", t.pos)
 	}
 	token := t.tokens[t.pos]
-	t.pos += 1
+	t.pos++
 	return token
 }
 
-func (t *TokenIterator) Backup() {
-	t.pos -= 1
+// Backup moves the iterator one position back.
+func (t *Iterator) Backup() {
+	t.pos--
 }
 
-func NewGroupToken(typ TokenType, tokens ...Token) Token {
+// NewGroupToken returns a Token composed of a group of sub tokens and with the
+// given type typ.
+// The Value method of such a Token returns the values of all sub tokens
+// appended in the order provided by tokens.
+func NewGroupToken(typ Type, tokens ...Token) Token {
 	groupToken := groupToken{elementToken: elementToken{typ: typ}, tokens: tokens}
 	val := ""
 	for _, token := range tokens {
@@ -86,18 +104,19 @@ func (g groupToken) RawTokens() Tokens {
 	return tokens
 }
 
-func NewToken(typ TokenType, val string, pos int) Token {
+// New creates a Token with the given type, value and position
+func New(typ Type, val string, pos int) Token {
 	return elementToken{typ, val, pos}
 }
 
 // elementToken represents a token returned from the scanner.
 type elementToken struct {
-	typ TokenType // Type, such as FLOAT
-	val string    // Value, such as "23.2".
-	pos int       // position of token in input
+	typ Type   // Type, such as FLOAT
+	val string // Value, such as "23.2".
+	pos int    // position of token in input
 }
 
-func (e elementToken) Type() TokenType {
+func (e elementToken) Type() Type {
 	return e.typ
 }
 
@@ -129,22 +148,22 @@ func (e elementToken) RawTokens() Tokens {
 	return Tokens{e}
 }
 
-func (t elementToken) String() string {
-	switch t.typ {
+func (e elementToken) String() string {
+	switch e.typ {
 	case EOF:
 		return "EOF"
 	case ERROR:
-		return t.val
+		return e.val
 	}
-	if len(t.val) > 10 {
-		return fmt.Sprintf("%.10q...", t.val)
+	if len(e.val) > 10 {
+		return fmt.Sprintf("%.10q...", e.val)
 	}
-	return fmt.Sprintf("%q", t.val)
+	return fmt.Sprintf("%q", e.val)
 }
 
 const (
-	ERROR TokenType = iota // error occurred;
-	// value is text of error
+	ERROR Type = iota // error occurred;
+
 	DATA_ELEMENT                 // Datenelement (DE)
 	DATA_ELEMENT_SEPARATOR       // Datenelement (DE)-Trennzeichen
 	DATA_ELEMENT_GROUP           // Datenelementgruppe (DEG)
@@ -173,16 +192,17 @@ const (
 	EOF
 )
 
-type TokenTypes []TokenType
+// Types implements the sort.Sort interface
+type Types []Type
 
-func (t TokenTypes) Len() int           { return len(t) }
-func (t TokenTypes) Less(i, j int) bool { return t[i] < t[j] }
-func (t TokenTypes) Swap(i, j int)      { t[i], t[j] = t[j], t[i] }
+func (t Types) Len() int           { return len(t) }
+func (t Types) Less(i, j int) bool { return t[i] < t[j] }
+func (t Types) Swap(i, j int)      { t[i], t[j] = t[j], t[i] }
 
-// TokenType identifies the type of lex tokens.
-type TokenType int
+// Type identifies the type of lex tokens.
+type Type int
 
-var tokenName = map[TokenType]string{
+var tokenName = map[Type]string{
 	ERROR: "error",
 	// value is text of error
 	DATA_ELEMENT:                 "dataElement",
@@ -213,7 +233,7 @@ var tokenName = map[TokenType]string{
 	EOF:                "eof",
 }
 
-func (t TokenType) String() string {
+func (t Type) String() string {
 	s := tokenName[t]
 	if s == "" {
 		return fmt.Sprintf("Token%d", int(t))

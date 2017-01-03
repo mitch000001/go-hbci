@@ -16,6 +16,7 @@ const (
 	binaryIdentifier          = '@'
 )
 
+// StringLexerStateFn represents a state function for the lexer.
 type StringLexerStateFn func(*StringLexer) StringLexerStateFn
 
 // NewStringLexer creates a new scanner for the input string.
@@ -29,6 +30,7 @@ func NewStringLexer(name, input string) *StringLexer {
 	return l
 }
 
+// A StringLexer is a HBCI data element lexer based on an input string
 type StringLexer struct {
 	name   string             // the name of the input; used only for error reports.
 	input  string             // the string being scanned.
@@ -85,8 +87,8 @@ func (l *StringLexer) HasNext() bool {
 }
 
 // emit passes a token back to the client.
-func (l *StringLexer) emit(t TokenType) {
-	l.tokens <- NewToken(t, l.input[l.start:l.pos], l.start)
+func (l *StringLexer) emit(t Type) {
+	l.tokens <- New(t, l.input[l.start:l.pos], l.start)
 	l.start = l.pos
 }
 
@@ -147,7 +149,7 @@ func (l *StringLexer) lineNumber() int {
 // error returns an error token and terminates the scan by passing
 // back a nil pointer that will be the next state, terminating l.run.
 func (l *StringLexer) errorf(format string, args ...interface{}) StringLexerStateFn {
-	l.tokens <- NewToken(ERROR, fmt.Sprintf(format, args...), l.start)
+	l.tokens <- New(ERROR, fmt.Sprintf(format, args...), l.start)
 	return nil
 }
 
@@ -227,15 +229,15 @@ func lexBinaryData(l *StringLexer) StringLexerStateFn {
 	if isDelimiter(p) {
 		l.emit(BINARY_DATA)
 		return lexText
-	} else {
-		if p == eof {
-			return l.errorf("Unexpected end of input")
-		}
-		return l.errorf("Expected syntax symbol after binary data")
 	}
+	if p == eof {
+		return l.errorf("Unexpected end of input")
+	}
+	return l.errorf("Expected syntax symbol after binary data")
 }
 
 func lexDigit(l *StringLexer) StringLexerStateFn {
+	digits := "0123456789"
 	leadingZero := l.accept("0")
 	if leadingZero {
 		// Only valid number with leading 0 is 0
@@ -245,16 +247,13 @@ func lexDigit(l *StringLexer) StringLexerStateFn {
 		}
 		// Only valid float with leading 0 is value smaller than 1
 		if l.accept(",") {
-			digits := "0123456789"
 			l.acceptRun(digits)
 			if p := l.peek(); isDelimiter(p) {
 				l.emit(FLOAT)
 				return lexText
-			} else {
-				return lexAlphaNumeric
 			}
+			return lexAlphaNumeric
 		}
-		digits := "0123456789"
 		l.acceptRun(digits)
 		if p := l.peek(); p == ',' {
 			return l.errorf("Malformed float")
@@ -262,29 +261,25 @@ func lexDigit(l *StringLexer) StringLexerStateFn {
 		if p := l.peek(); isDelimiter(p) {
 			l.emit(DIGIT)
 			return lexText
-		} else {
-			return lexAlphaNumeric
 		}
-	} else {
-		digits := "0123456789"
-		l.acceptRun(digits)
-		// is it a float?
-		if l.accept(",") {
-			l.acceptRun(digits)
-			if p := l.peek(); isDelimiter(p) {
-				l.emit(FLOAT)
-				return lexText
-			} else {
-				return lexAlphaNumeric
-			}
-		}
-		if p := l.peek(); isDelimiter(p) {
-			l.emit(NUMERIC)
-			return lexText
-		} else {
-			return lexAlphaNumeric
-		}
+		return lexAlphaNumeric
 	}
+	l.acceptRun(digits)
+	// is it a float?
+	if l.accept(",") {
+		l.acceptRun(digits)
+		if p := l.peek(); isDelimiter(p) {
+			l.emit(FLOAT)
+			return lexText
+		}
+		return lexAlphaNumeric
+	}
+	if p := l.peek(); isDelimiter(p) {
+		l.emit(NUMERIC)
+		return lexText
+	}
+	return lexAlphaNumeric
+
 }
 
 func isDelimiter(r rune) bool {

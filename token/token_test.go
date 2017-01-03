@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func testTokens(types ...TokenType) Tokens {
+func testTokens(types ...Type) Tokens {
 	var tokens Tokens
 	for _, typ := range types {
 		tokens = append(tokens, testToken(typ))
@@ -16,8 +16,8 @@ func testTokens(types ...TokenType) Tokens {
 
 type testToken int
 
-func (t testToken) Type() TokenType {
-	return TokenType(t)
+func (t testToken) Type() Type {
+	return Type(t)
 }
 
 func (t testToken) Value() string {
@@ -29,7 +29,7 @@ func (t testToken) Pos() int {
 }
 
 func (t testToken) IsSyntaxSymbol() bool {
-	return TokenType(t) == GROUP_DATA_ELEMENT_SEPARATOR || TokenType(t) == DATA_ELEMENT_SEPARATOR || TokenType(t) == SEGMENT_END_MARKER
+	return Type(t) == GROUP_DATA_ELEMENT_SEPARATOR || Type(t) == DATA_ELEMENT_SEPARATOR || Type(t) == SEGMENT_END_MARKER
 }
 
 func (t testToken) Children() Tokens {
@@ -41,11 +41,11 @@ func (t testToken) RawTokens() Tokens {
 }
 
 func (t testToken) String() string {
-	return TokenType(t).String()
+	return Type(t).String()
 }
 
 func TestTokenValue(t *testing.T) {
-	token := NewToken(ALPHA_NUMERIC, "abc", 0)
+	token := New(ALPHA_NUMERIC, "abc", 0)
 
 	if !reflect.DeepEqual(token.Value(), "abc") {
 		t.Logf("Expected Value to return %q, got %q\n", "abc", token.Value())
@@ -54,7 +54,7 @@ func TestTokenValue(t *testing.T) {
 }
 
 func TestTokenType(t *testing.T) {
-	token := NewToken(ALPHA_NUMERIC, "abc", 0)
+	token := New(ALPHA_NUMERIC, "abc", 0)
 
 	if !reflect.DeepEqual(token.Type(), ALPHA_NUMERIC) {
 		t.Logf("Expected Type to return %q, got %q\n", ALPHA_NUMERIC, token.Type())
@@ -63,7 +63,7 @@ func TestTokenType(t *testing.T) {
 }
 
 func TestTokenPos(t *testing.T) {
-	token := NewToken(ALPHA_NUMERIC, "abc", 0)
+	token := New(ALPHA_NUMERIC, "abc", 0)
 
 	if !reflect.DeepEqual(token.Pos(), 0) {
 		t.Logf("Expected Type to return %d, got %d\n", 0, token.Pos())
@@ -74,17 +74,17 @@ func TestTokenPos(t *testing.T) {
 func TestGroupTokensChildren(t *testing.T) {
 	type testData struct {
 		children Tokens
-		types    []TokenType
+		types    []Type
 	}
 
 	tests := []testData{
 		{
 			testTokens(ALPHA_NUMERIC),
-			[]TokenType{ALPHA_NUMERIC},
+			[]Type{ALPHA_NUMERIC},
 		},
 		{
 			testTokens(ALPHA_NUMERIC, GROUP_DATA_ELEMENT_SEPARATOR, NUMERIC),
-			[]TokenType{ALPHA_NUMERIC, GROUP_DATA_ELEMENT_SEPARATOR, NUMERIC},
+			[]Type{ALPHA_NUMERIC, GROUP_DATA_ELEMENT_SEPARATOR, NUMERIC},
 		},
 	}
 
@@ -126,7 +126,7 @@ func TestGroupTokenRawTokens(t *testing.T) {
 		},
 		{
 			// Mixed levels
-			Tokens{NewToken(NUMERIC, "2", 0), NewGroupToken(GROUP_DATA_ELEMENT, testTokens(DIGIT)...), NewGroupToken(GROUP_DATA_ELEMENT, NewGroupToken(GROUP_DATA_ELEMENT, testTokens(ALPHA_NUMERIC)...))},
+			Tokens{New(NUMERIC, "2", 0), NewGroupToken(GROUP_DATA_ELEMENT, testTokens(DIGIT)...), NewGroupToken(GROUP_DATA_ELEMENT, NewGroupToken(GROUP_DATA_ELEMENT, testTokens(ALPHA_NUMERIC)...))},
 			testTokens(NUMERIC, DIGIT, ALPHA_NUMERIC),
 		},
 	}
@@ -135,11 +135,11 @@ func TestGroupTokenRawTokens(t *testing.T) {
 		gt := NewGroupToken(GROUP_DATA_ELEMENT, test.childTokens...)
 
 		expectedRawTokenTypes := test.output.Types()
-		sort.Sort(TokenTypes(expectedRawTokenTypes))
+		sort.Sort(Types(expectedRawTokenTypes))
 
 		rawTokens := gt.RawTokens()
 		actualRawTypes := rawTokens.Types()
-		sort.Sort(TokenTypes(actualRawTypes))
+		sort.Sort(Types(actualRawTypes))
 
 		if !reflect.DeepEqual(expectedRawTokenTypes, actualRawTypes) {
 			t.Logf("Children (%d):\n%s", idx, test.childTokens.Types())
