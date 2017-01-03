@@ -17,6 +17,10 @@ import (
 func main() {
 	flag.Parse()
 	bankdataFiles := flag.Args()
+	if len(bankdataFiles) == 0 {
+		log.Fatal("No file provided. Exiting...")
+		os.Exit(1)
+	}
 
 	var bankInfos []bankinfo.BankInfo
 	for _, bankdata := range bankdataFiles {
