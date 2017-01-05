@@ -24,18 +24,18 @@ const initialClientSystemID = "0"
 const anonymousClientID = "9999999999"
 
 func newDialog(
-	bankId domain.BankId,
+	bankID domain.BankId,
 	hbciUrl string,
-	userId string,
+	userID string,
 	hbciVersion segment.HBCIVersion,
 	signatureProvider message.SignatureProvider,
 	cryptoProvider message.CryptoProvider,
 ) *dialog {
 	return &dialog{
 		hbciUrl:           hbciUrl,
-		BankID:            bankId,
-		UserID:            userId,
-		clientID:          userId,
+		BankID:            bankID,
+		UserID:            userID,
+		clientID:          userID,
 		ClientSystemID:    initialClientSystemID,
 		Language:          domain.German,
 		Accounts:          make([]domain.AccountInformation, 0),
