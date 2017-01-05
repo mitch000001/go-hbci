@@ -23,11 +23,6 @@ const initialDialogID = "0"
 const initialClientSystemID = "0"
 const anonymousClientID = "9999999999"
 
-type Dialog interface {
-	SyncClientSystemID() (string, error)
-	SendMessage(clientMessage message.HBCIMessage) (message.BankMessage, error)
-}
-
 func newDialog(
 	bankId domain.BankId,
 	hbciUrl string,
