@@ -262,8 +262,9 @@ func (t *TransactionTag) Unmarshal(value []byte) error {
 			t.BankReference = remaining[doubleSlashIdx+2 : addInfSepIdx]
 			t.AdditionalInformation = remaining[addInfSepIdx+3:]
 		} else {
-			// The only valid case in the FINTS30 documenation in the other one, but the data we receive are sometimes
-			// formatted like that :(
+			// The only valid case in the FINTS30 documentation in the other
+			// one, but the data we receive are sometimes formatted like that
+			// :(
 			t.BankReference = remaining[addInfSepIdx+3 : doubleSlashIdx]
 			t.AdditionalInformation = remaining[doubleSlashIdx+2:]
 		}
