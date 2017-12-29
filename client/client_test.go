@@ -58,13 +58,19 @@ func TestClientBalances(t *testing.T) {
 	date, _ := time.Parse("20060102", "20150812")
 
 	expectedBalance := domain.AccountBalance{
-		Account:          domain.AccountConnection{AccountID: "100000000", CountryCode: 280, BankID: "10000000"},
-		ProductName:      "Sichteinlagen",
-		Currency:         "EUR",
-		BookedBalance:    domain.Balance{domain.Amount{1000.15, "EUR"}, date, nil},
-		EarmarkedBalance: &domain.Balance{domain.Amount{20, "EUR"}, date, nil},
-		CreditLimit:      &domain.Amount{500, "EUR"},
-		AvailableAmount:  &domain.Amount{1499.85, "EUR"},
+		Account:     domain.AccountConnection{AccountID: "100000000", CountryCode: 280, BankID: "10000000"},
+		ProductName: "Sichteinlagen",
+		Currency:    "EUR",
+		BookedBalance: domain.Balance{
+			Amount:           domain.Amount{Amount: 1000.15, Currency: "EUR"},
+			TransmissionDate: date,
+		},
+		EarmarkedBalance: &domain.Balance{
+			Amount:           domain.Amount{Amount: 20, Currency: "EUR"},
+			TransmissionDate: date,
+		},
+		CreditLimit:     &domain.Amount{Amount: 500, Currency: "EUR"},
+		AvailableAmount: &domain.Amount{Amount: 1499.85, Currency: "EUR"},
 	}
 
 	if len(balances) != 1 {

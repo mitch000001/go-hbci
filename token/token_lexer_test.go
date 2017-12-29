@@ -92,7 +92,7 @@ func TestTokenLexer(t *testing.T) {
 			tok := lexer.Next()
 			emittedTokens = append(emittedTokens, tok)
 			if tok.Type() == ERROR {
-				t.Logf("Lexer returned error: %#s\n", tok)
+				t.Logf("Lexer returned error: %#v\n", tok)
 			}
 		}
 		emittedTokenTypes := emittedTokens.Types()

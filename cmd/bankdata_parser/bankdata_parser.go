@@ -30,12 +30,12 @@ func main() {
 	for _, bankdata := range bankdataFiles {
 		file, err := os.Open(bankdata)
 		if err != nil {
-			log.Fatal("Cannot open file: %q", bankdata)
+			log.Fatalf("Cannot open file: %q", bankdata)
 			os.Exit(1)
 		}
 		infos, err := bankinfo.ParseBankInfos(decoder.Reader(file))
 		if err != nil {
-			log.Fatal("Parse error: %q", err)
+			log.Fatalf("Parse error: %q", err)
 			os.Exit(1)
 		}
 		bankInfos = append(bankInfos, infos...)
@@ -43,17 +43,17 @@ func main() {
 	sort.Sort(bankinfo.SortableBankInfos(bankInfos))
 	data, err := writeDataToGoFile(bankInfos)
 	if err != nil {
-		log.Fatal("Error while parsing expression: %q", err)
+		log.Fatalf("Error while parsing expression: %q", err)
 		os.Exit(1)
 	}
 	goFile, err := os.Create("bankinfo/data.go")
 	if err != nil {
-		log.Fatal("Cannot create file: %q", err)
+		log.Fatalf("Cannot create file: %q", err)
 		os.Exit(1)
 	}
 	_, err = io.Copy(goFile, data)
 	if err != nil {
-		log.Fatal("Error while writing file: %q", err)
+		log.Fatalf("Error while writing file: %q", err)
 		os.Exit(1)
 	}
 	os.Exit(0)

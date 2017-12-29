@@ -18,7 +18,14 @@ func TestAccountConnectionUnmarshalHBCI(t *testing.T) {
 		t.Fail()
 	}
 
-	expected := NewAccountConnection(domain.AccountConnection{"abc", "subacc", 280, "12345678"}).String()
+	expected := NewAccountConnection(
+		domain.AccountConnection{
+			AccountID:                 "abc",
+			SubAccountCharacteristics: "subacc",
+			CountryCode:               280,
+			BankID:                    "12345678",
+		},
+	).String()
 	actual := acc.String()
 
 	if expected != actual {

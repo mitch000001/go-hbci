@@ -169,7 +169,9 @@ type KeyNameDataElement struct {
 
 func (k *KeyNameDataElement) Val() domain.KeyName {
 	return domain.KeyName{
-		BankID:     domain.BankId{k.Bank.CountryCode.Val(), k.Bank.BankID.Val()},
+		BankID: domain.BankId{
+			CountryCode: k.Bank.CountryCode.Val(),
+			ID:          k.Bank.BankID.Val()},
 		UserID:     k.UserID.Val(),
 		KeyType:    k.KeyType.Val(),
 		KeyNumber:  k.KeyNumber.Val(),

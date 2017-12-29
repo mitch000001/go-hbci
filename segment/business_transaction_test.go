@@ -100,8 +100,8 @@ func TestPinTanBusinessTransactionParamsSegmentPinTanBusinessTransactions(t *tes
 	segment.Segment = NewReferencingBasicSegment(3, 4, segment)
 
 	expectedTransactions := []domain.PinTanBusinessTransaction{
-		domain.PinTanBusinessTransaction{"HKSAL", false},
-		domain.PinTanBusinessTransaction{"HKUEB", true},
+		domain.PinTanBusinessTransaction{SegmentID: "HKSAL", NeedsTan: false},
+		domain.PinTanBusinessTransaction{SegmentID: "HKUEB", NeedsTan: true},
 	}
 
 	pinTanTransactions := segment.PinTanBusinessTransactions()

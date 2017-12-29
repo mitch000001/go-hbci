@@ -24,7 +24,7 @@ type Config struct {
 func (c Config) hbciVersion() (segment.HBCIVersion, error) {
 	version, ok := segment.SupportedHBCIVersions[c.HBCIVersion]
 	if !ok {
-		return version, fmt.Errorf("Unsupported HBCI version. Supported versions are %s", domain.SupportedHBCIVersions)
+		return version, fmt.Errorf("Unsupported HBCI version. Supported versions are %v", domain.SupportedHBCIVersions)
 	}
 	return version, nil
 }
@@ -59,7 +59,7 @@ func New(config Config) (*Client, error) {
 	} else {
 		version, ok := segment.SupportedHBCIVersions[bankInfo.HbciVersion()]
 		if !ok {
-			return nil, fmt.Errorf("Unsupported HBCI version. Supported versions are %s", domain.SupportedHBCIVersions)
+			return nil, fmt.Errorf("Unsupported HBCI version. Supported versions are %v", domain.SupportedHBCIVersions)
 		}
 		hbciVersion = version
 	}
@@ -191,7 +191,6 @@ func (c *Client) AccountInformation(account domain.AccountConnection, allAccount
 	} else {
 		return fmt.Errorf("Malformed response: expected HIKIF segment")
 	}
-	return nil
 }
 
 func (c *Client) AccountBalances(account domain.AccountConnection, allAccounts bool) ([]domain.AccountBalance, error) {

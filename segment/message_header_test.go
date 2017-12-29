@@ -36,7 +36,9 @@ func TestMessageHeaderSegmentUnmarshalHBCI(t *testing.T) {
 		t.Fail()
 	}
 
-	expected = NewReferencingMessageHeaderSegment(123, 220, "dialogID", 3, domain.ReferencingMessage{"abcde", 1}).String()
+	expected = NewReferencingMessageHeaderSegment(
+		123, 220, "dialogID", 3, domain.ReferencingMessage{DialogID: "abcde", MessageNumber: 1},
+	).String()
 	actual = header.String()
 
 	if expected != actual {

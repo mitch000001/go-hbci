@@ -39,20 +39,20 @@ func (m *MT940) AccountTransactions() []domain.AccountTransaction {
 		}
 		transaction := domain.AccountTransaction{
 			Account:     accountConnection,
-			Amount:      domain.Amount{amount, m.StartingBalance.Currency},
+			Amount:      domain.Amount{Amount: amount, Currency: m.StartingBalance.Currency},
 			ValutaDate:  tr.ValutaDate.Time,
 			BookingDate: tr.BookingDate.Time,
 			AccountBalanceBefore: domain.Balance{
 				Amount: domain.Amount{
-					m.StartingBalance.Amount,
-					m.StartingBalance.Currency,
+					Amount:   m.StartingBalance.Amount,
+					Currency: m.StartingBalance.Currency,
 				},
 				TransmissionDate: m.StartingBalance.BookingDate.Time,
 			},
 			AccountBalanceAfter: domain.Balance{
 				Amount: domain.Amount{
-					m.ClosingBalance.Amount,
-					m.ClosingBalance.Currency,
+					Amount:   m.ClosingBalance.Amount,
+					Currency: m.ClosingBalance.Currency,
 				},
 				TransmissionDate: m.ClosingBalance.BookingDate.Time,
 			},

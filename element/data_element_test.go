@@ -65,7 +65,7 @@ func TestNewDataElement(t *testing.T) {
 			} else {
 				t.Logf("Expected DataElement to be invalid, was valid\n")
 			}
-			t.Logf("Expected DataElement to be valid, was not\n", expectedString, actualString)
+			t.Logf("Expected DataElement to be valid, was not\n")
 			t.Fail()
 		}
 	}
@@ -231,7 +231,7 @@ func TestNewDigitDataElement(t *testing.T) {
 			} else {
 				t.Logf("Expected DataElement to be invalid, was valid\n")
 			}
-			t.Logf("Expected DataElement to be valid, was not\n", expectedString, actualString)
+			t.Logf("Expected DataElement to be valid, was not\n")
 			t.Fail()
 		}
 	}
@@ -302,7 +302,7 @@ func TestNewNumberDataElement(t *testing.T) {
 			} else {
 				t.Logf("Expected DataElement to be invalid, was valid\n")
 			}
-			t.Logf("Expected DataElement to be valid, was not\n", expectedString, actualString)
+			t.Logf("Expected DataElement to be valid, was not\n")
 			t.Fail()
 		}
 	}
@@ -476,7 +476,7 @@ func TestGroupDataElementGroupUnmarshalHBCI(t *testing.T) {
 
 		if !reflect.DeepEqual(expectedArray, actualArray) {
 			t.Logf("Input: %q\n", test.in)
-			t.Logf("Expected UnmarshalHBCI() to return \n%+#s\n\tgot \n%+#s\n", expectedArray, actualArray)
+			t.Logf("Expected UnmarshalHBCI() to return \n%+#v\n\tgot \n%+#v\n", expectedArray, actualArray)
 			t.Fail()
 		}
 	}

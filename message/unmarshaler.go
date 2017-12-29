@@ -22,7 +22,12 @@ type Unmarshaler struct {
 }
 
 func (u *Unmarshaler) CanUnmarshal(segmentId string, version int) bool {
-	return segment.KnownSegments.IsUnmarshaler(segment.VersionedSegment{segmentId, version})
+	return segment.KnownSegments.IsUnmarshaler(
+		segment.VersionedSegment{
+			ID:      segmentId,
+			Version: version,
+		},
+	)
 }
 
 func (u *Unmarshaler) Unmarshal() error {
@@ -56,7 +61,9 @@ func (u *Unmarshaler) Unmarshal() error {
 }
 
 func (u *Unmarshaler) UnmarshalSegment(segmentId string, version int) (segment.Segment, error) {
-	unmarshaler, err := segment.KnownSegments.UnmarshalerForSegment(segment.VersionedSegment{segmentId, version})
+	unmarshaler, err := segment.KnownSegments.UnmarshalerForSegment(
+		segment.VersionedSegment{ID: segmentId, Version: version},
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -118,6 +125,6 @@ func extractVersionedSegmentIdentifier(segmentBytes []byte) (segment.VersionedSe
 	if err != nil {
 		return id, err
 	}
-	id = segment.VersionedSegment{header.ID.Val(), header.Version.Val()}
+	id = segment.VersionedSegment{ID: header.ID.Val(), Version: header.Version.Val()}
 	return id, nil
 }

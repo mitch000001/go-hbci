@@ -36,7 +36,6 @@ func lexSwiftStart(l *StringLexer) StringLexerStateFn {
 	default:
 		return lexSwiftAlphaNumeric
 	}
-	return nil
 }
 
 func lexSwiftSyntaxSymbol(l *StringLexer) StringLexerStateFn {
@@ -55,7 +54,6 @@ func lexSwiftSyntaxSymbol(l *StringLexer) StringLexerStateFn {
 	} else {
 		return l.errorf("Malformed syntax symbol")
 	}
-	return lexSwiftStart
 }
 
 func lexSwiftDigit(l *StringLexer) StringLexerStateFn {

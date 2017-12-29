@@ -67,9 +67,9 @@ func (l *StringLexer) Next() Token {
 		case item, ok := <-l.tokens:
 			if ok {
 				return item
-			} else {
-				panic(fmt.Errorf("No items left"))
 			}
+
+			panic(fmt.Errorf("No items left"))
 		default:
 			l.state = l.state(l)
 			if l.state == nil {
@@ -77,7 +77,6 @@ func (l *StringLexer) Next() Token {
 			}
 		}
 	}
-	panic("not reached")
 }
 
 // HasNext returns true if there are tokens left, false if EOF has reached

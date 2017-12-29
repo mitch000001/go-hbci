@@ -591,7 +591,7 @@ func (d *dialog) dial(message []byte) ([]byte, error) {
 	sizeString := headerItems[1]
 	size, err := strconv.Atoi(sizeString)
 	if err != nil {
-		return nil, fmt.Errorf("Error while parsing message size: %T:%v\n")
+		return nil, fmt.Errorf("Error while parsing message size: %T:%v\n", err, err)
 	}
 	messageBuf := make([]byte, size)
 	buf.Read(messageBuf)

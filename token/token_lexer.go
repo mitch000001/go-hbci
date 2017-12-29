@@ -38,7 +38,6 @@ func (l *TokenLexer) Next() Token {
 			}
 		}
 	}
-	panic("not reached")
 }
 
 // HasNext returns true if there are tokens left, false if EOF has reached
@@ -157,7 +156,6 @@ func lexTokens(l *TokenLexer) tokenLexerStateFn {
 			return nil
 		}
 	}
-	return l.errorf("Syntax error")
 }
 
 func lexGroupDataElement(l *TokenLexer) tokenLexerStateFn {
@@ -177,7 +175,6 @@ func lexGroupDataElement(l *TokenLexer) tokenLexerStateFn {
 			return lexSyntaxSymbolWithContext(lexTokens, l)
 		}
 	}
-	return l.errorf("Syntax error")
 }
 
 func lexDataElement(l *TokenLexer) tokenLexerStateFn {
@@ -193,7 +190,6 @@ func lexDataElement(l *TokenLexer) tokenLexerStateFn {
 			return lexSyntaxSymbolWithContext(lexTokens, l)
 		}
 	}
-	return l.errorf("Syntax error")
 }
 
 func lexDataElementGroup(l *TokenLexer) tokenLexerStateFn {
