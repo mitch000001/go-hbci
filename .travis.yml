@@ -12,7 +12,23 @@ env:
 before_script:
   # - go get github.com/golang/lint/golint/...
   - go vet ./...
-  # - golint -set_exit_status
+  # - golint -set_exit_status bankinfo \
+  # charset \
+  # client \
+  # cmd \
+  # crypto \
+  # dialog \
+  # domain \
+  # element \
+  # generator \
+  # hbci.go \
+  # iban \
+  # internal \
+  # message \
+  # segment \
+  # swift \
+  # token \
+  # transport
 
 before_install:
   # Download the binary to bin folder in $GOPATH
