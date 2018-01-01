@@ -11,7 +11,22 @@ env:
 
 before_script:
   # - go get github.com/golang/lint/golint/...
-  - go vet ./...
+  - go vet ./bankinfo \
+    ./charset \
+    ./client \
+    ./cmd \
+    ./crypto \
+    ./dialog \
+    ./domain \
+    ./element \
+    ./generator \
+    ./iban \
+    ./internal \
+    ./message \
+    ./segment \
+    ./swift \
+    ./token \
+    ./transport
   # - golint -set_exit_status bankinfo \
   # charset \
   # client \
