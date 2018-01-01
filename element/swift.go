@@ -12,6 +12,7 @@ type SwiftMT940DataElement struct {
 	swiftMT940Elements []*swift.MT940
 }
 
+// UnmarshalHBCI unmarshals value into s
 func (s *SwiftMT940DataElement) UnmarshalHBCI(value []byte) error {
 	s.BinaryDataElement = &BinaryDataElement{}
 	err := s.BinaryDataElement.UnmarshalHBCI(value)
@@ -34,6 +35,7 @@ func (s *SwiftMT940DataElement) UnmarshalHBCI(value []byte) error {
 	return nil
 }
 
+// Val returns the embodied transactions as []domain.AccountTransaction
 func (s *SwiftMT940DataElement) Val() []domain.AccountTransaction {
 	var transactions []domain.AccountTransaction
 	for _, mt940 := range s.swiftMT940Elements {

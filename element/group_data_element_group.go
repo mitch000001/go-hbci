@@ -10,21 +10,24 @@ import (
 	"github.com/mitch000001/go-hbci/domain"
 )
 
+// NewAmount returns a new AmountDataElement
 func NewAmount(value float64, currency string) *AmountDataElement {
 	a := &AmountDataElement{
 		Amount:   NewValue(value),
 		Currency: NewCurrency(currency),
 	}
-	a.DataElement = NewGroupDataElementGroup(AmountGDEG, 2, a)
+	a.DataElement = NewGroupDataElementGroup(amountGDEG, 2, a)
 	return a
 }
 
+// An AmountDataElement represents a value with a currency
 type AmountDataElement struct {
 	DataElement
 	Amount   *ValueDataElement
 	Currency *CurrencyDataElement
 }
 
+// Elements returns the child elements of the group
 func (a *AmountDataElement) Elements() []DataElement {
 	return []DataElement{
 		a.Amount,
@@ -32,6 +35,7 @@ func (a *AmountDataElement) Elements() []DataElement {
 	}
 }
 
+// Val returns the value of a as a domain.Amount
 func (a *AmountDataElement) Val() domain.Amount {
 	return domain.Amount{
 		Amount:   a.Amount.Val(),
@@ -39,6 +43,7 @@ func (a *AmountDataElement) Val() domain.Amount {
 	}
 }
 
+// UnmarshalHBCI unmarshals value into a
 func (a *AmountDataElement) UnmarshalHBCI(value []byte) error {
 	elements, err := ExtractElements(value)
 	if err != nil {
@@ -57,32 +62,36 @@ func (a *AmountDataElement) UnmarshalHBCI(value []byte) error {
 	if err != nil {
 		return err
 	}
-	a.DataElement = NewGroupDataElementGroup(AmountGDEG, 2, a)
+	a.DataElement = NewGroupDataElementGroup(amountGDEG, 2, a)
 	return nil
 }
 
-func NewBankIndentification(bankId domain.BankId) *BankIdentificationDataElement {
+// NewBankIdentification returns a new BankIndentificationDataElement
+func NewBankIdentification(bankID domain.BankID) *BankIdentificationDataElement {
 	b := &BankIdentificationDataElement{
-		CountryCode: NewCountryCode(bankId.CountryCode),
-		BankID:      NewAlphaNumeric(bankId.ID, 30),
+		CountryCode: NewCountryCode(bankID.CountryCode),
+		BankID:      NewAlphaNumeric(bankID.ID, 30),
 	}
-	b.DataElement = NewGroupDataElementGroup(BankIdentificationGDEG, 2, b)
+	b.DataElement = NewGroupDataElementGroup(bankIdentificationGDEG, 2, b)
 	return b
 }
 
+// A BankIdentificationDataElement represents the identification for a bank institute
 type BankIdentificationDataElement struct {
 	DataElement
 	CountryCode *CountryCodeDataElement
 	BankID      *AlphaNumericDataElement
 }
 
-func (b *BankIdentificationDataElement) Val() domain.BankId {
-	return domain.BankId{
+// Val returns the value of b as domain.BankID
+func (b *BankIdentificationDataElement) Val() domain.BankID {
+	return domain.BankID{
 		CountryCode: b.CountryCode.Val(),
 		ID:          b.BankID.Val(),
 	}
 }
 
+// Elements returns all child elements of b
 func (b *BankIdentificationDataElement) Elements() []DataElement {
 	return []DataElement{
 		b.CountryCode,
@@ -90,6 +99,7 @@ func (b *BankIdentificationDataElement) Elements() []DataElement {
 	}
 }
 
+// UnmarshalHBCI unmarshals value into b
 func (b *BankIdentificationDataElement) UnmarshalHBCI(value []byte) error {
 	elements, err := ExtractElements(value)
 	if err != nil {
@@ -108,34 +118,38 @@ func (b *BankIdentificationDataElement) UnmarshalHBCI(value []byte) error {
 	return nil
 }
 
+// NewAccountConnection returns a new AccountConnectionDataElement
 func NewAccountConnection(conn domain.AccountConnection) *AccountConnectionDataElement {
 	a := &AccountConnectionDataElement{
-		AccountId:                 NewIdentification(conn.AccountID),
+		AccountID:                 NewIdentification(conn.AccountID),
 		SubAccountCharacteristics: NewIdentification(conn.SubAccountCharacteristics),
 		CountryCode:               NewCountryCode(conn.CountryCode),
-		BankId:                    NewAlphaNumeric(conn.BankID, 30),
+		BankID:                    NewAlphaNumeric(conn.BankID, 30),
 	}
-	a.DataElement = NewGroupDataElementGroup(AccountConnectionGDEG, 4, a)
+	a.DataElement = NewGroupDataElementGroup(accountConnectionGDEG, 4, a)
 	return a
 }
 
+// AccountConnectionDataElement represents a bank account
 type AccountConnectionDataElement struct {
 	DataElement
-	AccountId                 *IdentificationDataElement
+	AccountID                 *IdentificationDataElement
 	SubAccountCharacteristics *IdentificationDataElement
 	CountryCode               *CountryCodeDataElement
-	BankId                    *AlphaNumericDataElement
+	BankID                    *AlphaNumericDataElement
 }
 
+// Elements returns all child elements of a
 func (a *AccountConnectionDataElement) Elements() []DataElement {
 	return []DataElement{
-		a.AccountId,
+		a.AccountID,
 		a.SubAccountCharacteristics,
 		a.CountryCode,
-		a.BankId,
+		a.BankID,
 	}
 }
 
+// UnmarshalHBCI unmarshals value into a
 func (a *AccountConnectionDataElement) UnmarshalHBCI(value []byte) error {
 	elements, err := ExtractElements(value)
 	if err != nil {
@@ -158,27 +172,30 @@ func (a *AccountConnectionDataElement) UnmarshalHBCI(value []byte) error {
 	return nil
 }
 
+// Val returns the value of a as domain.AccountConnection
 func (a *AccountConnectionDataElement) Val() domain.AccountConnection {
 	return domain.AccountConnection{
-		AccountID:                 a.AccountId.Val(),
+		AccountID:                 a.AccountID.Val(),
 		SubAccountCharacteristics: a.SubAccountCharacteristics.Val(),
 		CountryCode:               a.CountryCode.Val(),
-		BankID:                    a.BankId.Val(),
+		BankID:                    a.BankID.Val(),
 	}
 }
 
+// NewInternationalAccountConnection returns a new InternationalAccountConnectionDataElement
 func NewInternationalAccountConnection(conn domain.InternationalAccountConnection) *InternationalAccountConnectionDataElement {
 	i := &InternationalAccountConnectionDataElement{
 		IBAN:                      NewAlphaNumeric(conn.IBAN, 34),
 		BIC:                       NewAlphaNumeric(conn.BIC, 11),
 		AccountID:                 NewIdentification(conn.AccountID),
 		SubAccountCharacteristics: NewIdentification(conn.SubAccountCharacteristics),
-		BankID: NewBankIndentification(conn.BankID),
+		BankID: NewBankIdentification(conn.BankID),
 	}
-	i.DataElement = NewGroupDataElementGroup(InternationalAccountConnectionGDEG, 5, i)
+	i.DataElement = NewGroupDataElementGroup(internationalAccountConnectionGDEG, 5, i)
 	return i
 }
 
+// An InternationalAccountConnectionDataElement represents an international bank account
 type InternationalAccountConnectionDataElement struct {
 	DataElement
 	IBAN                      *AlphaNumericDataElement
@@ -188,6 +205,7 @@ type InternationalAccountConnectionDataElement struct {
 	BankID                    *BankIdentificationDataElement
 }
 
+// Elements returns the child elements of i
 func (i *InternationalAccountConnectionDataElement) Elements() []DataElement {
 	return []DataElement{
 		i.IBAN,
@@ -198,6 +216,7 @@ func (i *InternationalAccountConnectionDataElement) Elements() []DataElement {
 	}
 }
 
+// UnmarshalHBCI unmarshals value into i
 func (i *InternationalAccountConnectionDataElement) UnmarshalHBCI(value []byte) error {
 	elements, err := ExtractElements(value)
 	if err != nil {
@@ -206,7 +225,7 @@ func (i *InternationalAccountConnectionDataElement) UnmarshalHBCI(value []byte) 
 	if len(elements) == 0 {
 		return fmt.Errorf("Malformed AccountConnection")
 	}
-	i.DataElement = NewGroupDataElementGroup(InternationalAccountConnectionGDEG, 5, i)
+	i.DataElement = NewGroupDataElementGroup(internationalAccountConnectionGDEG, 5, i)
 	if len(elements) > 0 && len(elements[0]) > 0 {
 		i.IBAN = &AlphaNumericDataElement{}
 		err = i.IBAN.UnmarshalHBCI(elements[0])
@@ -245,6 +264,7 @@ func (i *InternationalAccountConnectionDataElement) UnmarshalHBCI(value []byte) 
 	return nil
 }
 
+// Val returns the value of i as domain.InternationalAccountConnection
 func (i *InternationalAccountConnectionDataElement) Val() domain.InternationalAccountConnection {
 	conn := domain.InternationalAccountConnection{}
 	if i.IBAN != nil {
@@ -265,6 +285,7 @@ func (i *InternationalAccountConnectionDataElement) Val() domain.InternationalAc
 	return conn
 }
 
+// NewBalance returns a new BalanceDataElement
 func NewBalance(amount domain.Amount, date time.Time, withTime bool) *BalanceDataElement {
 	var debitCredit string
 	if amount.Amount < 0 {
@@ -281,10 +302,11 @@ func NewBalance(amount domain.Amount, date time.Time, withTime bool) *BalanceDat
 	if withTime {
 		b.TransmissionTime = NewTime(date)
 	}
-	b.DataElement = NewGroupDataElementGroup(BalanceGDEG, 5, b)
+	b.DataElement = NewGroupDataElementGroup(balanceGDEG, 5, b)
 	return b
 }
 
+// A BalanceDataElement represents an account balance to a given date
 type BalanceDataElement struct {
 	DataElement
 	DebitCreditIndicator *AlphaNumericDataElement
@@ -294,6 +316,7 @@ type BalanceDataElement struct {
 	TransmissionTime     *TimeDataElement
 }
 
+// Elements returns all child elements of b
 func (b *BalanceDataElement) Elements() []DataElement {
 	return []DataElement{
 		b.DebitCreditIndicator,
@@ -304,6 +327,7 @@ func (b *BalanceDataElement) Elements() []DataElement {
 	}
 }
 
+// Balance returns the balance as domain.Balance
 func (b *BalanceDataElement) Balance() domain.Balance {
 	sign := b.DebitCreditIndicator.Val()
 	val := b.Amount.Val()
@@ -326,6 +350,7 @@ func (b *BalanceDataElement) Balance() domain.Balance {
 	return balance
 }
 
+// UnmarshalHBCI unmarshals value into b
 func (b *BalanceDataElement) UnmarshalHBCI(value []byte) error {
 	elements, err := ExtractElements(value)
 	if err != nil {
@@ -361,14 +386,16 @@ func (b *BalanceDataElement) UnmarshalHBCI(value []byte) error {
 			return err
 		}
 	}
-	b.DataElement = NewGroupDataElementGroup(BalanceGDEG, 5, b)
+	b.DataElement = NewGroupDataElementGroup(balanceGDEG, 5, b)
 	return nil
 }
 
+// Date returns the transmission date of the balance
 func (b *BalanceDataElement) Date() time.Time {
 	return b.TransmissionDate.Val()
 }
 
+// NewAddress creates a new AddressDataElement from address
 func NewAddress(address domain.Address) *AddressDataElement {
 	a := &AddressDataElement{
 		Name1:       NewAlphaNumeric(address.Name1, 35),
@@ -381,10 +408,11 @@ func NewAddress(address domain.Address) *AddressDataElement {
 		Fax:         NewAlphaNumeric(address.Fax, 35),
 		Email:       NewAlphaNumeric(address.Email, 35),
 	}
-	a.DataElement = NewGroupDataElementGroup(AddressGDEG, 9, a)
+	a.DataElement = NewGroupDataElementGroup(addressGDEG, 9, a)
 	return a
 }
 
+// AddressDataElement represents an address
 type AddressDataElement struct {
 	DataElement
 	Name1       *AlphaNumericDataElement
@@ -398,6 +426,7 @@ type AddressDataElement struct {
 	Email       *AlphaNumericDataElement
 }
 
+// Elements returns all child elements of a
 func (a *AddressDataElement) Elements() []DataElement {
 	return []DataElement{
 		a.Name1,
@@ -412,6 +441,7 @@ func (a *AddressDataElement) Elements() []DataElement {
 	}
 }
 
+// Address returns the address as a domain.Address
 func (a *AddressDataElement) Address() domain.Address {
 	return domain.Address{
 		Name1:       a.Name1.Val(),

@@ -7,6 +7,7 @@ import (
 	"time"
 )
 
+// AccountTransaction represents one transaction entry for a given account
 type AccountTransaction struct {
 	Account              AccountConnection
 	Amount               Amount

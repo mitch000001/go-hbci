@@ -7,6 +7,7 @@ import (
 	"github.com/mitch000001/go-hbci/domain"
 )
 
+// NewPublicKey creates a new PublicKeyElement from pubKey
 func NewPublicKey(pubKey *domain.PublicKey) *PublicKeyDataElement {
 	if !reflect.DeepEqual(pubKey.Exponent, []byte("65537")) {
 		panic(fmt.Errorf("Exponent must equal 65537 (% X)", "65537"))
@@ -20,10 +21,11 @@ func NewPublicKey(pubKey *domain.PublicKey) *PublicKeyDataElement {
 		Exponent:      NewBinary(pubKey.Exponent, 512),
 		ExponentID:    NewAlphaNumeric("13", 3),
 	}
-	p.DataElement = NewDataElementGroup(PublicKeyDEG, 7, p)
+	p.DataElement = NewDataElementGroup(publicKeyDEG, 7, p)
 	return p
 }
 
+// PublicKeyDataElement represents a public key
 type PublicKeyDataElement struct {
 	DataElement
 	// "5" for OCF, Owner Ciphering (Encryption key)
@@ -55,6 +57,7 @@ func (p *PublicKeyDataElement) GroupDataElements() []DataElement {
 	}
 }
 
+// Val returns the public key
 func (p *PublicKeyDataElement) Val() *domain.PublicKey {
 	return &domain.PublicKey{
 		Type:     p.Usage.Val(),

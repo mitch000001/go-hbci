@@ -2,22 +2,26 @@ package element
 
 import "fmt"
 
+// NewReferencingSegmentHeader returns a new SegmentHeader with a reference to
+// another segment
 func NewReferencingSegmentHeader(id string, number, version, reference int) *SegmentHeader {
 	header := NewSegmentHeader(id, number, version)
 	header.Ref = NewNumber(reference, 3)
 	return header
 }
 
+// NewSegmentHeader returns a new SegmentHeader for the id, number and version
 func NewSegmentHeader(id string, number, version int) *SegmentHeader {
 	header := &SegmentHeader{
 		ID:      NewAlphaNumeric(id, 6),
 		Number:  NewNumber(number, 3),
 		Version: NewNumber(version, 3),
 	}
-	header.DataElement = NewDataElementGroup(SegmentHeaderDEG, 4, header)
+	header.DataElement = NewDataElementGroup(segmentHeaderDEG, 4, header)
 	return header
 }
 
+// A SegmentHeader represents the metadata of a given segment such as ID or version
 type SegmentHeader struct {
 	DataElement
 	ID      *AlphaNumericDataElement
@@ -26,20 +30,27 @@ type SegmentHeader struct {
 	Ref     *NumberDataElement
 }
 
+// Type returns the DataElementType of s
+func (s *SegmentHeader) Type() DataElementType {
+	return segmentHeaderDEG
+}
+
+// SetNumber sets the number of the segment
 func (s *SegmentHeader) SetNumber(number int) {
 	*s.Number = *NewNumber(number, 3)
 }
 
+// SetReference sets the reference to another segment
 func (s *SegmentHeader) SetReference(ref int) {
 	*s.Ref = *NewNumber(ref, 3)
 }
 
+// ReferencingSegment returns the reference number of the referenced segment
 func (s *SegmentHeader) ReferencingSegment() int {
 	if s.Ref != nil {
 		return s.Ref.Val()
-	} else {
-		return -1
 	}
+	return -1
 }
 
 // IsValid returns true if the DataElement and all its grouped elements
@@ -47,13 +58,8 @@ func (s *SegmentHeader) ReferencingSegment() int {
 func (s *SegmentHeader) IsValid() bool {
 	if s.ID == nil || s.Number == nil || s.Version == nil {
 		return false
-	} else {
-		return s.DataElement.IsValid()
 	}
-}
-
-func (s *SegmentHeader) Value() interface{} {
-	return s
+	return s.DataElement.IsValid()
 }
 
 // GroupDataElements returns the grouped DataElements
@@ -66,6 +72,7 @@ func (s *SegmentHeader) GroupDataElements() []DataElement {
 	}
 }
 
+// UnmarshalHBCI unmarshals value into s
 func (s *SegmentHeader) UnmarshalHBCI(value []byte) error {
 	elements, err := ExtractElements(value)
 	if err != nil {
@@ -74,7 +81,7 @@ func (s *SegmentHeader) UnmarshalHBCI(value []byte) error {
 	if len(elements) < 3 {
 		return fmt.Errorf("Malformed segment header")
 	}
-	s.DataElement = NewDataElementGroup(SegmentHeaderDEG, 4, s)
+	s.DataElement = NewDataElementGroup(segmentHeaderDEG, 4, s)
 	if len(elements) > 0 {
 		s.ID = &AlphaNumericDataElement{}
 		err = s.ID.UnmarshalHBCI(elements[0])

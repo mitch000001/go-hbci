@@ -14,7 +14,7 @@ import (
 )
 
 func TestPinTanDialogSendMessage(t *testing.T) {
-	transport := &MockHttpsTransport{}
+	transport := &mockHTTPSTransport{}
 
 	d := newTestPinTanDialog(transport)
 	account := domain.AccountInformation{
@@ -62,7 +62,7 @@ func TestPinTanDialogSendMessage(t *testing.T) {
 }
 
 func TestPinTanDialogSyncClientSystemID(t *testing.T) {
-	transport := &MockHttpsTransport{}
+	transport := &mockHTTPSTransport{}
 
 	d := newTestPinTanDialog(transport)
 
@@ -212,7 +212,7 @@ func TestPinTanDialogSyncClientSystemID(t *testing.T) {
 }
 
 func TestPinTanDialogInit(t *testing.T) {
-	transport := &MockHttpsTransport{}
+	transport := &mockHTTPSTransport{}
 
 	d := newTestPinTanDialog(transport)
 
@@ -243,10 +243,10 @@ func TestPinTanDialogInit(t *testing.T) {
 	}
 }
 
-func newTestPinTanDialog(transport *MockHttpsTransport) *PinTanDialog {
+func newTestPinTanDialog(transport *mockHTTPSTransport) *PinTanDialog {
 	url := "http://localhost"
 	clientID := "12345"
-	bankID := domain.BankId{CountryCode: 280, ID: "10000000"}
+	bankID := domain.BankID{CountryCode: 280, ID: "10000000"}
 	d := NewPinTanDialog(bankID, url, clientID, segment.HBCI220)
 	d.SetPin("abcde")
 	d.SetClientSystemID("xyz")

@@ -2,108 +2,116 @@ package element
 
 import "fmt"
 
+// A DataElementType represents the type of a DataElement
 type DataElementType int
 
 const (
 	// DataElements
-	AlphaNumericDE DataElementType = iota + 1
-	TextDE
-	NumberDE
-	DigitDE
-	FloatDE
-	DTAUSCharsetDE
-	BinaryDE
+
+	alphaNumericDE DataElementType = iota + 1
+	textDE
+	numberDE
+	digitDE
+	floatDE
+	dtausCharsetDE
+	binaryDE
+
 	// Derived types
-	BooleanDE
-	CodeDE
-	DateDE
-	VirtualDateDE
-	TimeDE
-	IdentificationDE
-	CountryCodeDE
-	CurrencyDE
-	ValueDE
+
+	booleanDE
+	codeDE
+	dateDE
+	virtualDateDE
+	timeDE
+	identificationDE
+	countryCodeDE
+	currencyDE
+	valueDE
+
 	// Multiple used element
-	AmountGDEG
-	BankIdentificationGDEG
-	AccountConnectionGDEG
-	InternationalAccountConnectionGDEG
-	BalanceGDEG
-	AddressGDEG
-	SecurityMethodVersionGDEG
-	AcknowlegdementParamsGDEG
-	PinTanBusinessTransactionParameterGDEG
+
+	amountGDEG
+	bankIdentificationGDEG
+	accountConnectionGDEG
+	internationalAccountConnectionGDEG
+	balanceGDEG
+	addressGDEG
+	securityMethodVersionGDEG
+	acknowlegdementParamsGDEG
+	pinTanBusinessTransactionParameterGDEG
+
 	// DataElementGroups
-	SegmentHeaderDEG
-	ReferenceMessageDEG
-	AcknowledgementDEG
-	SecurityIdentificationDEG
-	SecurityDateDEG
-	HashAlgorithmDEG
-	SignatureAlgorithmDEG
-	EncryptionAlgorithmDEG
-	KeyNameDEG
-	CertificateDEG
-	PublicKeyDEG
-	SupportedLanguagesDEG
-	SupportedHBCIVersionDEG
-	CommunicationParameterDEG
-	SupportedSecurityMethodDEG
-	PinTanDEG
-	AccountLimitDEG
-	AllowedBusinessTransactionDEG
-	DisposalEligiblePersonDEG
-	SecurityProfileDEG
+
+	segmentHeaderDEG
+	referenceMessageDEG
+	acknowledgementDEG
+	securityIdentificationDEG
+	securityDateDEG
+	hashAlgorithmDEG
+	signatureAlgorithmDEG
+	encryptionAlgorithmDEG
+	keyNameDEG
+	certificateDEG
+	publicKeyDEG
+	supportedLanguagesDEG
+	supportedHBCIVersionDEG
+	communicationParameterDEG
+	supportedSecurityMethodDEG
+	pinTanDEG
+	accountLimitDEG
+	allowedBusinessTransactionDEG
+	disposalEligiblePersonDEG
+	securityProfileDEG
 )
 
 var typeName = map[DataElementType]string{
-	AlphaNumericDE: "an",
-	TextDE:         "txt",
-	NumberDE:       "num",
-	DigitDE:        "dig",
-	FloatDE:        "float",
-	DTAUSCharsetDE: "dta",
-	BinaryDE:       "bin",
+	alphaNumericDE: "an",
+	textDE:         "txt",
+	numberDE:       "num",
+	digitDE:        "dig",
+	floatDE:        "float",
+	dtausCharsetDE: "dta",
+	binaryDE:       "bin",
 	// Derived types
-	BooleanDE:        "jn",
-	CodeDE:           "code",
-	DateDE:           "dat",
-	VirtualDateDE:    "vdat",
-	TimeDE:           "tim",
-	IdentificationDE: "id",
-	CountryCodeDE:    "ctr",
-	CurrencyDE:       "cur",
-	ValueDE:          "wrt",
+	booleanDE:        "jn",
+	codeDE:           "code",
+	dateDE:           "dat",
+	virtualDateDE:    "vdat",
+	timeDE:           "tim",
+	identificationDE: "id",
+	countryCodeDE:    "ctr",
+	currencyDE:       "cur",
+	valueDE:          "wrt",
 	// Multiple used elements or GroupDataElementGroups
-	AmountGDEG:                             "btg",
-	BankIdentificationGDEG:                 "kik",
-	AccountConnectionGDEG:                  "ktv",
-	InternationalAccountConnectionGDEG:     "kti",
-	BalanceGDEG:                            "sdo",
-	AddressGDEG:                            "addr",
-	SecurityMethodVersionGDEG:              "Unterstützte Sicherheitsverfahren",
-	AcknowlegdementParamsGDEG:              "Rückmeldungsparameter",
-	PinTanBusinessTransactionParameterGDEG: "Geschäftsvorfallspezifische PIN-TAN-Informationen",
+	amountGDEG:                             "btg",
+	bankIdentificationGDEG:                 "kik",
+	accountConnectionGDEG:                  "ktv",
+	internationalAccountConnectionGDEG:     "kti",
+	balanceGDEG:                            "sdo",
+	addressGDEG:                            "addr",
+	securityMethodVersionGDEG:              "Unterstützte Sicherheitsverfahren",
+	acknowlegdementParamsGDEG:              "Rückmeldungsparameter",
+	pinTanBusinessTransactionParameterGDEG: "Geschäftsvorfallspezifische PIN-TAN-Informationen",
 	// DataElementGroups
-	SegmentHeaderDEG:              "Segmentkopf",
-	ReferenceMessageDEG:           "Bezugsnachricht",
-	AcknowledgementDEG:            "Rückmeldung",
-	SecurityIdentificationDEG:     "Sicherheitsidentifikation, Details",
-	SecurityDateDEG:               "Sicherheitsdatum und -uhrzeit",
-	HashAlgorithmDEG:              "Hashalgorithmus",
-	SignatureAlgorithmDEG:         "Signaturalgorithmus",
-	EncryptionAlgorithmDEG:        "Verschlüsselungsalgorithmus",
-	KeyNameDEG:                    "Schlüsselname",
-	CertificateDEG:                "Zertifikat",
-	PublicKeyDEG:                  "Öffentlicher Schlüssel",
-	SupportedLanguagesDEG:         "Unterstützte Sprachen",
-	SupportedHBCIVersionDEG:       "Unterstützte HBCI-Versionen",
-	CommunicationParameterDEG:     "Kommunikationsparameter",
-	PinTanDEG:                     "PIN-TAN",
-	AccountLimitDEG:               "Kontolimit",
-	AllowedBusinessTransactionDEG: "Erlaubte Geschäftsvorfälle",
-	DisposalEligiblePersonDEG:     "Verfügungsberechtigte",
-	SecurityProfileDEG:            "Sicherheitsprofil",
+	segmentHeaderDEG:              "Segmentkopf",
+	referenceMessageDEG:           "Bezugsnachricht",
+	acknowledgementDEG:            "Rückmeldung",
+	securityIdentificationDEG:     "Sicherheitsidentifikation, Details",
+	securityDateDEG:               "Sicherheitsdatum und -uhrzeit",
+	hashAlgorithmDEG:              "Hashalgorithmus",
+	signatureAlgorithmDEG:         "Signaturalgorithmus",
+	encryptionAlgorithmDEG:        "Verschlüsselungsalgorithmus",
+	keyNameDEG:                    "Schlüsselname",
+	certificateDEG:                "Zertifikat",
+	publicKeyDEG:                  "Öffentlicher Schlüssel",
+	supportedLanguagesDEG:         "Unterstützte Sprachen",
+	supportedHBCIVersionDEG:       "Unterstützte HBCI-Versionen",
+	communicationParameterDEG:     "Kommunikationsparameter",
+	pinTanDEG:                     "PIN-TAN",
+	accountLimitDEG:               "Kontolimit",
+	allowedBusinessTransactionDEG: "Erlaubte Geschäftsvorfälle",
+	disposalEligiblePersonDEG:     "Verfügungsberechtigte",
+	securityProfileDEG:            "Sicherheitsprofil",
 }
 
 func (d DataElementType) String() string {

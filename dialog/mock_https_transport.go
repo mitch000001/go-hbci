@@ -9,22 +9,22 @@ import (
 	"github.com/mitch000001/go-hbci/transport"
 )
 
-type MockHttpsTransport struct {
+type mockHTTPSTransport struct {
 	requests  []*transport.Request
 	responses []*transport.Response
 	errors    []error
 	callCount int
 }
 
-func (m *MockHttpsTransport) Do(request *transport.Request) (*transport.Response, error) {
+func (m *mockHTTPSTransport) Do(request *transport.Request) (*transport.Response, error) {
 	m.checkAndAdaptBoundaries(request)
 	m.requests = append(m.requests, request)
 	response, err := m.responses[m.callCount], m.errors[m.callCount]
-	m.callCount += 1
+	m.callCount++
 	return response, err
 }
 
-func (m *MockHttpsTransport) SetResponseMessage(message []byte) {
+func (m *mockHTTPSTransport) SetResponseMessage(message []byte) {
 	response, err := transport.ReadResponse(bufio.NewReader(bytes.NewReader(message)), &transport.Request{})
 	if err != nil {
 		panic(err)
@@ -34,7 +34,7 @@ func (m *MockHttpsTransport) SetResponseMessage(message []byte) {
 	m.errors = append(m.errors, nil)
 }
 
-func (m *MockHttpsTransport) SetResponseMessages(responses [][]byte) {
+func (m *mockHTTPSTransport) SetResponseMessages(responses [][]byte) {
 	m.init()
 	m.responses = make([]*transport.Response, len(responses))
 	m.errors = make([]error, len(responses))
@@ -47,50 +47,46 @@ func (m *MockHttpsTransport) SetResponseMessages(responses [][]byte) {
 	}
 }
 
-func (m *MockHttpsTransport) CallCount() int {
+func (m *mockHTTPSTransport) CallCount() int {
 	return m.callCount
 }
 
-func (m *MockHttpsTransport) Request(index int) *transport.Request {
+func (m *mockHTTPSTransport) Request(index int) *transport.Request {
 	if len(m.requests) < index {
 		return nil
-	} else {
-		return m.requests[index]
 	}
+	return m.requests[index]
 }
 
-func (m *MockHttpsTransport) Requests() []*transport.Request {
+func (m *mockHTTPSTransport) Requests() []*transport.Request {
 	if m.requests == nil {
 		return make([]*transport.Request, 0)
-	} else {
-		return m.requests
 	}
+	return m.requests
 }
 
-func (m *MockHttpsTransport) Error(index int) error {
+func (m *mockHTTPSTransport) Error(index int) error {
 	if len(m.errors) < index {
 		return nil
-	} else {
-		return m.errors[index]
 	}
+	return m.errors[index]
 }
 
-func (m *MockHttpsTransport) Errors() []error {
+func (m *mockHTTPSTransport) Errors() []error {
 	if m.errors == nil {
 		return make([]error, 0)
-	} else {
-		return m.errors
 	}
+	return m.errors
 }
 
-func (m *MockHttpsTransport) Reset() {
+func (m *mockHTTPSTransport) Reset() {
 	m.requests = make([]*transport.Request, 0)
 	m.responses = make([]*transport.Response, 0)
 	m.errors = make([]error, 0)
 	m.callCount = 0
 }
 
-func (m *MockHttpsTransport) init() {
+func (m *mockHTTPSTransport) init() {
 	if m.requests == nil {
 		m.requests = make([]*transport.Request, 0)
 	}
@@ -103,7 +99,7 @@ func (m *MockHttpsTransport) init() {
 	m.callCount = 0
 }
 
-func (m *MockHttpsTransport) checkAndAdaptBoundaries(req *transport.Request) {
+func (m *mockHTTPSTransport) checkAndAdaptBoundaries(req *transport.Request) {
 	if m.requests == nil {
 		m.requests = make([]*transport.Request, m.callCount)
 	}

@@ -6,15 +6,16 @@ import (
 	"github.com/mitch000001/go-hbci/segment"
 )
 
-func NewRDHDialog(bankId domain.BankId, hbciUrl string, clientId string, hbciVersion segment.HBCIVersion) *rdhDialog {
+// NewRDHDialog creates a dialog to use with cardreader flow
+func NewRDHDialog(bankID domain.BankID, hbciURL string, clientID string, hbciVersion segment.HBCIVersion) Dialog {
 	key, err := domain.GenerateSigningKey()
 	if err != nil {
 		panic(err)
 	}
-	signingKey := domain.NewRSAKey(key, domain.NewInitialKeyName(bankId.CountryCode, bankId.ID, clientId, "S"))
+	signingKey := domain.NewRSAKey(key, domain.NewInitialKeyName(bankID.CountryCode, bankID.ID, clientID, "S"))
 	provider := message.NewRDHSignatureProvider(signingKey, 12345)
 	d := &rdhDialog{
-		dialog: newDialog(bankId, hbciUrl, clientId, hbciVersion, provider, nil),
+		dialog: newDialog(bankID, hbciURL, clientID, hbciVersion, provider, nil),
 	}
 	return d
 }

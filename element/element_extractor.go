@@ -7,29 +7,33 @@ import (
 	"github.com/mitch000001/go-hbci/token"
 )
 
+// ExtractElements extracts DataElements from a DataElementGroup
 func ExtractElements(dataElementGroup []byte) ([][]byte, error) {
 	extractor := NewElementExtractor(dataElementGroup)
 	return extractor.Extract()
 }
 
-func NewElementExtractor(dataElementGroup []byte) *ElementExtractor {
+// NewElementExtractor creates a new GroupExtractor ready to use
+func NewElementExtractor(dataElementGroup []byte) *GroupExtractor {
 	// TODO: workaround to get the lexer work properly for us. Maybe we should adopt the lexer?
 	if bytes.LastIndexFunc(dataElementGroup, func(r rune) bool {
 		return r == '+' || r == '\''
 	}) == -1 {
 		dataElementGroup = append(dataElementGroup, '+')
 	}
-	return &ElementExtractor{
+	return &GroupExtractor{
 		rawDataElementGroup: dataElementGroup,
 	}
 }
 
-type ElementExtractor struct {
+// An GroupExtractor extracts DataElements from DataElementGroups
+type GroupExtractor struct {
 	rawDataElementGroup []byte
 	elements            [][]byte
 }
 
-func (e *ElementExtractor) Extract() ([][]byte, error) {
+// Extract extracts DataElements from the underlying DataElementGroup
+func (e *GroupExtractor) Extract() ([][]byte, error) {
 	var current string
 	lexer := token.NewStringLexer("ElementExtractor", string(e.rawDataElementGroup))
 	for lexer.HasNext() {

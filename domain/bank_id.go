@@ -1,6 +1,7 @@
 package domain
 
-type BankId struct {
+// BankID represents a bank identifier for a specific country
+type BankID struct {
 	CountryCode int
 	ID          string
 }

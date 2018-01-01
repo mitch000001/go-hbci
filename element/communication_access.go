@@ -11,7 +11,7 @@ func NewCommunicationParameter(params domain.CommunicationParameter) *Communicat
 		FilterFunction:        NewAlphaNumeric(params.FilterFunction, 3),
 		FilterFunctionVersion: NewNumber(params.FilterFunctionVersion, 3),
 	}
-	c.DataElement = NewDataElementGroup(CommunicationParameterDEG, 5, c)
+	c.DataElement = NewDataElementGroup(communicationParameterDEG, 5, c)
 	return c
 }
 

@@ -12,8 +12,8 @@ type cipherEngine interface {
 	OutputBlockSize() int
 }
 
-var SIXTEEN = big.NewInt(16)
-var SIX = big.NewInt(6)
+var sixteen = big.NewInt(16)
+var six = big.NewInt(6)
 
 var shadows = []byte{0xe, 0x3, 0x5, 0x8, 0x9, 0x4, 0x2, 0xf,
 	0x0, 0xd, 0xb, 0x6, 0x7, 0xa, 0xc, 0x1}
@@ -163,9 +163,9 @@ func (i *ISO9796d1Encoding) decodeBlock(in []byte, inOff, inLen int) ([]byte, er
 	var iR *big.Int
 	x := new(big.Int)
 	y := new(big.Int)
-	if x = x.Mod(iS, SIXTEEN); x.Cmp(SIX) == 0 {
+	if x = x.Mod(iS, sixteen); x.Cmp(six) == 0 {
 		iR = iS
-	} else if y = y.Mod(y.Sub(i.modulus, iS), SIXTEEN); y.Cmp(SIX) == 0 {
+	} else if y = y.Mod(y.Sub(i.modulus, iS), sixteen); y.Cmp(six) == 0 {
 		iR = iR.Sub(i.modulus, iS)
 	} else {
 		return nil, fmt.Errorf("resulting integer iS or (modulus - iS) is not congruent to 6 mod 16")

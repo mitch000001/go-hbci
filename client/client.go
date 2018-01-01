@@ -37,7 +37,7 @@ func (c Config) hbciVersion() (segment.HBCIVersion, error) {
 // If the provided Config does not provide a URL or a HBCI-Version it will be
 // looked up in the bankinfo database.
 func New(config Config) (*Client, error) {
-	bankID := domain.BankId{
+	bankID := domain.BankID{
 		CountryCode: 280,
 		ID:          config.BankID,
 	}
@@ -264,7 +264,7 @@ type AnonymousClient struct {
 
 // CommunicationAccess returns data used to make calls to a given institute.
 // Not yet properly implemented, therefore only the raw data are returned.
-func (a *AnonymousClient) CommunicationAccess(from, to domain.BankId, maxEntries int) ([]byte, error) {
+func (a *AnonymousClient) CommunicationAccess(from, to domain.BankID, maxEntries int) ([]byte, error) {
 	commRequest := segment.NewCommunicationAccessRequestSegment(from, to, maxEntries, "")
 	decryptedMessage, err := a.pinTanDialog.SendAnonymousMessage(message.NewHBCIMessage(a.hbciVersion, commRequest))
 	if err != nil {

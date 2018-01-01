@@ -8,11 +8,14 @@ import (
 )
 
 const (
-	SecurityHolderMessageSender   = "MS"
+	// SecurityHolderMessageSender represents the MessageSender as security holder
+	SecurityHolderMessageSender = "MS"
+	// SecurityHolderMessageReceiver represents the MessageReceiver as security holder
 	SecurityHolderMessageReceiver = "MR"
 )
 
-func NewRDHSecurityIdentification(securityHolder, clientSystemId string) *SecurityIdentificationDataElement {
+// NewRDHSecurityIdentification returns a new SecurityIdentificationDataElement
+func NewRDHSecurityIdentification(securityHolder, clientSystemID string) *SecurityIdentificationDataElement {
 	var holder string
 	if securityHolder == SecurityHolderMessageSender {
 		holder = "1"
@@ -23,12 +26,13 @@ func NewRDHSecurityIdentification(securityHolder, clientSystemId string) *Securi
 	}
 	s := &SecurityIdentificationDataElement{
 		SecurityHolder: NewAlphaNumeric(holder, 3),
-		ClientSystemID: NewIdentification(clientSystemId),
+		ClientSystemID: NewIdentification(clientSystemID),
 	}
-	s.DataElement = NewDataElementGroup(SecurityIdentificationDEG, 3, s)
+	s.DataElement = NewDataElementGroup(securityIdentificationDEG, 3, s)
 	return s
 }
 
+// SecurityIdentificationDataElement represents a security method for wire transfer
 type SecurityIdentificationDataElement struct {
 	DataElement
 	// Bezeichner für Sicherheitspartei
@@ -47,15 +51,18 @@ func (s *SecurityIdentificationDataElement) GroupDataElements() []DataElement {
 }
 
 const (
-	SecurityTimestamp         = "STS"
+	// SecurityTimestamp defines the type of the SecurityDate
+	SecurityTimestamp = "STS"
+	// CertificateRevocationTime defines the type of the SecurityDate
 	CertificateRevocationTime = "CRT"
 )
 
-func NewSecurityDate(dateId string, date time.Time) *SecurityDateDataElement {
+// NewSecurityDate creates a new SecurityDate for the given type
+func NewSecurityDate(dateID string, date time.Time) *SecurityDateDataElement {
 	var id string
-	if dateId == SecurityTimestamp {
+	if dateID == SecurityTimestamp {
 		id = "1"
-	} else if dateId == CertificateRevocationTime {
+	} else if dateID == CertificateRevocationTime {
 		id = "6"
 	} else {
 		panic(fmt.Errorf("DateIdentifier must be 'STS' or 'CRT'"))
@@ -65,10 +72,11 @@ func NewSecurityDate(dateId string, date time.Time) *SecurityDateDataElement {
 		Date:           NewDate(date),
 		Time:           NewTime(date),
 	}
-	s.DataElement = NewDataElementGroup(SecurityDateDEG, 3, s)
+	s.DataElement = NewDataElementGroup(securityDateDEG, 3, s)
 	return s
 }
 
+// SecurityDateDataElement represents a date with a context type
 type SecurityDateDataElement struct {
 	DataElement
 	DateIdentifier *AlphaNumericDataElement
@@ -85,16 +93,19 @@ func (s *SecurityDateDataElement) GroupDataElements() []DataElement {
 	}
 }
 
+// NewDefaultHashAlgorithm creates a default HashAlgorithmDataElement with
+// values ready to use for initial dialog comm
 func NewDefaultHashAlgorithm() *HashAlgorithmDataElement {
 	h := &HashAlgorithmDataElement{
 		Usage:            NewAlphaNumeric("1", 3),
 		Algorithm:        NewAlphaNumeric("999", 3),
-		AlgorithmParamId: NewAlphaNumeric("1", 3),
+		AlgorithmParamID: NewAlphaNumeric("1", 3),
 	}
-	h.DataElement = NewDataElementGroup(HashAlgorithmDEG, 4, h)
+	h.DataElement = NewDataElementGroup(hashAlgorithmDEG, 4, h)
 	return h
 }
 
+// HashAlgorithmDataElement defines a hash algorithm
 type HashAlgorithmDataElement struct {
 	DataElement
 	// "1" for OHA, Owner Hashing
@@ -102,7 +113,7 @@ type HashAlgorithmDataElement struct {
 	// "999" for ZZZ (RIPEMD-160)
 	Algorithm *AlphaNumericDataElement
 	// "1" for IVC, Initialization value, clear text
-	AlgorithmParamId *AlphaNumericDataElement
+	AlgorithmParamID *AlphaNumericDataElement
 	// may not be used in versions 2.20 and below
 	AlgorithmParamValue *BinaryDataElement
 }
@@ -112,21 +123,23 @@ func (h *HashAlgorithmDataElement) GroupDataElements() []DataElement {
 	return []DataElement{
 		h.Usage,
 		h.Algorithm,
-		h.AlgorithmParamId,
+		h.AlgorithmParamID,
 		h.AlgorithmParamValue,
 	}
 }
 
+// NewRDHSignatureAlgorithm creates a SignatureAlgorithm ready to use for RDH
 func NewRDHSignatureAlgorithm() *SignatureAlgorithmDataElement {
 	s := &SignatureAlgorithmDataElement{
 		Usage:         NewAlphaNumeric("6", 3),
 		Algorithm:     NewAlphaNumeric("10", 3),
 		OperationMode: NewAlphaNumeric("16", 3),
 	}
-	s.DataElement = NewDataElementGroup(SignatureAlgorithmDEG, 3, s)
+	s.DataElement = NewDataElementGroup(signatureAlgorithmDEG, 3, s)
 	return s
 }
 
+// A SignatureAlgorithmDataElement represents a signature algorithm
 type SignatureAlgorithmDataElement struct {
 	DataElement
 	// "1" for OSG, Owner Signing
@@ -148,18 +161,20 @@ func (s *SignatureAlgorithmDataElement) GroupDataElements() []DataElement {
 	}
 }
 
+// NewKeyName creates a new KeyNameDataElement for keyName
 func NewKeyName(keyName domain.KeyName) *KeyNameDataElement {
 	a := &KeyNameDataElement{
-		Bank:       NewBankIndentification(keyName.BankID),
+		Bank:       NewBankIdentification(keyName.BankID),
 		UserID:     NewIdentification(keyName.UserID),
 		KeyType:    NewAlphaNumeric(keyName.KeyType, 1),
 		KeyNumber:  NewNumber(keyName.KeyNumber, 3),
 		KeyVersion: NewNumber(keyName.KeyVersion, 3),
 	}
-	a.DataElement = NewDataElementGroup(KeyNameDEG, 5, a)
+	a.DataElement = NewDataElementGroup(keyNameDEG, 5, a)
 	return a
 }
 
+// KeyNameDataElement represents metadata for keys
 type KeyNameDataElement struct {
 	DataElement
 	Bank   *BankIdentificationDataElement
@@ -171,9 +186,10 @@ type KeyNameDataElement struct {
 	KeyVersion *NumberDataElement
 }
 
+// Val returns the KeyName as domain.KeyName
 func (k *KeyNameDataElement) Val() domain.KeyName {
 	return domain.KeyName{
-		BankID: domain.BankId{
+		BankID: domain.BankID{
 			CountryCode: k.Bank.CountryCode.Val(),
 			ID:          k.Bank.BankID.Val()},
 		UserID:     k.UserID.Val(),
@@ -194,15 +210,17 @@ func (k *KeyNameDataElement) GroupDataElements() []DataElement {
 	}
 }
 
+// NewCertificate embodies a certificate into a DataElement
 func NewCertificate(typ int, certificate []byte) *CertificateDataElement {
 	c := &CertificateDataElement{
 		CertificateType: NewNumber(typ, 1),
 		Content:         NewBinary(certificate, 2048),
 	}
-	c.DataElement = NewDataElementGroup(CertificateDEG, 2, c)
+	c.DataElement = NewDataElementGroup(certificateDEG, 2, c)
 	return c
 }
 
+// CertificateDataElement embodies certificate bytes into a DataElement
 type CertificateDataElement struct {
 	DataElement
 	// "1" for ZKA

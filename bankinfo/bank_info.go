@@ -54,6 +54,7 @@ func (b BankInfo) HbciVersion() int {
 	return version
 }
 
+// SortableBankInfos implements the sort.Interface
 type SortableBankInfos []BankInfo
 
 func (s SortableBankInfos) Len() int           { return len(s) }

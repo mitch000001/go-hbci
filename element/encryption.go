@@ -1,5 +1,7 @@
 package element
 
+// NewPinTanEncryptionAlgorithm returns an EncryptionAlgorithmDataElement ready
+// to use in pin/tan flow
 func NewPinTanEncryptionAlgorithm() *EncryptionAlgorithmDataElement {
 	e := &EncryptionAlgorithmDataElement{
 		Usage:                      NewAlphaNumeric("2", 3),
@@ -9,10 +11,12 @@ func NewPinTanEncryptionAlgorithm() *EncryptionAlgorithmDataElement {
 		KeyParamID:                 NewAlphaNumeric("5", 3),
 		InitializationValueParamID: NewAlphaNumeric("1", 3),
 	}
-	e.DataElement = NewDataElementGroup(EncryptionAlgorithmDEG, 7, e)
+	e.DataElement = NewDataElementGroup(encryptionAlgorithmDEG, 7, e)
 	return e
 }
 
+// NewRDHEncryptionAlgorithm returns an EncryptionAlgorithmDataElement ready to
+// use in CardReader flow
 func NewRDHEncryptionAlgorithm(pubKey []byte) *EncryptionAlgorithmDataElement {
 	e := &EncryptionAlgorithmDataElement{
 		Usage:                      NewAlphaNumeric("2", 3),
@@ -22,10 +26,11 @@ func NewRDHEncryptionAlgorithm(pubKey []byte) *EncryptionAlgorithmDataElement {
 		KeyParamID:                 NewAlphaNumeric("6", 3),
 		InitializationValueParamID: NewAlphaNumeric("1", 3),
 	}
-	e.DataElement = NewDataElementGroup(EncryptionAlgorithmDEG, 7, e)
+	e.DataElement = NewDataElementGroup(encryptionAlgorithmDEG, 7, e)
 	return e
 }
 
+// EncryptionAlgorithmDataElement represents an encryption algorithm
 type EncryptionAlgorithmDataElement struct {
 	DataElement
 	// "2" for OSY, Owner Symmetric

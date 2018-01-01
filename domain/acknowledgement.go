@@ -7,6 +7,7 @@ import (
 	"time"
 )
 
+// NewMessageAcknowledgement creactes a new message acknowledgement
 func NewMessageAcknowledgement(code int, referenceDataElement, text string, params []string) Acknowledgement {
 	return Acknowledgement{
 		Type:                 MessageAcknowledgement,
@@ -17,6 +18,7 @@ func NewMessageAcknowledgement(code int, referenceDataElement, text string, para
 	}
 }
 
+// NewSegmentAcknowledgement creactes a new segment acknowledgement
 func NewSegmentAcknowledgement(code int, referenceDataElement, text string, params []string) Acknowledgement {
 	return Acknowledgement{
 		Type:                 SegmentAcknowledgement,
@@ -28,10 +30,13 @@ func NewSegmentAcknowledgement(code int, referenceDataElement, text string, para
 }
 
 const (
+	// MessageAcknowledgement defines the message ack type
 	MessageAcknowledgement = "MessageAcknowledgement"
+	// SegmentAcknowledgement defines the segemtn ack type
 	SegmentAcknowledgement = "SegmentAcknowledgement"
 )
 
+// Acknowledgement represents an acknowledgement from the bank institute
 type Acknowledgement struct {
 	Type                     string
 	Code                     int
@@ -63,26 +68,32 @@ func (a Acknowledgement) String() string {
 	return buf.String()
 }
 
+// IsMessageAcknowledgement returns true if the type is MessageAcknowledgement, false otherwise
 func (a Acknowledgement) IsMessageAcknowledgement() bool {
 	return a.Type == MessageAcknowledgement
 }
 
+// IsSegmentAcknowledgement returns true if type is SegmentAcknowledgement, false otherwise
 func (a Acknowledgement) IsSegmentAcknowledgement() bool {
 	return a.Type == SegmentAcknowledgement
 }
 
+// IsError returns true if the acknowledgement represents an error
 func (a Acknowledgement) IsError() bool {
 	return a.Code >= 9000
 }
 
+// IsWarning returns true if the acknowledgement represents a warning
 func (a Acknowledgement) IsWarning() bool {
 	return a.Code >= 3000 && a.Code < 4000
 }
 
+// IsSuccess returns true if the acknowledgement represents a success
 func (a Acknowledgement) IsSuccess() bool {
 	return a.Code > 0 && a.Code < 1000
 }
 
+// StatusAcknowledgement represents an Acknowledgement with a transmission date
 type StatusAcknowledgement struct {
 	Acknowledgement
 	TransmittedAt time.Time

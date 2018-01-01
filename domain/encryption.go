@@ -10,7 +10,7 @@ import (
 
 const initializationVector = "\x01\x23\x45\x67\x89\xAB\xCD\xEF\xFE\xDC\xBA\x98\x76\x54\x32\x10\xF0\xE1\xD2\xC3"
 
-func EncryptMessage(message fmt.Stringer) (string, error) {
+func encryptMessage(message fmt.Stringer) (string, error) {
 	block, err := des.NewCipher([]byte(initializationVector))
 	if err != nil {
 		return "", err

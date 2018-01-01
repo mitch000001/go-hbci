@@ -11,16 +11,17 @@ import (
 	middleware "github.com/mitch000001/go-hbci/transport/middleware"
 )
 
-func NewPinTanDialog(bankId domain.BankId, hbciUrl string, userId string, hbciVersion segment.HBCIVersion) *PinTanDialog {
-	pinKey := domain.NewPinKey("", domain.NewPinTanKeyName(bankId, userId, "S"))
+// NewPinTanDialog creates a new dialog to use for pin/tan transport
+func NewPinTanDialog(bankID domain.BankID, hbciURL string, userID string, hbciVersion segment.HBCIVersion) *PinTanDialog {
+	pinKey := domain.NewPinKey("", domain.NewPinTanKeyName(bankID, userID, "S"))
 	signatureProvider := message.NewPinTanSignatureProvider(pinKey, "0")
-	pinKey = domain.NewPinKey("", domain.NewPinTanKeyName(bankId, userId, "V"))
+	pinKey = domain.NewPinKey("", domain.NewPinTanKeyName(bankID, userID, "V"))
 	cryptoProvider := message.NewPinTanCryptoProvider(pinKey, "0")
 	d := &PinTanDialog{
 		dialog: newDialog(
-			bankId,
-			hbciUrl,
-			userId,
+			bankID,
+			hbciURL,
+			userID,
 			hbciVersion,
 			signatureProvider,
 			cryptoProvider,
@@ -33,10 +34,12 @@ func NewPinTanDialog(bankId domain.BankId, hbciUrl string, userId string, hbciVe
 	return d
 }
 
+// PinTanDialog represents a dialog to use in pin/tan flow with HTTPS transport
 type PinTanDialog struct {
 	*dialog
 }
 
+// SetPin lets the user reset the pin after creation
 func (d *PinTanDialog) SetPin(pin string) {
 	pinKey := domain.NewPinKey(pin, domain.NewPinTanKeyName(d.BankID, d.UserID, "S"))
 	d.signatureProvider = message.NewPinTanSignatureProvider(pinKey, d.ClientSystemID)

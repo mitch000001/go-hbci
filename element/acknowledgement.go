@@ -23,7 +23,7 @@ func NewAcknowledgement(acknowledgement domain.Acknowledgement) *Acknowledgement
 		Text:                 NewAlphaNumeric(acknowledgement.Text, 80),
 		Params:               NewParams(10, 10, acknowledgement.Params...),
 	}
-	a.DataElement = NewDataElementGroup(AcknowledgementDEG, 4, a)
+	a.DataElement = NewDataElementGroup(acknowledgementDEG, 4, a)
 	return a
 }
 
@@ -128,7 +128,7 @@ func NewParams(min, max int, params ...string) *ParamsDataElement {
 	for _, p := range params {
 		paramDE = append(paramDE, NewAlphaNumeric(p, 35))
 	}
-	return &ParamsDataElement{arrayElementGroup: NewArrayElementGroup(AcknowlegdementParamsGDEG, min, max, paramDE)}
+	return &ParamsDataElement{arrayElementGroup: newArrayElementGroup(acknowlegdementParamsGDEG, min, max, paramDE)}
 }
 
 // ParamsDataElement defines a DataElement describing generic parameters
@@ -158,6 +158,6 @@ func (p *ParamsDataElement) UnmarshalHBCI(value []byte) error {
 	for i, elem := range elements {
 		dataElements[i] = NewAlphaNumeric(charset.ToUTF8(elem), 35)
 	}
-	p.arrayElementGroup = NewArrayElementGroup(AcknowlegdementParamsGDEG, 10, 10, dataElements)
+	p.arrayElementGroup = newArrayElementGroup(acknowlegdementParamsGDEG, 10, 10, dataElements)
 	return nil
 }

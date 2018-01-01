@@ -10,17 +10,17 @@ import (
 )
 
 const (
-	BANK_IDENTIFIER_HEADER = "BLZ"
-	BANK_INSTITUTE_HEADER  = "Institut"
-	VERSION_NUMBER_HEADER  = "HBCI-Version"
-	URL_HEADER             = "PIN/TAN-Zugang URL"
-	VERSION_NAME_HEADER    = "Version"
-	CITY_HEADER            = "Ort"
+	bankIdentifierHeader = "BLZ"
+	bankInstituteHeader  = "Institut"
+	versionNumberHeader  = "HBCI-Version"
+	urlHeader            = "PIN/TAN-Zugang URL"
+	versionNameHeader    = "Version"
+	cityHeader           = "Ort"
 )
 
 const (
-	BIC_BANK_IDENTIFIER = "Bank-leitzahl"
-	BIC_IDENTIFIER      = "BIC"
+	bicBankIdentifier = "Bank-leitzahl"
+	bicIdentifier     = "BIC"
 )
 
 // ParseBankInfos extracts all bank information from the given reader. It
@@ -37,17 +37,17 @@ func ParseBankInfos(reader io.Reader) ([]BankInfo, error) {
 	}
 	var bankInfos []BankInfo
 	for _, record := range records {
-		if record.Get(BANK_IDENTIFIER_HEADER) == "" {
+		if record.Get(bankIdentifierHeader) == "" {
 			internal.Debug.Printf("No BankIdentifier found for record:\n%#v\n", record.AsMap())
 			continue
 		}
 		bankInfo := BankInfo{
-			BankID:        strings.TrimSpace(record.Get(BANK_IDENTIFIER_HEADER)),
-			VersionNumber: strings.TrimSpace(record.Get(VERSION_NUMBER_HEADER)),
-			URL:           strings.TrimSpace(record.Get(URL_HEADER)),
-			VersionName:   strings.TrimSpace(record.Get(VERSION_NAME_HEADER)),
-			Institute:     strings.TrimSpace(record.Get(BANK_INSTITUTE_HEADER)),
-			City:          strings.TrimSpace(record.Get(CITY_HEADER)),
+			BankID:        strings.TrimSpace(record.Get(bankIdentifierHeader)),
+			VersionNumber: strings.TrimSpace(record.Get(versionNumberHeader)),
+			URL:           strings.TrimSpace(record.Get(urlHeader)),
+			VersionName:   strings.TrimSpace(record.Get(versionNameHeader)),
+			Institute:     strings.TrimSpace(record.Get(bankInstituteHeader)),
+			City:          strings.TrimSpace(record.Get(cityHeader)),
 		}
 		bankInfos = append(bankInfos, bankInfo)
 	}
@@ -68,13 +68,13 @@ func ParseBicData(reader io.Reader) ([]BicInfo, error) {
 	}
 	var bicInfos []BicInfo
 	for _, record := range records {
-		if record.Get(BIC_BANK_IDENTIFIER) == "" {
+		if record.Get(bicBankIdentifier) == "" {
 			internal.Debug.Printf("No BankIdentifier found for record:\n%#v\n", record.AsMap())
 			continue
 		}
 		bic := BicInfo{
-			BankID: strings.TrimSpace(record.Get(BIC_BANK_IDENTIFIER)),
-			BIC:    strings.TrimSpace(record.Get(BIC_IDENTIFIER)),
+			BankID: strings.TrimSpace(record.Get(bicBankIdentifier)),
+			BIC:    strings.TrimSpace(record.Get(bicIdentifier)),
 		}
 		bicInfos = append(bicInfos, bic)
 	}

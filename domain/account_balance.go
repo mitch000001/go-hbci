@@ -7,6 +7,7 @@ import (
 	"time"
 )
 
+// AccountBalance represents a balance for a specific account
 type AccountBalance struct {
 	Account          AccountConnection
 	ProductName      string

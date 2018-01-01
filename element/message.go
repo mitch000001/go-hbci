@@ -8,21 +8,26 @@ import (
 	"github.com/mitch000001/go-hbci/domain"
 )
 
-func NewReferencingMessage(dialogId string, messageNumber int) *ReferencingMessageDataElement {
+// NewReferencingMessage returns a new referencing message for the given
+// dialogID and messageNumber
+func NewReferencingMessage(dialogID string, messageNumber int) *ReferencingMessageDataElement {
 	r := &ReferencingMessageDataElement{
-		DialogID:      NewIdentification(dialogId),
+		DialogID:      NewIdentification(dialogID),
 		MessageNumber: NewNumber(messageNumber, 4),
 	}
-	r.DataElement = NewDataElementGroup(ReferenceMessageDEG, 2, r)
+	r.DataElement = NewDataElementGroup(referenceMessageDEG, 2, r)
 	return r
 }
 
+// ReferencingMessageDataElement represents a reference to another message for
+// a given dialog
 type ReferencingMessageDataElement struct {
 	DataElement
 	DialogID      *IdentificationDataElement
 	MessageNumber *NumberDataElement
 }
 
+// Val returns the value of r as domain.ReferencingMessage
 func (r *ReferencingMessageDataElement) Val() domain.ReferencingMessage {
 	return domain.ReferencingMessage{
 		DialogID:      r.DialogID.Val(),
@@ -35,27 +40,23 @@ func (r *ReferencingMessageDataElement) Val() domain.ReferencingMessage {
 func (r *ReferencingMessageDataElement) IsValid() bool {
 	if r.DialogID == nil || r.MessageNumber == nil {
 		return false
-	} else {
-		return r.DataElement.IsValid()
 	}
+	return r.DataElement.IsValid()
 }
 
+// UnmarshalHBCI unmarshals value into r
 func (r *ReferencingMessageDataElement) UnmarshalHBCI(value []byte) error {
 	elements, err := ExtractElements(value)
 	if len(elements) != 2 {
 		return fmt.Errorf("Malformed marshaled value")
 	}
-	dialogId := charset.ToUTF8(elements[0])
+	dialogID := charset.ToUTF8(elements[0])
 	num, err := strconv.Atoi(charset.ToUTF8(elements[1]))
 	if err != nil {
 		return fmt.Errorf("%T: Malformed message number: %v", r, err)
 	}
-	*r = *NewReferencingMessage(dialogId, num)
+	*r = *NewReferencingMessage(dialogID, num)
 	return nil
-}
-
-func (r *ReferencingMessageDataElement) Value() interface{} {
-	return r
 }
 
 // GroupDataElements returns the grouped DataElements

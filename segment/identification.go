@@ -5,7 +5,7 @@ import (
 	"github.com/mitch000001/go-hbci/element"
 )
 
-func NewIdentificationSegment(bankId domain.BankId, clientId string, clientSystemId string, systemIdRequired bool) *IdentificationSegment {
+func NewIdentificationSegment(bankId domain.BankID, clientId string, clientSystemId string, systemIdRequired bool) *IdentificationSegment {
 	var clientSystemStatus *element.NumberDataElement
 	if systemIdRequired {
 		clientSystemStatus = element.NewNumber(1, 1)
@@ -13,7 +13,7 @@ func NewIdentificationSegment(bankId domain.BankId, clientId string, clientSyste
 		clientSystemStatus = element.NewNumber(0, 1)
 	}
 	id := &IdentificationSegment{
-		BankId:             element.NewBankIndentification(bankId),
+		BankId:             element.NewBankIdentification(bankId),
 		ClientId:           element.NewIdentification(clientId),
 		ClientSystemId:     element.NewIdentification(clientSystemId),
 		ClientSystemStatus: clientSystemStatus,

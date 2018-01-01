@@ -5,10 +5,10 @@ import (
 	"github.com/mitch000001/go-hbci/element"
 )
 
-func NewCommunicationAccessRequestSegment(fromBank domain.BankId, toBank domain.BankId, maxEntries int, continuationReference string) *CommunicationAccessRequestSegment {
+func NewCommunicationAccessRequestSegment(fromBank domain.BankID, toBank domain.BankID, maxEntries int, continuationReference string) *CommunicationAccessRequestSegment {
 	c := &CommunicationAccessRequestSegment{
-		FromBankID: element.NewBankIndentification(fromBank),
-		ToBankID:   element.NewBankIndentification(toBank),
+		FromBankID: element.NewBankIdentification(fromBank),
+		ToBankID:   element.NewBankIdentification(toBank),
 		MaxEntries: element.NewNumber(maxEntries, 4),
 	}
 	if continuationReference != "" {
@@ -42,9 +42,9 @@ func (c *CommunicationAccessRequestSegment) elements() []element.DataElement {
 
 const HKKOMSegmentNumber = -1
 
-func NewCommunicationAccessResponseSegment(bankId domain.BankId, language int, params domain.CommunicationParameter) *CommunicationAccessResponseSegment {
+func NewCommunicationAccessResponseSegment(bankId domain.BankID, language int, params domain.CommunicationParameter) *CommunicationAccessResponseSegment {
 	c := &CommunicationAccessResponseSegment{
-		BankID:              element.NewBankIndentification(bankId),
+		BankID:              element.NewBankIdentification(bankId),
 		StandardLanguage:    element.NewNumber(language, 3),
 		CommunicationParams: element.NewCommunicationParameter(params),
 	}

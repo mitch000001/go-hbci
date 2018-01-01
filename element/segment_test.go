@@ -42,7 +42,7 @@ func TestSegmentHeaderString(t *testing.T) {
 func TestSegmentHeaderType(t *testing.T) {
 	header := NewSegmentHeader("abc", 1, 2)
 
-	expectedType := SegmentHeaderDEG
+	expectedType := segmentHeaderDEG
 
 	actualType := header.Type()
 

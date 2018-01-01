@@ -9,14 +9,14 @@ import (
 
 func TestParseBankInfos(t *testing.T) {
 	header := []string{
-		BANK_IDENTIFIER_HEADER,
+		bankIdentifierHeader,
 		"Another header",
-		BANK_INSTITUTE_HEADER,
-		VERSION_NUMBER_HEADER,
-		URL_HEADER,
+		bankInstituteHeader,
+		versionNumberHeader,
+		urlHeader,
 		"header of no interest",
-		VERSION_NAME_HEADER,
-		CITY_HEADER,
+		versionNameHeader,
+		cityHeader,
 	}
 	content := []string{
 		"1000000",
@@ -64,7 +64,7 @@ func TestParseBicData(t *testing.T) {
 	bicData := fmt.Sprintf(
 		`%s;BLA;%s;XYZ
 		1000000;xxx;MARKDEF1100;abc`,
-		BIC_BANK_IDENTIFIER, BIC_IDENTIFIER,
+		bicBankIdentifier, bicIdentifier,
 	)
 	var result []BicInfo
 

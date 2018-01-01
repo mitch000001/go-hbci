@@ -9,14 +9,14 @@ func TestPinTanBusinessTransactionParametersUnmarshalHBCI(t *testing.T) {
 		SegmentID: NewAlphaNumeric("HKSAL", 6),
 		NeedsTAN:  NewBoolean(false),
 	}
-	param1.DataElement = NewGroupDataElementGroup(PinTanBusinessTransactionParameterGDEG, 2, param1)
+	param1.DataElement = NewGroupDataElementGroup(pinTanBusinessTransactionParameterGDEG, 2, param1)
 	param2 := &PinTanBusinessTransactionParameter{
 		SegmentID: NewAlphaNumeric("HKUEB", 6),
 		NeedsTAN:  NewBoolean(true),
 	}
-	param2.DataElement = NewGroupDataElementGroup(PinTanBusinessTransactionParameterGDEG, 2, param2)
+	param2.DataElement = NewGroupDataElementGroup(pinTanBusinessTransactionParameterGDEG, 2, param2)
 	expectedElement := &PinTanBusinessTransactionParameters{}
-	expectedElement.arrayElementGroup = NewArrayElementGroup(PinTanBusinessTransactionParameterGDEG, 2, 2, []DataElement{param1, param2})
+	expectedElement.arrayElementGroup = newArrayElementGroup(pinTanBusinessTransactionParameterGDEG, 2, 2, []DataElement{param1, param2})
 
 	expected := expectedElement.String()
 
@@ -44,7 +44,7 @@ func TestPinTanBusinessTransactionParameterUnmarshalHBCI(t *testing.T) {
 		SegmentID: NewAlphaNumeric("HKSAL", 6),
 		NeedsTAN:  NewBoolean(false),
 	}
-	expectedElement.DataElement = NewGroupDataElementGroup(PinTanBusinessTransactionParameterGDEG, 2, expectedElement)
+	expectedElement.DataElement = NewGroupDataElementGroup(pinTanBusinessTransactionParameterGDEG, 2, expectedElement)
 
 	expected := expectedElement.String()
 

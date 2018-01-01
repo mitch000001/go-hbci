@@ -1,5 +1,6 @@
 package domain
 
+// Address represents an address
 type Address struct {
 	Name1       string
 	Name2       string

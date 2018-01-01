@@ -9,7 +9,7 @@ import (
 )
 
 func TestEncryptedPinTanMessageDecrypt(t *testing.T) {
-	keyName := domain.NewPinTanKeyName(domain.BankId{CountryCode: 280, ID: "1"}, "userID", "V")
+	keyName := domain.NewPinTanKeyName(domain.BankID{CountryCode: 280, ID: "1"}, "userID", "V")
 	pinKey := domain.NewPinKey("abcde", keyName)
 
 	provider := NewPinTanCryptoProvider(pinKey, "clientSystemID")

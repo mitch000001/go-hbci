@@ -10,7 +10,7 @@ func ExamplePinTanDialog() {
 	url := "https://bank.de/hbci"
 	userId := "100000000"
 	blz := "1000000"
-	bankId := domain.BankId{
+	bankId := domain.BankID{
 		CountryCode: 280,
 		ID:          blz,
 	}

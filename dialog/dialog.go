@@ -19,20 +19,26 @@ import (
 	"github.com/mitch000001/go-hbci/transport"
 )
 
+// Dialog represents the common interface to use when talking to bank institutes
+type Dialog interface {
+	SyncClientSystemID() (string, error)
+	SendMessage(message.HBCIMessage) (message.BankMessage, error)
+}
+
 const initialDialogID = "0"
 const initialClientSystemID = "0"
 const anonymousClientID = "9999999999"
 
 func newDialog(
-	bankID domain.BankId,
-	hbciUrl string,
+	bankID domain.BankID,
+	hbciURL string,
 	userID string,
 	hbciVersion segment.HBCIVersion,
 	signatureProvider message.SignatureProvider,
 	cryptoProvider message.CryptoProvider,
 ) *dialog {
 	return &dialog{
-		hbciUrl:           hbciUrl,
+		hbciURL:           hbciURL,
 		BankID:            bankID,
 		UserID:            userID,
 		clientID:          userID,
@@ -48,8 +54,8 @@ func newDialog(
 
 type dialog struct {
 	transport         transport.Transport
-	hbciUrl           string
-	BankID            domain.BankId
+	hbciURL           string
+	BankID            domain.BankID
 	UserID            string
 	clientID          string
 	ClientSystemID    string
@@ -466,7 +472,7 @@ func (d *dialog) request(clientMessage message.ClientMessage) (message.BankMessa
 	reqBody := bytes.NewReader(marshaledMessage)
 
 	request := &transport.Request{
-		URL:  d.hbciUrl,
+		URL:  d.hbciURL,
 		Body: ioutil.NopCloser(reqBody),
 	}
 
@@ -558,12 +564,12 @@ func extractUnencryptedMessage(response *transport.Response) (*message.Decrypted
 }
 
 func (d *dialog) nextMessageNumber() int {
-	d.messageCount += 1
+	d.messageCount++
 	return d.messageCount
 }
 
 func (d *dialog) dial(message []byte) ([]byte, error) {
-	conn, err := net.Dial("tcp4", d.hbciUrl)
+	conn, err := net.Dial("tcp4", d.hbciURL)
 	if err != nil {
 		return nil, err
 	}
@@ -581,17 +587,17 @@ func (d *dialog) dial(message []byte) ([]byte, error) {
 	}
 	headerItems := strings.Split(header, "+")
 	if len(headerItems) < 2 {
-		return nil, fmt.Errorf("Response header too short")
+		return nil, fmt.Errorf("response header too short")
 	}
 	sizeString := headerItems[1]
 	size, err := strconv.Atoi(sizeString)
 	if err != nil {
-		return nil, fmt.Errorf("Error while parsing message size: %T:%v\n", err, err)
+		return nil, fmt.Errorf("error while parsing message size: %T:%v", err, err)
 	}
 	messageBuf := make([]byte, size)
 	_, err = buf.Read(messageBuf)
 	if err != nil {
-		return nil, fmt.Errorf("Error while reading message: %T:%v\n", err, err)
+		return nil, fmt.Errorf("error while reading message: %T:%v", err, err)
 	}
 	var retBuf bytes.Buffer
 	retBuf.WriteString(header)

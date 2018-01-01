@@ -32,11 +32,11 @@ func TestDate(t *testing.T) {
 }
 
 func TestShortDateUnmarshalJSON(t *testing.T) {
-	testJson := `"2014-02-01"`
+	testJSON := `"2014-02-01"`
 
 	var date ShortDate
 
-	err := json.Unmarshal([]byte(testJson), &date)
+	err := json.Unmarshal([]byte(testJSON), &date)
 
 	if err != nil {
 		t.Logf("Expected error to be nil, got %T: %v\n", err, err)
@@ -72,10 +72,10 @@ func TestShortDateMarshalJSON(t *testing.T) {
 		t.Fail()
 	}
 
-	expectedJson := `"2014-02-01"`
+	expectedJSON := `"2014-02-01"`
 
-	if !reflect.DeepEqual(string(bytes), expectedJson) {
-		t.Logf("Expected date to be '%s', got '%s'\n", expectedJson, string(bytes))
+	if !reflect.DeepEqual(string(bytes), expectedJSON) {
+		t.Logf("Expected date to be '%s', got '%s'\n", expectedJSON, string(bytes))
 		t.Fail()
 	}
 
@@ -89,10 +89,10 @@ func TestShortDateMarshalJSON(t *testing.T) {
 		t.Fail()
 	}
 
-	expectedJson = `""`
+	expectedJSON = `""`
 
-	if !reflect.DeepEqual(string(bytes), expectedJson) {
-		t.Logf("Expected date to be '%s', got '%s'\n", expectedJson, string(bytes))
+	if !reflect.DeepEqual(string(bytes), expectedJSON) {
+		t.Logf("Expected date to be '%s', got '%s'\n", expectedJSON, string(bytes))
 		t.Fail()
 	}
 }
@@ -146,23 +146,23 @@ func TestTimeframeMarshalJSON(t *testing.T) {
 
 	var tests = []struct {
 		timeframe    Timeframe
-		expectedJson string
+		expectedJSON string
 	}{
 		{
 			timeframe:    Timeframe{StartDate: startDate, EndDate: endDate},
-			expectedJson: `"2014-02-01,2014-04-01"`,
+			expectedJSON: `"2014-02-01,2014-04-01"`,
 		},
 		{
 			timeframe:    Timeframe{StartDate: startDate},
-			expectedJson: `""`,
+			expectedJSON: `""`,
 		},
 		{
 			timeframe:    Timeframe{EndDate: endDate},
-			expectedJson: `""`,
+			expectedJSON: `""`,
 		},
 		{
 			timeframe:    Timeframe{},
-			expectedJson: `""`,
+			expectedJSON: `""`,
 		},
 	}
 
@@ -173,8 +173,8 @@ func TestTimeframeMarshalJSON(t *testing.T) {
 			t.Fail()
 		}
 
-		if !reflect.DeepEqual(string(bytes), test.expectedJson) {
-			t.Logf("Expected date to be '%s', got '%s'\n", test.expectedJson, string(bytes))
+		if !reflect.DeepEqual(string(bytes), test.expectedJSON) {
+			t.Logf("Expected date to be '%s', got '%s'\n", test.expectedJSON, string(bytes))
 			t.Fail()
 		}
 	}
@@ -186,7 +186,7 @@ func TestTimeframeUnmarshalJSON(t *testing.T) {
 	endDate := ShortDate{time.Date(2014, time.April, 01, 0, 0, 0, 0, time.UTC)}
 
 	var tests = []struct {
-		testJson          string
+		testJSON          string
 		expectedTimeframe Timeframe
 	}{
 		{
@@ -221,7 +221,7 @@ func TestTimeframeUnmarshalJSON(t *testing.T) {
 
 	for _, test := range tests {
 		var timeframe Timeframe
-		err := json.Unmarshal([]byte(test.testJson), &timeframe)
+		err := json.Unmarshal([]byte(test.testJSON), &timeframe)
 		if err != nil {
 			t.Logf("Expected error to be nil, got %T: %v\n", err, err)
 			t.Fail()

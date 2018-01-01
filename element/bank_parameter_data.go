@@ -16,7 +16,7 @@ func NewSupportedSecurityMethod(methodCode string, versions ...int) *SupportedSe
 		MethodCode: NewAlphaNumeric(methodCode, 3),
 		Versions:   NewSecurityMethodVersions(1, 9, versions...),
 	}
-	s.DataElement = NewDataElementGroup(SupportedSecurityMethodDEG, 2, s)
+	s.DataElement = NewDataElementGroup(supportedSecurityMethodDEG, 2, s)
 	return s
 }
 
@@ -44,7 +44,7 @@ func (s *SupportedSecurityMethodDataElement) GroupDataElements() []DataElement {
 
 // UnmarshalHBCI unmarshals the value to a SupportedSecurityMethodDataElement
 func (s *SupportedSecurityMethodDataElement) UnmarshalHBCI(value []byte) error {
-	s.DataElement = NewDataElementGroup(SupportedSecurityMethodDEG, 2, s)
+	s.DataElement = NewDataElementGroup(supportedSecurityMethodDEG, 2, s)
 	return s.DataElement.UnmarshalHBCI(value)
 }
 
@@ -55,7 +55,7 @@ func NewSecurityMethodVersions(min, max int, versions ...int) *SecurityMethodVer
 		versionDEs[i] = NewNumber(version, 3)
 	}
 	s := &SecurityMethodVersionsDataElement{}
-	s.arrayElementGroup = NewArrayElementGroup(SecurityMethodVersionGDEG, min, max, versionDEs)
+	s.arrayElementGroup = newArrayElementGroup(securityMethodVersionGDEG, min, max, versionDEs)
 	return s
 }
 
@@ -73,7 +73,7 @@ func (s *SecurityMethodVersionsDataElement) Elements() []DataElement {
 // UnmarshalHBCI unmarshals the value to a SecurityMethodVersionsDataElement
 func (s *SecurityMethodVersionsDataElement) UnmarshalHBCI(value []byte) error {
 	dataElements := make([]DataElement, 9)
-	s.arrayElementGroup = NewArrayElementGroup(SecurityMethodVersionGDEG, 1, 9, dataElements)
+	s.arrayElementGroup = newArrayElementGroup(securityMethodVersionGDEG, 1, 9, dataElements)
 	return s.arrayElementGroup.UnmarshalHBCI(value)
 }
 
@@ -94,7 +94,7 @@ func NewSupportedHBCIVersions(versions ...int) *SupportedHBCIVersionsDataElement
 		versionDEs[i] = NewNumber(version, 3)
 	}
 	s := &SupportedHBCIVersionsDataElement{}
-	s.arrayElementGroup = NewArrayElementGroup(SupportedHBCIVersionDEG, 1, 9, versionDEs)
+	s.arrayElementGroup = newArrayElementGroup(supportedHBCIVersionDEG, 1, 9, versionDEs)
 	return s
 }
 
@@ -123,7 +123,7 @@ func (s *SupportedHBCIVersionsDataElement) UnmarshalHBCI(value []byte) error {
 		}
 		versions[i] = NewNumber(version, 3)
 	}
-	s.arrayElementGroup = NewArrayElementGroup(SupportedHBCIVersionDEG, 1, 9, versions)
+	s.arrayElementGroup = newArrayElementGroup(supportedHBCIVersionDEG, 1, 9, versions)
 	return nil
 }
 
@@ -134,7 +134,7 @@ func NewSupportedLanguages(languages ...int) *SupportedLanguagesDataElement {
 		languageDEs[i] = NewNumber(lang, 3)
 	}
 	s := &SupportedLanguagesDataElement{}
-	s.arrayElementGroup = NewArrayElementGroup(SupportedLanguagesDEG, 1, 9, languageDEs)
+	s.arrayElementGroup = newArrayElementGroup(supportedLanguagesDEG, 1, 9, languageDEs)
 	return s
 }
 
@@ -176,7 +176,7 @@ func (s *SupportedLanguagesDataElement) UnmarshalHBCI(value []byte) error {
 		}
 		languages[i] = NewNumber(lang, 3)
 	}
-	s.arrayElementGroup = NewArrayElementGroup(SupportedLanguagesDEG, 1, 9, languages)
+	s.arrayElementGroup = newArrayElementGroup(supportedLanguagesDEG, 1, 9, languages)
 	return nil
 }
 
@@ -207,11 +207,11 @@ func NewPinTanBusinessTransactionParameters(pinTanTransactions []domain.PinTanBu
 			SegmentID: NewAlphaNumeric(transaction.SegmentID, 6),
 			NeedsTAN:  NewBoolean(transaction.NeedsTan),
 		}
-		pinTanBusinessTransaction.DataElement = NewGroupDataElementGroup(PinTanBusinessTransactionParameterGDEG, 2, pinTanBusinessTransaction)
+		pinTanBusinessTransaction.DataElement = NewGroupDataElementGroup(pinTanBusinessTransactionParameterGDEG, 2, pinTanBusinessTransaction)
 		transactionsDEs[i] = pinTanBusinessTransaction
 	}
 	p := &PinTanBusinessTransactionParameters{}
-	p.arrayElementGroup = NewArrayElementGroup(PinTanBusinessTransactionParameterGDEG, len(transactionsDEs), len(transactionsDEs), transactionsDEs)
+	p.arrayElementGroup = newArrayElementGroup(pinTanBusinessTransactionParameterGDEG, len(transactionsDEs), len(transactionsDEs), transactionsDEs)
 	return p
 }
 
@@ -249,7 +249,7 @@ func (p *PinTanBusinessTransactionParameters) UnmarshalHBCI(value []byte) error 
 		}
 		dataElements[i/2] = pinTanTransaction
 	}
-	p.arrayElementGroup = NewArrayElementGroup(PinTanBusinessTransactionParameterGDEG, len(dataElements), len(dataElements), dataElements)
+	p.arrayElementGroup = newArrayElementGroup(pinTanBusinessTransactionParameterGDEG, len(dataElements), len(dataElements), dataElements)
 	return nil
 }
 
@@ -290,6 +290,6 @@ func (p *PinTanBusinessTransactionParameter) UnmarshalHBCI(value []byte) error {
 		return err
 	}
 	p.NeedsTAN = needsTan
-	p.DataElement = NewGroupDataElementGroup(PinTanBusinessTransactionParameterGDEG, 2, p)
+	p.DataElement = NewGroupDataElementGroup(pinTanBusinessTransactionParameterGDEG, 2, p)
 	return nil
 }
