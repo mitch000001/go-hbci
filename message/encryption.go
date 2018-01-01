@@ -8,6 +8,7 @@ import (
 
 const encryptionInitializationVector = "\x00\x00\x00\x00\x00\x00\x00\x00"
 
+// GenerateMessageKey generates a random key with 16 bytes
 func GenerateMessageKey() ([]byte, error) {
 	b := make([]byte, 16)
 	_, err := rand.Read(b)
@@ -17,6 +18,7 @@ func GenerateMessageKey() ([]byte, error) {
 	return b, nil
 }
 
+// NewEncryptedMessage creates a new encrypted message
 func NewEncryptedMessage(header *segment.MessageHeaderSegment, end *segment.MessageEndSegment, hbciVersion segment.HBCIVersion) *EncryptedMessage {
 	e := &EncryptedMessage{
 		hbciVersion: hbciVersion,
@@ -25,6 +27,7 @@ func NewEncryptedMessage(header *segment.MessageHeaderSegment, end *segment.Mess
 	return e
 }
 
+// EncryptedMessage represents an encrypted message
 type EncryptedMessage struct {
 	ClientMessage
 	EncryptionHeader segment.EncryptionHeader
@@ -32,10 +35,12 @@ type EncryptedMessage struct {
 	hbciVersion      segment.HBCIVersion
 }
 
+// HBCIVersion returns the HBCIVersion of this message
 func (e *EncryptedMessage) HBCIVersion() segment.HBCIVersion {
 	return e.hbciVersion
 }
 
+// HBCISegments returns all segments within the message
 func (e *EncryptedMessage) HBCISegments() []segment.ClientSegment {
 	return []segment.ClientSegment{
 		e.EncryptionHeader,
@@ -43,7 +48,8 @@ func (e *EncryptedMessage) HBCISegments() []segment.ClientSegment {
 	}
 }
 
-func (e *EncryptedMessage) Decrypt(provider CryptoProvider) (*DecryptedMessage, error) {
+// Decrypt decrypts the message using the CryptoProvider
+func (e *EncryptedMessage) Decrypt(provider CryptoProvider) (BankMessage, error) {
 	decryptedMessageBytes, err := provider.Decrypt(e.EncryptedData.Data.Val())
 	if err != nil {
 		return nil, err

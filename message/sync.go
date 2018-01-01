@@ -4,6 +4,7 @@ import (
 	"github.com/mitch000001/go-hbci/segment"
 )
 
+// NewSynchronisationMessage creates a new Message for Synchronizing client and server
 func NewSynchronisationMessage(hbciVersion segment.HBCIVersion) *SynchronisationMessage {
 	s := &SynchronisationMessage{
 		hbciVersion: hbciVersion,
@@ -12,6 +13,7 @@ func NewSynchronisationMessage(hbciVersion segment.HBCIVersion) *Synchronisation
 	return s
 }
 
+// SynchronisationMessage serves the purpose of syncing the client and the server
 type SynchronisationMessage struct {
 	*BasicMessage
 	Identification             *segment.IdentificationSegment
@@ -23,10 +25,12 @@ type SynchronisationMessage struct {
 	hbciVersion                segment.HBCIVersion
 }
 
+// HBCIVersion returns the HBCI version of the message
 func (s *SynchronisationMessage) HBCIVersion() segment.HBCIVersion {
 	return s.hbciVersion
 }
 
+// HBCISegments returns all segments of the message
 func (s *SynchronisationMessage) HBCISegments() []segment.ClientSegment {
 	return []segment.ClientSegment{
 		s.Identification,

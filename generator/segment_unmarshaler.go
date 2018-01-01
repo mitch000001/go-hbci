@@ -12,6 +12,7 @@ import (
 	"unicode/utf8"
 )
 
+// NewSegmentUnmarshaler generates an unmarhsaler generator for the provided segment
 func NewSegmentUnmarshaler(segment SegmentIdentifier, packageName string, fileSet *token.FileSet, file *ast.File) *SegmentUnmarshalerGenerator {
 	return &SegmentUnmarshalerGenerator{
 		segment:     segment,
@@ -21,6 +22,7 @@ func NewSegmentUnmarshaler(segment SegmentIdentifier, packageName string, fileSe
 	}
 }
 
+// SegmentUnmarshalerGenerator generates unmarshaler for segment definitions
 type SegmentUnmarshalerGenerator struct {
 	segment     SegmentIdentifier
 	packageName string
@@ -28,6 +30,8 @@ type SegmentUnmarshalerGenerator struct {
 	file        *ast.File
 }
 
+// Generate generates an unmarhsaler for the segment definition and provides it
+// as an io.Reader
 func (s *SegmentUnmarshalerGenerator) Generate() (io.Reader, error) {
 	fieldExtractor := &fieldExtractor{
 		segment: s.segment,
@@ -52,6 +56,7 @@ func (s *SegmentUnmarshalerGenerator) Generate() (io.Reader, error) {
 	return executor.execute()
 }
 
+// NewVersionedSegmentUnmarshaler creates a new Unmarshalergenerator for versioned segments
 func NewVersionedSegmentUnmarshaler(segment SegmentIdentifier, packageName string, fileSet *token.FileSet, file *ast.File) *VersionedSegmentUnmarshalerGenerator {
 	return &VersionedSegmentUnmarshalerGenerator{
 		segment:     segment,
@@ -61,6 +66,7 @@ func NewVersionedSegmentUnmarshaler(segment SegmentIdentifier, packageName strin
 	}
 }
 
+// VersionedSegmentUnmarshalerGenerator is a generator for unmarshaler of versioned segments
 type VersionedSegmentUnmarshalerGenerator struct {
 	segment     SegmentIdentifier
 	packageName string
@@ -68,6 +74,8 @@ type VersionedSegmentUnmarshalerGenerator struct {
 	file        *ast.File
 }
 
+// Generate generates an unmarhsaler for the segment definition and provides it
+// as an io.Reader
 func (v *VersionedSegmentUnmarshalerGenerator) Generate() (io.Reader, error) {
 	var versionedTemplateObjects []*segmentTemplateObject
 	for _, version := range v.segment.Versions {

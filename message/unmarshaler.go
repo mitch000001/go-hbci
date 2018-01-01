@@ -7,6 +7,7 @@ import (
 	"github.com/mitch000001/go-hbci/segment"
 )
 
+// NewUnmarshaler returns a new Unmarshaler for the message
 func NewUnmarshaler(message []byte) *Unmarshaler {
 	return &Unmarshaler{
 		rawMessage:       message,
@@ -15,33 +16,37 @@ func NewUnmarshaler(message []byte) *Unmarshaler {
 	}
 }
 
+// Unmarshaler unmarshals a complete message
 type Unmarshaler struct {
 	rawMessage       []byte
 	segmentExtractor *segment.SegmentExtractor
 	segments         map[string][]segment.Segment
 }
 
-func (u *Unmarshaler) CanUnmarshal(segmentId string, version int) bool {
+// CanUnmarshal returns true if the segment with the ID and version can be
+// unmarshaled, false otherwise
+func (u *Unmarshaler) CanUnmarshal(segmentID string, version int) bool {
 	return segment.KnownSegments.IsUnmarshaler(
 		segment.VersionedSegment{
-			ID:      segmentId,
+			ID:      segmentID,
 			Version: version,
 		},
 	)
 }
 
+// Unmarshal unmarshals the raw message
 func (u *Unmarshaler) Unmarshal() error {
 	rawSegments, err := u.segmentExtractor.Extract()
 	if err != nil {
 		return err
 	}
 	for _, seg := range rawSegments {
-		segmentId, err := extractVersionedSegmentIdentifier(seg)
+		segmentID, err := extractVersionedSegmentIdentifier(seg)
 		if err != nil {
 			return err
 		}
-		if segment.KnownSegments.IsUnmarshaler(segmentId) {
-			unmarshaler, err := segment.KnownSegments.UnmarshalerForSegment(segmentId)
+		if segment.KnownSegments.IsUnmarshaler(segmentID) {
+			unmarshaler, err := segment.KnownSegments.UnmarshalerForSegment(segmentID)
 			if err != nil {
 				return err
 			}
@@ -49,25 +54,26 @@ func (u *Unmarshaler) Unmarshal() error {
 			if err != nil {
 				return err
 			}
-			segments, ok := u.segments[segmentId.ID]
+			segments, ok := u.segments[segmentID.ID]
 			if !ok {
 				segments = make([]segment.Segment, 0)
 			}
 			segments = append(segments, unmarshaler.(segment.Segment))
-			u.segments[segmentId.ID] = segments
+			u.segments[segmentID.ID] = segments
 		}
 	}
 	return nil
 }
 
-func (u *Unmarshaler) UnmarshalSegment(segmentId string, version int) (segment.Segment, error) {
+// UnmarshalSegment unmarshals the segment with the given ID and version
+func (u *Unmarshaler) UnmarshalSegment(segmentID string, version int) (segment.Segment, error) {
 	unmarshaler, err := segment.KnownSegments.UnmarshalerForSegment(
-		segment.VersionedSegment{ID: segmentId, Version: version},
+		segment.VersionedSegment{ID: segmentID, Version: version},
 	)
 	if err != nil {
 		return nil, err
 	}
-	segmentBytes, err := u.extractSegment(segmentId)
+	segmentBytes, err := u.extractSegment(segmentID)
 	if err != nil {
 		return nil, err
 	}
@@ -78,38 +84,43 @@ func (u *Unmarshaler) UnmarshalSegment(segmentId string, version int) (segment.S
 	return unmarshaler.(segment.Segment), nil
 }
 
-func (u *Unmarshaler) extractSegment(segmentId string) ([]byte, error) {
+func (u *Unmarshaler) extractSegment(segmentID string) ([]byte, error) {
 	_, err := u.segmentExtractor.Extract()
 	if err != nil {
 		return nil, err
 	}
-	segmentBytes := u.segmentExtractor.FindSegment(segmentId)
+	segmentBytes := u.segmentExtractor.FindSegment(segmentID)
 	if segmentBytes == nil {
-		return nil, fmt.Errorf("Segment not found in message: %q", segmentId)
+		return nil, fmt.Errorf("Segment not found in message: %q", segmentID)
 	}
 	return segmentBytes, nil
 }
 
-func (u *Unmarshaler) SegmentsById(segmentId string) []segment.Segment {
-	return u.segments[segmentId]
+// SegmentsByID returns all already unmarshaled segments for the given ID
+func (u *Unmarshaler) SegmentsByID(segmentID string) []segment.Segment {
+	return u.segments[segmentID]
 }
 
-func (u *Unmarshaler) SegmentById(segmentId string) segment.Segment {
-	segments, ok := u.segments[segmentId]
+// SegmentByID returns the first segment found for ID
+func (u *Unmarshaler) SegmentByID(segmentID string) segment.Segment {
+	segments, ok := u.segments[segmentID]
 	if ok {
 		return segments[0]
 	}
 	return nil
 }
 
-func (u *Unmarshaler) MarshaledSegmentsById(segmentId string) [][]byte {
-	return u.segmentExtractor.FindSegments(segmentId)
+// MarshaledSegmentsByID returns all segments for a given ID as array of bytes
+func (u *Unmarshaler) MarshaledSegmentsByID(segmentID string) [][]byte {
+	return u.segmentExtractor.FindSegments(segmentID)
 }
 
-func (u *Unmarshaler) MarshaledSegmentById(segmentId string) []byte {
-	return u.segmentExtractor.FindSegment(segmentId)
+// MarshaledSegmentByID returns the first segment for the given ID as array of bytes
+func (u *Unmarshaler) MarshaledSegmentByID(segmentID string) []byte {
+	return u.segmentExtractor.FindSegment(segmentID)
 }
 
+// MarshaledSegments return all marshaled segments as array of bytes
 func (u *Unmarshaler) MarshaledSegments() [][]byte {
 	return u.segmentExtractor.Segments()
 }

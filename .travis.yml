@@ -10,7 +10,7 @@ env:
 before_script:
   - go get github.com/golang/lint/golint/...
   - go vet ./bankinfo ./charset ./client ./cmd/... ./crypto ./dialog ./domain ./element ./generator ./iban ./internal ./message ./segment ./swift ./token ./transport
-  - golint -set_exit_status bankinfo charset client cmd dialog domain element #generator iban internal message segment swift token transport
+  - golint -set_exit_status bankinfo charset client cmd dialog domain element generator iban internal message #segment swift token transport
 
 before_install:
   # Download the binary to bin folder in $GOPATH

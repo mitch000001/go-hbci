@@ -497,9 +497,6 @@ func (d *dialog) request(clientMessage message.ClientMessage) (message.BankMessa
 			return nil, fmt.Errorf("Error while decrypting message: %v", err)
 		}
 		internal.Debug.Printf("Response:\n %s\n", decryptedMessage.MessageHeader())
-		for _, seg := range decryptedMessage.MarshaledSegments() {
-			internal.Debug.Printf("%s\n", seg)
-		}
 		bankMessage = decryptedMessage
 	} else {
 		decryptedMessage, err := extractUnencryptedMessage(response)
@@ -507,9 +504,6 @@ func (d *dialog) request(clientMessage message.ClientMessage) (message.BankMessa
 			return nil, err
 		}
 		internal.Debug.Printf("Response:\n %s\n", decryptedMessage.MessageHeader())
-		for _, seg := range decryptedMessage.MarshaledSegments() {
-			internal.Debug.Printf("%s\n", seg)
-		}
 		bankMessage = decryptedMessage
 	}
 
@@ -545,7 +539,7 @@ func (d *dialog) extractEncryptedMessage(response *transport.Response) (*message
 	return encMessage, nil
 }
 
-func extractUnencryptedMessage(response *transport.Response) (*message.DecryptedMessage, error) {
+func extractUnencryptedMessage(response *transport.Response) (message.BankMessage, error) {
 	messageHeader := response.FindSegment("HNHBK")
 	if messageHeader == nil {
 		return nil, fmt.Errorf("Malformed response: missing Message Header")

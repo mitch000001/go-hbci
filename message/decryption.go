@@ -8,16 +8,17 @@ import (
 	"github.com/mitch000001/go-hbci/segment"
 )
 
-func NewDecryptedMessage(header *segment.MessageHeaderSegment, end *segment.MessageEndSegment, rawMessage []byte) (*DecryptedMessage, error) {
+// NewDecryptedMessage creates a new decrypted message from rawMessage
+func NewDecryptedMessage(header *segment.MessageHeaderSegment, end *segment.MessageEndSegment, rawMessage []byte) (BankMessage, error) {
 	unmarshaler := NewUnmarshaler(rawMessage)
 	err := unmarshaler.Unmarshal()
 	if err != nil {
 		return nil, fmt.Errorf("Malformed decrypted message bytes: %v", err)
 	}
-	messageAcknowledgement := unmarshaler.SegmentById("HIRMG").(*segment.MessageAcknowledgement)
+	messageAcknowledgement := unmarshaler.SegmentByID("HIRMG").(*segment.MessageAcknowledgement)
 	messageAcknowledgement.SetReferencingMessage(header.ReferencingMessage())
 	acknowledgements := messageAcknowledgement.Acknowledgements()
-	for _, seg := range unmarshaler.SegmentsById("HIRMS") {
+	for _, seg := range unmarshaler.SegmentsByID("HIRMS") {
 		if segmentAcknowledgement, ok := seg.(*segment.SegmentAcknowledgement); ok {
 			acknowledgements = append(acknowledgements, segmentAcknowledgement.Acknowledgements()...)
 		} else {
@@ -28,18 +29,19 @@ func NewDecryptedMessage(header *segment.MessageHeaderSegment, end *segment.Mess
 	if !ok {
 		return nil, fmt.Errorf("Unsupported HBCI version: %d", header.HBCIVersion.Val())
 	}
-	decryptedMessage := &DecryptedMessage{
+	message := &decryptedMessage{
 		rawMessage:       rawMessage,
 		acknowledgements: acknowledgements,
 		unmarshaler:      unmarshaler,
 		hbciVersion:      version,
 	}
 	// TODO: set hbci message appropriate, if possible
-	decryptedMessage.message = NewBasicMessageWithHeaderAndEnd(header, end, decryptedMessage)
-	return decryptedMessage, nil
+	message.message = NewBasicMessageWithHeaderAndEnd(header, end, message)
+	return message, nil
 }
 
-type DecryptedMessage struct {
+// A decryptedMessage represents a message which was decrypted using a CryptoProvider
+type decryptedMessage struct {
 	rawMessage       []byte
 	message          Message
 	acknowledgements []domain.Acknowledgement
@@ -47,40 +49,41 @@ type DecryptedMessage struct {
 	hbciVersion      segment.HBCIVersion
 }
 
-func (d *DecryptedMessage) MarshalHBCI() ([]byte, error) {
+// MarshalHBCI marshals d to HBCI wire format
+func (d *decryptedMessage) MarshalHBCI() ([]byte, error) {
 	return d.rawMessage, nil
 }
 
-func (d *DecryptedMessage) MessageHeader() *segment.MessageHeaderSegment {
+func (d *decryptedMessage) MessageHeader() *segment.MessageHeaderSegment {
 	return d.message.MessageHeader()
 }
 
-func (d *DecryptedMessage) MessageEnd() *segment.MessageEndSegment {
+func (d *decryptedMessage) MessageEnd() *segment.MessageEndSegment {
 	return d.message.MessageEnd()
 }
 
-func (d *DecryptedMessage) FindMarshaledSegment(segmentID string) []byte {
-	return d.unmarshaler.MarshaledSegmentById(segmentID)
+func (d *decryptedMessage) FindMarshaledSegment(segmentID string) []byte {
+	return d.unmarshaler.MarshaledSegmentByID(segmentID)
 }
 
-func (d *DecryptedMessage) FindMarshaledSegments(segmentID string) [][]byte {
-	return d.unmarshaler.MarshaledSegmentsById(segmentID)
+func (d *decryptedMessage) FindMarshaledSegments(segmentID string) [][]byte {
+	return d.unmarshaler.MarshaledSegmentsByID(segmentID)
 }
 
-func (d *DecryptedMessage) MarshaledSegments() [][]byte {
+func (d *decryptedMessage) MarshaledSegments() [][]byte {
 	return d.unmarshaler.MarshaledSegments()
 }
 
-func (d *DecryptedMessage) FindSegment(segmentID string) segment.Segment {
-	return d.unmarshaler.SegmentById(segmentID)
+func (d *decryptedMessage) FindSegment(segmentID string) segment.Segment {
+	return d.unmarshaler.SegmentByID(segmentID)
 }
 
-func (d *DecryptedMessage) FindSegments(segmentID string) []segment.Segment {
-	return d.unmarshaler.SegmentsById(segmentID)
+func (d *decryptedMessage) FindSegments(segmentID string) []segment.Segment {
+	return d.unmarshaler.SegmentsByID(segmentID)
 }
 
-func (d *DecryptedMessage) SegmentNumber(segmentID string) int {
-	seg := d.unmarshaler.MarshaledSegmentById(segmentID)
+func (d *decryptedMessage) SegmentNumber(segmentID string) int {
+	seg := d.unmarshaler.MarshaledSegmentByID(segmentID)
 	if len(seg) == 0 {
 		return -1
 	}
@@ -96,14 +99,14 @@ func (d *DecryptedMessage) SegmentNumber(segmentID string) int {
 	return header.Number.Val()
 }
 
-func (d *DecryptedMessage) HBCISegments() []segment.ClientSegment {
+func (d *decryptedMessage) HBCISegments() []segment.ClientSegment {
 	return []segment.ClientSegment{}
 }
 
-func (d *DecryptedMessage) HBCIVersion() segment.HBCIVersion {
+func (d *decryptedMessage) HBCIVersion() segment.HBCIVersion {
 	return d.hbciVersion
 }
 
-func (d *DecryptedMessage) Acknowledgements() []domain.Acknowledgement {
+func (d *decryptedMessage) Acknowledgements() []domain.Acknowledgement {
 	return d.acknowledgements
 }
