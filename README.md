@@ -2,6 +2,7 @@
 [![Build Status](https://travis-ci.org/mitch000001/go-hbci.svg)](https://travis-ci.org/mitch000001/go-hbci)
 [![License: Apache v2.0](https://badge.luzifer.io/v1/badge?color=5d79b5&title=license&text=Apache+v2.0)](http://www.apache.org/licenses/LICENSE-2.0)
 [![GoDoc](https://godoc.org/github.com/mitch000001/go-hbci?status.svg)](http://godoc.org/github.com/mitch000001/go-hbci)
+[![Maintainability](https://api.codeclimate.com/v1/badges/c5ed413973c3f027df6f/maintainability)](https://codeclimate.com/github/mitch000001/go-hbci/maintainability)
 
 A client library to use the [Home Banking Computer Interface](https://de.wikipedia.org/wiki/Homebanking_Computer_Interface) (german only)
 
