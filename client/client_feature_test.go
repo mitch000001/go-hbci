@@ -138,8 +138,8 @@ func TestAnonymousClientCommunicationAccess(t *testing.T) {
 		Client: newClient(),
 	}
 
-	from := domain.BankId{280, "78050000"}
-	to := domain.BankId{280, "78050000"}
+	from := domain.BankID{280, "78050000"}
+	to := domain.BankID{280, "78050000"}
 
 	res, err := a.CommunicationAccess(from, to, 10)
 
@@ -154,7 +154,7 @@ func TestAnonymousClientCommunicationAccess(t *testing.T) {
 }
 
 func newClient() *client.Client {
-	configFile, err := os.Open("../.fints300_haspa.json")
+	configFile, err := os.Open("../.fints300.json")
 	if err != nil && !os.IsNotExist(err) {
 		panic(err)
 	}
@@ -175,11 +175,15 @@ func newClient() *client.Client {
 		}
 	}
 	testAccount = domain.AccountConnection{AccountID: config.AccountID, CountryCode: 280, BankID: config.BankID}
-	i, err := iban.New(config.BankID, config.AccountID)
+	i, err := iban.NewGerman(config.BankID, config.AccountID)
 	if err != nil {
 		panic(err)
 	}
-	sepaTestAccount = domain.InternationalAccountConnection{IBAN: string(i), AccountID: config.AccountID, BankID: domain.BankId{CountryCode: 280, ID: config.BankID}}
+	sepaTestAccount = domain.InternationalAccountConnection{
+		IBAN:      string(i),
+		AccountID: config.AccountID,
+		BankID:    domain.BankID{CountryCode: 280, ID: config.BankID},
+	}
 	c, err := client.New(config)
 	if err != nil {
 		panic(err)
