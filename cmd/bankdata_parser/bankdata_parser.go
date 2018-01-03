@@ -83,7 +83,7 @@ var data = []BankInfo{
 		VersionNumber: "{{.VersionNumber}}",
 		URL: "{{.URL}}",
 		VersionName: "{{.VersionName}}",
-		Institute: "{{.Institute}}",
+		Institute: {{.Institute | printf "%q" }},
 		City: "{{.City}}",
 	},
 	{{end}}
