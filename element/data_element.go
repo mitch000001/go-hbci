@@ -148,7 +148,9 @@ func (g *elementGroup) MarshalHBCI() ([]byte, error) {
 			elementBytes[i] = marshaled
 		}
 	}
-	return bytes.Join(elementBytes, []byte(":")), nil
+	marshaled := bytes.Join(elementBytes, []byte(":"))
+	marshaled = bytes.TrimRight(marshaled, ":")
+	return marshaled, nil
 }
 
 func (g *elementGroup) UnmarshalHBCI(value []byte) error {

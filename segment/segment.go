@@ -111,6 +111,7 @@ func (s *segment) MarshalHBCI() ([]byte, error) {
 		}
 	}
 	marshaled := bytes.Join(elementBytes, []byte("+"))
+	marshaled = bytes.TrimRight(marshaled, "+")
 	marshaled = append(marshaled, '\'')
 	return marshaled, nil
 }
