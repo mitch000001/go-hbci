@@ -41,6 +41,40 @@ type SecurityIdentificationDataElement struct {
 	ClientSystemID *IdentificationDataElement
 }
 
+// UnmarshalHBCI unmarshals value into the DataElement
+func (a *SecurityIdentificationDataElement) UnmarshalHBCI(value []byte) error {
+	elements, err := ExtractElements(value)
+	if err != nil {
+		return err
+	}
+	if len(elements) < 3 {
+		return fmt.Errorf("Malformed marshaled value")
+	}
+	a.DataElement = NewDataElementGroup(securityIdentificationDEG, 3, a)
+	if len(elements) > 0 && len(elements[0]) > 0 {
+		a.SecurityHolder = &AlphaNumericDataElement{}
+		err = a.SecurityHolder.UnmarshalHBCI(elements[0])
+		if err != nil {
+			return err
+		}
+	}
+	if len(elements) > 1 && len(elements[1]) > 0 {
+		a.CID = &BinaryDataElement{}
+		err = a.CID.UnmarshalHBCI(elements[1])
+		if err != nil {
+			return err
+		}
+	}
+	if len(elements) > 2 && len(elements[2]) > 0 {
+		a.ClientSystemID = &IdentificationDataElement{}
+		err = a.ClientSystemID.UnmarshalHBCI(elements[2])
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 // GroupDataElements returns the grouped DataElements
 func (s *SecurityIdentificationDataElement) GroupDataElements() []DataElement {
 	return []DataElement{
