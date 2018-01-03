@@ -61,22 +61,22 @@ func (h *HTTPSBase64Transport) Do(request *transport.Request) (*transport.Respon
 
 // New returns a HTTPSTransport. It sets http.DefaultClient as http.Client to
 // perform requests to the HBCI server
-func New() transport.Transport {
+func New() *HTTPSTransport {
 	return &HTTPSTransport{
-		httpClient: http.DefaultClient,
+		HTTPClient: http.DefaultClient,
 	}
 }
 
 // A HTTPSTransport implements transport.Transport and performs request over HTTPS
 type HTTPSTransport struct {
-	httpClient *http.Client
+	HTTPClient *http.Client
 }
 
 // Do performs the request to the HBCI server. If successful, it returns a
 // populated transport.Response with the HTTP Response Body as Body and the
 // request as Request
 func (h *HTTPSTransport) Do(request *transport.Request) (*transport.Response, error) {
-	httpResponse, err := h.httpClient.Post(request.URL, "application/vnd.hbci", request.Body)
+	httpResponse, err := h.HTTPClient.Post(request.URL, "application/vnd.hbci", request.Body)
 	if err != nil {
 		return nil, err
 	}
