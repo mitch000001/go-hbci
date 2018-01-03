@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/mitch000001/go-hbci/internal"
+	"github.com/pkg/errors"
 	"github.com/wildducktheories/go-csv"
 )
 
@@ -33,7 +34,7 @@ func ParseBankInfos(reader io.Reader) ([]BankInfo, error) {
 	csvReader := csv.WithCsvReader(CsvReader, nil)
 	records, err := csv.ReadAll(csvReader)
 	if err != nil {
-		return nil, err
+		return nil, errors.WithMessage(err, "read CSV file")
 	}
 	var bankInfos []BankInfo
 	for _, record := range records {

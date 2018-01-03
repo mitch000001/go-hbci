@@ -3,7 +3,7 @@ package main
 import (
 	"bytes"
 	"flag"
-	"fmt"
+	"go/format"
 	"io"
 	"log"
 	"os"
@@ -12,9 +12,8 @@ import (
 
 	"golang.org/x/text/encoding/charmap"
 
-	"go/format"
-
 	"github.com/mitch000001/go-hbci/bankinfo"
+	"github.com/pkg/errors"
 )
 
 func main() {
@@ -43,7 +42,7 @@ func main() {
 	sort.Sort(bankinfo.SortableBankInfos(bankInfos))
 	data, err := writeDataToGoFile(bankInfos)
 	if err != nil {
-		log.Fatalf("Error while parsing expression: %q", err)
+		log.Fatalf("Error while writing generated source: %v", err)
 		os.Exit(1)
 	}
 	goFile, err := os.Create("bankinfo/data.go")
@@ -62,16 +61,16 @@ func main() {
 func writeDataToGoFile(data []bankinfo.BankInfo) (io.Reader, error) {
 	t, err := template.New("bank_data").Parse(dataTemplate)
 	if err != nil {
-		return nil, fmt.Errorf("Error while parsing template: %v", err)
+		return nil, errors.WithMessage(err, "error while parsing template")
 	}
 	var buf bytes.Buffer
 	err = t.Execute(&buf, data)
 	if err != nil {
-		return nil, fmt.Errorf("Error while executing template: %v", err)
+		return nil, errors.WithMessage(err, "error while executing template")
 	}
 	formattedBytes, err := format.Source(buf.Bytes())
 	if err != nil {
-		return nil, err
+		return nil, errors.WithMessage(err, "error while formatting source file")
 	}
 	return bytes.NewReader(formattedBytes), nil
 }
