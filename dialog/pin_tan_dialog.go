@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 
 	"github.com/mitch000001/go-hbci/domain"
+	"github.com/mitch000001/go-hbci/internal"
 	"github.com/mitch000001/go-hbci/message"
 	"github.com/mitch000001/go-hbci/segment"
 	"github.com/mitch000001/go-hbci/transport"
@@ -30,6 +31,7 @@ func NewPinTanDialog(bankID domain.BankID, hbciURL string, userID string, hbciVe
 	var dialogTransport transport.Transport
 	dialogTransport = https.New()
 	dialogTransport = middleware.Base64Encoding(base64.StdEncoding)(dialogTransport)
+	dialogTransport = middleware.Logging(internal.Debug)(dialogTransport)
 	d.transport = dialogTransport
 	return d
 }
