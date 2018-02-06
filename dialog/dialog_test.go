@@ -244,10 +244,14 @@ func TestPinTanDialogInit(t *testing.T) {
 }
 
 func newTestPinTanDialog(transport *mockHTTPSTransport) *PinTanDialog {
-	url := "http://localhost"
-	clientID := "12345"
-	bankID := domain.BankID{CountryCode: 280, ID: "10000000"}
-	d := NewPinTanDialog(bankID, url, clientID, segment.HBCI220)
+	cfg := Config{
+		BankID:      domain.BankID{CountryCode: 280, ID: "10000000"},
+		HBCIURL:     "http://localhost",
+		UserID:      "12345",
+		HBCIVersion: segment.HBCI220,
+	}
+
+	d := NewPinTanDialog(cfg)
 	d.SetPin("abcde")
 	d.SetClientSystemID("xyz")
 	d.transport = transport

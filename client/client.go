@@ -11,6 +11,7 @@ import (
 	"github.com/mitch000001/go-hbci/element"
 	"github.com/mitch000001/go-hbci/message"
 	"github.com/mitch000001/go-hbci/segment"
+	"github.com/mitch000001/go-hbci/transport"
 )
 
 // Config defines the basic configuration needed for a Client to work.
@@ -20,6 +21,7 @@ type Config struct {
 	PIN         string `json:"pin"`
 	URL         string `json:"url"`
 	HBCIVersion int    `json:"hbci_version"`
+	Transport   transport.Transport
 }
 
 func (c Config) hbciVersion() (segment.HBCIVersion, error) {
@@ -64,7 +66,15 @@ func New(config Config) (*Client, error) {
 		}
 		hbciVersion = version
 	}
-	d := dialog.NewPinTanDialog(bankID, url, config.AccountID, hbciVersion)
+	dcfg := dialog.Config{
+		BankID:      bankID,
+		HBCIURL:     url,
+		UserID:      config.AccountID,
+		HBCIVersion: hbciVersion,
+		Transport:   config.Transport,
+	}
+
+	d := dialog.NewPinTanDialog(dcfg)
 	d.SetPin(config.PIN)
 	client := &Client{
 		config:       config,

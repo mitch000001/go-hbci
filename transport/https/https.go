@@ -67,6 +67,14 @@ func New() *HTTPSTransport {
 	}
 }
 
+// NewNonDefault returns a HTTPSTransport which uses the given http.Client to
+// perform requests to the HBCO server
+func NewNonDefault(h *http.Client) transport.Transport {
+	return &HTTPSTransport{
+		HTTPClient: h,
+	}
+}
+
 // A HTTPSTransport implements transport.Transport and performs request over HTTPS
 type HTTPSTransport struct {
 	HTTPClient *http.Client

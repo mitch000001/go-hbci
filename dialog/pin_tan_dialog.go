@@ -12,24 +12,38 @@ import (
 	middleware "github.com/mitch000001/go-hbci/transport/middleware"
 )
 
+// Config contains the configuration of a PinTanDialog
+type Config struct {
+	BankID      domain.BankID
+	HBCIURL     string
+	UserID      string
+	HBCIVersion segment.HBCIVersion
+	Transport   transport.Transport
+}
+
 // NewPinTanDialog creates a new dialog to use for pin/tan transport
-func NewPinTanDialog(bankID domain.BankID, hbciURL string, userID string, hbciVersion segment.HBCIVersion) *PinTanDialog {
-	pinKey := domain.NewPinKey("", domain.NewPinTanKeyName(bankID, userID, "S"))
+func NewPinTanDialog(config Config) *PinTanDialog {
+	pinKey := domain.NewPinKey("", domain.NewPinTanKeyName(config.BankID, config.UserID, "S"))
 	signatureProvider := message.NewPinTanSignatureProvider(pinKey, "0")
-	pinKey = domain.NewPinKey("", domain.NewPinTanKeyName(bankID, userID, "V"))
+	pinKey = domain.NewPinKey("", domain.NewPinTanKeyName(config.BankID, config.UserID, "V"))
 	cryptoProvider := message.NewPinTanCryptoProvider(pinKey, "0")
 	d := &PinTanDialog{
 		dialog: newDialog(
-			bankID,
-			hbciURL,
-			userID,
-			hbciVersion,
+			config.BankID,
+			config.HBCIURL,
+			config.UserID,
+			config.HBCIVersion,
 			signatureProvider,
 			cryptoProvider,
 		),
 	}
+
 	var dialogTransport transport.Transport
-	dialogTransport = https.New()
+	if config.Transport == nil {
+		dialogTransport = https.New()
+	} else {
+		dialogTransport = config.Transport
+	}
 	dialogTransport = middleware.Base64Encoding(base64.StdEncoding)(dialogTransport)
 	dialogTransport = middleware.Logging(internal.Debug)(dialogTransport)
 	d.transport = dialogTransport
