@@ -2,18 +2,18 @@ package dialog_test
 
 import (
 	"github.com/mitch000001/go-hbci/domain"
-	"github.com/mitch000001/go-hbci/segment"
 )
 import "github.com/mitch000001/go-hbci/dialog"
 
 func ExamplePinTanDialog() {
-	url := "https://bank.de/hbci"
-	userId := "100000000"
-	blz := "1000000"
-	bankId := domain.BankID{
-		CountryCode: 280,
-		ID:          blz,
+	cfg := dialog.Config{
+		HBCIURL: "https://bank.de/hbci",
+		UserID:  "100000000",
+		BankID: domain.BankID{
+			CountryCode: 280,
+			ID:          "1000000",
+		},
 	}
-	d := dialog.NewPinTanDialog(bankId, url, userId, segment.HBCI220)
+	d := dialog.NewPinTanDialog(cfg)
 	d.SetPin("12345")
 }
