@@ -14,19 +14,23 @@ import (
 
 // Config contains the configuration of a PinTanDialog
 type Config struct {
-	BankID         domain.BankID
-	HBCIURL        string
-	UserID         string
-	HBCIVersion    segment.HBCIVersion
-	ProductName    string
-	ProductVersion string
-	Transport      transport.Transport
+	BankID           domain.BankID
+	HBCIURL          string
+	UserID           string
+	HBCIVersion      segment.HBCIVersion
+	ProductName      string
+	ProductVersion   string
+	SecurityFunction string
+	Transport        transport.Transport
 }
 
 // NewPinTanDialog creates a new dialog to use for pin/tan transport
 func NewPinTanDialog(config Config) *PinTanDialog {
 	pinKey := domain.NewPinKey("", domain.NewPinTanKeyName(config.BankID, config.UserID, domain.KeyTypeSigning))
 	signatureProvider := message.NewPinTanSignatureProvider(pinKey, initialClientSystemID)
+	if config.SecurityFunction != "" {
+		signatureProvider.SetSecurityFunction(config.SecurityFunction)
+	}
 	pinKey = domain.NewPinKey("", domain.NewPinTanKeyName(config.BankID, config.UserID, domain.KeyTypeEncryption))
 	cryptoProvider := message.NewPinTanCryptoProvider(pinKey, initialClientSystemID)
 	d := &PinTanDialog{
