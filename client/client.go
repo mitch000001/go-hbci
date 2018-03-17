@@ -16,12 +16,13 @@ import (
 
 // Config defines the basic configuration needed for a Client to work.
 type Config struct {
-	BankID      string `json:"bank_id"`
-	AccountID   string `json:"account_id"`
-	PIN         string `json:"pin"`
-	URL         string `json:"url"`
-	HBCIVersion int    `json:"hbci_version"`
-	Transport   transport.Transport
+	BankID           string `json:"bank_id"`
+	AccountID        string `json:"account_id"`
+	PIN              string `json:"pin"`
+	URL              string `json:"url"`
+	HBCIVersion      int    `json:"hbci_version"`
+	SecurityFunction string
+	Transport        transport.Transport
 }
 
 func (c Config) hbciVersion() (segment.HBCIVersion, error) {
@@ -67,11 +68,12 @@ func New(config Config) (*Client, error) {
 		hbciVersion = version
 	}
 	dcfg := dialog.Config{
-		BankID:      bankID,
-		HBCIURL:     url,
-		UserID:      config.AccountID,
-		HBCIVersion: hbciVersion,
-		Transport:   config.Transport,
+		BankID:           bankID,
+		HBCIURL:          url,
+		UserID:           config.AccountID,
+		HBCIVersion:      hbciVersion,
+		SecurityFunction: config.SecurityFunction,
+		Transport:        config.Transport,
 	}
 
 	d := dialog.NewPinTanDialog(dcfg)
