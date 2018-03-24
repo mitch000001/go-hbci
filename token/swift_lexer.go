@@ -1,5 +1,9 @@
 package token
 
+import (
+	"strings"
+)
+
 // NewSwiftLexer returns a SwiftLexer ready for parsing the given input string
 func NewSwiftLexer(name, input string) *SwiftLexer {
 	lexer := NewStringLexer(name, input)
@@ -134,8 +138,27 @@ func lexSwiftAlphaNumeric(l *StringLexer) StringLexerStateFn {
 }
 
 func isTagBoundary(s *StringLexer) bool {
+	oneOf := func(fn ...func() bool) bool {
+		for _, f := range fn {
+			if ok := f(); ok {
+				return true
+			}
+		}
+		return false
+	}
 	currentPos := s.pos
-	isTagBoundary := s.accept(string(carriageReturn)) && s.accept(string(lineFeed)) && s.accept(string(dash)+string(tagIdentifier))
+	isTagBoundary := s.accept(string(carriageReturn)) &&
+		s.accept(string(lineFeed)) && oneOf(
+		func() bool {
+			return strings.HasPrefix(s.input[s.pos:], string(dash)+string(tagIdentifier))
+		},
+		func() bool {
+			return strings.HasPrefix(s.input[s.pos:], string(tagIdentifier))
+		},
+		func() bool {
+			return s.input[s.pos:] == string(dash)
+		},
+	)
 	s.pos = currentPos
 	return isTagBoundary
 }
@@ -173,10 +196,14 @@ const (
 )
 
 var swiftTokenName = map[Type]string{
-	SWIFT_ALPHA:     "a",
-	SWIFT_CHARACTER: "c",
-	SWIFT_DECIMAL:   "d",
-	SWIFT_NUMERIC:   "n",
+	SWIFT_ALPHA:             "a",
+	SWIFT_CHARACTER:         "c",
+	SWIFT_DECIMAL:           "d",
+	SWIFT_NUMERIC:           "n",
+	SWIFT_ALPHANUMERIC:      "an",
+	SWIFT_DATASET_START:     "datasetStart",
+	SWIFT_TAG_SEPARATOR:     "tagSeparator",
+	SWIFT_MESSAGE_SEPARATOR: "messageSeparator",
 }
 
 func init() {

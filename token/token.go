@@ -156,9 +156,9 @@ func (e elementToken) String() string {
 		return e.val
 	}
 	if len(e.val) > 10 {
-		return fmt.Sprintf("%.10q...", e.val)
+		return fmt.Sprintf("%s(%.10q...)", e.typ.String(), e.val)
 	}
-	return fmt.Sprintf("%q", e.val)
+	return fmt.Sprintf("%s(%q)", e.typ.String(), e.val)
 }
 
 const (
