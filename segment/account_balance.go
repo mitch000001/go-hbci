@@ -1,11 +1,30 @@
 package segment
 
 import (
+	"fmt"
+	"sort"
 	"time"
 
 	"github.com/mitch000001/go-hbci/domain"
 	"github.com/mitch000001/go-hbci/element"
 )
+
+var accountBalanceRequests = map[int]func(account domain.AccountConnection, allAccounts bool) AccountBalanceRequest{
+	5: NewAccountBalanceRequestV5,
+	6: NewAccountBalanceRequestV6,
+}
+
+// AccountBalanceRequestBuilder returns the highest matching versioned segment
+func AccountBalanceRequestBuilder(versions []int) (func(account domain.AccountConnection, allAccounts bool) AccountBalanceRequest, error) {
+	sort.Sort(sort.Reverse(sort.IntSlice(versions)))
+	for _, version := range versions {
+		builder, ok := accountBalanceRequests[version]
+		if ok {
+			return builder, nil
+		}
+	}
+	return nil, fmt.Errorf("unsupported versions %v", versions)
+}
 
 type AccountBalanceRequest interface {
 	ClientSegment

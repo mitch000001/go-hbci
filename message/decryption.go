@@ -110,3 +110,18 @@ func (d *decryptedMessage) HBCIVersion() segment.HBCIVersion {
 func (d *decryptedMessage) Acknowledgements() []domain.Acknowledgement {
 	return d.acknowledgements
 }
+
+func (d *decryptedMessage) SupportedSegments() []segment.VersionedSegment {
+	var versionedSegments []segment.VersionedSegment
+	for _, s := range d.unmarshaler.MarshaledSegments() {
+		vid, err := extractVersionedSegmentIdentifier(s)
+		if err != nil {
+			continue
+		}
+		if len(vid.ID) <= 5 {
+			continue
+		}
+		versionedSegments = append(versionedSegments, vid)
+	}
+	return versionedSegments
+}

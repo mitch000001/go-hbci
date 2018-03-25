@@ -1,11 +1,43 @@
 package segment
 
 import (
+	"fmt"
+	"sort"
 	"time"
 
 	"github.com/mitch000001/go-hbci/domain"
 	"github.com/mitch000001/go-hbci/element"
 )
+
+var accountTransactionRequests = map[int](func(account domain.AccountConnection, allAccounts bool) *AccountTransactionRequestSegment){
+	6: NewAccountTransactionRequestSegmentV6,
+	5: NewAccountTransactionRequestSegmentV5,
+}
+
+func AccountTransactionRequestBuilder(versions []int) (func(account domain.AccountConnection, allAccounts bool) *AccountTransactionRequestSegment, error) {
+	sort.Sort(sort.Reverse(sort.IntSlice(versions)))
+	for _, version := range versions {
+		builder, ok := accountTransactionRequests[version]
+		if ok {
+			return builder, nil
+		}
+	}
+	return nil, fmt.Errorf("unsupported versions %v", versions)
+}
+
+func SepaAccountTransactionRequestBuilder(versions []int) (func(account domain.InternationalAccountConnection, allAccounts bool) *AccountTransactionRequestSegment, error) {
+	sort.Sort(sort.Reverse(sort.IntSlice(versions)))
+	for _, version := range versions {
+		if version > 6 {
+			continue
+		}
+		switch version {
+		case 7:
+			return NewAccountTransactionRequestSegmentV7, nil
+		}
+	}
+	return nil, fmt.Errorf("unsupported versions %v", versions)
+}
 
 type AccountTransactionRequestSegment struct {
 	accountTransactionRequestSegment

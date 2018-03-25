@@ -32,6 +32,7 @@ type ClientMessage interface {
 type BankMessage interface {
 	Message
 	Acknowledgements() []domain.Acknowledgement
+	SupportedSegments() []segment.VersionedSegment
 }
 
 // HBCIMessage represents a basic set of message for introspecting HBCI messages

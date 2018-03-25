@@ -110,7 +110,17 @@ func (c *Client) Accounts() ([]domain.AccountInformation, error) {
 // proviced account. For the initial request no continuationReference is
 // needed, as this method will be called recursivly if the server sends one.
 func (c *Client) AccountTransactions(account domain.AccountConnection, timeframe domain.Timeframe, allAccounts bool, continuationReference string) ([]domain.AccountTransaction, error) {
-	accountTransactionRequest := c.hbciVersion.AccountTransactionRequest(account, allAccounts)
+	if c.pinTanDialog.BankParameterDataVersion() == 0 {
+		_, err := c.pinTanDialog.SyncClientSystemID()
+		if err != nil {
+			return nil, fmt.Errorf("Error while fetching accounts: %v", err)
+		}
+	}
+	builder := segment.NewBuilder(c.pinTanDialog.SupportedSegments())
+	accountTransactionRequest, err := builder.AccountTransactionRequest(account, allAccounts)
+	if err != nil {
+		return nil, err
+	}
 	accountTransactionRequest.SetTransactionRange(timeframe)
 	if continuationReference != "" {
 		accountTransactionRequest.SetContinuationReference(continuationReference)
@@ -223,8 +233,20 @@ func (c *Client) AccountInformation(account domain.AccountConnection, allAccount
 // If allAccounts is true it will fetch also the balances for all accounts
 // associated with the account.
 func (c *Client) AccountBalances(account domain.AccountConnection, allAccounts bool) ([]domain.AccountBalance, error) {
-	accountBalanceRequest := c.hbciVersion.AccountBalanceRequest(account, allAccounts)
-	decryptedMessage, err := c.pinTanDialog.SendMessage(message.NewHBCIMessage(c.hbciVersion, accountBalanceRequest))
+	if c.pinTanDialog.BankParameterDataVersion() == 0 {
+		_, err := c.pinTanDialog.SyncClientSystemID()
+		if err != nil {
+			return nil, fmt.Errorf("Error while fetching accounts: %v", err)
+		}
+	}
+	builder := segment.NewBuilder(c.pinTanDialog.SupportedSegments())
+	accountBalanceRequest, err := builder.AccountBalanceRequest(account, allAccounts)
+	if err != nil {
+		return nil, err
+	}
+	decryptedMessage, err := c.pinTanDialog.SendMessage(
+		message.NewHBCIMessage(c.hbciVersion, accountBalanceRequest),
+	)
 	if err != nil {
 		return nil, err
 	}

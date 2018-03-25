@@ -17,3 +17,13 @@ type InternationalAccountConnection struct {
 	SubAccountCharacteristics string
 	BankID                    BankID
 }
+
+// ToAccountConnection transforms i into an AccountConnection
+func (i InternationalAccountConnection) ToAccountConnection() AccountConnection {
+	return AccountConnection{
+		AccountID:                 i.AccountID,
+		SubAccountCharacteristics: i.SubAccountCharacteristics,
+		CountryCode:               i.BankID.CountryCode,
+		BankID:                    i.BankID.ID,
+	}
+}

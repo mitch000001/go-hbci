@@ -69,6 +69,7 @@ type dialog struct {
 	cryptoProvider    message.CryptoProvider
 	BankParameterData domain.BankParameterData
 	hbciVersion       segment.HBCIVersion
+	supportedSegments []segment.VersionedSegment
 }
 
 func (d *dialog) UserParameterDataVersion() int {
@@ -77,6 +78,10 @@ func (d *dialog) UserParameterDataVersion() int {
 
 func (d *dialog) BankParameterDataVersion() int {
 	return d.BankParameterData.Version
+}
+
+func (d *dialog) SupportedSegments() []segment.VersionedSegment {
+	return d.supportedSegments
 }
 
 func (d *dialog) SetClientSystemID(clientSystemID string) {
@@ -152,6 +157,7 @@ func (d *dialog) SyncClientSystemID() (string, error) {
 		return "", fmt.Errorf("Malformed response message: %q", decryptedMessage)
 	}
 	d.dialogID = messageHeader.DialogID.Val()
+	d.supportedSegments = decryptedMessage.SupportedSegments()
 
 	var errors []string
 	acknowledgements := decryptedMessage.Acknowledgements()
