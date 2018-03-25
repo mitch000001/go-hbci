@@ -31,10 +31,16 @@ func TestClientBalances(t *testing.T) {
 		account,
 	}
 
+	syncResponse := encryptedTestMessage(
+		"abcde",
+		"HIRMG:2:2:1+0020::Auftrag entgegengenommen'",
+		"HISYN:193:4:5+LRZYhZNbV2IBAAAd0?+VNqlkXrAQA'",
+		"HISALS:3:5:4+3+1'",
+	)
 	initResponse := encryptedTestMessage(
 		"abcde",
 		"HIRMG:2:2:1+0020::Auftrag entgegengenommen'",
-		"HIKIM:10:2+ec-Karte+Ihre neue ec-Karte liegt zur Abholung bereit.'",
+		"HIKIM:3:2+ec-Karte+Ihre neue ec-Karte liegt zur Abholung bereit.'",
 	)
 	balanceResponse := encryptedTestMessage(
 		"abcde",
@@ -44,6 +50,8 @@ func TestClientBalances(t *testing.T) {
 	dialogEndResponseMessage := encryptedTestMessage("abcde", "HIRMG:2:2:1+0020::Der Auftrag wurde ausgeführt'")
 
 	transport.SetResponsePayloads([][]byte{
+		syncResponse,
+		dialogEndResponseMessage,
 		initResponse,
 		balanceResponse,
 		dialogEndResponseMessage,
