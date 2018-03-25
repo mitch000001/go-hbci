@@ -3,6 +3,8 @@ package swift
 import (
 	"bytes"
 	"fmt"
+
+	"github.com/pkg/errors"
 )
 
 func (m *MT940) Unmarshal(value []byte) error {
@@ -47,25 +49,25 @@ func (m *MT940) Unmarshal(value []byte) error {
 			m.StartingBalance = &BalanceTag{}
 			err = m.StartingBalance.Unmarshal(tag)
 			if err != nil {
-				return err
+				return errors.WithMessage(err, "unmarshal starting balance tag")
 			}
 		case bytes.HasPrefix(tag, []byte(":62")):
 			m.ClosingBalance = &BalanceTag{}
 			err = m.ClosingBalance.Unmarshal(tag)
 			if err != nil {
-				return err
+				return errors.WithMessage(err, "unmarshal closing balance tag")
 			}
 		case bytes.HasPrefix(tag, []byte(":64:")):
 			m.CurrentValutaBalance = &BalanceTag{}
 			err = m.CurrentValutaBalance.Unmarshal(tag)
 			if err != nil {
-				return err
+				return errors.WithMessage(err, "unmarshal current valuta balance tag")
 			}
 		case bytes.HasPrefix(tag, []byte(":65:")):
 			m.FutureValutaBalance = &BalanceTag{}
 			err = m.FutureValutaBalance.Unmarshal(tag)
 			if err != nil {
-				return err
+				return errors.WithMessage(err, "unmarshal future valuta balance tag")
 			}
 		case bytes.HasPrefix(tag, []byte(":61:")):
 			transaction := &TransactionTag{}

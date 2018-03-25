@@ -10,6 +10,7 @@ import (
 	"unicode"
 
 	"github.com/mitch000001/go-hbci/domain"
+	"github.com/pkg/errors"
 )
 
 type MT940 struct {
@@ -153,14 +154,14 @@ func (b *BalanceTag) Unmarshal(value []byte) error {
 	dateBytes := buf.Next(6)
 	date, err := parseDate(dateBytes, time.Now().Year())
 	if err != nil {
-		return err
+		return errors.WithMessage(err, "unmarshal balance tag: parsing booking date")
 	}
 	b.BookingDate = domain.NewShortDate(date)
 	b.Currency = string(buf.Next(3))
 	amountString := strings.Replace(buf.String(), ",", ".", 1)
 	amount, err := strconv.ParseFloat(amountString, 64)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "MT940 Balance tag: error unmarshaling amount")
 	}
 	b.Amount = amount
 	return nil
@@ -197,7 +198,7 @@ func (t *TransactionTag) Unmarshal(value []byte) error {
 	dateBytes := buf.Next(6)
 	date, err := parseDate(dateBytes, time.Now().Year())
 	if err != nil {
-		return err
+		return errors.WithMessage(err, "unmarshal transaction tag: parsing valuta date")
 	}
 	t.ValutaDate = domain.NewShortDate(date)
 	r, _, err := buf.ReadRune()
@@ -209,7 +210,7 @@ func (t *TransactionTag) Unmarshal(value []byte) error {
 		dateBytes = buf.Next(4)
 		date, err = parseDate(dateBytes, t.ValutaDate.Year())
 		if err != nil {
-			return err
+			return errors.WithMessage(err, "unmarshal transaction tag: parsing booking date")
 		}
 		t.BookingDate = domain.NewShortDate(date)
 		monthDiff := int(math.Abs(float64(t.ValutaDate.Month() - t.BookingDate.Month())))
@@ -248,7 +249,7 @@ func (t *TransactionTag) Unmarshal(value []byte) error {
 	amountBytes = bytes.Replace(amountBytes[:len(amountBytes)-1], []byte(","), []byte("."), 1)
 	amount, err := strconv.ParseFloat(string(amountBytes), 64)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "MT940 Transaction tag: error unmarshaling amount")
 	}
 	t.Amount = amount
 	t.BookingKey = string(buf.Next(3))
