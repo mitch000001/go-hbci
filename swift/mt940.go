@@ -294,6 +294,9 @@ func parseDate(value []byte, referenceYear int) (time.Time, error) {
 	dateString := yearBegin + string(value)
 	date, err := time.Parse("20060102", dateString)
 	if err != nil {
+		if strings.HasSuffix(dateString, "0229") {
+			return time.Date(referenceYear, 2, 29, 0, 0, 0, 0, time.UTC), nil
+		}
 		return time.Time{}, err
 	}
 	return date.Truncate(24 * time.Hour), nil
