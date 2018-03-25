@@ -6,9 +6,20 @@ import (
 	"github.com/mitch000001/go-hbci/element"
 )
 
-func NewSynchronisationSegmentV2(modus int) *SynchronisationRequestSegment {
+// Possible sync modes
+var (
+	SyncModeAquireClientID               = SyncMode{mode: 0}
+	SyncModeAquireLastProcessedMessageID = SyncMode{mode: 1}
+	SyncModeAquireSignatureID            = SyncMode{mode: 2}
+)
+
+type SyncMode struct {
+	mode int
+}
+
+func NewSynchronisationSegmentV2(modus SyncMode) *SynchronisationRequestSegment {
 	s := &SynchronisationRequestV2{
-		SyncModus: element.NewNumber(modus, 1),
+		SyncModus: element.NewNumber(modus.mode, 1),
 	}
 	s.ClientSegment = NewBasicSegment(5, s)
 
@@ -43,9 +54,9 @@ func (s *SynchronisationRequestV2) elements() []element.DataElement {
 	}
 }
 
-func NewSynchronisationSegmentV3(modus int) *SynchronisationRequestSegment {
+func NewSynchronisationSegmentV3(modus SyncMode) *SynchronisationRequestSegment {
 	s := &SynchronisationRequestV3{
-		SyncModus: element.NewCode(strconv.Itoa(modus), 1, []string{"0", "1", "2"}),
+		SyncModus: element.NewCode(strconv.Itoa(modus.mode), 1, []string{"0", "1", "2"}),
 	}
 	s.ClientSegment = NewBasicSegment(5, s)
 

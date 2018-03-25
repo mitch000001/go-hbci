@@ -130,7 +130,7 @@ func (d *dialog) SyncClientSystemID() (string, error) {
 	syncMessage := message.NewSynchronisationMessage(d.hbciVersion)
 	syncMessage.Identification = segment.NewIdentificationSegment(d.BankID, d.clientID, initialClientSystemID, true)
 	syncMessage.ProcessingPreparation = segment.NewProcessingPreparationSegment(0, 0, 1)
-	syncMessage.Sync = d.hbciVersion.SynchronisationRequest(0)
+	syncMessage.Sync = d.hbciVersion.SynchronisationRequest(segment.SyncModeAquireClientID)
 	syncMessage.BasicMessage = d.newBasicMessage(syncMessage)
 	signedSyncMessage, err := syncMessage.Sign(d.signatureProvider)
 	if err != nil {
