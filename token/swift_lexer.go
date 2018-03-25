@@ -153,6 +153,9 @@ func isTagBoundary(s *StringLexer) bool {
 			return strings.HasPrefix(s.input[s.pos:], string(dash)+string(tagIdentifier))
 		},
 		func() bool {
+			return strings.HasPrefix(s.input[s.pos:], string(dash)+string(carriageReturn))
+		},
+		func() bool {
 			return strings.HasPrefix(s.input[s.pos:], string(tagIdentifier))
 		},
 		func() bool {
