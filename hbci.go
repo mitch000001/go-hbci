@@ -2,7 +2,7 @@ package hbci
 
 import "github.com/mitch000001/go-hbci/internal"
 
-const Version = "0.1.2"
+const Version = "0.1.3"
 
 func SetDebugMode(debug bool) {
 	internal.SetDebugMode(debug)
