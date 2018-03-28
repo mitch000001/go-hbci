@@ -6,6 +6,119 @@ import (
 	"testing"
 )
 
+func TestFrom(t *testing.T) {
+	t.Run("successful creation", func(t *testing.T) {
+		testCases := []struct {
+			country string
+			input   string
+			result  IBAN
+		}{
+			{"Germany", "DE02100500000024290661", "DE02100500000024290661"},
+			{"Great Britain", "GB11CITI18500811417983", "GB11CITI18500811417983"},
+		}
+
+		for _, tt := range testCases {
+			t.Run(tt.country, func(t *testing.T) {
+				result, err := From(tt.input)
+				if err != nil {
+					t.Logf("Expected no error, got %T:%v", err, err)
+					t.Fail()
+				}
+
+				if result != tt.result {
+					t.Logf("Expected result to equal %q, got %q", tt.result, result)
+					t.Fail()
+				}
+			})
+		}
+	})
+	t.Run("uncommon input", func(t *testing.T) {
+		testCases := []struct {
+			desc   string
+			input  string
+			result IBAN
+		}{
+			{
+				desc:   "lowercase country code",
+				input:  "de02100500000024290661",
+				result: "DE02100500000024290661",
+			},
+			{
+				desc:   "mixed case countryCode",
+				input:  "Gb11CITI18500811417983",
+				result: "GB11CITI18500811417983",
+			},
+			{
+				desc:   "lowercase bban",
+				input:  "GB11CITI18500811417983",
+				result: "GB11CITI18500811417983",
+			},
+			{
+				desc:   "mixed case bban",
+				input:  "GB11CiTi18500811417983",
+				result: "GB11CITI18500811417983",
+			},
+			{
+				desc:   "mixed case countryCode and bban",
+				input:  "gB11cItI18500811417983",
+				result: "GB11CITI18500811417983",
+			},
+		}
+
+		for _, tt := range testCases {
+			t.Run(tt.desc, func(t *testing.T) {
+				result, err := From(tt.input)
+				if err != nil {
+					t.Logf("Expected no error, got %T:%v", err, err)
+					t.Fail()
+				}
+
+				if result != tt.result {
+					t.Logf("Expected result to equal %q, got %q", tt.result, result)
+					t.Fail()
+				}
+			})
+		}
+	})
+	t.Run("errors", func(t *testing.T) {
+		testCases := []struct {
+			desc  string
+			input string
+		}{
+			{
+				desc:  "missing country code",
+				input: "1234567890123456789",
+			},
+			{
+				desc:  "too long country code",
+				input: "ABCDE221234567890123456789",
+			},
+			{
+				desc:  "too short country code",
+				input: "A221234567890123456789",
+			},
+			{
+				desc:  "too long BBAN",
+				input: "AT331234567890123456789012345678901234567890",
+			},
+			{
+				desc:  "proof number mismatch",
+				input: "GB99CITI18500811417983",
+			},
+		}
+
+		for _, tt := range testCases {
+			t.Run(tt.desc, func(t *testing.T) {
+				_, err := From(tt.input)
+				if err == nil {
+					t.Logf("Expected error, got nil")
+					t.Fail()
+				}
+			})
+		}
+	})
+}
+
 func TestNewGerman(t *testing.T) {
 	bankID := "10090044"
 	accountID := "532013018"
@@ -192,12 +305,12 @@ func TestNew(t *testing.T) {
 				bban:        "1234567890123456789",
 			},
 			{
-				desc:        "empty country code",
+				desc:        "too long country code",
 				countryCode: "ABCDE",
 				bban:        "1234567890123456789",
 			},
 			{
-				desc:        "empty country code",
+				desc:        "too short country code",
 				countryCode: "A",
 				bban:        "1234567890123456789",
 			},
@@ -206,23 +319,30 @@ func TestNew(t *testing.T) {
 				countryCode: "AT",
 				bban:        "1234567890123456789012345678901234567890",
 			},
+			{
+				desc:        "missing BBAN",
+				countryCode: "AT",
+				bban:        "",
+			},
 		}
 
 		for _, tt := range testCases {
-			_, err := New(tt.countryCode, tt.bban)
-			if err == nil {
-				t.Logf("Expected error, got nil")
-				t.Fail()
-			}
+			t.Run(tt.desc, func(t *testing.T) {
+				_, err := New(tt.countryCode, tt.bban)
+				if err == nil {
+					t.Logf("Expected error, got nil")
+					t.Fail()
+				}
+			})
 		}
 	})
 }
 
-func TestIsValid(t *testing.T) {
+func TestIbanValid(t *testing.T) {
 	t.Run("valid german IBAN", func(t *testing.T) {
 		iban, _ := NewGerman("10090044", "0532013018")
 
-		ok := IsValid(iban)
+		ok := iban.Valid()
 		if !ok {
 			t.Logf("Expected iban to be valid")
 			t.Fail()
@@ -231,7 +351,7 @@ func TestIsValid(t *testing.T) {
 	t.Run("valid british IBAN", func(t *testing.T) {
 		iban, _ := New("GB", "CITI18500811417983")
 
-		ok := IsValid(iban)
+		ok := iban.Valid()
 		if !ok {
 			t.Logf("Expected iban to be valid")
 			t.Fail()
@@ -246,7 +366,7 @@ func TestIsValid(t *testing.T) {
 			strings.ToLower(iban.BBAN()),
 		))
 
-		ok := IsValid(iban)
+		ok := iban.Valid()
 		if !ok {
 			t.Logf("Expected iban to be valid")
 			t.Fail()
@@ -255,7 +375,7 @@ func TestIsValid(t *testing.T) {
 	t.Run("invalid german IBAN", func(t *testing.T) {
 		iban := IBAN("DE9910090044053201301812345678901234567890")
 
-		ok := IsValid(iban)
+		ok := iban.Valid()
 		if ok {
 			t.Logf("Expected iban to be invalid")
 			t.Fail()
@@ -264,7 +384,7 @@ func TestIsValid(t *testing.T) {
 	t.Run("invalid german IBAN", func(t *testing.T) {
 		iban := IBAN("DE99100900440532013018")
 
-		ok := IsValid(iban)
+		ok := iban.Valid()
 		if ok {
 			t.Logf("Expected iban to be invalid")
 			t.Fail()
@@ -279,7 +399,76 @@ func TestIsValid(t *testing.T) {
 			strings.ToLower(iban.BBAN()),
 		))
 
-		ok := IsValid(iban)
+		ok := iban.Valid()
+		if ok {
+			t.Logf("Expected iban to be invalid")
+			t.Fail()
+		}
+	})
+}
+
+func TestIsValid(t *testing.T) {
+	t.Run("valid german IBAN", func(t *testing.T) {
+		iban, _ := NewGerman("10090044", "0532013018")
+
+		ok := IsValid(iban.String())
+		if !ok {
+			t.Logf("Expected iban to be valid")
+			t.Fail()
+		}
+	})
+	t.Run("valid british IBAN", func(t *testing.T) {
+		iban, _ := New("GB", "CITI18500811417983")
+
+		ok := IsValid(iban.String())
+		if !ok {
+			t.Logf("Expected iban to be valid")
+			t.Fail()
+		}
+	})
+	t.Run("valid uncommon IBAN", func(t *testing.T) {
+		iban, _ := New("GB", "CITI18500811417983")
+		iban = IBAN(fmt.Sprintf(
+			"%s%s%s",
+			strings.ToLower(iban.CountryCode()),
+			iban.ProofNumber(),
+			strings.ToLower(iban.BBAN()),
+		))
+
+		ok := IsValid(iban.String())
+		if !ok {
+			t.Logf("Expected iban to be valid")
+			t.Fail()
+		}
+	})
+	t.Run("invalid german IBAN", func(t *testing.T) {
+		iban := IBAN("DE9910090044053201301812345678901234567890")
+
+		ok := IsValid(iban.String())
+		if ok {
+			t.Logf("Expected iban to be invalid")
+			t.Fail()
+		}
+	})
+	t.Run("invalid german IBAN", func(t *testing.T) {
+		iban := IBAN("DE99100900440532013018")
+
+		ok := IsValid(iban.String())
+		if ok {
+			t.Logf("Expected iban to be invalid")
+			t.Fail()
+		}
+	})
+	t.Run("invalid IBAN", func(t *testing.T) {
+		iban, _ := New("GB", "CITI18500811417983")
+		iban = IBAN(fmt.Sprintf(
+			"%s%s%s",
+			"12",
+			iban.ProofNumber(),
+			strings.ToLower(iban.BBAN()),
+		))
+
+		ok := IsValid(iban.String())
 		if ok {
 			t.Logf("Expected iban to be invalid")
 			t.Fail()
