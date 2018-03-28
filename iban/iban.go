@@ -26,6 +26,16 @@ func NewGerman(bankID, accountID string) (IBAN, error) {
 
 // New returns a new IBAN for the provided countryCode and BBAN
 func New(countryCode string, BBAN string) (IBAN, error) {
+	if len(countryCode) != 2 {
+		return "", fmt.Errorf("malformed countryCode: must have two characters")
+	}
+	if len(BBAN) > (maxAllowedIBANLength - 4) {
+		return "", fmt.Errorf("malformed BBAN: must have at max 30 characters")
+	}
+
+	countryCode = strings.ToUpper(countryCode)
+	BBAN = strings.ToUpper(BBAN)
+
 	step1 := fmt.Sprintf("%s%s00", transformLettersToDigits(BBAN), transformLettersToDigits(countryCode))
 	step2, ok := new(big.Int).SetString(step1, 10)
 	if !ok {
