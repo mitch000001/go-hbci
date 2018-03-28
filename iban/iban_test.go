@@ -351,3 +351,29 @@ func TestIbanProofNumber(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestIbanString(t *testing.T) {
+	iban := IBAN("GB11CITI18500811417983")
+
+	s := iban.String()
+
+	expected := "GB11CITI18500811417983"
+
+	if expected != s {
+		t.Logf("Expected iban.String() to equal %q, got %q", expected, s)
+		t.Fail()
+	}
+}
+
+func TestPrint(t *testing.T) {
+	iban := IBAN("GB11CITI18500811417983")
+
+	printed := Print(iban)
+
+	expected := "GB11 CITI 1850 0811 4179 83"
+
+	if expected != printed {
+		t.Logf("Expected printed iban to equal %q, got %q", expected, printed)
+		t.Fail()
+	}
+}

@@ -1,6 +1,7 @@
 package iban
 
 import (
+	"bytes"
 	"fmt"
 	"math/big"
 	"strings"
@@ -98,6 +99,26 @@ func (i IBAN) CountryCode() string {
 // ProofNumber returns the used number to make a sanity check whether the IBAN is valid or not.
 func (i IBAN) ProofNumber() string {
 	return string(i[2:4])
+}
+
+// String returns the string representation of i
+func (i IBAN) String() string {
+	return string(i)
+}
+
+// Print returns the IBAN in paper format, i.e. with spaces after every fourth
+// character
+func Print(iban IBAN) string {
+	ibanStr := iban.String()
+	for len(ibanStr)%4 != 0 {
+		ibanStr += " "
+	}
+	var out bytes.Buffer
+	for i := 4; i <= len(ibanStr); i += 4 {
+		out.WriteString(ibanStr[i-4 : i])
+		out.WriteString(" ")
+	}
+	return strings.TrimSpace(out.String())
 }
 
 func transformLettersToDigits(letters string) string {
