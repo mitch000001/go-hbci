@@ -1,6 +1,10 @@
 package iban
 
-import "testing"
+import (
+	"fmt"
+	"strings"
+	"testing"
+)
 
 func TestNewGerman(t *testing.T) {
 	bankID := "10090044"
@@ -224,6 +228,30 @@ func TestIsValid(t *testing.T) {
 			t.Fail()
 		}
 	})
+	t.Run("valid british IBAN", func(t *testing.T) {
+		iban, _ := New("GB", "CITI18500811417983")
+
+		ok := IsValid(iban)
+		if !ok {
+			t.Logf("Expected iban to be valid")
+			t.Fail()
+		}
+	})
+	t.Run("valid uncommon IBAN", func(t *testing.T) {
+		iban, _ := New("GB", "CITI18500811417983")
+		iban = IBAN(fmt.Sprintf(
+			"%s%s%s",
+			strings.ToLower(iban.CountryCode()),
+			iban.ProofNumber(),
+			strings.ToLower(iban.BBAN()),
+		))
+
+		ok := IsValid(iban)
+		if !ok {
+			t.Logf("Expected iban to be valid")
+			t.Fail()
+		}
+	})
 	t.Run("invalid german IBAN", func(t *testing.T) {
 		iban := IBAN("DE9910090044053201301812345678901234567890")
 
@@ -235,6 +263,21 @@ func TestIsValid(t *testing.T) {
 	})
 	t.Run("invalid german IBAN", func(t *testing.T) {
 		iban := IBAN("DE99100900440532013018")
+
+		ok := IsValid(iban)
+		if ok {
+			t.Logf("Expected iban to be invalid")
+			t.Fail()
+		}
+	})
+	t.Run("invalid IBAN", func(t *testing.T) {
+		iban, _ := New("GB", "CITI18500811417983")
+		iban = IBAN(fmt.Sprintf(
+			"%s%s%s",
+			"12",
+			iban.ProofNumber(),
+			strings.ToLower(iban.BBAN()),
+		))
 
 		ok := IsValid(iban)
 		if ok {

@@ -54,8 +54,13 @@ func IsValid(iban IBAN) bool {
 		return false
 	}
 	countryCode := iban.CountryCode()
+	countryCode = strings.ToUpper(countryCode)
+	bban := iban.BBAN()
+	bban = strings.ToUpper(bban)
+
 	digitCountryCode := transformLettersToDigits(countryCode)
-	checkSumString := fmt.Sprintf("%s%s%s", iban.BBAN(), digitCountryCode, iban.ProofNumber())
+	digitBBAN := transformLettersToDigits(bban)
+	checkSumString := fmt.Sprintf("%s%s%s", digitBBAN, digitCountryCode, iban.ProofNumber())
 	checkSum, ok := new(big.Int).SetString(checkSumString, 10)
 	if !ok {
 		return false
