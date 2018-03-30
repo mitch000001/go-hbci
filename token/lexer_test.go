@@ -11,9 +11,9 @@ type testData struct {
 	value string
 }
 
-func TestStringLexer(t *testing.T) {
+func TestLexer(t *testing.T) {
 	testInput := "ab??cd\ref+12345+@2@ab'"
-	l := NewStringLexer("", testInput)
+	l := NewLexer("", testInput)
 	var items []Token
 	for l.HasNext() {
 		item := l.Next()
@@ -47,7 +47,7 @@ func TestLexText(t *testing.T) {
 		{"ab\n\rcd", ERROR, "Unexpected end of input"},
 	}
 	for _, test := range tests {
-		l := NewStringLexer("", test.text)
+		l := NewLexer("", test.text)
 		item := l.Next()
 		if item.Type() != test.typ {
 			t.Logf("Input: %q\n", test.text)
@@ -77,7 +77,7 @@ func TestLexAlphaNumeric(t *testing.T) {
 		{"ab??", ERROR, "Unexpected end of input"},
 	}
 	for _, test := range tests {
-		l := NewStringLexer("", test.text)
+		l := NewLexer("", test.text)
 		item := l.Next()
 		if item.Type() != test.typ {
 			t.Logf("Input: %q\n", test.text)
@@ -99,7 +99,7 @@ func TestLexSyntaxSymbol(t *testing.T) {
 		{":", GROUP_DATA_ELEMENT_SEPARATOR, ":"},
 	}
 	for _, test := range tests {
-		l := NewStringLexer("", test.text)
+		l := NewLexer("", test.text)
 		item := l.Next()
 		if item.Type() != test.typ {
 			t.Logf("Input: %q\n", test.text)
@@ -124,7 +124,7 @@ func TestLexBinaryData(t *testing.T) {
 		{"@2@ab", ERROR, "Unexpected end of input"},
 	}
 	for _, test := range tests {
-		l := NewStringLexer("", test.text)
+		l := NewLexer("", test.text)
 		item := l.Next()
 		if item.Type() != test.typ {
 			t.Logf("Input: %q\n", test.text)
@@ -157,7 +157,7 @@ func TestLexDigit(t *testing.T) {
 		{"12", ERROR, "Unexpected end of input"},
 	}
 	for _, test := range tests {
-		l := NewStringLexer("", test.text)
+		l := NewLexer("", test.text)
 		item := l.Next()
 		if item.Type() != test.typ {
 			t.Logf("Input: %q\n", test.text)

@@ -35,7 +35,7 @@ type GroupExtractor struct {
 // Extract extracts DataElements from the underlying DataElementGroup
 func (e *GroupExtractor) Extract() ([][]byte, error) {
 	var current string
-	lexer := token.NewStringLexer("ElementExtractor", string(e.rawDataElementGroup))
+	lexer := token.NewLexer("ElementExtractor", string(e.rawDataElementGroup))
 	for lexer.HasNext() {
 		t := lexer.Next()
 		currentType := t.Type()

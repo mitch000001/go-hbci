@@ -6,17 +6,17 @@ import (
 
 // NewSwiftLexer returns a SwiftLexer ready for parsing the given input string
 func NewSwiftLexer(name, input string) *SwiftLexer {
-	lexer := NewStringLexer(name, input)
+	lexer := NewLexer(name, input)
 	lexer.SetEntryPoint(lexSwiftEntryPoint)
 	return &SwiftLexer{lexer}
 }
 
 // A SwiftLexer parses the given input and emits SWIFT tokens
 type SwiftLexer struct {
-	*StringLexer
+	*Lexer
 }
 
-func lexSwiftEntryPoint(l *StringLexer) StringLexerStateFn {
+func lexSwiftEntryPoint(l *Lexer) LexerStateFn {
 	if l.accept(string(carriageReturn)) && l.accept(string(lineFeed)) {
 		l.emit(SWIFT_DATASET_START)
 		return lexSwiftStart
@@ -24,7 +24,7 @@ func lexSwiftEntryPoint(l *StringLexer) StringLexerStateFn {
 	return l.errorf("Malformed swift dataset")
 }
 
-func lexSwiftStart(l *StringLexer) StringLexerStateFn {
+func lexSwiftStart(l *Lexer) LexerStateFn {
 	r := l.next()
 	switch {
 	case ('0' <= r && r <= '9'):
@@ -43,7 +43,7 @@ func lexSwiftStart(l *StringLexer) StringLexerStateFn {
 	}
 }
 
-func lexSwiftSyntaxSymbol(l *StringLexer) StringLexerStateFn {
+func lexSwiftSyntaxSymbol(l *Lexer) LexerStateFn {
 	if l.accept(string(carriageReturn)) && l.accept(string(lineFeed)) {
 		p := l.peek()
 		switch {
@@ -60,7 +60,7 @@ func lexSwiftSyntaxSymbol(l *StringLexer) StringLexerStateFn {
 	return l.errorf("Malformed syntax symbol")
 }
 
-func lexSwiftDigit(l *StringLexer) StringLexerStateFn {
+func lexSwiftDigit(l *Lexer) LexerStateFn {
 	digits := "0123456789"
 	l.acceptRun(digits)
 	if l.accept(",") {
@@ -79,7 +79,7 @@ func lexSwiftDigit(l *StringLexer) StringLexerStateFn {
 	return lexSwiftCharacter
 }
 
-func lexSwiftAlpha(l *StringLexer) StringLexerStateFn {
+func lexSwiftAlpha(l *Lexer) LexerStateFn {
 	switch r := l.next(); {
 	case ('A' <= r && r <= 'Z'):
 		return lexSwiftAlpha
@@ -98,7 +98,7 @@ func lexSwiftAlpha(l *StringLexer) StringLexerStateFn {
 	}
 }
 
-func lexSwiftCharacter(l *StringLexer) StringLexerStateFn {
+func lexSwiftCharacter(l *Lexer) LexerStateFn {
 	switch r := l.next(); {
 	case ('A' <= r && r <= 'Z'):
 		return lexSwiftCharacter
@@ -117,7 +117,7 @@ func lexSwiftCharacter(l *StringLexer) StringLexerStateFn {
 	}
 }
 
-func lexSwiftAlphaNumeric(l *StringLexer) StringLexerStateFn {
+func lexSwiftAlphaNumeric(l *Lexer) LexerStateFn {
 	r := l.next()
 	switch {
 	case r == carriageReturn:
@@ -137,7 +137,7 @@ func lexSwiftAlphaNumeric(l *StringLexer) StringLexerStateFn {
 	}
 }
 
-func isTagBoundary(s *StringLexer) bool {
+func isTagBoundary(s *Lexer) bool {
 	oneOf := func(fn ...func() bool) bool {
 		for _, f := range fn {
 			if ok := f(); ok {
@@ -170,7 +170,7 @@ func isSwiftAlphaNumeric(r rune) bool {
 	return r == dash || r == lineFeed || r == ' ' || ('\'' <= r && r <= ')') || ('+' <= r && r <= ':') || r == '?' || ('A' <= r && r <= 'Z') || ('a' <= r && r <= 'z')
 }
 
-func peekAfterSequence(l *StringLexer, valid string) rune {
+func peekAfterSequence(l *Lexer, valid string) rune {
 	currentPos := l.pos
 	l.acceptRun(valid)
 	r := l.peek()

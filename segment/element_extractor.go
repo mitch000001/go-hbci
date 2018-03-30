@@ -24,7 +24,7 @@ type ElementExtractor struct {
 
 func (e *ElementExtractor) Extract() ([][]byte, error) {
 	var current string
-	lexer := token.NewStringLexer("ElementExtractor", string(e.rawSegment))
+	lexer := token.NewLexer("ElementExtractor", string(e.rawSegment))
 	for lexer.HasNext() {
 		t := lexer.Next()
 		if t.Type() == token.ERROR {
