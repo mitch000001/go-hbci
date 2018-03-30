@@ -34,8 +34,8 @@ type GroupExtractor struct {
 
 // Extract extracts DataElements from the underlying DataElementGroup
 func (e *GroupExtractor) Extract() ([][]byte, error) {
-	var current string
-	lexer := token.NewLexer("ElementExtractor", string(e.rawDataElementGroup))
+	var current []byte
+	lexer := token.NewLexer("ElementExtractor", e.rawDataElementGroup)
 	for lexer.HasNext() {
 		t := lexer.Next()
 		currentType := t.Type()
@@ -43,10 +43,10 @@ func (e *GroupExtractor) Extract() ([][]byte, error) {
 			return nil, fmt.Errorf("%T: SyntaxError at position %d: %q\n(%q)", e, t.Pos(), t.Value(), e.rawDataElementGroup)
 		}
 		if currentType == token.SEGMENT_END_MARKER || currentType == token.DATA_ELEMENT_SEPARATOR || currentType == token.GROUP_DATA_ELEMENT_SEPARATOR {
-			e.elements = append(e.elements, []byte(current))
-			current = ""
+			e.elements = append(e.elements, current)
+			current = []byte{}
 		} else {
-			current += t.Value()
+			current = append(current, t.Value()...)
 		}
 	}
 	result := make([][]byte, len(e.elements))

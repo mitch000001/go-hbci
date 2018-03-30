@@ -1,6 +1,7 @@
 package token
 
 import (
+	"bytes"
 	"reflect"
 	"testing"
 )
@@ -13,7 +14,7 @@ type testData struct {
 
 func TestLexer(t *testing.T) {
 	testInput := "ab??cd\ref+12345+@2@ab'"
-	l := NewLexer("", testInput)
+	l := NewLexer("", []byte(testInput))
 	var items []Token
 	for l.HasNext() {
 		item := l.Next()
@@ -47,14 +48,14 @@ func TestLexText(t *testing.T) {
 		{"ab\n\rcd", ERROR, "Unexpected end of input"},
 	}
 	for _, test := range tests {
-		l := NewLexer("", test.text)
+		l := NewLexer("", []byte(test.text))
 		item := l.Next()
 		if item.Type() != test.typ {
 			t.Logf("Input: %q\n", test.text)
 			t.Logf("Expected type to equal %s, got %s\n", test.typ, item.Type())
 			t.Fail()
 		}
-		if item.Value() != test.value {
+		if !bytes.Equal(item.Value(), []byte(test.value)) {
 			t.Logf("Input: %q\n", test.text)
 			t.Logf("Expected val to equal %q, got %q\n", test.value, item.Value())
 			t.Fail()
@@ -77,14 +78,14 @@ func TestLexAlphaNumeric(t *testing.T) {
 		{"ab??", ERROR, "Unexpected end of input"},
 	}
 	for _, test := range tests {
-		l := NewLexer("", test.text)
+		l := NewLexer("", []byte(test.text))
 		item := l.Next()
 		if item.Type() != test.typ {
 			t.Logf("Input: %q\n", test.text)
 			t.Logf("Expected type to equal %s, got %s\n", test.typ, item.Type())
 			t.Fail()
 		}
-		if item.Value() != test.value {
+		if !bytes.Equal(item.Value(), []byte(test.value)) {
 			t.Logf("Input: %q\n", test.text)
 			t.Logf("Expected val to equal %q, got %q\n", test.value, item.Value())
 			t.Fail()
@@ -99,14 +100,14 @@ func TestLexSyntaxSymbol(t *testing.T) {
 		{":", GROUP_DATA_ELEMENT_SEPARATOR, ":"},
 	}
 	for _, test := range tests {
-		l := NewLexer("", test.text)
+		l := NewLexer("", []byte(test.text))
 		item := l.Next()
 		if item.Type() != test.typ {
 			t.Logf("Input: %q\n", test.text)
 			t.Logf("Expected type to equal %s, got %s\n", test.typ, item.Type())
 			t.Fail()
 		}
-		if item.Value() != test.value {
+		if !bytes.Equal(item.Value(), []byte(test.value)) {
 			t.Logf("Input: %q\n", test.text)
 			t.Logf("Expected val to equal %q, got %q\n", test.value, item.Value())
 			t.Fail()
@@ -124,14 +125,14 @@ func TestLexBinaryData(t *testing.T) {
 		{"@2@ab", ERROR, "Unexpected end of input"},
 	}
 	for _, test := range tests {
-		l := NewLexer("", test.text)
+		l := NewLexer("", []byte(test.text))
 		item := l.Next()
 		if item.Type() != test.typ {
 			t.Logf("Input: %q\n", test.text)
 			t.Logf("Expected type to equal %s, got %s\n", test.typ, item.Type())
 			t.Fail()
 		}
-		if item.Value() != test.value {
+		if !bytes.Equal(item.Value(), []byte(test.value)) {
 			t.Logf("Input: %q\n", test.text)
 			t.Logf("Expected val to equal %q, got %q\n", test.value, item.Value())
 			t.Fail()
@@ -157,14 +158,14 @@ func TestLexDigit(t *testing.T) {
 		{"12", ERROR, "Unexpected end of input"},
 	}
 	for _, test := range tests {
-		l := NewLexer("", test.text)
+		l := NewLexer("", []byte(test.text))
 		item := l.Next()
 		if item.Type() != test.typ {
 			t.Logf("Input: %q\n", test.text)
 			t.Logf("Expected type to equal %s, got %s\n", test.typ, item.Type())
 			t.Fail()
 		}
-		if item.Value() != test.value {
+		if !bytes.Equal(item.Value(), []byte(test.value)) {
 			t.Logf("Input: %q\n", test.text)
 			t.Logf("Expected val to equal %q, got %q\n", test.value, item.Value())
 			t.Fail()

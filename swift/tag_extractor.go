@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 
-	"github.com/mitch000001/go-hbci/charset"
 	"github.com/mitch000001/go-hbci/token"
 )
 
@@ -41,7 +40,7 @@ func ExtractTagID(tag []byte) ([]byte, error) {
 }
 
 func NewTagExtractor(swiftMessage []byte) *TagExtractor {
-	lexer := token.NewSwiftLexer("TagExtractor", charset.ToUTF8(swiftMessage))
+	lexer := token.NewSwiftLexer("TagExtractor", swiftMessage)
 	return &TagExtractor{
 		lexer:           lexer,
 		rawSwiftMessage: swiftMessage,
@@ -55,18 +54,18 @@ type TagExtractor struct {
 }
 
 func (t *TagExtractor) Extract() ([][]byte, error) {
-	var current string
+	var current []byte
 	for t.lexer.HasNext() {
 		tok := t.lexer.Next()
 		if tok.Type() == token.ERROR {
 			return nil, fmt.Errorf("%T: SyntaxError at position %d: %q\n(%q)", t, tok.Pos(), tok.Value(), t.rawSwiftMessage)
 		}
 		if tok.Type() == token.SWIFT_TAG_SEPARATOR || tok.Type() == token.SWIFT_MESSAGE_SEPARATOR {
-			t.extractedTags = append(t.extractedTags, []byte(current))
-			current = ""
+			t.extractedTags = append(t.extractedTags, current)
+			current = []byte{}
 		} else {
 			if tok.Type() != token.SWIFT_DATASET_START {
-				current += tok.Value()
+				current = append(current, tok.Value()...)
 			}
 		}
 	}

@@ -1,11 +1,11 @@
 package token
 
 import (
-	"strings"
+	"bytes"
 )
 
 // NewSwiftLexer returns a SwiftLexer ready for parsing the given input string
-func NewSwiftLexer(name, input string) *SwiftLexer {
+func NewSwiftLexer(name string, input []byte) *SwiftLexer {
 	lexer := NewLexer(name, input)
 	lexer.SetEntryPoint(lexSwiftEntryPoint)
 	return &SwiftLexer{lexer}
@@ -17,7 +17,7 @@ type SwiftLexer struct {
 }
 
 func lexSwiftEntryPoint(l *Lexer) LexerStateFn {
-	if l.accept(string(carriageReturn)) && l.accept(string(lineFeed)) {
+	if l.accept(carriageReturn) && l.accept(lineFeed) {
 		l.emit(SWIFT_DATASET_START)
 		return lexSwiftStart
 	}
@@ -44,7 +44,7 @@ func lexSwiftStart(l *Lexer) LexerStateFn {
 }
 
 func lexSwiftSyntaxSymbol(l *Lexer) LexerStateFn {
-	if l.accept(string(carriageReturn)) && l.accept(string(lineFeed)) {
+	if l.accept(carriageReturn) && l.accept(lineFeed) {
 		p := l.peek()
 		switch {
 		case p == eof:
@@ -61,10 +61,9 @@ func lexSwiftSyntaxSymbol(l *Lexer) LexerStateFn {
 }
 
 func lexSwiftDigit(l *Lexer) LexerStateFn {
-	digits := "0123456789"
+	digits := []byte{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'}
 	l.acceptRun(digits)
-	if l.accept(",") {
-		digits := "0123456789"
+	if l.accept(',') {
 		l.acceptRun(digits)
 		if p := l.peek(); p == carriageReturn {
 			l.emit(SWIFT_DECIMAL)
@@ -147,35 +146,27 @@ func isTagBoundary(s *Lexer) bool {
 		return false
 	}
 	currentPos := s.pos
-	isTagBoundary := s.accept(string(carriageReturn)) &&
-		s.accept(string(lineFeed)) && oneOf(
+	isTagBoundary := s.accept(carriageReturn) &&
+		s.accept(lineFeed) && oneOf(
 		func() bool {
-			return strings.HasPrefix(s.input[s.pos:], string(dash)+string(tagIdentifier))
+			return bytes.HasPrefix(s.input[s.pos:], []byte{dash, tagIdentifier})
 		},
 		func() bool {
-			return strings.HasPrefix(s.input[s.pos:], string(dash)+string(carriageReturn))
+			return bytes.HasPrefix(s.input[s.pos:], []byte{dash, carriageReturn})
 		},
 		func() bool {
-			return strings.HasPrefix(s.input[s.pos:], string(tagIdentifier))
+			return bytes.HasPrefix(s.input[s.pos:], []byte{tagIdentifier})
 		},
 		func() bool {
-			return s.input[s.pos:] == string(dash)
+			return bytes.Equal(s.input[s.pos:], []byte{dash})
 		},
 	)
 	s.pos = currentPos
 	return isTagBoundary
 }
 
-func isSwiftAlphaNumeric(r rune) bool {
+func isSwiftAlphaNumeric(r byte) bool {
 	return r == dash || r == lineFeed || r == ' ' || ('\'' <= r && r <= ')') || ('+' <= r && r <= ':') || r == '?' || ('A' <= r && r <= 'Z') || ('a' <= r && r <= 'z')
-}
-
-func peekAfterSequence(l *Lexer, valid string) rune {
-	currentPos := l.pos
-	l.acceptRun(valid)
-	r := l.peek()
-	l.pos = currentPos
-	return r
 }
 
 const (

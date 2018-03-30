@@ -5,7 +5,8 @@ import "fmt"
 // Token represents a HBCI token.
 type Token interface {
 	Type() Type
-	Value() string
+	Value() []byte
+	String() string
 	Pos() int
 	IsSyntaxSymbol() bool
 }
@@ -26,7 +27,7 @@ func (t *Iterator) HasNext() bool {
 // last element.
 func (t *Iterator) Next() Token {
 	if t.pos >= len(t.tokens) {
-		return New(EOF, "", t.pos)
+		return New(EOF, []byte{}, t.pos)
 	}
 	token := t.tokens[t.pos]
 	t.pos++
@@ -39,14 +40,14 @@ func (t *Iterator) Backup() {
 }
 
 // New creates a Token with the given type, value and position
-func New(typ Type, val string, pos int) Token {
+func New(typ Type, val []byte, pos int) Token {
 	return elementToken{typ, val, pos}
 }
 
 // elementToken represents a token returned from the scanner.
 type elementToken struct {
 	typ Type   // Type, such as FLOAT
-	val string // Value, such as "23.2".
+	val []byte // Value, such as "23.2".
 	pos int    // position of token in input
 }
 
@@ -54,7 +55,7 @@ func (e elementToken) Type() Type {
 	return e.typ
 }
 
-func (e elementToken) Value() string {
+func (e elementToken) Value() []byte {
 	return e.val
 }
 func (e elementToken) Pos() int {
@@ -79,7 +80,7 @@ func (e elementToken) String() string {
 	case EOF:
 		return "EOF"
 	case ERROR:
-		return e.val
+		return string(e.val)
 	}
 	if len(e.val) > 10 {
 		return fmt.Sprintf("%s(%.10q...)", e.typ.String(), e.val)

@@ -39,7 +39,7 @@ const githubIssue13TestData = "\r\n" +
 
 func Test_SwiftLexer(t *testing.T) {
 	t.Run("github issue 13", func(t *testing.T) {
-		lexer := NewSwiftLexer("testlexer", githubIssue13TestData)
+		lexer := NewSwiftLexer("testlexer", []byte(githubIssue13TestData))
 
 		var tokens []Token
 
