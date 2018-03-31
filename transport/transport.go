@@ -6,6 +6,7 @@ import (
 	"io"
 	"io/ioutil"
 
+	"github.com/mitch000001/go-hbci/message"
 	"github.com/mitch000001/go-hbci/segment"
 )
 
@@ -49,7 +50,7 @@ func ReadResponse(r *bufio.Reader, req *Request) (*Response, error) {
 	if err != nil {
 		return nil, err
 	}
-	extractor := segment.NewSegmentExtractor(marshaledMessage)
+	extractor := message.NewSegmentExtractor(marshaledMessage)
 	_, err = extractor.Extract()
 	if err != nil {
 		return nil, err
@@ -70,7 +71,7 @@ type Response struct {
 	//
 	// Right now the Response embeds the SegmentExtractor, which violates the SRP.
 	// Future Response types may get rid of it.
-	*segment.SegmentExtractor
+	*message.SegmentExtractor
 	// Request is the request that was sent to obtain this Response.
 	// Request's Body is nil (having already been consumed).
 	Request *Request

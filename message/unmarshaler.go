@@ -11,7 +11,7 @@ import (
 func NewUnmarshaler(message []byte) *Unmarshaler {
 	return &Unmarshaler{
 		rawMessage:       message,
-		segmentExtractor: segment.NewSegmentExtractor(message),
+		segmentExtractor: NewSegmentExtractor(message),
 		segments:         make(map[string][]segment.Segment),
 	}
 }
@@ -19,7 +19,7 @@ func NewUnmarshaler(message []byte) *Unmarshaler {
 // Unmarshaler unmarshals a complete message
 type Unmarshaler struct {
 	rawMessage       []byte
-	segmentExtractor *segment.SegmentExtractor
+	segmentExtractor *SegmentExtractor
 	segments         map[string][]segment.Segment
 }
 
