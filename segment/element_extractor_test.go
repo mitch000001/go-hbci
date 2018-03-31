@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestElementExtractorExtract(t *testing.T) {
+func Test_ExtractElements(t *testing.T) {
 	type testData struct {
 		in  string
 		out []string
@@ -33,9 +33,7 @@ func TestElementExtractorExtract(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		extractor := NewElementExtractor([]byte(test.in))
-
-		extracted, err := extractor.Extract()
+		extracted, err := ExtractElements([]byte(test.in))
 
 		if err != nil {
 			t.Logf("Expected no error, got %T:%v\n", err, err)

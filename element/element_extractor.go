@@ -9,31 +9,31 @@ import (
 
 // ExtractElements extracts DataElements from a DataElementGroup
 func ExtractElements(dataElementGroup []byte) ([][]byte, error) {
-	extractor := NewElementExtractor(dataElementGroup)
+	extractor := newElementExtractor(dataElementGroup)
 	return extractor.Extract()
 }
 
-// NewElementExtractor creates a new GroupExtractor ready to use
-func NewElementExtractor(dataElementGroup []byte) *GroupExtractor {
+// newElementExtractor creates a new GroupExtractor ready to use
+func newElementExtractor(dataElementGroup []byte) *groupExtractor {
 	// TODO: workaround to get the lexer work properly for us. Maybe we should adopt the lexer?
 	if bytes.LastIndexFunc(dataElementGroup, func(r rune) bool {
 		return r == '+' || r == '\''
 	}) == -1 {
 		dataElementGroup = append(dataElementGroup, '+')
 	}
-	return &GroupExtractor{
+	return &groupExtractor{
 		rawDataElementGroup: dataElementGroup,
 	}
 }
 
-// An GroupExtractor extracts DataElements from DataElementGroups
-type GroupExtractor struct {
+// An groupExtractor extracts DataElements from DataElementGroups
+type groupExtractor struct {
 	rawDataElementGroup []byte
 	elements            [][]byte
 }
 
 // Extract extracts DataElements from the underlying DataElementGroup
-func (e *GroupExtractor) Extract() ([][]byte, error) {
+func (e *groupExtractor) Extract() ([][]byte, error) {
 	var current []byte
 	lexer := token.NewLexer("ElementExtractor", e.rawDataElementGroup)
 	for lexer.HasNext() {

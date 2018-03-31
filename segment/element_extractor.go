@@ -6,23 +6,20 @@ import (
 	"github.com/mitch000001/go-hbci/token"
 )
 
+// ExtractElements extracts the data elements from segment
 func ExtractElements(segment []byte) ([][]byte, error) {
-	extractor := NewElementExtractor(segment)
+	extractor := &elementExtractor{
+		rawSegment: segment,
+	}
 	return extractor.Extract()
 }
 
-func NewElementExtractor(segment []byte) *ElementExtractor {
-	return &ElementExtractor{
-		rawSegment: segment,
-	}
-}
-
-type ElementExtractor struct {
+type elementExtractor struct {
 	rawSegment []byte
 	elements   [][]byte
 }
 
-func (e *ElementExtractor) Extract() ([][]byte, error) {
+func (e *elementExtractor) Extract() ([][]byte, error) {
 	var current []byte
 	lexer := token.NewLexer("ElementExtractor", e.rawSegment)
 	for lexer.HasNext() {
