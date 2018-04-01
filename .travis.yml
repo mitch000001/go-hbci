@@ -13,12 +13,12 @@ before_script:
   - go get github.com/golang/lint/golint/...
   - go vet ./bankinfo ./charset ./client ./cmd/... ./crypto ./dialog ./domain ./element ./generator ./iban ./internal ./message ./segment ./swift ./token ./transport
   - golint -set_exit_status bankinfo charset client cmd dialog domain element generator iban internal message #segment swift token transport
-  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > /usr/local/bin/cc-test-reporter
-  - chmod +x /usr/local/bin/cc-test-reporter
-  - cc-test-reporter before-build
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
 
 after_script:
-  - cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 
 before_install:
   # Download the binary to bin folder in $GOPATH
