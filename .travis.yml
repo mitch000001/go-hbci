@@ -10,12 +10,12 @@ env:
   - CC_TEST_REPORTER_ID=c5541b7f3112815fc1a3cb4b4c67b4bf6f3efc89c2109bd96530e1bffd7d20d6
 
 before_script:
-  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > /usr/local/bin/cc-test-reporter
-  - chmod +x /usr/local/bin/cc-test-reporter
-  - cc-test-reporter before-build
   - go get github.com/golang/lint/golint/...
   - go vet ./bankinfo ./charset ./client ./cmd/... ./crypto ./dialog ./domain ./element ./generator ./iban ./internal ./message ./segment ./swift ./token ./transport
   - golint -set_exit_status bankinfo charset client cmd dialog domain element generator iban internal message #segment swift token transport
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > /usr/local/bin/cc-test-reporter
+  - chmod +x /usr/local/bin/cc-test-reporter
+  - cc-test-reporter before-build
 
 after_script:
   - cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
