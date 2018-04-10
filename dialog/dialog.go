@@ -163,7 +163,7 @@ func (d *dialog) SyncClientSystemID() (string, error) {
 	acknowledgements := decryptedMessage.Acknowledgements()
 	for _, ack := range acknowledgements {
 		if ack.IsWarning() {
-			fmt.Printf("%v\n", ack)
+			internal.Info.Printf("%v\n", ack)
 		}
 		if ack.IsError() {
 			errors = append(errors, ack.String())

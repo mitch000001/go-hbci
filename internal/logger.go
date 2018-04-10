@@ -43,10 +43,10 @@ func WithDebugLogging(fn func()) {
 }
 
 // Debug is a logger which logs when debugMode is enabled. If disabled, it executes a noop
-var Debug = newConditionalLogger(os.Stdout, "go-hbci: ", debugFlags, &debugMode)
+var Debug = newConditionalLogger(os.Stderr, "go-hbci: ", debugFlags, &debugMode)
 
 // Info is a logger which logs when infoMode is enabled. If disabled, it executes a noop
-var Info = newConditionalLogger(os.Stdout, "go-hbci: ", log.LstdFlags, &infoMode)
+var Info = newConditionalLogger(os.Stderr, "go-hbci: ", log.LstdFlags, &infoMode)
 
 func newConditionalLogger(w io.Writer, prefix string, flag int, condition *bool) *log.Logger {
 	condWriter := newConditionalWriter(w, condition)
