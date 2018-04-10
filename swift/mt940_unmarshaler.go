@@ -7,6 +7,7 @@ import (
 	"github.com/pkg/errors"
 )
 
+// Unmarshal unmarshals value into m
 func (m *MT940) Unmarshal(value []byte) error {
 	tagExtractor := newTagExtractor(value)
 	tags, err := tagExtractor.Extract()

@@ -13,6 +13,7 @@ import (
 	"github.com/pkg/errors"
 )
 
+// MT940 represents a S.W.I.F.T. Transaction Report
 type MT940 struct {
 	JobReference         *AlphaNumericTag
 	Reference            *AlphaNumericTag
@@ -26,6 +27,7 @@ type MT940 struct {
 	CustomField          *CustomFieldTag
 }
 
+// AccountTransactions returns a slice of account transactions created from m
 func (m *MT940) AccountTransactions() []domain.AccountTransaction {
 	accountConnection := domain.AccountConnection{BankID: m.Account.BankID, AccountID: m.Account.AccountID, CountryCode: 280}
 	var transactions []domain.AccountTransaction
@@ -72,12 +74,14 @@ func (m *MT940) AccountTransactions() []domain.AccountTransaction {
 	return transactions
 }
 
+// AccountTag represents an account in S.W.I.F.T.
 type AccountTag struct {
 	Tag       string
 	BankID    string
 	AccountID string
 }
 
+// Unmarshal unmarshals value into a
 func (a *AccountTag) Unmarshal(value []byte) error {
 	elements, err := extractTagElements(value)
 	if err != nil {
@@ -96,12 +100,14 @@ func (a *AccountTag) Unmarshal(value []byte) error {
 	return nil
 }
 
+// StatementNumberTag represents a S.W.I.F.T. statement number
 type StatementNumberTag struct {
 	Tag         string
 	Number      int
 	SheetNumber int
 }
 
+// Unmarshal unmarshals value into s
 func (s *StatementNumberTag) Unmarshal(value []byte) error {
 	elements, err := extractTagElements(value)
 	if err != nil {
@@ -135,6 +141,7 @@ func (s *StatementNumberTag) Unmarshal(value []byte) error {
 	return nil
 }
 
+// A BalanceTag represents a balance in S.W.I.F.T.
 type BalanceTag struct {
 	Tag                  string
 	DebitCreditIndicator string
@@ -143,6 +150,19 @@ type BalanceTag struct {
 	Amount               float64
 }
 
+// Balance returns the balance embodied in b
+func (b *BalanceTag) Balance() domain.Balance {
+	amount := b.Amount
+	if b.DebitCreditIndicator == "D" {
+		amount = -amount
+	}
+	return domain.Balance{
+		Amount:           domain.Amount{Amount: amount, Currency: b.Currency},
+		TransmissionDate: b.BookingDate.Time,
+	}
+}
+
+// Unmarshal unmarshals value into b
 func (b *BalanceTag) Unmarshal(value []byte) error {
 	elements, err := extractTagElements(value)
 	if err != nil {
@@ -170,11 +190,14 @@ func (b *BalanceTag) Unmarshal(value []byte) error {
 	return nil
 }
 
+// A TransactionSequence represents a transaction with an additional
+// description in S.W.I.F.T.
 type TransactionSequence struct {
 	Transaction *TransactionTag
 	Description *CustomFieldTag
 }
 
+// A TransactionTag represents a transaction in S.W.I.F.T.
 type TransactionTag struct {
 	Tag                   string
 	ValutaDate            domain.ShortDate
@@ -188,6 +211,7 @@ type TransactionTag struct {
 	AdditionalInformation string
 }
 
+// Unmarshal unmarshals value into t
 func (t *TransactionTag) Unmarshal(value []byte) error {
 	elements, err := extractTagElements(value)
 	if err != nil {

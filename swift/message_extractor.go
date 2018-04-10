@@ -6,6 +6,8 @@ import (
 	"github.com/mitch000001/go-hbci/token"
 )
 
+// NewMessageExtractor returns a message extractor feasable extracting
+// S.W.I.F.T. messages from the given input
 func NewMessageExtractor(swiftMessage []byte) *MessageExtractor {
 	lexer := token.NewSwiftLexer("MessageExtractor", swiftMessage)
 	return &MessageExtractor{
@@ -14,12 +16,14 @@ func NewMessageExtractor(swiftMessage []byte) *MessageExtractor {
 	}
 }
 
+// MessageExtractor represents an extractor for S.W.I.F.T. messages
 type MessageExtractor struct {
 	lexer             *token.SwiftLexer
 	rawSwiftMessage   []byte
 	extractedMessages [][]byte
 }
 
+// Extract extracts raw S.W.I.F.T. messages from the given input
 func (m *MessageExtractor) Extract() ([][]byte, error) {
 	var current []byte
 	for m.lexer.HasNext() {

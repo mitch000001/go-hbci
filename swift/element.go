@@ -9,6 +9,7 @@ import (
 	"github.com/mitch000001/go-hbci/internal"
 )
 
+// A Tag represents a S.W.I.F.T. tag
 type Tag interface {
 	Unmarshal([]byte) error
 	Value() interface{}
@@ -23,10 +24,12 @@ type tag struct {
 func (t *tag) ID() string         { return t.id }
 func (t *tag) Value() interface{} { return t.value }
 
+// An AlphaNumericTag represents alphanumeric data in a S.W.I.F.T. tag
 type AlphaNumericTag struct {
 	*tag
 }
 
+// Unmarshal unmarshals value into a
 func (a *AlphaNumericTag) Unmarshal(value []byte) error {
 	elements, err := extractTagElements(value)
 	if err != nil {
@@ -41,14 +44,17 @@ func (a *AlphaNumericTag) Unmarshal(value []byte) error {
 	return nil
 }
 
+// Val returns the string embodied in a
 func (a *AlphaNumericTag) Val() string {
 	return a.value.(string)
 }
 
+// A NumberTag represents numeric data in a S.W.I.F.T. tag
 type NumberTag struct {
 	*tag
 }
 
+// Unmarshal unmarshals value into n
 func (n *NumberTag) Unmarshal(value []byte) error {
 	elements, err := extractTagElements(value)
 	if err != nil {
@@ -66,14 +72,17 @@ func (n *NumberTag) Unmarshal(value []byte) error {
 	return nil
 }
 
+// Val returns the int embodied in n
 func (n *NumberTag) Val() int {
 	return n.value.(int)
 }
 
+// A FloatTag represents float data in a S.W.I.F.T. tag
 type FloatTag struct {
 	*tag
 }
 
+// Unmarshal unmarshals value into f
 func (f *FloatTag) Unmarshal(value []byte) error {
 	elements, err := extractTagElements(value)
 	if err != nil {
@@ -91,10 +100,12 @@ func (f *FloatTag) Unmarshal(value []byte) error {
 	return nil
 }
 
+// Val returns the value of f
 func (f *FloatTag) Val() float64 {
 	return f.value.(float64)
 }
 
+// A CustomFieldTag represents holds multiple information about a transaction
 type CustomFieldTag struct {
 	Tag                string
 	TransactionID      int
