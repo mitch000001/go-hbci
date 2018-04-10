@@ -4,7 +4,9 @@ import (
 	"bytes"
 	"fmt"
 	"strconv"
-	"strings"
+
+	"github.com/mitch000001/go-hbci/charset"
+	"github.com/mitch000001/go-hbci/internal"
 )
 
 type Tag interface {
@@ -107,29 +109,30 @@ type CustomFieldTag struct {
 }
 
 var customFieldTagFieldKeys = [][]byte{
-	[]byte("?00"),
-	[]byte("?10"),
-	[]byte("?20"),
-	[]byte("?21"),
-	[]byte("?22"),
-	[]byte("?23"),
-	[]byte("?24"),
-	[]byte("?25"),
-	[]byte("?26"),
-	[]byte("?27"),
-	[]byte("?28"),
-	[]byte("?29"),
-	[]byte("?30"),
-	[]byte("?31"),
-	[]byte("?32"),
-	[]byte("?33"),
-	[]byte("?34"),
-	[]byte("?60"),
-	[]byte("?61"),
-	[]byte("?62"),
-	[]byte("?63"),
+	[]byte{'?', '0', '0'},
+	[]byte{'?', '1', '0'},
+	[]byte{'?', '2', '0'},
+	[]byte{'?', '2', '1'},
+	[]byte{'?', '2', '2'},
+	[]byte{'?', '2', '3'},
+	[]byte{'?', '2', '4'},
+	[]byte{'?', '2', '5'},
+	[]byte{'?', '2', '6'},
+	[]byte{'?', '2', '7'},
+	[]byte{'?', '2', '8'},
+	[]byte{'?', '2', '9'},
+	[]byte{'?', '3', '0'},
+	[]byte{'?', '3', '1'},
+	[]byte{'?', '3', '2'},
+	[]byte{'?', '3', '3'},
+	[]byte{'?', '3', '4'},
+	[]byte{'?', '6', '0'},
+	[]byte{'?', '6', '1'},
+	[]byte{'?', '6', '2'},
+	[]byte{'?', '6', '3'},
 }
 
+// Unmarshal unmarshals the tag bytes into c
 func (c *CustomFieldTag) Unmarshal(value []byte) error {
 	tag, err := extractRawTag(value)
 	if err != nil {
@@ -142,14 +145,20 @@ func (c *CustomFieldTag) Unmarshal(value []byte) error {
 	}
 	c.TransactionID = tID
 	marshaledFields := tag.Value[3:]
+	marshaledFields = bytes.Replace(
+		marshaledFields, []byte{'\r', '\n'}, []byte{}, -1,
+	)
 	var fields []fieldKeyIndex
 	for _, fieldKey := range customFieldTagFieldKeys {
 		if idx := bytes.Index(marshaledFields, fieldKey); idx != -1 {
-			fields = append(fields, fieldKeyIndex{string(fieldKey), idx})
+			fields = append(fields, fieldKeyIndex{fieldKey, idx})
 		}
 	}
-	getFieldValue := func(currentFieldKeyIndex, nextFieldKeyIndex int) []byte {
-		return marshaledFields[currentFieldKeyIndex+3 : nextFieldKeyIndex]
+
+	getFieldValue := func(currentFieldKeyIndex, nextFieldKeyIndex int) string {
+		return charset.ToUTF8(
+			marshaledFields[currentFieldKeyIndex+3 : nextFieldKeyIndex],
+		)
 	}
 	for i, fieldKeyIndex := range fields {
 		var nextFieldKeyIndex int
@@ -158,37 +167,40 @@ func (c *CustomFieldTag) Unmarshal(value []byte) error {
 		} else {
 			nextFieldKeyIndex = fields[i+1].index
 		}
+
 		fieldValue := getFieldValue(fieldKeyIndex.index, nextFieldKeyIndex)
 
 		switch fieldKey := fieldKeyIndex.fieldKey; {
-		case strings.HasPrefix(fieldKey, "?00"):
-			c.BookingText = string(fieldValue)
-		case strings.HasPrefix(fieldKey, "?10"):
-			c.PrimanotenNumber = strings.Replace(string(fieldValue), "\r\n", "", -1)
-		case strings.HasPrefix(fieldKey, "?2"):
-			c.Purpose += strings.Replace(string(fieldValue), "\r\n", "", -1)
-		case strings.HasPrefix(fieldKey, "?30"):
-			c.BankID = strings.Replace(string(fieldValue), "\r\n", "", -1)
-		case strings.HasPrefix(fieldKey, "?31"):
-			c.AccountID = strings.Replace(string(fieldValue), "\r\n", "", -1)
-		case strings.HasPrefix(fieldKey, "?32"):
-			c.Name = strings.Replace(string(fieldValue), "\r\n", "", -1)
-		case strings.HasPrefix(fieldKey, "?33"):
-			c.Name += " " + strings.Replace(string(fieldValue), "\r\n", "", -1)
-		case strings.HasPrefix(fieldKey, "?34"):
-			messageKeyAddition, err := strconv.Atoi(strings.Replace(string(fieldValue), "\r\n", "", -1))
+		case bytes.HasPrefix(fieldKey, []byte{'?', '0', '0'}):
+			c.BookingText = fieldValue
+		case bytes.HasPrefix(fieldKey, []byte{'?', '1', '0'}):
+			c.PrimanotenNumber = fieldValue
+		case bytes.HasPrefix(fieldKey, []byte{'?', '2'}):
+			c.Purpose += fieldValue
+		case bytes.HasPrefix(fieldKey, []byte{'?', '3', '0'}):
+			c.BankID = fieldValue
+		case bytes.HasPrefix(fieldKey, []byte{'?', '3', '1'}):
+			c.AccountID = fieldValue
+		case bytes.HasPrefix(fieldKey, []byte{'?', '3', '2'}):
+			c.Name = fieldValue
+		case bytes.HasPrefix(fieldKey, []byte{'?', '3', '3'}):
+			c.Name += " " + fieldValue
+		case bytes.HasPrefix(fieldKey, []byte{'?', '3', '4'}):
+			messageKeyAddition, err := strconv.Atoi(fieldValue)
 			if err != nil {
 				return err
 			}
 			c.MessageKeyAddition = messageKeyAddition
-		case strings.HasPrefix(fieldKey, "?6"):
-			c.Purpose2 += strings.Replace(string(fieldValue), "\r\n", "", -1)
+		case bytes.HasPrefix(fieldKey, []byte{'?', '6'}):
+			c.Purpose2 += fieldValue
+		default:
+			internal.Debug.Printf("Unmarshal CustomFieldTag: unknown fieldKey: %s\n", fieldKey)
 		}
 	}
 	return nil
 }
 
 type fieldKeyIndex struct {
-	fieldKey string
+	fieldKey []byte
 	index    int
 }
