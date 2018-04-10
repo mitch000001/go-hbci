@@ -59,10 +59,13 @@ func (m *MT940) AccountTransactions() []domain.AccountTransaction {
 			},
 		}
 		if descr != nil {
+			transaction.BookingText = descr.BookingText
 			transaction.BankID = descr.BankID
 			transaction.AccountID = descr.AccountID
+			transaction.Name = descr.Name
 			transaction.Purpose = descr.Purpose
 			transaction.Purpose2 = descr.Purpose2
+			transaction.TransactionID = descr.TransactionID
 		}
 		transactions = append(transactions, transaction)
 	}
