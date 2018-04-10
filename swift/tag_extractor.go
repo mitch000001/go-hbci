@@ -4,10 +4,30 @@ import (
 	"bytes"
 	"fmt"
 
+	"github.com/mitch000001/go-hbci/charset"
 	"github.com/mitch000001/go-hbci/token"
 )
 
-func ExtractTagElements(tag []byte) ([][]byte, error) {
+type rawTag struct {
+	ID    string
+	Value []byte
+}
+
+func extractRawTag(tag []byte) (*rawTag, error) {
+	elements, err := extractTagElements(tag)
+	if err != nil {
+		return nil, err
+	}
+	if len(elements) != 2 {
+		return nil, fmt.Errorf("Malformed marshaled tag")
+	}
+	return &rawTag{
+		ID:    charset.ToUTF8(elements[0]),
+		Value: elements[1],
+	}, nil
+}
+
+func extractTagElements(tag []byte) ([][]byte, error) {
 	buf := bytes.NewBuffer(tag)
 	b, err := buf.ReadByte()
 	if err != nil {
@@ -30,30 +50,29 @@ func ExtractTagElements(tag []byte) ([][]byte, error) {
 	}, nil
 }
 
-func ExtractTagID(tag []byte) ([]byte, error) {
-	elements, err := ExtractTagElements(tag)
+func extractTagID(tag []byte) ([]byte, error) {
+	elements, err := extractTagElements(tag)
 	if err != nil {
 		return nil, err
-	} else {
-		return elements[0], nil
 	}
+	return elements[0], nil
 }
 
-func NewTagExtractor(swiftMessage []byte) *TagExtractor {
+func newTagExtractor(swiftMessage []byte) *tagExtractor {
 	lexer := token.NewSwiftLexer("TagExtractor", swiftMessage)
-	return &TagExtractor{
+	return &tagExtractor{
 		lexer:           lexer,
 		rawSwiftMessage: swiftMessage,
 	}
 }
 
-type TagExtractor struct {
+type tagExtractor struct {
 	lexer           *token.SwiftLexer
 	rawSwiftMessage []byte
 	extractedTags   [][]byte
 }
 
-func (t *TagExtractor) Extract() ([][]byte, error) {
+func (t *tagExtractor) Extract() ([][]byte, error) {
 	var current []byte
 	for t.lexer.HasNext() {
 		tok := t.lexer.Next()

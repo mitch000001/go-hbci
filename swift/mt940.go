@@ -76,7 +76,7 @@ type AccountTag struct {
 }
 
 func (a *AccountTag) Unmarshal(value []byte) error {
-	elements, err := ExtractTagElements(value)
+	elements, err := extractTagElements(value)
 	if err != nil {
 		return err
 	}
@@ -100,7 +100,7 @@ type StatementNumberTag struct {
 }
 
 func (s *StatementNumberTag) Unmarshal(value []byte) error {
-	elements, err := ExtractTagElements(value)
+	elements, err := extractTagElements(value)
 	if err != nil {
 		return err
 	}
@@ -141,7 +141,7 @@ type BalanceTag struct {
 }
 
 func (b *BalanceTag) Unmarshal(value []byte) error {
-	elements, err := ExtractTagElements(value)
+	elements, err := extractTagElements(value)
 	if err != nil {
 		return err
 	}
@@ -186,7 +186,7 @@ type TransactionTag struct {
 }
 
 func (t *TransactionTag) Unmarshal(value []byte) error {
-	elements, err := ExtractTagElements(value)
+	elements, err := extractTagElements(value)
 	if err != nil {
 		return err
 	}

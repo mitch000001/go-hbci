@@ -26,7 +26,7 @@ type AlphaNumericTag struct {
 }
 
 func (a *AlphaNumericTag) Unmarshal(value []byte) error {
-	elements, err := ExtractTagElements(value)
+	elements, err := extractTagElements(value)
 	if err != nil {
 		return err
 	}
@@ -48,7 +48,7 @@ type NumberTag struct {
 }
 
 func (n *NumberTag) Unmarshal(value []byte) error {
-	elements, err := ExtractTagElements(value)
+	elements, err := extractTagElements(value)
 	if err != nil {
 		return err
 	}
@@ -73,7 +73,7 @@ type FloatTag struct {
 }
 
 func (f *FloatTag) Unmarshal(value []byte) error {
-	elements, err := ExtractTagElements(value)
+	elements, err := extractTagElements(value)
 	if err != nil {
 		return err
 	}
@@ -131,20 +131,17 @@ var customFieldTagFieldKeys = [][]byte{
 }
 
 func (c *CustomFieldTag) Unmarshal(value []byte) error {
-	elements, err := ExtractTagElements(value)
+	tag, err := extractRawTag(value)
 	if err != nil {
 		return err
 	}
-	if len(elements) != 2 {
-		return fmt.Errorf("%T: Malformed marshaled value", c)
-	}
-	c.Tag = string(elements[0])
-	tId, err := strconv.Atoi(string(elements[1][:3]))
+	c.Tag = tag.ID
+	tID, err := strconv.Atoi(charset.ToUTF8(tag.Value[:3]))
 	if err != nil {
 		return err
 	}
-	c.TransactionID = tId
-	marshaledFields := elements[1][3:]
+	c.TransactionID = tID
+	marshaledFields := tag.Value[3:]
 	var fields []fieldKeyIndex
 	for _, fieldKey := range customFieldTagFieldKeys {
 		if idx := bytes.Index(marshaledFields, fieldKey); idx != -1 {

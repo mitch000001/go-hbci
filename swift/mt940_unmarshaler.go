@@ -8,7 +8,7 @@ import (
 )
 
 func (m *MT940) Unmarshal(value []byte) error {
-	tagExtractor := NewTagExtractor(value)
+	tagExtractor := newTagExtractor(value)
 	tags, err := tagExtractor.Extract()
 	if err != nil {
 		return err

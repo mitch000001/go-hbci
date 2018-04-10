@@ -26,7 +26,7 @@ func TestTagExtractorExtract(t *testing.T) {
 		},
 	}
 	for _, test := range tests {
-		extractor := NewTagExtractor([]byte(test.marshaled))
+		extractor := newTagExtractor([]byte(test.marshaled))
 
 		tags, err := extractor.Extract()
 
