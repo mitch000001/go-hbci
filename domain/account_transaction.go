@@ -15,7 +15,17 @@ func (at AccountTransactions) String() string {
 	var buf bytes.Buffer
 	buf.WriteString("\n")
 	if len(at) != 0 {
-		fmt.Fprintf(&buf, "Transactions for account %s/%s\n", at[0].Account.BankID, at[0].Account.AccountID)
+		first := at[0]
+		fmt.Fprintf(
+			&buf, "Transactions for account %s/%s\n",
+			first.Account.BankID, first.Account.AccountID,
+		)
+		fmt.Fprintf(
+			&buf, "Balance at %s: %.2f %s\n",
+			first.AccountBalanceBefore.TransmissionDate.Format("2006-01-02"),
+			first.AccountBalanceBefore.Amount.Amount,
+			first.AccountBalanceBefore.Amount.Currency,
+		)
 	}
 	buf.WriteString("BookingDate\tBooking Text\tAmount\tBankID\tAccountID\tName\tPurpose")
 	buf.WriteString("\n")
@@ -34,6 +44,15 @@ func (at AccountTransactions) String() string {
 		buf.WriteString("\t")
 		buf.WriteString(a.Purpose)
 		buf.WriteString("\n")
+	}
+	if len(at) != 0 {
+		last := at[len(at)-1]
+		fmt.Fprintf(
+			&buf, "Balance at %s: %.2f %s\n",
+			last.AccountBalanceAfter.TransmissionDate.Format("2006-01-02"),
+			last.AccountBalanceAfter.Amount.Amount,
+			last.AccountBalanceAfter.Amount.Currency,
+		)
 	}
 	var out bytes.Buffer
 	tabw := tabwriter.NewWriter(&out, 24, 1, 0, ' ', tabwriter.TabIndent)
