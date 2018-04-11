@@ -130,9 +130,19 @@ func (c *CommonUserParameterDataV4) elements() []element.DataElement {
 }
 
 func (c *CommonUserParameterDataV4) UserParameterData() domain.UserParameterData {
+	var username string
+	if c.UserName != nil {
+		username = c.UserName.Val()
+	}
+	var additions string
+	if c.CommonExtensions != nil {
+		additions = c.CommonExtensions.Val()
+	}
 	return domain.UserParameterData{
-		UserID:  c.UserID.Val(),
-		Version: c.UPDVersion.Val(),
-		Usage:   c.UPDUsage.Val(),
+		UserID:    c.UserID.Val(),
+		Version:   c.UPDVersion.Val(),
+		Usage:     c.UPDUsage.Val(),
+		UserName:  username,
+		Additions: additions,
 	}
 }
