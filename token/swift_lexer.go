@@ -19,9 +19,26 @@ type SwiftLexer struct {
 func lexSwiftEntryPoint(l *Lexer) LexerStateFn {
 	if l.accept(carriageReturn) && l.accept(lineFeed) {
 		l.emit(SWIFT_DATASET_START)
-		return lexSwiftStart
+		return lexTagID
 	}
 	return l.errorf("Malformed swift dataset")
+}
+
+func lexTagID(l *Lexer) LexerStateFn {
+	l.accept(tagIdentifier)
+	digits := []byte{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'}
+	if !l.accept(digits...) {
+		return l.errorf("malformed swift tag identifier: must start with a digit")
+	}
+	l.acceptRun(digits)
+	if p := l.peek(); 'A' <= p && p <= 'Z' {
+		l.next()
+	}
+	if !l.accept(tagIdentifier) {
+		return l.errorf("malformed swift tag identifier: must be enclodes by ':'")
+	}
+	l.emit(SWIFT_TAG)
+	return lexSwiftStart
 }
 
 func lexSwiftStart(l *Lexer) LexerStateFn {
@@ -54,6 +71,7 @@ func lexSwiftSyntaxSymbol(l *Lexer) LexerStateFn {
 			l.emit(SWIFT_MESSAGE_SEPARATOR)
 		case p != dash:
 			l.emit(SWIFT_TAG_SEPARATOR)
+			return lexTagID
 		}
 		return lexSwiftStart
 	}
@@ -152,10 +170,15 @@ func isTagBoundary(s *Lexer) bool {
 			return bytes.HasPrefix(s.input[s.pos:], []byte{dash, tagIdentifier})
 		},
 		func() bool {
-			return bytes.HasPrefix(s.input[s.pos:], []byte{dash, carriageReturn})
+			return bytes.HasPrefix(s.input[s.pos:], []byte{dash, carriageReturn, lineFeed})
 		},
 		func() bool {
-			return bytes.HasPrefix(s.input[s.pos:], []byte{tagIdentifier})
+			if len(s.input[s.pos:]) < 3 {
+				return false
+			}
+			tagIDStart := s.input[s.pos+1]
+			return bytes.HasPrefix(s.input[s.pos:], []byte{tagIdentifier}) &&
+				'0' <= tagIDStart && tagIDStart <= '9'
 		},
 		func() bool {
 			return bytes.Equal(s.input[s.pos:], []byte{dash})
@@ -186,6 +209,7 @@ const (
 	SWIFT_ALPHANUMERIC                  // all characters from charset
 	SWIFT_DATASET_START
 	SWIFT_TAG_SEPARATOR
+	SWIFT_TAG
 	SWIFT_MESSAGE_SEPARATOR
 )
 
@@ -197,6 +221,7 @@ var swiftTokenName = map[Type]string{
 	SWIFT_ALPHANUMERIC:      "an",
 	SWIFT_DATASET_START:     "datasetStart",
 	SWIFT_TAG_SEPARATOR:     "tagSeparator",
+	SWIFT_TAG:               "tag",
 	SWIFT_MESSAGE_SEPARATOR: "messageSeparator",
 }
 
