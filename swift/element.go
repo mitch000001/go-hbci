@@ -111,12 +111,12 @@ type CustomFieldTag struct {
 	TransactionID      int
 	BookingText        string
 	PrimanotenNumber   string
-	Purpose            string
+	Purpose            []string
 	BankID             string
 	AccountID          string
 	Name               string
 	MessageKeyAddition int
-	Purpose2           string
+	Purpose2           []string
 }
 
 var customFieldTagFieldKeys = [][]byte{
@@ -187,7 +187,7 @@ func (c *CustomFieldTag) Unmarshal(value []byte) error {
 		case bytes.HasPrefix(fieldKey, []byte{'?', '1', '0'}):
 			c.PrimanotenNumber = fieldValue
 		case bytes.HasPrefix(fieldKey, []byte{'?', '2'}):
-			c.Purpose += fieldValue
+			c.Purpose = append(c.Purpose, fieldValue)
 		case bytes.HasPrefix(fieldKey, []byte{'?', '3', '0'}):
 			c.BankID = fieldValue
 		case bytes.HasPrefix(fieldKey, []byte{'?', '3', '1'}):
@@ -203,7 +203,7 @@ func (c *CustomFieldTag) Unmarshal(value []byte) error {
 			}
 			c.MessageKeyAddition = messageKeyAddition
 		case bytes.HasPrefix(fieldKey, []byte{'?', '6'}):
-			c.Purpose2 += fieldValue
+			c.Purpose2 = append(c.Purpose2, fieldValue)
 		default:
 			internal.Debug.Printf("Unmarshal CustomFieldTag: unknown fieldKey: %s\n", fieldKey)
 		}

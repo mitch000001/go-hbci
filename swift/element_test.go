@@ -13,12 +13,12 @@ func TestCustomFieldTagUnmarshal(t *testing.T) {
 		TransactionID:      123,
 		BookingText:        "ABC",
 		PrimanotenNumber:   "xyz",
-		Purpose:            "ahhhjj",
+		Purpose:            []string{"ahh", "hjj"},
 		BankID:             "1000",
 		AccountID:          "56",
 		Name:               "Max Muster",
 		MessageKeyAddition: 99,
-		Purpose2:           "uuz4",
+		Purpose2:           []string{"uu", "z4"},
 	}
 
 	tag := &CustomFieldTag{}
