@@ -319,7 +319,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Königs Wusterhausen",
+		City:          "Pritzwalk",
 	},
 	BankInfo{
 		BankID:        "12070000",
@@ -359,7 +359,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Pritzwalk",
+		City:          "Teltow",
 	},
 	BankInfo{
 		BankID:        "12070000",
@@ -511,7 +511,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Teltow",
+		City:          "Guben",
 	},
 	BankInfo{
 		BankID:        "12070000",
@@ -527,7 +527,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Guben",
+		City:          "Königs Wusterhausen",
 	},
 	BankInfo{
 		BankID:        "12070024",
@@ -2023,7 +2023,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Schönebeck (Elbe)",
+		City:          "Sankt Peter-Ording",
 	},
 	BankInfo{
 		BankID:        "20030000",
@@ -2039,7 +2039,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Sankt Peter-Ording",
+		City:          "Neu Wulmstorf, Niederelbe",
 	},
 	BankInfo{
 		BankID:        "20030000",
@@ -2559,7 +2559,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Neu Wulmstorf, Niederelbe",
+		City:          "Schönebeck (Elbe)",
 	},
 	BankInfo{
 		BankID:        "20030300",
@@ -2935,7 +2935,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Elmshorn",
+		City:          "Wedel",
 	},
 	BankInfo{
 		BankID:        "20070024",
@@ -2943,7 +2943,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Wedel",
+		City:          "Geesthacht",
 	},
 	BankInfo{
 		BankID:        "20070024",
@@ -2999,7 +2999,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Geesthacht",
+		City:          "Elmshorn",
 	},
 	BankInfo{
 		BankID:        "20090400",
@@ -3351,7 +3351,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Flensburg",
+		City:          "Sylt",
 	},
 	BankInfo{
 		BankID:        "21570024",
@@ -3359,7 +3359,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Sylt",
+		City:          "Flensburg",
 	},
 	BankInfo{
 		BankID:        "21661719",
@@ -3390,7 +3390,7 @@ var data = []BankInfo{
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
-		Institute:     "Volksbank-Raiffeisenbank Husum eG",
+		Institute:     "Volksbank-Raiffeisenbank Westküste eG",
 		City:          "Husum",
 	},
 	BankInfo{
@@ -3442,14 +3442,6 @@ var data = []BankInfo{
 		City:          "Hennstedt-Wesselburen",
 	},
 	BankInfo{
-		BankID:        "21860418",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Raiffeisenbank Heide eG",
-		City:          "Heide",
-	},
-	BankInfo{
 		BankID:        "21890022",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
@@ -3494,16 +3486,16 @@ var data = []BankInfo{
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
-		Institute:     "VR Bank Pinneberg eG",
-		City:          "Pinneberg, Halstenbek, Schenef",
+		Institute:     "Volksbank Pinneberg-Uetersen eG",
+		City:          "Pinneberg-Uetersen",
 	},
 	BankInfo{
 		BankID:        "22191405",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
-		Institute:     "Volksbank Pinneberg-Uetersen eG",
-		City:          "Pinneberg-Uetersen",
+		Institute:     "VR Bank Pinneberg eG",
+		City:          "Pinneberg, Halstenbek, Schenef",
 	},
 	BankInfo{
 		BankID:        "22250020",
@@ -3599,7 +3591,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Stockelsdorf",
+		City:          "Oldenburg in Holstein",
 	},
 	BankInfo{
 		BankID:        "23070700",
@@ -3607,7 +3599,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Oldenburg in Holstein",
+		City:          "Lübeck",
 	},
 	BankInfo{
 		BankID:        "23070700",
@@ -3631,7 +3623,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Lübeck",
+		City:          "Stockelsdorf",
 	},
 	BankInfo{
 		BankID:        "23070700",
@@ -3687,14 +3679,6 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Bad Oldesloe",
-	},
-	BankInfo{
-		BankID:        "23070700",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank Privat und Geschäftskunden",
 		City:          "Bad Segeberg",
 	},
 	BankInfo{
@@ -3704,6 +3688,14 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
 		City:          "Eutin",
+	},
+	BankInfo{
+		BankID:        "23070700",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank Privat und Geschäftskunden",
+		City:          "Bad Oldesloe",
 	},
 	BankInfo{
 		BankID:        "23070710",
@@ -3743,7 +3735,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Lüneburg",
+		City:          "Uelzen",
 	},
 	BankInfo{
 		BankID:        "24070024",
@@ -3751,15 +3743,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Uelzen",
-	},
-	BankInfo{
-		BankID:        "24070075",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank",
-		City:          "Uelzen",
+		City:          "Lüneburg",
 	},
 	BankInfo{
 		BankID:        "24070075",
@@ -3768,6 +3752,14 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
 		City:          "Lüneburg",
+	},
+	BankInfo{
+		BankID:        "24070075",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank",
+		City:          "Uelzen",
 	},
 	BankInfo{
 		BankID:        "24121000",
@@ -3850,6 +3842,14 @@ var data = []BankInfo{
 		City:          "Calenberg",
 	},
 	BankInfo{
+		BankID:        "25040066",
+		VersionNumber: "3.0",
+		URL:           "",
+		VersionName:   "",
+		Institute:     "Commerzbank",
+		City:          "Hannover",
+	},
+	BankInfo{
 		BankID:        "25050000",
 		VersionNumber: "3.0",
 		URL:           "https://banking-li1.s-fints-pt-li.de/fints30",
@@ -3898,12 +3898,12 @@ var data = []BankInfo{
 		City:          "Celle",
 	},
 	BankInfo{
-		BankID:        "25069503",
+		BankID:        "25070024",
 		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
+		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
-		Institute:     "Volksbank Diepholz-Barnstorf eG",
-		City:          "Diepholz-Barnstorf",
+		Institute:     "Deutsche Bank Privat und Geschäftskunden",
+		City:          "Soltau",
 	},
 	BankInfo{
 		BankID:        "25070024",
@@ -3919,15 +3919,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Stadthagen",
-	},
-	BankInfo{
-		BankID:        "25070024",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Munster",
+		City:          "Barsinghausen",
 	},
 	BankInfo{
 		BankID:        "25070024",
@@ -3967,23 +3959,23 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
+		City:          "Stadthagen",
+	},
+	BankInfo{
+		BankID:        "25070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank Privat und Geschäftskunden",
+		City:          "Munster",
+	},
+	BankInfo{
+		BankID:        "25070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank Privat und Geschäftskunden",
 		City:          "Holzminden",
-	},
-	BankInfo{
-		BankID:        "25070024",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Soltau",
-	},
-	BankInfo{
-		BankID:        "25070024",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Barsinghausen",
 	},
 	BankInfo{
 		BankID:        "25070066",
@@ -3999,14 +3991,6 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Burgdorf",
-	},
-	BankInfo{
-		BankID:        "25070070",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank",
 		City:          "Hannover",
 	},
 	BankInfo{
@@ -4015,7 +3999,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Barsinghausen",
+		City:          "Langenhagen",
 	},
 	BankInfo{
 		BankID:        "25070070",
@@ -4031,7 +4015,15 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Langenhagen",
+		City:          "Burgdorf",
+	},
+	BankInfo{
+		BankID:        "25070070",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank",
+		City:          "Barsinghausen",
 	},
 	BankInfo{
 		BankID:        "25070077",
@@ -4175,7 +4167,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Bad Pyrmont",
+		City:          "Hameln",
 	},
 	BankInfo{
 		BankID:        "25470024",
@@ -4183,7 +4175,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Hameln",
+		City:          "Bad Pyrmont",
 	},
 	BankInfo{
 		BankID:        "25470073",
@@ -4254,8 +4246,8 @@ var data = []BankInfo{
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
-		Institute:     "Volksbank Grafschaft Hoya eG",
-		City:          "Hoya",
+		Institute:     "Volksbank Aller-Weser eG",
+		City:          "Hoya-Verden",
 	},
 	BankInfo{
 		BankID:        "25690009",
@@ -4270,7 +4262,7 @@ var data = []BankInfo{
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
-		Institute:     "Volksbank Sulingen eG",
+		Institute:     "Volksbank eG Sulingen",
 		City:          "Sulingen",
 	},
 	BankInfo{
@@ -4530,12 +4522,12 @@ var data = []BankInfo{
 		City:          "Northeim",
 	},
 	BankInfo{
-		BankID:        "26090050",
+		BankID:        "26240039",
 		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Volksbank Göttingen eG",
-		City:          "Göttingen",
+		URL:           "",
+		VersionName:   "",
+		Institute:     "Commerzbank",
+		City:          "Northeim",
 	},
 	BankInfo{
 		BankID:        "26240039",
@@ -4544,14 +4536,6 @@ var data = []BankInfo{
 		VersionName:   "",
 		Institute:     "Commerzbank",
 		City:          "Einbeck",
-	},
-	BankInfo{
-		BankID:        "26240039",
-		VersionNumber: "3.0",
-		URL:           "",
-		VersionName:   "",
-		Institute:     "Commerzbank",
-		City:          "Northeim",
 	},
 	BankInfo{
 		BankID:        "26250001",
@@ -4688,14 +4672,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 		Institute:     "Volksbank Melle-Borgloh eG",
 		City:          "Melle",
-	},
-	BankInfo{
-		BankID:        "26562694",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Volksbank Wittlage eG",
-		City:          "Wittlage",
 	},
 	BankInfo{
 		BankID:        "26563960",
@@ -5454,7 +5430,7 @@ var data = []BankInfo{
 		VersionNumber: "3.0",
 		URL:           "https://hbci.olb.de",
 		VersionName:   "FinTS V3.0",
-		Institute:     "Oldenburgische Landesbank AG\n(vormals W. Fortmann & Söhne)",
+		Institute:     "Oldenburgische Landesbank AG \n(vormals W. Fortmann & Söhne)",
 		City:          "Oldenburg (Oldb)",
 	},
 	BankInfo{
@@ -5815,7 +5791,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Bad Zwischenahn",
+		City:          "Oldenburg",
 	},
 	BankInfo{
 		BankID:        "28070057",
@@ -5823,7 +5799,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Oldenburg",
+		City:          "Bad Zwischenahn",
 	},
 	BankInfo{
 		BankID:        "28240023",
@@ -6079,7 +6055,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Weener",
+		City:          "Papenburg",
 	},
 	BankInfo{
 		BankID:        "28570092",
@@ -6095,7 +6071,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Papenburg",
+		City:          "Weener",
 	},
 	BankInfo{
 		BankID:        "28590075",
@@ -6151,7 +6127,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Norden",
+		City:          "Nienburg",
 	},
 	BankInfo{
 		BankID:        "29040090",
@@ -6191,7 +6167,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Bremervörde",
+		City:          "Norden",
 	},
 	BankInfo{
 		BankID:        "29040090",
@@ -6199,7 +6175,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Nienburg",
+		City:          "Bremervörde",
 	},
 	BankInfo{
 		BankID:        "29040090",
@@ -6271,7 +6247,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Achim",
+		City:          "Brake",
 	},
 	BankInfo{
 		BankID:        "29040090",
@@ -6279,7 +6255,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Brake",
+		City:          "Achim",
 	},
 	BankInfo{
 		BankID:        "29050000",
@@ -6303,15 +6279,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Delmenhorst",
-	},
-	BankInfo{
-		BankID:        "29070024",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Bremen",
+		City:          "Lohne (Oldenburg)",
 	},
 	BankInfo{
 		BankID:        "29070024",
@@ -6327,6 +6295,14 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
+		City:          "Bremerhaven",
+	},
+	BankInfo{
+		BankID:        "29070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank Privat und Geschäftskunden",
 		City:          "Cloppenburg",
 	},
 	BankInfo{
@@ -6335,7 +6311,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Lohne (Oldenburg)",
+		City:          "Delmenhorst",
 	},
 	BankInfo{
 		BankID:        "29070024",
@@ -6359,7 +6335,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Bremerhaven",
+		City:          "Bremen",
 	},
 	BankInfo{
 		BankID:        "29070050",
@@ -6375,7 +6351,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Achim",
+		City:          "Bremen",
 	},
 	BankInfo{
 		BankID:        "29070050",
@@ -6383,7 +6359,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Bremen",
+		City:          "Achim",
 	},
 	BankInfo{
 		BankID:        "29070051",
@@ -6480,14 +6456,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 		Institute:     "Volksbank Schwanewede eG",
 		City:          "Schwanewede",
-	},
-	BankInfo{
-		BankID:        "29162697",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Volksbank Verden eG",
-		City:          "Verden",
 	},
 	BankInfo{
 		BankID:        "29165545",
@@ -6602,12 +6570,12 @@ var data = []BankInfo{
 		City:          "Düsseldorf",
 	},
 	BankInfo{
-		BankID:        "30030500",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
+		BankID:        "30020900",
+		VersionNumber: "",
+		URL:           "https://fints.targobank.de/travicretail_fints30pintanbroker/FinTs30PinTanHttpGate",
 		VersionName:   "FinTS V3.0",
-		Institute:     "Bank11Direkt GmbH",
-		City:          "Neuss",
+		Institute:     "TARGOBANK AG",
+		City:          "Düsseldorf",
 	},
 	BankInfo{
 		BankID:        "30030880",
@@ -6631,7 +6599,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Kaarst",
+		City:          "Ratingen",
 	},
 	BankInfo{
 		BankID:        "30040000",
@@ -6663,7 +6631,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Grevenbroich",
+		City:          "Mettmann",
 	},
 	BankInfo{
 		BankID:        "30040000",
@@ -6679,7 +6647,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Ratingen",
+		City:          "Grevenbroich",
 	},
 	BankInfo{
 		BankID:        "30040000",
@@ -6695,7 +6663,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Mettmann",
+		City:          "Kaarst",
 	},
 	BankInfo{
 		BankID:        "30050110",
@@ -6727,7 +6695,15 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Kaarst",
+		City:          "Monheim am Rhein",
+	},
+	BankInfo{
+		BankID:        "30070010",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank",
+		City:          "Erkrath",
 	},
 	BankInfo{
 		BankID:        "30070010",
@@ -6736,14 +6712,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
 		City:          "Düsseldorf",
-	},
-	BankInfo{
-		BankID:        "30070010",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank",
-		City:          "Meerbusch",
 	},
 	BankInfo{
 		BankID:        "30070010",
@@ -6783,7 +6751,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Monheim am Rhein",
+		City:          "Meerbusch",
 	},
 	BankInfo{
 		BankID:        "30070010",
@@ -6791,7 +6759,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Erkrath",
+		City:          "Kaarst",
 	},
 	BankInfo{
 		BankID:        "30070024",
@@ -6799,7 +6767,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Ratingen",
+		City:          "Düsseldorf",
 	},
 	BankInfo{
 		BankID:        "30070024",
@@ -6863,7 +6831,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Düsseldorf",
+		City:          "Ratingen",
 	},
 	BankInfo{
 		BankID:        "30150200",
@@ -6927,7 +6895,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Mönchengladbach",
+		City:          "Meerbusch",
 	},
 	BankInfo{
 		BankID:        "30220190",
@@ -6935,7 +6903,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Meerbusch",
+		City:          "Mönchengladbach",
 	},
 	BankInfo{
 		BankID:        "30351220",
@@ -6954,6 +6922,14 @@ var data = []BankInfo{
 		City:          "Neuss",
 	},
 	BankInfo{
+		BankID:        "30530500",
+		VersionNumber: "3.0",
+		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Bank11 für Privatkunden und Handel GmbH",
+		City:          "Neuss",
+	},
+	BankInfo{
 		BankID:        "30550000",
 		VersionNumber: "3.0",
 		URL:           "https://banking-rl5.s-fints-pt-rl.de/fints30",
@@ -6968,6 +6944,14 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 		Institute:     "VR Bank eG",
 		City:          "Dormagen",
+	},
+	BankInfo{
+		BankID:        "31040015",
+		VersionNumber: "3.0",
+		URL:           "",
+		VersionName:   "",
+		Institute:     "Commerzbank",
+		City:          "Wegberg",
 	},
 	BankInfo{
 		BankID:        "31040015",
@@ -6994,14 +6978,6 @@ var data = []BankInfo{
 		City:          "Mönchengladbach",
 	},
 	BankInfo{
-		BankID:        "31040015",
-		VersionNumber: "3.0",
-		URL:           "",
-		VersionName:   "",
-		Institute:     "Commerzbank",
-		City:          "Wegberg",
-	},
-	BankInfo{
 		BankID:        "31050000",
 		VersionNumber: "3.0",
 		URL:           "https://banking-rl1.s-fints-pt-rl.de/fints30",
@@ -7022,16 +6998,16 @@ var data = []BankInfo{
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
-		Institute:     "VB Mönchengladbach eG",
-		City:          "Mönchengladbach, Willich",
+		Institute:     "Volksbank Mönchengladbach eG",
+		City:          "Mönchengladbach",
 	},
 	BankInfo{
 		BankID:        "31060517",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
-		Institute:     "Volksbank Mönchengladbach eG",
-		City:          "Mönchengladbach",
+		Institute:     "VB Mönchengladbach eG",
+		City:          "Mönchengladbach, Willich",
 	},
 	BankInfo{
 		BankID:        "31062154",
@@ -7055,14 +7031,6 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Mönchengladbach",
-	},
-	BankInfo{
-		BankID:        "31070001",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank",
 		City:          "Korschenbroich",
 	},
 	BankInfo{
@@ -7082,20 +7050,12 @@ var data = []BankInfo{
 		City:          "Erkelenz",
 	},
 	BankInfo{
-		BankID:        "31070024",
+		BankID:        "31070001",
 		VersionNumber: "3.0",
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Erkelenz",
-	},
-	BankInfo{
-		BankID:        "31070024",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Korschenbroich",
+		Institute:     "Deutsche Bank",
+		City:          "Mönchengladbach",
 	},
 	BankInfo{
 		BankID:        "31070024",
@@ -7112,6 +7072,22 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
 		City:          "Mönchengladbach",
+	},
+	BankInfo{
+		BankID:        "31070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank Privat und Geschäftskunden",
+		City:          "Erkelenz",
+	},
+	BankInfo{
+		BankID:        "31070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank Privat und Geschäftskunden",
+		City:          "Korschenbroich",
 	},
 	BankInfo{
 		BankID:        "31251220",
@@ -7143,14 +7119,6 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Grefrath",
-	},
-	BankInfo{
-		BankID:        "31470004",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank",
 		City:          "Viersen",
 	},
 	BankInfo{
@@ -7160,6 +7128,14 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
 		City:          "Nettetal",
+	},
+	BankInfo{
+		BankID:        "31470004",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank",
+		City:          "Grefrath",
 	},
 	BankInfo{
 		BankID:        "31470024",
@@ -7295,7 +7271,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Krefeld",
+		City:          "Willich",
 	},
 	BankInfo{
 		BankID:        "32070024",
@@ -7303,7 +7279,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Willich",
+		City:          "Krefeld",
 	},
 	BankInfo{
 		BankID:        "32070080",
@@ -7383,7 +7359,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Goch",
+		City:          "Rees",
 	},
 	BankInfo{
 		BankID:        "32440023",
@@ -7407,7 +7383,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Rees",
+		City:          "Goch",
 	},
 	BankInfo{
 		BankID:        "32450000",
@@ -7455,7 +7431,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Goch",
+		City:          "Kleve",
 	},
 	BankInfo{
 		BankID:        "32470077",
@@ -7463,7 +7439,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Kleve",
+		City:          "Goch",
 	},
 	BankInfo{
 		BankID:        "32470077",
@@ -7551,7 +7527,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Wülfrath",
+		City:          "Wuppertal",
 	},
 	BankInfo{
 		BankID:        "33070024",
@@ -7575,7 +7551,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Wuppertal",
+		City:          "Mettmann",
 	},
 	BankInfo{
 		BankID:        "33070024",
@@ -7583,7 +7559,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Schwelm",
+		City:          "Wülfrath",
 	},
 	BankInfo{
 		BankID:        "33070024",
@@ -7599,7 +7575,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Mettmann",
+		City:          "Schwelm",
 	},
 	BankInfo{
 		BankID:        "33070090",
@@ -7607,7 +7583,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Wuppertal",
+		City:          "Schwelm",
 	},
 	BankInfo{
 		BankID:        "33070090",
@@ -7615,7 +7591,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Ennepetal",
+		City:          "Wülfrath",
 	},
 	BankInfo{
 		BankID:        "33070090",
@@ -7647,7 +7623,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Schwelm",
+		City:          "Wuppertal",
 	},
 	BankInfo{
 		BankID:        "33070090",
@@ -7655,7 +7631,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Wülfrath",
+		City:          "Ennepetal",
 	},
 	BankInfo{
 		BankID:        "33440035",
@@ -7687,7 +7663,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Wipperfürth",
+		City:          "Wermelskirchen",
 	},
 	BankInfo{
 		BankID:        "34040049",
@@ -7695,7 +7671,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Wermelskirchen",
+		City:          "Radevormwald",
 	},
 	BankInfo{
 		BankID:        "34040049",
@@ -7711,7 +7687,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Radevormwald",
+		City:          "Wipperfürth",
 	},
 	BankInfo{
 		BankID:        "34050000",
@@ -7751,7 +7727,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Wipperfürth",
+		City:          "Remscheid",
 	},
 	BankInfo{
 		BankID:        "34070024",
@@ -7775,7 +7751,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Wermelskirchen",
+		City:          "Wipperfürth",
 	},
 	BankInfo{
 		BankID:        "34070024",
@@ -7783,6 +7759,14 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
+		City:          "Wermelskirchen",
+	},
+	BankInfo{
+		BankID:        "34070093",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank",
 		City:          "Remscheid",
 	},
 	BankInfo{
@@ -7816,14 +7800,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
 		City:          "Radevormwald",
-	},
-	BankInfo{
-		BankID:        "34070093",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank",
-		City:          "Remscheid",
 	},
 	BankInfo{
 		BankID:        "34240050",
@@ -7887,7 +7863,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Duisburg",
+		City:          "Moers",
 	},
 	BankInfo{
 		BankID:        "35040038",
@@ -7895,7 +7871,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Moers",
+		City:          "Duisburg",
 	},
 	BankInfo{
 		BankID:        "35050000",
@@ -7959,7 +7935,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Wesel",
+		City:          "Voerde (Niederrhein)",
 	},
 	BankInfo{
 		BankID:        "35070024",
@@ -7967,7 +7943,15 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Voerde (Niederrhein)",
+		City:          "Wesel",
+	},
+	BankInfo{
+		BankID:        "35070030",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank",
+		City:          "Duisburg",
 	},
 	BankInfo{
 		BankID:        "35070030",
@@ -7983,7 +7967,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Kamp-Lintfort",
+		City:          "Voerde (Niederrhein)",
 	},
 	BankInfo{
 		BankID:        "35070030",
@@ -8007,15 +7991,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Voerde (Niederrhein)",
-	},
-	BankInfo{
-		BankID:        "35070030",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank",
-		City:          "Duisburg",
+		City:          "Kamp-Lintfort",
 	},
 	BankInfo{
 		BankID:        "35261248",
@@ -8047,6 +8023,14 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
+		City:          "Dinslaken",
+	},
+	BankInfo{
+		BankID:        "35640064",
+		VersionNumber: "3.0",
+		URL:           "",
+		VersionName:   "",
+		Institute:     "Commerzbank",
 		City:          "Xanten",
 	},
 	BankInfo{
@@ -8064,14 +8048,6 @@ var data = []BankInfo{
 		VersionName:   "",
 		Institute:     "Commerzbank",
 		City:          "Voerde",
-	},
-	BankInfo{
-		BankID:        "35640064",
-		VersionNumber: "3.0",
-		URL:           "",
-		VersionName:   "",
-		Institute:     "Commerzbank",
-		City:          "Dinslaken",
 	},
 	BankInfo{
 		BankID:        "35650000",
@@ -8367,7 +8343,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Troisdorf",
+		City:          "Pulheim",
 	},
 	BankInfo{
 		BankID:        "37040044",
@@ -8375,7 +8351,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Wesseling",
+		City:          "Bergisch Gladbach",
 	},
 	BankInfo{
 		BankID:        "37040044",
@@ -8399,7 +8375,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Pulheim",
+		City:          "Wesseling",
 	},
 	BankInfo{
 		BankID:        "37040044",
@@ -8407,7 +8383,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Bergisch Gladbach",
+		City:          "Troisdorf",
 	},
 	BankInfo{
 		BankID:        "37050198",
@@ -8462,24 +8438,16 @@ var data = []BankInfo{
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
-		Institute:     "Raiffeisenbank Frechen-Hürth",
-		City:          "Frechen-Hürth",
+		Institute:     "RB Frechen-Hürth eG",
+		City:          "Frechen-Hürth, Köln",
 	},
 	BankInfo{
 		BankID:        "37062365",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
-		Institute:     "RB Frechen-Hürth eG",
-		City:          "Frechen-Hürth, Köln",
-	},
-	BankInfo{
-		BankID:        "37062600",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Paffrather RB eG",
-		City:          "Paffrath, Overath-Rösrath",
+		Institute:     "Raiffeisenbank Frechen-Hürth",
+		City:          "Frechen-Hürth",
 	},
 	BankInfo{
 		BankID:        "37062600",
@@ -8488,6 +8456,14 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 		Institute:     "VR Bank eG Bergisch Gladbach",
 		City:          "Paffrath",
+	},
+	BankInfo{
+		BankID:        "37062600",
+		VersionNumber: "3.0",
+		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Paffrather RB eG",
+		City:          "Paffrath, Overath-Rösrath",
 	},
 	BankInfo{
 		BankID:        "37063367",
@@ -8532,18 +8508,10 @@ var data = []BankInfo{
 	BankInfo{
 		BankID:        "37069252",
 		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
+		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Volksbank Erft eG",
 		City:          "Erft",
-	},
-	BankInfo{
-		BankID:        "37069252",
-		VersionNumber: "",
-		URL:           "",
-		VersionName:   "",
-		Institute:     "",
-		City:          "",
 	},
 	BankInfo{
 		BankID:        "37069306",
@@ -8687,7 +8655,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Eitorf",
+		City:          "Köln",
 	},
 	BankInfo{
 		BankID:        "37070024",
@@ -8735,7 +8703,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Köln",
+		City:          "Eitorf",
 	},
 	BankInfo{
 		BankID:        "37070024",
@@ -8759,7 +8727,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Grevenbroich",
+		City:          "Troisdorf",
 	},
 	BankInfo{
 		BankID:        "37070024",
@@ -8775,7 +8743,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Hürth",
+		City:          "Wesseling",
 	},
 	BankInfo{
 		BankID:        "37070024",
@@ -8799,7 +8767,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Troisdorf",
+		City:          "Grevenbroich",
 	},
 	BankInfo{
 		BankID:        "37070024",
@@ -8807,7 +8775,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Wesseling",
+		City:          "Hürth",
 	},
 	BankInfo{
 		BankID:        "37070060",
@@ -8815,7 +8783,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Eitorf",
+		City:          "Siegburg",
 	},
 	BankInfo{
 		BankID:        "37070060",
@@ -8831,7 +8799,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Köln",
+		City:          "Brühl",
 	},
 	BankInfo{
 		BankID:        "37070060",
@@ -8895,7 +8863,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Siegburg",
+		City:          "Köln",
 	},
 	BankInfo{
 		BankID:        "37070060",
@@ -8927,7 +8895,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Brühl",
+		City:          "Eitorf",
 	},
 	BankInfo{
 		BankID:        "37070060",
@@ -8975,7 +8943,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Leverkusen",
+		City:          "Leichlingen (Rheinland)",
 	},
 	BankInfo{
 		BankID:        "37570024",
@@ -8991,7 +8959,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Leichlingen (Rheinland)",
+		City:          "Leverkusen",
 	},
 	BankInfo{
 		BankID:        "37570064",
@@ -9111,23 +9079,15 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Bad Honnef",
-	},
-	BankInfo{
-		BankID:        "38070024",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Meckenheim",
-	},
-	BankInfo{
-		BankID:        "38070024",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank Privat und Geschäftskunden",
 		City:          "Remagen",
+	},
+	BankInfo{
+		BankID:        "38070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank Privat und Geschäftskunden",
+		City:          "Bad Honnef",
 	},
 	BankInfo{
 		BankID:        "38070024",
@@ -9143,14 +9103,14 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Bad Neuenahr-Ahrweiler",
+		City:          "Meckenheim",
 	},
 	BankInfo{
-		BankID:        "38070059",
+		BankID:        "38070024",
 		VersionNumber: "3.0",
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank",
+		Institute:     "Deutsche Bank Privat und Geschäftskunden",
 		City:          "Bad Neuenahr-Ahrweiler",
 	},
 	BankInfo{
@@ -9167,7 +9127,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Bad Honnef",
+		City:          "Bad Neuenahr-Ahrweiler",
 	},
 	BankInfo{
 		BankID:        "38070059",
@@ -9192,6 +9152,14 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
 		City:          "Remagen",
+	},
+	BankInfo{
+		BankID:        "38070059",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank",
+		City:          "Bad Honnef",
 	},
 	BankInfo{
 		BankID:        "38070724",
@@ -9239,14 +9207,6 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Wiehl",
-	},
-	BankInfo{
-		BankID:        "38440016",
-		VersionNumber: "3.0",
-		URL:           "",
-		VersionName:   "",
-		Institute:     "Commerzbank",
 		City:          "Bergneustadt",
 	},
 	BankInfo{
@@ -9264,6 +9224,14 @@ var data = []BankInfo{
 		VersionName:   "",
 		Institute:     "Commerzbank",
 		City:          "Waldbröl",
+	},
+	BankInfo{
+		BankID:        "38440016",
+		VersionNumber: "3.0",
+		URL:           "",
+		VersionName:   "",
+		Institute:     "Commerzbank",
+		City:          "Wiehl",
 	},
 	BankInfo{
 		BankID:        "38450000",
@@ -9351,7 +9319,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Engelskirchen",
+		City:          "Waldbröl",
 	},
 	BankInfo{
 		BankID:        "38470091",
@@ -9367,7 +9335,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Waldbröl",
+		City:          "Engelskirchen",
 	},
 	BankInfo{
 		BankID:        "38621500",
@@ -9391,7 +9359,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Aachen",
+		City:          "Simmerath",
 	},
 	BankInfo{
 		BankID:        "39040013",
@@ -9431,7 +9399,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Simmerath",
+		City:          "Aachen",
 	},
 	BankInfo{
 		BankID:        "39050000",
@@ -9455,7 +9423,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Aachen",
+		City:          "Jülich",
 	},
 	BankInfo{
 		BankID:        "39070020",
@@ -9471,7 +9439,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Heinsberg",
+		City:          "Alsdorf",
 	},
 	BankInfo{
 		BankID:        "39070020",
@@ -9487,7 +9455,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Würselen",
+		City:          "Aachen",
 	},
 	BankInfo{
 		BankID:        "39070020",
@@ -9527,7 +9495,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Jülich",
+		City:          "Würselen",
 	},
 	BankInfo{
 		BankID:        "39070020",
@@ -9535,7 +9503,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Alsdorf",
+		City:          "Heinsberg",
 	},
 	BankInfo{
 		BankID:        "39070024",
@@ -9543,7 +9511,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Aachen",
+		City:          "Würselen",
 	},
 	BankInfo{
 		BankID:        "39070024",
@@ -9591,7 +9559,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Hückelhoven",
+		City:          "Aachen",
 	},
 	BankInfo{
 		BankID:        "39070024",
@@ -9623,7 +9591,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Würselen",
+		City:          "Hückelhoven",
 	},
 	BankInfo{
 		BankID:        "39162980",
@@ -9671,7 +9639,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Düren",
+		City:          "Kreuzau",
 	},
 	BankInfo{
 		BankID:        "39570024",
@@ -9679,14 +9647,6 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Kreuzau",
-	},
-	BankInfo{
-		BankID:        "39570061",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank",
 		City:          "Düren",
 	},
 	BankInfo{
@@ -9696,6 +9656,14 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
 		City:          "Kreuzau",
+	},
+	BankInfo{
+		BankID:        "39570061",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank",
+		City:          "Düren",
 	},
 	BankInfo{
 		BankID:        "40030000",
@@ -9711,15 +9679,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Münster",
-	},
-	BankInfo{
-		BankID:        "40040028",
-		VersionNumber: "3.0",
-		URL:           "",
-		VersionName:   "",
-		Institute:     "Commerzbank",
-		City:          "Emsdetten",
+		City:          "Greven",
 	},
 	BankInfo{
 		BankID:        "40040028",
@@ -9751,7 +9711,15 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Greven",
+		City:          "Emsdetten",
+	},
+	BankInfo{
+		BankID:        "40040028",
+		VersionNumber: "3.0",
+		URL:           "",
+		VersionName:   "",
+		Institute:     "Commerzbank",
+		City:          "Münster",
 	},
 	BankInfo{
 		BankID:        "40050150",
@@ -9842,14 +9810,6 @@ var data = []BankInfo{
 		City:          "Baumberge",
 	},
 	BankInfo{
-		BankID:        "40069462",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Volksbank Sprakel eG.",
-		City:          "Sprakel",
-	},
-	BankInfo{
 		BankID:        "40069546",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
@@ -9919,14 +9879,6 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Münster",
-	},
-	BankInfo{
-		BankID:        "40070024",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank Privat und Geschäftskunden",
 		City:          "Coesfeld",
 	},
 	BankInfo{
@@ -9954,6 +9906,14 @@ var data = []BankInfo{
 		City:          "Steinfurt",
 	},
 	BankInfo{
+		BankID:        "40070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank Privat und Geschäftskunden",
+		City:          "Münster",
+	},
+	BankInfo{
 		BankID:        "40070080",
 		VersionNumber: "3.0",
 		URL:           "https://fints.deutsche-bank.de/",
@@ -9975,23 +9935,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Steinfurt",
-	},
-	BankInfo{
-		BankID:        "40070080",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank",
 		City:          "Dülmen",
-	},
-	BankInfo{
-		BankID:        "40070080",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank",
-		City:          "Coesfeld",
 	},
 	BankInfo{
 		BankID:        "40070080",
@@ -10000,6 +9944,22 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
 		City:          "Warendorf",
+	},
+	BankInfo{
+		BankID:        "40070080",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank",
+		City:          "Coesfeld",
+	},
+	BankInfo{
+		BankID:        "40070080",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank",
+		City:          "Steinfurt",
 	},
 	BankInfo{
 		BankID:        "40090900",
@@ -10175,7 +10135,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Vreden",
+		City:          "Rheine",
 	},
 	BankInfo{
 		BankID:        "40370024",
@@ -10215,7 +10175,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Stadtlohn",
+		City:          "Vreden",
 	},
 	BankInfo{
 		BankID:        "40370024",
@@ -10223,7 +10183,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Rheine",
+		City:          "Stadtlohn",
 	},
 	BankInfo{
 		BankID:        "40370079",
@@ -10351,7 +10311,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Hamm",
+		City:          "Ahlen",
 	},
 	BankInfo{
 		BankID:        "41070024",
@@ -10359,14 +10319,6 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Ahlen",
-	},
-	BankInfo{
-		BankID:        "41070049",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank",
 		City:          "Hamm",
 	},
 	BankInfo{
@@ -10376,6 +10328,14 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
 		City:          "Ahlen",
+	},
+	BankInfo{
+		BankID:        "41070049",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank",
+		City:          "Hamm",
 	},
 	BankInfo{
 		BankID:        "41250035",
@@ -10438,16 +10398,8 @@ var data = []BankInfo{
 		VersionNumber: "3.0",
 		URL:           "https://banking-wl3.s-fints-pt-wl.de/fints30",
 		VersionName:   "FinTS V3.0",
-		Institute:     "Sparkasse Soest",
+		Institute:     "Sparkasse SoestWerl",
 		City:          "Soest",
-	},
-	BankInfo{
-		BankID:        "41451750",
-		VersionNumber: "3.0",
-		URL:           "https://banking-wl1.s-fints-pt-wl.de/fints30",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Sparkasse Werl",
-		City:          "Werl",
 	},
 	BankInfo{
 		BankID:        "41460116",
@@ -10543,7 +10495,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Werl",
+		City:          "Lippstadt",
 	},
 	BankInfo{
 		BankID:        "41670024",
@@ -10551,7 +10503,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Lippstadt",
+		City:          "Brilon",
 	},
 	BankInfo{
 		BankID:        "41670024",
@@ -10567,7 +10519,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Brilon",
+		City:          "Werl",
 	},
 	BankInfo{
 		BankID:        "41670027",
@@ -10623,7 +10575,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Recklinghausen",
+		City:          "Marl",
 	},
 	BankInfo{
 		BankID:        "42070024",
@@ -10663,7 +10615,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Herten",
+		City:          "Recklinghausen",
 	},
 	BankInfo{
 		BankID:        "42070024",
@@ -10679,7 +10631,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Marl",
+		City:          "Herten",
 	},
 	BankInfo{
 		BankID:        "42070062",
@@ -10687,7 +10639,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Herten",
+		City:          "Gelsenkirchen",
 	},
 	BankInfo{
 		BankID:        "42070062",
@@ -10727,23 +10679,23 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Recklinghausen",
-	},
-	BankInfo{
-		BankID:        "42070062",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank",
-		City:          "Gelsenkirchen",
-	},
-	BankInfo{
-		BankID:        "42070062",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank",
 		City:          "Marl",
+	},
+	BankInfo{
+		BankID:        "42070062",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank",
+		City:          "Herten",
+	},
+	BankInfo{
+		BankID:        "42070062",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank",
+		City:          "Recklinghausen",
 	},
 	BankInfo{
 		BankID:        "42260001",
@@ -10839,7 +10791,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Borken",
+		City:          "Rhede",
 	},
 	BankInfo{
 		BankID:        "42840005",
@@ -10855,7 +10807,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Rhede",
+		City:          "Borken",
 	},
 	BankInfo{
 		BankID:        "42850035",
@@ -11015,6 +10967,14 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
+		City:          "Witten",
+	},
+	BankInfo{
+		BankID:        "43070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank Privat und Geschäftskunden",
 		City:          "Bochum",
 	},
 	BankInfo{
@@ -11040,14 +11000,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
 		City:          "Sprockhövel",
-	},
-	BankInfo{
-		BankID:        "43070024",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Witten",
 	},
 	BankInfo{
 		BankID:        "43070061",
@@ -11175,7 +11127,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Dortmund",
+		City:          "Werne",
 	},
 	BankInfo{
 		BankID:        "44070024",
@@ -11183,7 +11135,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Castrop-Rauxel",
+		City:          "Dortmund",
 	},
 	BankInfo{
 		BankID:        "44070024",
@@ -11215,7 +11167,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Werne",
+		City:          "Waltrop",
 	},
 	BankInfo{
 		BankID:        "44070024",
@@ -11223,7 +11175,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Waltrop",
+		City:          "Castrop-Rauxel",
 	},
 	BankInfo{
 		BankID:        "44070050",
@@ -11343,14 +11295,6 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Hemer",
-	},
-	BankInfo{
-		BankID:        "44540022",
-		VersionNumber: "3.0",
-		URL:           "",
-		VersionName:   "",
-		Institute:     "Commerzbank",
 		City:          "Menden",
 	},
 	BankInfo{
@@ -11360,6 +11304,14 @@ var data = []BankInfo{
 		VersionName:   "",
 		Institute:     "Commerzbank",
 		City:          "Iserlohn",
+	},
+	BankInfo{
+		BankID:        "44540022",
+		VersionNumber: "3.0",
+		URL:           "",
+		VersionName:   "",
+		Institute:     "Commerzbank",
+		City:          "Hemer",
 	},
 	BankInfo{
 		BankID:        "44550045",
@@ -11383,7 +11335,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Neuenrade",
+		City:          "Plettenberg",
 	},
 	BankInfo{
 		BankID:        "44570004",
@@ -11423,7 +11375,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Plettenberg",
+		City:          "Werdohl",
 	},
 	BankInfo{
 		BankID:        "44570004",
@@ -11431,7 +11383,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Werdohl",
+		City:          "Neuenrade",
 	},
 	BankInfo{
 		BankID:        "44570024",
@@ -11439,7 +11391,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Iserlohn",
+		City:          "Werdohl",
 	},
 	BankInfo{
 		BankID:        "44570024",
@@ -11455,7 +11407,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Hemer",
+		City:          "Iserlohn",
 	},
 	BankInfo{
 		BankID:        "44570024",
@@ -11479,7 +11431,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Werdohl",
+		City:          "Plettenberg",
 	},
 	BankInfo{
 		BankID:        "44570024",
@@ -11487,7 +11439,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Plettenberg",
+		City:          "Hemer",
 	},
 	BankInfo{
 		BankID:        "44761312",
@@ -11543,7 +11495,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Gevelsberg",
+		City:          "Lüdenscheid",
 	},
 	BankInfo{
 		BankID:        "45070002",
@@ -11575,7 +11527,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Lüdenscheid",
+		City:          "Gevelsberg",
 	},
 	BankInfo{
 		BankID:        "45070024",
@@ -11634,14 +11586,6 @@ var data = []BankInfo{
 		City:          "Witten",
 	},
 	BankInfo{
-		BankID:        "45251480",
-		VersionNumber: "3.0",
-		URL:           "https://banking-wl6.s-fints-pt-wl.de/fints30",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Stadtsparkasse Wetter (Ruhr)",
-		City:          "Wetter",
-	},
-	BankInfo{
 		BankID:        "45251515",
 		VersionNumber: "3.0",
 		URL:           "https://banking-wl2.s-fints-pt-wl.de/fints30",
@@ -11670,7 +11614,7 @@ var data = []BankInfo{
 		VersionNumber: "3.0",
 		URL:           "https://banking-wl4.s-fints-pt-wl.de/fints30",
 		VersionName:   "FinTS V3.0",
-		Institute:     "Stadtsparkasse Gevelsberg",
+		Institute:     "Sparkasse Gevelsberg-Wetter",
 		City:          "Gevelsberg",
 	},
 	BankInfo{
@@ -11695,7 +11639,15 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Halver",
+		City:          "Lüdenscheid",
+	},
+	BankInfo{
+		BankID:        "45840026",
+		VersionNumber: "3.0",
+		URL:           "",
+		VersionName:   "",
+		Institute:     "Commerzbank",
+		City:          "Olsberg",
 	},
 	BankInfo{
 		BankID:        "45840026",
@@ -11727,15 +11679,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Lüdenscheid",
-	},
-	BankInfo{
-		BankID:        "45840026",
-		VersionNumber: "3.0",
-		URL:           "",
-		VersionName:   "",
-		Institute:     "Commerzbank",
-		City:          "Olsberg",
+		City:          "Halver",
 	},
 	BankInfo{
 		BankID:        "45841031",
@@ -11799,6 +11743,14 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
+		City:          "Attendorn",
+	},
+	BankInfo{
+		BankID:        "46040033",
+		VersionNumber: "3.0",
+		URL:           "",
+		VersionName:   "",
+		Institute:     "Commerzbank",
 		City:          "Lennestadt",
 	},
 	BankInfo{
@@ -11815,14 +11767,6 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Siegen",
-	},
-	BankInfo{
-		BankID:        "46040033",
-		VersionNumber: "3.0",
-		URL:           "",
-		VersionName:   "",
-		Institute:     "Commerzbank",
 		City:          "Wissen",
 	},
 	BankInfo{
@@ -11831,7 +11775,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Attendorn",
+		City:          "Siegen",
 	},
 	BankInfo{
 		BankID:        "46050001",
@@ -11848,14 +11792,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 		Institute:     "Sparkasse Burbach-Neunkirchen",
 		City:          "Burbach-Neunkirchen",
-	},
-	BankInfo{
-		BankID:        "46051875",
-		VersionNumber: "3.0",
-		URL:           "https://banking-wl4.s-fints-pt-wl.de/fints30",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Stadtsparkasse Hilchenbach",
-		City:          "Hilchenbach",
 	},
 	BankInfo{
 		BankID:        "46052855",
@@ -11935,7 +11871,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Wissen",
+		City:          "Biedenkopf",
 	},
 	BankInfo{
 		BankID:        "46070024",
@@ -11951,23 +11887,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Attendorn",
-	},
-	BankInfo{
-		BankID:        "46070024",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Siegen",
-	},
-	BankInfo{
-		BankID:        "46070024",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Bad Laasphe",
+		City:          "Wissen",
 	},
 	BankInfo{
 		BankID:        "46070024",
@@ -11983,7 +11903,23 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Biedenkopf",
+		City:          "Bad Laasphe",
+	},
+	BankInfo{
+		BankID:        "46070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank Privat und Geschäftskunden",
+		City:          "Schmallenberg",
+	},
+	BankInfo{
+		BankID:        "46070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank Privat und Geschäftskunden",
+		City:          "Siegen",
 	},
 	BankInfo{
 		BankID:        "46070024",
@@ -12055,7 +11991,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Schmallenberg",
+		City:          "Betzdorf",
 	},
 	BankInfo{
 		BankID:        "46070024",
@@ -12063,15 +11999,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Betzdorf",
-	},
-	BankInfo{
-		BankID:        "46070090",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank",
-		City:          "Siegen",
+		City:          "Attendorn",
 	},
 	BankInfo{
 		BankID:        "46070090",
@@ -12080,6 +12008,14 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
 		City:          "Lennestadt",
+	},
+	BankInfo{
+		BankID:        "46070090",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank",
+		City:          "Biedenkopf",
 	},
 	BankInfo{
 		BankID:        "46070090",
@@ -12143,7 +12079,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Biedenkopf",
+		City:          "Kreuztal",
 	},
 	BankInfo{
 		BankID:        "46070090",
@@ -12199,7 +12135,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Kreuztal",
+		City:          "Siegen",
 	},
 	BankInfo{
 		BankID:        "46240016",
@@ -12351,7 +12287,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Sundern (Sauerland)",
+		City:          "Meschede",
 	},
 	BankInfo{
 		BankID:        "46670007",
@@ -12359,7 +12295,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Meschede",
+		City:          "Sundern (Sauerland)",
 	},
 	BankInfo{
 		BankID:        "46670024",
@@ -12375,7 +12311,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Sundern (Sauerland)",
+		City:          "Meschede",
 	},
 	BankInfo{
 		BankID:        "46670024",
@@ -12383,7 +12319,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Meschede",
+		City:          "Sundern (Sauerland)",
 	},
 	BankInfo{
 		BankID:        "47240047",
@@ -12430,16 +12366,8 @@ var data = []BankInfo{
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
-		Institute:     "Volksbank Paderborn-Höxter-Detmold eG",
+		Institute:     "VerbundVolksbank OWL eG",
 		City:          "Paderborn",
-	},
-	BankInfo{
-		BankID:        "47260121",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Volksbank Paderborn-Höxter eG",
-		City:          "Paderborn, Höxter, Detmold",
 	},
 	BankInfo{
 		BankID:        "47260234",
@@ -12511,14 +12439,6 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Höxter",
-	},
-	BankInfo{
-		BankID:        "47270024",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank Privat und Geschäftskunden",
 		City:          "Paderborn",
 	},
 	BankInfo{
@@ -12546,6 +12466,14 @@ var data = []BankInfo{
 		City:          "Geseke",
 	},
 	BankInfo{
+		BankID:        "47270024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank Privat und Geschäftskunden",
+		City:          "Höxter",
+	},
+	BankInfo{
 		BankID:        "47270029",
 		VersionNumber: "3.0",
 		URL:           "https://fints.deutsche-bank.de/",
@@ -12567,7 +12495,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Bad Driburg",
+		City:          "Höxter",
 	},
 	BankInfo{
 		BankID:        "47270029",
@@ -12575,7 +12503,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Höxter",
+		City:          "Bad Driburg",
 	},
 	BankInfo{
 		BankID:        "47270029",
@@ -12599,7 +12527,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Bad Pyrmont",
+		City:          "Detmold",
 	},
 	BankInfo{
 		BankID:        "47640051",
@@ -12623,7 +12551,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Detmold",
+		City:          "Bad Pyrmont",
 	},
 	BankInfo{
 		BankID:        "47650130",
@@ -12647,23 +12575,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Detmold",
-	},
-	BankInfo{
-		BankID:        "47670023",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank",
 		City:          "Blomberg",
-	},
-	BankInfo{
-		BankID:        "47670023",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank",
-		City:          "Lemgo",
 	},
 	BankInfo{
 		BankID:        "47670023",
@@ -12679,7 +12591,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Horn-Bad Meinberg",
+		City:          "Lemgo",
 	},
 	BankInfo{
 		BankID:        "47670023",
@@ -12690,12 +12602,28 @@ var data = []BankInfo{
 		City:          "Lage",
 	},
 	BankInfo{
+		BankID:        "47670023",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank",
+		City:          "Horn-Bad Meinberg",
+	},
+	BankInfo{
+		BankID:        "47670023",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank",
+		City:          "Detmold",
+	},
+	BankInfo{
 		BankID:        "47670024",
 		VersionNumber: "3.0",
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Lage",
+		City:          "Lemgo",
 	},
 	BankInfo{
 		BankID:        "47670024",
@@ -12719,6 +12647,14 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
+		City:          "Horn-Bad Meinberg",
+	},
+	BankInfo{
+		BankID:        "47670024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank Privat und Geschäftskunden",
 		City:          "Blomberg",
 	},
 	BankInfo{
@@ -12727,15 +12663,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Lemgo",
-	},
-	BankInfo{
-		BankID:        "47670024",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Horn-Bad Meinberg",
+		City:          "Lage",
 	},
 	BankInfo{
 		BankID:        "47691200",
@@ -12744,6 +12672,14 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 		Institute:     "Volksbank Ostlippe eG.",
 		City:          "Ostlippe",
+	},
+	BankInfo{
+		BankID:        "47840065",
+		VersionNumber: "3.0",
+		URL:           "",
+		VersionName:   "",
+		Institute:     "Commerzbank",
+		City:          "Gütersloh",
 	},
 	BankInfo{
 		BankID:        "47840065",
@@ -12776,14 +12712,6 @@ var data = []BankInfo{
 		VersionName:   "",
 		Institute:     "Commerzbank",
 		City:          "Oelde",
-	},
-	BankInfo{
-		BankID:        "47840065",
-		VersionNumber: "3.0",
-		URL:           "",
-		VersionName:   "",
-		Institute:     "Commerzbank",
-		City:          "Gütersloh",
 	},
 	BankInfo{
 		BankID:        "47850065",
@@ -12863,7 +12791,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Herford",
+		City:          "Gütersloh",
 	},
 	BankInfo{
 		BankID:        "48020086",
@@ -12871,7 +12799,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Gütersloh",
+		City:          "Herford",
 	},
 	BankInfo{
 		BankID:        "48020151",
@@ -12879,7 +12807,7 @@ var data = []BankInfo{
 		URL:           "https://www.bv-activebanking.de/hbciTunnel/hbciTransfer.jsp",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Bankhaus Lampe",
-		City:          "Berlin",
+		City:          "Frankfurt/Main",
 	},
 	BankInfo{
 		BankID:        "48020151",
@@ -12887,7 +12815,7 @@ var data = []BankInfo{
 		URL:           "https://www.bv-activebanking.de/hbciTunnel/hbciTransfer.jsp",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Bankhaus Lampe",
-		City:          "Bielefeld",
+		City:          "Münster",
 	},
 	BankInfo{
 		BankID:        "48020151",
@@ -12903,7 +12831,7 @@ var data = []BankInfo{
 		URL:           "https://www.bv-activebanking.de/hbciTunnel/hbciTransfer.jsp",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Bankhaus Lampe",
-		City:          "Frankfurt/Main",
+		City:          "Berlin",
 	},
 	BankInfo{
 		BankID:        "48020151",
@@ -12927,7 +12855,7 @@ var data = []BankInfo{
 		URL:           "https://www.bv-activebanking.de/hbciTunnel/hbciTransfer.jsp",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Bankhaus Lampe",
-		City:          "Münster",
+		City:          "Bielefeld",
 	},
 	BankInfo{
 		BankID:        "48020151",
@@ -13071,7 +12999,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Spenge",
+		City:          "Herford",
 	},
 	BankInfo{
 		BankID:        "48070024",
@@ -13103,7 +13031,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Gütersloh",
+		City:          "Bielefeld",
 	},
 	BankInfo{
 		BankID:        "48070024",
@@ -13119,7 +13047,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Bielefeld",
+		City:          "Oelde",
 	},
 	BankInfo{
 		BankID:        "48070024",
@@ -13135,7 +13063,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Verl",
+		City:          "Spenge",
 	},
 	BankInfo{
 		BankID:        "48070024",
@@ -13151,7 +13079,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Herford",
+		City:          "Gütersloh",
 	},
 	BankInfo{
 		BankID:        "48070024",
@@ -13159,7 +13087,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Oelde",
+		City:          "Verl",
 	},
 	BankInfo{
 		BankID:        "48070040",
@@ -13270,16 +13198,8 @@ var data = []BankInfo{
 		VersionNumber: "3.0",
 		URL:           "https://banking-wl2.s-fints-pt-wl.de/fints30",
 		VersionName:   "FinTS V3.0",
-		Institute:     "Stadtsparkasse Bad Oeynhausen",
+		Institute:     "Sparkasse Bad Oeynhausen-Porta Westfalica",
 		City:          "Bad Oeynhausen",
-	},
-	BankInfo{
-		BankID:        "49051990",
-		VersionNumber: "3.0",
-		URL:           "https://banking-wl6.s-fints-pt-wl.de/fints30",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Stadtsparkasse Porta Westfalica",
-		City:          "Porta Westfalica",
 	},
 	BankInfo{
 		BankID:        "49060127",
@@ -13311,14 +13231,6 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Minden",
-	},
-	BankInfo{
-		BankID:        "49070024",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank Privat und Geschäftskunden",
 		City:          "Bad Oeynhausen",
 	},
 	BankInfo{
@@ -13338,6 +13250,14 @@ var data = []BankInfo{
 		City:          "Löhne",
 	},
 	BankInfo{
+		BankID:        "49070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank Privat und Geschäftskunden",
+		City:          "Minden",
+	},
+	BankInfo{
 		BankID:        "49070028",
 		VersionNumber: "3.0",
 		URL:           "https://fints.deutsche-bank.de/",
@@ -13360,6 +13280,14 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
 		City:          "Löhne",
+	},
+	BankInfo{
+		BankID:        "49070028",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank",
+		City:          "Espelkamp",
 	},
 	BankInfo{
 		BankID:        "49070028",
@@ -13368,14 +13296,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
 		City:          "Lübbecke",
-	},
-	BankInfo{
-		BankID:        "49070028",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank",
-		City:          "Espelkamp",
 	},
 	BankInfo{
 		BankID:        "49092650",
@@ -13391,7 +13311,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Bünde",
+		City:          "Lübbecke",
 	},
 	BankInfo{
 		BankID:        "49240096",
@@ -13399,7 +13319,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Lübbecke",
+		City:          "Bünde",
 	},
 	BankInfo{
 		BankID:        "49262364",
@@ -13415,7 +13335,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Bad Oeynhausen",
+		City:          "Herford",
 	},
 	BankInfo{
 		BankID:        "49440043",
@@ -13423,7 +13343,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Herford",
+		City:          "Bad Oeynhausen",
 	},
 	BankInfo{
 		BankID:        "49450120",
@@ -13432,14 +13352,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 		Institute:     "Sparkasse Herford",
 		City:          "Herford",
-	},
-	BankInfo{
-		BankID:        "49461323",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Volksbank Enger-Spenge eG",
-		City:          "Enger-Spenge",
 	},
 	BankInfo{
 		BankID:        "49490070",
@@ -13519,7 +13431,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Idstein",
+		City:          "Frankfurt",
 	},
 	BankInfo{
 		BankID:        "50040000",
@@ -13527,7 +13439,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Bad Vilbel",
+		City:          "Eschborn",
 	},
 	BankInfo{
 		BankID:        "50040000",
@@ -13567,7 +13479,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Hofheim",
+		City:          "Maintal",
 	},
 	BankInfo{
 		BankID:        "50040000",
@@ -13607,7 +13519,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Maintal",
+		City:          "Idstein",
 	},
 	BankInfo{
 		BankID:        "50040000",
@@ -13615,7 +13527,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Eschborn",
+		City:          "Hofheim",
 	},
 	BankInfo{
 		BankID:        "50040000",
@@ -13623,7 +13535,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Frankfurt",
+		City:          "Bad Vilbel",
 	},
 	BankInfo{
 		BankID:        "50040033",
@@ -13750,8 +13662,8 @@ var data = []BankInfo{
 		VersionNumber: "3.0",
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank",
-		City:          "Eschborn",
+		Institute:     "Deutsche Bank Filiale",
+		City:          "Frankfurt am Main",
 	},
 	BankInfo{
 		BankID:        "50070010",
@@ -13799,15 +13711,15 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Hofheim am Taunus",
+		City:          "Eschborn",
 	},
 	BankInfo{
 		BankID:        "50070010",
 		VersionNumber: "3.0",
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank Filiale",
-		City:          "Frankfurt am Main",
+		Institute:     "Deutsche Bank",
+		City:          "Hofheim am Taunus",
 	},
 	BankInfo{
 		BankID:        "50070024",
@@ -13815,7 +13727,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Oberursel (Taunus)",
+		City:          "Frankfurt am Main",
 	},
 	BankInfo{
 		BankID:        "50070024",
@@ -13879,7 +13791,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Frankfurt am Main",
+		City:          "Oberursel (Taunus)",
 	},
 	BankInfo{
 		BankID:        "50073019",
@@ -14039,7 +13951,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Bad Homburg v d Höhe",
+		City:          "Hanau",
 	},
 	BankInfo{
 		BankID:        "50320191",
@@ -14047,7 +13959,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Hanau",
+		City:          "Bad Homburg v d Höhe",
 	},
 	BankInfo{
 		BankID:        "50520190",
@@ -14127,7 +14039,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Langen (Hessen)",
+		City:          "Offenbach am Main",
 	},
 	BankInfo{
 		BankID:        "50570018",
@@ -14143,7 +14055,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Rodgau",
+		City:          "Obertshausen",
 	},
 	BankInfo{
 		BankID:        "50570018",
@@ -14159,7 +14071,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Offenbach am Main",
+		City:          "Mühlheim am Main",
 	},
 	BankInfo{
 		BankID:        "50570018",
@@ -14183,7 +14095,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Mühlheim am Main",
+		City:          "Langen (Hessen)",
 	},
 	BankInfo{
 		BankID:        "50570018",
@@ -14191,47 +14103,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Obertshausen",
-	},
-	BankInfo{
-		BankID:        "50570024",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Offenbach am Main",
-	},
-	BankInfo{
-		BankID:        "50570024",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Obertshausen",
-	},
-	BankInfo{
-		BankID:        "50570024",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Dreieich",
-	},
-	BankInfo{
-		BankID:        "50570024",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Heusenstamm",
-	},
-	BankInfo{
-		BankID:        "50570024",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Langen (Hessen)",
+		City:          "Rodgau",
 	},
 	BankInfo{
 		BankID:        "50570024",
@@ -14247,14 +14119,6 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Neu-Isenburg",
-	},
-	BankInfo{
-		BankID:        "50570024",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank Privat und Geschäftskunden",
 		City:          "Dietzenbach",
 	},
 	BankInfo{
@@ -14263,7 +14127,55 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
+		City:          "Dreieich",
+	},
+	BankInfo{
+		BankID:        "50570024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank Privat und Geschäftskunden",
+		City:          "Offenbach am Main",
+	},
+	BankInfo{
+		BankID:        "50570024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank Privat und Geschäftskunden",
+		City:          "Langen (Hessen)",
+	},
+	BankInfo{
+		BankID:        "50570024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank Privat und Geschäftskunden",
 		City:          "Mühlheim am Main",
+	},
+	BankInfo{
+		BankID:        "50570024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank Privat und Geschäftskunden",
+		City:          "Neu-Isenburg",
+	},
+	BankInfo{
+		BankID:        "50570024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank Privat und Geschäftskunden",
+		City:          "Obertshausen",
+	},
+	BankInfo{
+		BankID:        "50570024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank Privat und Geschäftskunden",
+		City:          "Heusenstamm",
 	},
 	BankInfo{
 		BankID:        "50590000",
@@ -14367,7 +14279,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Wächtersbach",
+		City:          "Hanau",
 	},
 	BankInfo{
 		BankID:        "50670024",
@@ -14375,7 +14287,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Hanau",
+		City:          "Wächtersbach",
 	},
 	BankInfo{
 		BankID:        "50690000",
@@ -14463,7 +14375,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Bensheim",
+		City:          "Darmstadt",
 	},
 	BankInfo{
 		BankID:        "50840005",
@@ -14495,7 +14407,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Darmstadt",
+		City:          "Bensheim",
 	},
 	BankInfo{
 		BankID:        "50850150",
@@ -14602,14 +14514,6 @@ var data = []BankInfo{
 		City:          "Ober-Ramstadt",
 	},
 	BankInfo{
-		BankID:        "50864808",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Volksbank Seeheim-Jugenheim",
-		City:          "Seeheim-Jugenheim",
-	},
-	BankInfo{
 		BankID:        "50865224",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -14631,7 +14535,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Michelstadt",
+		City:          "Darmstadt",
 	},
 	BankInfo{
 		BankID:        "50870005",
@@ -14655,7 +14559,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Darmstadt",
+		City:          "Michelstadt",
 	},
 	BankInfo{
 		BankID:        "50870024",
@@ -14663,7 +14567,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Darmstadt",
+		City:          "Michelstadt",
 	},
 	BankInfo{
 		BankID:        "50870024",
@@ -14687,7 +14591,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Michelstadt",
+		City:          "Darmstadt",
 	},
 	BankInfo{
 		BankID:        "50890000",
@@ -14759,7 +14663,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Bensheim",
+		City:          "Heppenheim (Bergstraße)",
 	},
 	BankInfo{
 		BankID:        "50970004",
@@ -14767,15 +14671,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Heppenheim (Bergstraße)",
-	},
-	BankInfo{
-		BankID:        "50970024",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Heppenheim (Bergstraße)",
+		City:          "Bensheim",
 	},
 	BankInfo{
 		BankID:        "50970024",
@@ -14784,6 +14680,14 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
 		City:          "Bensheim",
+	},
+	BankInfo{
+		BankID:        "50970024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank Privat und Geschäftskunden",
+		City:          "Heppenheim (Bergstraße)",
 	},
 	BankInfo{
 		BankID:        "51020000",
@@ -15023,7 +14927,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Gießen",
+		City:          "Friedberg",
 	},
 	BankInfo{
 		BankID:        "51340013",
@@ -15031,7 +14935,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Friedberg",
+		City:          "Gießen",
 	},
 	BankInfo{
 		BankID:        "51343224",
@@ -15455,6 +15359,14 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
+		City:          "Baunatal",
+	},
+	BankInfo{
+		BankID:        "52070012",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank",
 		City:          "Hann. Münden",
 	},
 	BankInfo{
@@ -15464,14 +15376,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
 		City:          "Kassel",
-	},
-	BankInfo{
-		BankID:        "52070012",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank",
-		City:          "Baunatal",
 	},
 	BankInfo{
 		BankID:        "52070024",
@@ -15518,7 +15422,7 @@ var data = []BankInfo{
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
-		Institute:     "Kasseler Bank",
+		Institute:     "Volksbank Kassel Göttingen eG",
 		City:          "Kassel, Hess",
 	},
 	BankInfo{
@@ -15791,7 +15695,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Stadtallendorf",
+		City:          "Marburg",
 	},
 	BankInfo{
 		BankID:        "53340024",
@@ -15799,7 +15703,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Marburg",
+		City:          "Stadtallendorf",
 	},
 	BankInfo{
 		BankID:        "53350000",
@@ -15911,7 +15815,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Kaiserslautern",
+		City:          "Landstuhl",
 	},
 	BankInfo{
 		BankID:        "54070092",
@@ -15919,7 +15823,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Landstuhl",
+		City:          "Kaiserslautern",
 	},
 	BankInfo{
 		BankID:        "54090000",
@@ -16031,7 +15935,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Kusel",
+		City:          "Speyer",
 	},
 	BankInfo{
 		BankID:        "54520194",
@@ -16039,7 +15943,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Ludwigshafen am Rhein",
+		City:          "Kusel",
 	},
 	BankInfo{
 		BankID:        "54520194",
@@ -16079,7 +15983,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Landau in der Pfalz",
+		City:          "Ludwigshafen am Rhein",
 	},
 	BankInfo{
 		BankID:        "54520194",
@@ -16111,7 +16015,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Speyer",
+		City:          "Landau in der Pfalz",
 	},
 	BankInfo{
 		BankID:        "54520194",
@@ -16191,7 +16095,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Frankenthal (Pfalz)",
+		City:          "Limburgerhof",
 	},
 	BankInfo{
 		BankID:        "54570024",
@@ -16215,7 +16119,15 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Limburgerhof",
+		City:          "Frankenthal (Pfalz)",
+	},
+	BankInfo{
+		BankID:        "54570094",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank",
+		City:          "Speyer",
 	},
 	BankInfo{
 		BankID:        "54570094",
@@ -16247,23 +16159,15 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Limburgerhof",
-	},
-	BankInfo{
-		BankID:        "54570094",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank",
-		City:          "Speyer",
-	},
-	BankInfo{
-		BankID:        "54570094",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank",
 		City:          "Worms",
+	},
+	BankInfo{
+		BankID:        "54570094",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank",
+		City:          "Limburgerhof",
 	},
 	BankInfo{
 		BankID:        "54620093",
@@ -16567,7 +16471,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Mainz",
+		City:          "Bingen am Rhein",
 	},
 	BankInfo{
 		BankID:        "55070040",
@@ -16583,7 +16487,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Bingen am Rhein",
+		City:          "Mainz",
 	},
 	BankInfo{
 		BankID:        "55090500",
@@ -16847,7 +16751,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Andernach",
+		City:          "Koblenz",
 	},
 	BankInfo{
 		BankID:        "57040044",
@@ -16855,7 +16759,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Koblenz",
+		City:          "Neuwied",
 	},
 	BankInfo{
 		BankID:        "57040044",
@@ -16871,7 +16775,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Neuwied",
+		City:          "Andernach",
 	},
 	BankInfo{
 		BankID:        "57050120",
@@ -16959,7 +16863,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Koblenz",
+		City:          "Boppard",
 	},
 	BankInfo{
 		BankID:        "57070024",
@@ -16967,7 +16871,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Höhr-Grenzhausen",
+		City:          "Koblenz",
 	},
 	BankInfo{
 		BankID:        "57070024",
@@ -16983,39 +16887,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Boppard",
-	},
-	BankInfo{
-		BankID:        "57070045",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank",
-		City:          "Koblenz",
-	},
-	BankInfo{
-		BankID:        "57070045",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank",
-		City:          "Lahnstein",
-	},
-	BankInfo{
-		BankID:        "57070045",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank",
 		City:          "Höhr-Grenzhausen",
-	},
-	BankInfo{
-		BankID:        "57070045",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank",
-		City:          "Boppard",
 	},
 	BankInfo{
 		BankID:        "57070045",
@@ -17032,6 +16904,38 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
 		City:          "Bendorf",
+	},
+	BankInfo{
+		BankID:        "57070045",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank",
+		City:          "Lahnstein",
+	},
+	BankInfo{
+		BankID:        "57070045",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank",
+		City:          "Höhr-Grenzhausen",
+	},
+	BankInfo{
+		BankID:        "57070045",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank",
+		City:          "Boppard",
+	},
+	BankInfo{
+		BankID:        "57070045",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank",
+		City:          "Koblenz",
 	},
 	BankInfo{
 		BankID:        "57090000",
@@ -17151,7 +17055,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Mayen",
+		City:          "Neuwied",
 	},
 	BankInfo{
 		BankID:        "57470024",
@@ -17159,7 +17063,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Neuwied",
+		City:          "Mayen",
 	},
 	BankInfo{
 		BankID:        "57470047",
@@ -17366,16 +17270,16 @@ var data = []BankInfo{
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
-		Institute:     "Volksbank Bitburg eG",
-		City:          "Bitburg",
+		Institute:     "VB Bitburg eG",
+		City:          "Baustert",
 	},
 	BankInfo{
 		BankID:        "58660101",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
-		Institute:     "VB Bitburg eG",
-		City:          "Baustert",
+		Institute:     "Volksbank Bitburg eG",
+		City:          "Bitburg",
 	},
 	BankInfo{
 		BankID:        "58661901",
@@ -17431,7 +17335,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Traben-Trarbach",
+		City:          "Zell (Mosel)",
 	},
 	BankInfo{
 		BankID:        "58771224",
@@ -17439,7 +17343,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Zell (Mosel)",
+		City:          "Traben-Trarbach",
 	},
 	BankInfo{
 		BankID:        "58771242",
@@ -17479,7 +17383,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Homburg, Saar",
+		City:          "Neunkirchen, Saar",
 	},
 	BankInfo{
 		BankID:        "59020090",
@@ -17495,7 +17399,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "St. Ingbert",
+		City:          "Sulzbach, Saar",
 	},
 	BankInfo{
 		BankID:        "59020090",
@@ -17519,7 +17423,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Dillingen, Saar",
+		City:          "Saarbrücken",
 	},
 	BankInfo{
 		BankID:        "59020090",
@@ -17535,7 +17439,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Saarbrücken",
+		City:          "Homburg, Saar",
 	},
 	BankInfo{
 		BankID:        "59020090",
@@ -17543,7 +17447,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Sulzbach, Saar",
+		City:          "St. Ingbert",
 	},
 	BankInfo{
 		BankID:        "59020090",
@@ -17551,7 +17455,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Neunkirchen, Saar",
+		City:          "Dillingen, Saar",
 	},
 	BankInfo{
 		BankID:        "59040000",
@@ -17690,27 +17594,11 @@ var data = []BankInfo{
 		City:          "Saarbrücken",
 	},
 	BankInfo{
-		BankID:        "59091500",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Volksbank Sulzbachtal -alt-",
-		City:          "Sulzbach, Saar",
-	},
-	BankInfo{
-		BankID:        "59091800",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Volksbank Quierschied -alt-",
-		City:          "Quierschied",
-	},
-	BankInfo{
 		BankID:        "59092000",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
-		Institute:     "Vereinigte Volksbank im Regionalverband Saarbrücken",
+		Institute:     "Vereinigte Volksbank eG Dillingen*Dudweiler*Sulzbach/Saar",
 		City:          "Sulzbach, Saar",
 	},
 	BankInfo{
@@ -17728,14 +17616,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 		Institute:     "Bank 1 Saar",
 		City:          "Saarbrücken",
-	},
-	BankInfo{
-		BankID:        "59190200",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Volksbank Saar-West",
-		City:          "Saarlouis",
 	},
 	BankInfo{
 		BankID:        "59251020",
@@ -17887,7 +17767,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Friedrichshafen",
+		City:          "Stuttgart",
 	},
 	BankInfo{
 		BankID:        "60020290",
@@ -17935,7 +17815,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Stuttgart",
+		City:          "Friedrichshafen",
 	},
 	BankInfo{
 		BankID:        "60030100",
@@ -17967,7 +17847,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Leonberg",
+		City:          "Stuttgart",
 	},
 	BankInfo{
 		BankID:        "60040071",
@@ -17983,15 +17863,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Filderstadt",
-	},
-	BankInfo{
-		BankID:        "60040071",
-		VersionNumber: "3.0",
-		URL:           "",
-		VersionName:   "",
-		Institute:     "Commerzbank",
-		City:          "Stuttgart",
+		City:          "Leonberg",
 	},
 	BankInfo{
 		BankID:        "60040071",
@@ -18008,6 +17880,14 @@ var data = []BankInfo{
 		VersionName:   "",
 		Institute:     "Commerzbank",
 		City:          "Schorndorf",
+	},
+	BankInfo{
+		BankID:        "60040071",
+		VersionNumber: "3.0",
+		URL:           "",
+		VersionName:   "",
+		Institute:     "Commerzbank",
+		City:          "Filderstadt",
 	},
 	BankInfo{
 		BankID:        "60040071",
@@ -18048,14 +17928,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 		Institute:     "Echterdinger Bank",
 		City:          "Leinfelden-Echterdingen",
-	},
-	BankInfo{
-		BankID:        "60062909",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Volksbank Strohgäu",
-		City:          "Korntal-Münchingen",
 	},
 	BankInfo{
 		BankID:        "60069066",
@@ -18599,7 +18471,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Leonberg",
+		City:          "Sindelfingen",
 	},
 	BankInfo{
 		BankID:        "60070024",
@@ -18607,7 +18479,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Böblingen",
+		City:          "Stuttgart",
 	},
 	BankInfo{
 		BankID:        "60070024",
@@ -18631,7 +18503,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Sindelfingen",
+		City:          "Leonberg",
 	},
 	BankInfo{
 		BankID:        "60070024",
@@ -18639,7 +18511,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Stuttgart",
+		City:          "Böblingen",
 	},
 	BankInfo{
 		BankID:        "60070070",
@@ -18663,7 +18535,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Gerlingen",
+		City:          "Leonberg",
 	},
 	BankInfo{
 		BankID:        "60070070",
@@ -18687,14 +18559,14 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Leonberg",
+		City:          "Gerlingen",
 	},
 	BankInfo{
 		BankID:        "60090100",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
-		Institute:     "Stuttgarter Volksbank",
+		Institute:     "Volksbank Stuttgart eG",
 		City:          "Stuttgart",
 	},
 	BankInfo{
@@ -18862,7 +18734,7 @@ var data = []BankInfo{
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
-		Institute:     "Volksbank Region Leonberg",
+		Institute:     "Volksbank Region Leonberg eG",
 		City:          "Leonberg, Württ",
 	},
 	BankInfo{
@@ -18919,7 +18791,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Bietigheim-Bissingen",
+		City:          "Ludwigsburg",
 	},
 	BankInfo{
 		BankID:        "60440073",
@@ -18927,7 +18799,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Ludwigsburg",
+		City:          "Bietigheim-Bissingen",
 	},
 	BankInfo{
 		BankID:        "60450050",
@@ -18958,14 +18830,6 @@ var data = []BankInfo{
 		VersionNumber: "3.0",
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Markgröningen",
-	},
-	BankInfo{
-		BankID:        "60470024",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat- und Geschäftskunden",
 		City:          "Vaihingen an der Enz",
 	},
@@ -18975,7 +18839,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Asperg",
+		City:          "Ludwigsburg",
 	},
 	BankInfo{
 		BankID:        "60470024",
@@ -19007,7 +18871,15 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Ludwigsburg",
+		City:          "Markgröningen",
+	},
+	BankInfo{
+		BankID:        "60470024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank Privat und Geschäftskunden",
+		City:          "Asperg",
 	},
 	BankInfo{
 		BankID:        "60470082",
@@ -19151,14 +19023,6 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Göppingen",
-	},
-	BankInfo{
-		BankID:        "61070024",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank Privat und Geschäftskunden",
 		City:          "Geislingen an der Steige",
 	},
 	BankInfo{
@@ -19168,6 +19032,14 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
 		City:          "Eislingen",
+	},
+	BankInfo{
+		BankID:        "61070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank Privat und Geschäftskunden",
+		City:          "Göppingen",
 	},
 	BankInfo{
 		BankID:        "61070078",
@@ -19247,7 +19119,23 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
+		City:          "Plochingen",
+	},
+	BankInfo{
+		BankID:        "61170024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank Privat und Geschäftskunden",
 		City:          "Esslingen am Neckar",
+	},
+	BankInfo{
+		BankID:        "61170024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank Privat und Geschäftskunden",
+		City:          "Nürtingen",
 	},
 	BankInfo{
 		BankID:        "61170024",
@@ -19258,36 +19146,12 @@ var data = []BankInfo{
 		City:          "Kirchheim unter Teck",
 	},
 	BankInfo{
-		BankID:        "61170024",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Nürtingen",
-	},
-	BankInfo{
-		BankID:        "61170024",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Plochingen",
-	},
-	BankInfo{
 		BankID:        "61170076",
 		VersionNumber: "3.0",
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
 		City:          "Esslingen am Neckar",
-	},
-	BankInfo{
-		BankID:        "61170076",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank",
-		City:          "Nürtingen",
 	},
 	BankInfo{
 		BankID:        "61170076",
@@ -19304,6 +19168,14 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
 		City:          "Plochingen",
+	},
+	BankInfo{
+		BankID:        "61170076",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank",
+		City:          "Nürtingen",
 	},
 	BankInfo{
 		BankID:        "61190110",
@@ -19447,7 +19319,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Schwäbisch Gmünd",
+		City:          "Crailsheim",
 	},
 	BankInfo{
 		BankID:        "61370086",
@@ -19471,7 +19343,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Aalen",
+		City:          "Schwäbisch Gmünd",
 	},
 	BankInfo{
 		BankID:        "61370086",
@@ -19495,7 +19367,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Crailsheim",
+		City:          "Aalen",
 	},
 	BankInfo{
 		BankID:        "61370086",
@@ -19639,7 +19511,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Öhringen",
+		City:          "Schwäbisch Hall",
 	},
 	BankInfo{
 		BankID:        "62070024",
@@ -19647,6 +19519,14 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
+		City:          "Öhringen",
+	},
+	BankInfo{
+		BankID:        "62070081",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank",
 		City:          "Schwäbisch Hall",
 	},
 	BankInfo{
@@ -19655,7 +19535,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Heilbronn",
+		City:          "Künzelsau",
 	},
 	BankInfo{
 		BankID:        "62070081",
@@ -19679,15 +19559,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Schwäbisch Hall",
-	},
-	BankInfo{
-		BankID:        "62070081",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank",
-		City:          "Künzelsau",
+		City:          "Heilbronn",
 	},
 	BankInfo{
 		BankID:        "62090100",
@@ -19767,7 +19639,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Biberach an der Riß",
+		City:          "Ulm, Donau",
 	},
 	BankInfo{
 		BankID:        "63020086",
@@ -19783,7 +19655,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Ulm, Donau",
+		City:          "Weißenhorn",
 	},
 	BankInfo{
 		BankID:        "63020086",
@@ -19799,7 +19671,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Weißenhorn",
+		City:          "Biberach an der Riß",
 	},
 	BankInfo{
 		BankID:        "63040053",
@@ -19847,7 +19719,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Biberach an der Riß",
+		City:          "Ulm",
 	},
 	BankInfo{
 		BankID:        "63070024",
@@ -19855,7 +19727,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Ulm",
+		City:          "Biberach an der Riß",
 	},
 	BankInfo{
 		BankID:        "63070024",
@@ -19871,7 +19743,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Neu-Ulm",
+		City:          "Ulm",
 	},
 	BankInfo{
 		BankID:        "63070088",
@@ -19887,7 +19759,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Ulm",
+		City:          "Neu-Ulm",
 	},
 	BankInfo{
 		BankID:        "63090100",
@@ -19999,7 +19871,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Nagold",
+		City:          "Metzingen",
 	},
 	BankInfo{
 		BankID:        "64070024",
@@ -20023,7 +19895,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Metzingen",
+		City:          "Nagold",
 	},
 	BankInfo{
 		BankID:        "64070024",
@@ -20063,7 +19935,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Metzingen",
+		City:          "Reutlingen",
 	},
 	BankInfo{
 		BankID:        "64070085",
@@ -20071,7 +19943,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Reutlingen",
+		City:          "Tübingen",
 	},
 	BankInfo{
 		BankID:        "64070085",
@@ -20103,7 +19975,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Tübingen",
+		City:          "Metzingen",
 	},
 	BankInfo{
 		BankID:        "64090100",
@@ -20439,7 +20311,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Friedrichshafen",
+		City:          "Ravensburg",
 	},
 	BankInfo{
 		BankID:        "65070084",
@@ -20447,7 +20319,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Ravensburg",
+		City:          "Weingarten",
 	},
 	BankInfo{
 		BankID:        "65070084",
@@ -20479,7 +20351,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Weingarten",
+		City:          "Friedrichshafen",
 	},
 	BankInfo{
 		BankID:        "65090100",
@@ -20799,7 +20671,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Ettlingen",
+		City:          "Karlsruhe",
 	},
 	BankInfo{
 		BankID:        "66040018",
@@ -20807,7 +20679,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Karlsruhe",
+		City:          "Ettlingen",
 	},
 	BankInfo{
 		BankID:        "66050101",
@@ -20919,7 +20791,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Ettlingen",
+		City:          "Karlsruhe",
 	},
 	BankInfo{
 		BankID:        "66070024",
@@ -20927,7 +20799,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Karlsruhe",
+		City:          "Bretten",
 	},
 	BankInfo{
 		BankID:        "66070024",
@@ -20943,7 +20815,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Bretten",
+		City:          "Ettlingen",
 	},
 	BankInfo{
 		BankID:        "66090800",
@@ -21023,23 +20895,15 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Rastatt",
-	},
-	BankInfo{
-		BankID:        "66270001",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank",
-		City:          "Baden-Baden",
-	},
-	BankInfo{
-		BankID:        "66270001",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank",
 		City:          "Bühl",
+	},
+	BankInfo{
+		BankID:        "66270001",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank",
+		City:          "Gernsbach",
 	},
 	BankInfo{
 		BankID:        "66270001",
@@ -21055,7 +20919,15 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Gernsbach",
+		City:          "Rastatt",
+	},
+	BankInfo{
+		BankID:        "66270001",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank",
+		City:          "Baden-Baden",
 	},
 	BankInfo{
 		BankID:        "66270024",
@@ -21679,6 +21551,14 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
+		City:          "Mosbach",
+	},
+	BankInfo{
+		BankID:        "67270003",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank",
 		City:          "Wiesloch",
 	},
 	BankInfo{
@@ -21688,14 +21568,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
 		City:          "Heidelberg",
-	},
-	BankInfo{
-		BankID:        "67270003",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank",
-		City:          "Mosbach",
 	},
 	BankInfo{
 		BankID:        "67270024",
@@ -22879,7 +22751,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Taufkirchen, Kr München",
+		City:          "Gröbenzell",
 	},
 	BankInfo{
 		BankID:        "70020270",
@@ -22903,7 +22775,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Gröbenzell",
+		City:          "Vaterstetten",
 	},
 	BankInfo{
 		BankID:        "70020270",
@@ -23007,7 +22879,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Vaterstetten",
+		City:          "Taufkirchen, Kr München",
 	},
 	BankInfo{
 		BankID:        "70021180",
@@ -23359,7 +23231,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Bad Reichenhall",
+		City:          "Gilching",
 	},
 	BankInfo{
 		BankID:        "70070010",
@@ -23367,7 +23239,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Gilching",
+		City:          "Waldkraiburg",
 	},
 	BankInfo{
 		BankID:        "70070010",
@@ -23383,15 +23255,15 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Waldkraiburg",
+		City:          "Bad Reichenhall",
 	},
 	BankInfo{
 		BankID:        "70070024",
 		VersionNumber: "3.0",
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "München",
+		Institute:     "Deutsche Bank Privat- und Geschäftskunden",
+		City:          "Gilching",
 	},
 	BankInfo{
 		BankID:        "70070024",
@@ -23415,7 +23287,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Erding",
+		City:          "Dachau",
 	},
 	BankInfo{
 		BankID:        "70070024",
@@ -23423,7 +23295,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Dachau",
+		City:          "Erding",
 	},
 	BankInfo{
 		BankID:        "70070024",
@@ -23550,8 +23422,8 @@ var data = []BankInfo{
 		VersionNumber: "3.0",
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank Privat- und Geschäftskunden",
-		City:          "Gilching",
+		Institute:     "Deutsche Bank Privat und Geschäftskunden",
+		City:          "München",
 	},
 	BankInfo{
 		BankID:        "70090100",
@@ -24087,15 +23959,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Mittenwald",
-	},
-	BankInfo{
-		BankID:        "70320090",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Oberammergau",
+		City:          "Garmisch-Partenkirchen",
 	},
 	BankInfo{
 		BankID:        "70320090",
@@ -24111,7 +23975,15 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Garmisch-Partenkirchen",
+		City:          "Mittenwald",
+	},
+	BankInfo{
+		BankID:        "70320090",
+		VersionNumber: "3.0",
+		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
+		VersionName:   "FinTS V3.0",
+		Institute:     "UniCredit Bank - HypoVereinsbank AG",
+		City:          "Oberammergau",
 	},
 	BankInfo{
 		BankID:        "70321194",
@@ -24175,14 +24047,6 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Berchtesgaden",
-	},
-	BankInfo{
-		BankID:        "71020072",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-		Institute:     "UniCredit Bank - HypoVereinsbank AG",
 		City:          "Bad Reichenhall",
 	},
 	BankInfo{
@@ -24210,12 +24074,20 @@ var data = []BankInfo{
 		City:          "Teisendorf",
 	},
 	BankInfo{
+		BankID:        "71020072",
+		VersionNumber: "3.0",
+		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
+		VersionName:   "FinTS V3.0",
+		Institute:     "UniCredit Bank - HypoVereinsbank AG",
+		City:          "Berchtesgaden",
+	},
+	BankInfo{
 		BankID:        "71021270",
 		VersionNumber: "3.0",
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Neuötting",
+		City:          "Eggenfelden",
 	},
 	BankInfo{
 		BankID:        "71021270",
@@ -24231,7 +24103,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Burgkirchen a.d.Alz",
+		City:          "Neuötting",
 	},
 	BankInfo{
 		BankID:        "71021270",
@@ -24247,31 +24119,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Eggenfelden",
-	},
-	BankInfo{
-		BankID:        "71022182",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Traunstein, Oberbay",
-	},
-	BankInfo{
-		BankID:        "71022182",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Marquartstein",
-	},
-	BankInfo{
-		BankID:        "71022182",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Trostberg",
+		City:          "Burgkirchen a.d.Alz",
 	},
 	BankInfo{
 		BankID:        "71022182",
@@ -24287,7 +24135,31 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
+		City:          "Marquartstein",
+	},
+	BankInfo{
+		BankID:        "71022182",
+		VersionNumber: "3.0",
+		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
+		VersionName:   "FinTS V3.0",
+		Institute:     "UniCredit Bank - HypoVereinsbank AG",
+		City:          "Traunstein, Oberbay",
+	},
+	BankInfo{
+		BankID:        "71022182",
+		VersionNumber: "3.0",
+		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
+		VersionName:   "FinTS V3.0",
+		Institute:     "UniCredit Bank - HypoVereinsbank AG",
 		City:          "Waging a. See",
+	},
+	BankInfo{
+		BankID:        "71022182",
+		VersionNumber: "3.0",
+		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
+		VersionName:   "FinTS V3.0",
+		Institute:     "UniCredit Bank - HypoVereinsbank AG",
+		City:          "Trostberg",
 	},
 	BankInfo{
 		BankID:        "71023173",
@@ -24367,6 +24239,14 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
+		City:          "Kolbermoor",
+	},
+	BankInfo{
+		BankID:        "71120077",
+		VersionNumber: "3.0",
+		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
+		VersionName:   "FinTS V3.0",
+		Institute:     "UniCredit Bank - HypoVereinsbank AG",
 		City:          "Miesbach",
 	},
 	BankInfo{
@@ -24391,14 +24271,6 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Kolbermoor",
-	},
-	BankInfo{
-		BankID:        "71120077",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-		Institute:     "UniCredit Bank - HypoVereinsbank AG",
 		City:          "Bad Aibling",
 	},
 	BankInfo{
@@ -24407,15 +24279,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Schliersee",
-	},
-	BankInfo{
-		BankID:        "71120078",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Tegernsee",
+		City:          "Rottach-Egern",
 	},
 	BankInfo{
 		BankID:        "71120078",
@@ -24439,7 +24303,15 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Rottach-Egern",
+		City:          "Schliersee",
+	},
+	BankInfo{
+		BankID:        "71120078",
+		VersionNumber: "3.0",
+		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
+		VersionName:   "FinTS V3.0",
+		Institute:     "UniCredit Bank - HypoVereinsbank AG",
+		City:          "Tegernsee",
 	},
 	BankInfo{
 		BankID:        "71121176",
@@ -24607,7 +24479,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Friedberg, Bay",
+		City:          "Augsburg, Bay",
 	},
 	BankInfo{
 		BankID:        "72020070",
@@ -24639,7 +24511,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Augsburg, Bay",
+		City:          "Thannhausen, Schwab",
 	},
 	BankInfo{
 		BankID:        "72020070",
@@ -24703,7 +24575,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Thannhausen, Schwab",
+		City:          "Friedberg, Bay",
 	},
 	BankInfo{
 		BankID:        "72020700",
@@ -24991,7 +24863,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Donauwörth",
+		City:          "Gersthofen",
 	},
 	BankInfo{
 		BankID:        "72070001",
@@ -25007,7 +24879,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Gersthofen",
+		City:          "Augsburg",
 	},
 	BankInfo{
 		BankID:        "72070001",
@@ -25023,7 +24895,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Augsburg",
+		City:          "Günzburg",
 	},
 	BankInfo{
 		BankID:        "72070001",
@@ -25039,7 +24911,15 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Günzburg",
+		City:          "Donauwörth",
+	},
+	BankInfo{
+		BankID:        "72070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank Privat und Geschäftskunden",
+		City:          "Königsbrunn",
 	},
 	BankInfo{
 		BankID:        "72070024",
@@ -25048,14 +24928,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
 		City:          "Augsburg",
-	},
-	BankInfo{
-		BankID:        "72070024",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Bad Wörishofen",
 	},
 	BankInfo{
 		BankID:        "72070024",
@@ -25095,7 +24967,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Königsbrunn",
+		City:          "Bad Wörishofen",
 	},
 	BankInfo{
 		BankID:        "72090000",
@@ -25135,6 +25007,22 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
+		City:          "Au i.d.Hallertau",
+	},
+	BankInfo{
+		BankID:        "72120078",
+		VersionNumber: "3.0",
+		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
+		VersionName:   "FinTS V3.0",
+		Institute:     "UniCredit Bank - HypoVereinsbank AG",
+		City:          "Mainburg",
+	},
+	BankInfo{
+		BankID:        "72120078",
+		VersionNumber: "3.0",
+		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
+		VersionName:   "FinTS V3.0",
+		Institute:     "UniCredit Bank - HypoVereinsbank AG",
 		City:          "Ingolstadt, Donau",
 	},
 	BankInfo{
@@ -25144,22 +25032,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
 		City:          "Beilngries",
-	},
-	BankInfo{
-		BankID:        "72120078",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Wolnzach",
-	},
-	BankInfo{
-		BankID:        "72120078",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Au i.d.Hallertau",
 	},
 	BankInfo{
 		BankID:        "72120078",
@@ -25199,7 +25071,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Eichstätt, Bay",
+		City:          "Wolnzach",
 	},
 	BankInfo{
 		BankID:        "72120078",
@@ -25207,7 +25079,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Mainburg",
+		City:          "Eichstätt, Bay",
 	},
 	BankInfo{
 		BankID:        "72122181",
@@ -25418,14 +25290,6 @@ var data = []BankInfo{
 		City:          "Vohburg a.d.Donau",
 	},
 	BankInfo{
-		BankID:        "72191300",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Volksbank Raiffeisenbank Eichstätt",
-		City:          "Eichstätt, Bay",
-	},
-	BankInfo{
 		BankID:        "72191600",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -25519,6 +25383,14 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
+		City:          "Buchloe",
+	},
+	BankInfo{
+		BankID:        "73120075",
+		VersionNumber: "3.0",
+		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
+		VersionName:   "FinTS V3.0",
+		Institute:     "UniCredit Bank - HypoVereinsbank AG",
 		City:          "Memmingen",
 	},
 	BankInfo{
@@ -25535,7 +25407,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Bad Wörishofen",
+		City:          "Mindelheim",
 	},
 	BankInfo{
 		BankID:        "73120075",
@@ -25551,15 +25423,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Buchloe",
-	},
-	BankInfo{
-		BankID:        "73120075",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Mindelheim",
+		City:          "Bad Wörishofen",
 	},
 	BankInfo{
 		BankID:        "73140046",
@@ -25631,7 +25495,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Sonthofen, Oberallgäu",
+		City:          "Pfronten",
 	},
 	BankInfo{
 		BankID:        "73322380",
@@ -25655,7 +25519,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Pfronten",
+		City:          "Sonthofen, Oberallgäu",
 	},
 	BankInfo{
 		BankID:        "73331700",
@@ -25688,14 +25552,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 		Institute:     "Sparkasse Riezlern",
 		City:          "Riezlern",
-	},
-	BankInfo{
-		BankID:        "73362421",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Bankhaus Jungholz Zndl der Raiffeisenbank Reutte",
-		City:          "Jungholz, Tirol",
 	},
 	BankInfo{
 		BankID:        "73369264",
@@ -25762,14 +25618,6 @@ var data = []BankInfo{
 		City:          "Eggenthal, Schwab",
 	},
 	BankInfo{
-		BankID:        "73369878",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Raiffeisenbank Füssen-Pfronten-Nesselwang",
-		City:          "Füssen",
-	},
-	BankInfo{
 		BankID:        "73369902",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -25823,7 +25671,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Geretsried",
+		City:          "Kaufbeuren",
 	},
 	BankInfo{
 		BankID:        "73370008",
@@ -25839,7 +25687,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Memmingen",
+		City:          "Geretsried",
 	},
 	BankInfo{
 		BankID:        "73370008",
@@ -25855,7 +25703,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Kaufbeuren",
+		City:          "Marktoberdorf",
 	},
 	BankInfo{
 		BankID:        "73370008",
@@ -25863,15 +25711,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Marktoberdorf",
-	},
-	BankInfo{
-		BankID:        "73370024",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Kempten (Allgäu)",
+		City:          "Memmingen",
 	},
 	BankInfo{
 		BankID:        "73370024",
@@ -25914,20 +25754,20 @@ var data = []BankInfo{
 		City:          "Geretsried",
 	},
 	BankInfo{
+		BankID:        "73370024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank Privat und Geschäftskunden",
+		City:          "Kempten (Allgäu)",
+	},
+	BankInfo{
 		BankID:        "73390000",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Allgäuer Volksbank Kempten-Sonthofen",
 		City:          "Kempten (Allgäu)",
-	},
-	BankInfo{
-		BankID:        "73391600",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Volksbank im Kleinwalsertal",
-		City:          "Riezlern, Kleinwalsertal",
 	},
 	BankInfo{
 		BankID:        "73392000",
@@ -25943,7 +25783,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Kaufbeuren",
+		City:          "Marktoberdorf",
 	},
 	BankInfo{
 		BankID:        "73420071",
@@ -25967,7 +25807,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Marktoberdorf",
+		City:          "Kaufbeuren",
 	},
 	BankInfo{
 		BankID:        "73421478",
@@ -26015,7 +25855,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Passau",
+		City:          "Pocking",
 	},
 	BankInfo{
 		BankID:        "74020074",
@@ -26071,7 +25911,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Pocking",
+		City:          "Passau",
 	},
 	BankInfo{
 		BankID:        "74020100",
@@ -26351,7 +26191,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Ergolding",
+		City:          "Landau a.d.Isar",
 	},
 	BankInfo{
 		BankID:        "74320073",
@@ -26367,7 +26207,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Landshut, Isar",
+		City:          "Ergolding",
 	},
 	BankInfo{
 		BankID:        "74320073",
@@ -26375,7 +26215,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Landau a.d.Isar",
+		City:          "Landshut, Isar",
 	},
 	BankInfo{
 		BankID:        "74320073",
@@ -26415,7 +26255,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Simbach a. Inn",
+		City:          "Vilsbiburg",
 	},
 	BankInfo{
 		BankID:        "74320073",
@@ -26423,7 +26263,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Vilsbiburg",
+		City:          "Simbach a. Inn",
 	},
 	BankInfo{
 		BankID:        "74340077",
@@ -26575,7 +26415,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Beratzhausen",
+		City:          "Regensburg",
 	},
 	BankInfo{
 		BankID:        "75020073",
@@ -26591,7 +26431,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Regensburg",
+		City:          "Neustadt a.d.Donau",
 	},
 	BankInfo{
 		BankID:        "75020073",
@@ -26639,7 +26479,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Neustadt a.d.Donau",
+		City:          "Beratzhausen",
 	},
 	BankInfo{
 		BankID:        "75021174",
@@ -26762,14 +26602,6 @@ var data = []BankInfo{
 		City:          "Hemau",
 	},
 	BankInfo{
-		BankID:        "75069062",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Raiffeisenbank Herrnwahlthann-Teugn-Dünzling -alt-",
-		City:          "Hausen, Niederbay",
-	},
-	BankInfo{
 		BankID:        "75069076",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -26823,23 +26655,15 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Regensburg",
-	},
-	BankInfo{
-		BankID:        "75070013",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank",
-		City:          "Straubing",
-	},
-	BankInfo{
-		BankID:        "75070013",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank",
 		City:          "Deggendorf",
+	},
+	BankInfo{
+		BankID:        "75070013",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank",
+		City:          "Regensburg",
 	},
 	BankInfo{
 		BankID:        "75070013",
@@ -26850,6 +26674,22 @@ var data = []BankInfo{
 		City:          "Passau",
 	},
 	BankInfo{
+		BankID:        "75070013",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank",
+		City:          "Straubing",
+	},
+	BankInfo{
+		BankID:        "75070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank Privat und Geschäftskunden",
+		City:          "Straubing",
+	},
+	BankInfo{
 		BankID:        "75070024",
 		VersionNumber: "3.0",
 		URL:           "https://fints.deutsche-bank.de/",
@@ -26864,14 +26704,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
 		City:          "Deggendorf",
-	},
-	BankInfo{
-		BankID:        "75070024",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Straubing",
 	},
 	BankInfo{
 		BankID:        "75070024",
@@ -26991,7 +26823,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Wunsiedel",
+		City:          "Vohenstrauß",
 	},
 	BankInfo{
 		BankID:        "75320075",
@@ -26999,7 +26831,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Vohenstrauß",
+		City:          "Wunsiedel",
 	},
 	BankInfo{
 		BankID:        "75340090",
@@ -27063,14 +26895,6 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Röthenbach a.d.Pegnitz",
-	},
-	BankInfo{
-		BankID:        "76020070",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-		Institute:     "UniCredit Bank - HypoVereinsbank AG",
 		City:          "Lauf a.d.Pegnitz",
 	},
 	BankInfo{
@@ -27079,7 +26903,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Nürnberg, Mittelfr",
+		City:          "Schwaig b. Nürnberg",
 	},
 	BankInfo{
 		BankID:        "76020070",
@@ -27087,7 +26911,15 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Neumarkt i.d.OPf.",
+		City:          "Röthenbach a.d.Pegnitz",
+	},
+	BankInfo{
+		BankID:        "76020070",
+		VersionNumber: "3.0",
+		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
+		VersionName:   "FinTS V3.0",
+		Institute:     "UniCredit Bank - HypoVereinsbank AG",
+		City:          "Altdorf b. Nürnberg",
 	},
 	BankInfo{
 		BankID:        "76020070",
@@ -27111,7 +26943,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Schwaig b. Nürnberg",
+		City:          "Nürnberg, Mittelfr",
 	},
 	BankInfo{
 		BankID:        "76020070",
@@ -27119,7 +26951,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Altdorf b. Nürnberg",
+		City:          "Neumarkt i.d.OPf.",
 	},
 	BankInfo{
 		BankID:        "76020099",
@@ -27159,6 +26991,14 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
+		City:          "Lauf",
+	},
+	BankInfo{
+		BankID:        "76040061",
+		VersionNumber: "3.0",
+		URL:           "",
+		VersionName:   "",
+		Institute:     "Commerzbank",
 		City:          "Nürnberg",
 	},
 	BankInfo{
@@ -27168,14 +27008,6 @@ var data = []BankInfo{
 		VersionName:   "",
 		Institute:     "Commerzbank",
 		City:          "Schwabach",
-	},
-	BankInfo{
-		BankID:        "76040061",
-		VersionNumber: "3.0",
-		URL:           "",
-		VersionName:   "",
-		Institute:     "Commerzbank",
-		City:          "Lauf",
 	},
 	BankInfo{
 		BankID:        "76050101",
@@ -27330,22 +27162,6 @@ var data = []BankInfo{
 		City:          "Nürnberg, Mittelfr",
 	},
 	BankInfo{
-		BankID:        "76069549",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Raiffeisenbank Münchaurach -alt-",
-		City:          "Aurachtal",
-	},
-	BankInfo{
-		BankID:        "76069552",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Raiffeisenbank -alt-",
-		City:          "Neuhof a.d.Zenn",
-	},
-	BankInfo{
 		BankID:        "76069553",
 		VersionNumber: "3.0",
 		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
@@ -27431,6 +27247,14 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
+		City:          "Bamberg",
+	},
+	BankInfo{
+		BankID:        "76070012",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank",
 		City:          "Schwabach",
 	},
 	BankInfo{
@@ -27439,15 +27263,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Bayreuth",
-	},
-	BankInfo{
-		BankID:        "76070012",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank",
-		City:          "Bamberg",
+		City:          "Fürth",
 	},
 	BankInfo{
 		BankID:        "76070012",
@@ -27471,7 +27287,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Fürth",
+		City:          "Nürnberg",
 	},
 	BankInfo{
 		BankID:        "76070012",
@@ -27479,7 +27295,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Nürnberg",
+		City:          "Neustadt b. Coburg",
 	},
 	BankInfo{
 		BankID:        "76070012",
@@ -27551,7 +27367,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Neustadt b. Coburg",
+		City:          "Bayreuth",
 	},
 	BankInfo{
 		BankID:        "76070024",
@@ -27559,7 +27375,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Zirndorf",
+		City:          "Weiden i.d.OPf.",
 	},
 	BankInfo{
 		BankID:        "76070024",
@@ -27583,7 +27399,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Bamberg",
+		City:          "Zirndorf",
 	},
 	BankInfo{
 		BankID:        "76070024",
@@ -27679,7 +27495,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Weiden i.d.OPf.",
+		City:          "Bamberg",
 	},
 	BankInfo{
 		BankID:        "76090400",
@@ -27719,15 +27535,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Fürth, Bay",
-	},
-	BankInfo{
-		BankID:        "76220073",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Langenzenn",
+		City:          "Zirndorf, Mittelfr",
 	},
 	BankInfo{
 		BankID:        "76220073",
@@ -27743,7 +27551,15 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Zirndorf, Mittelfr",
+		City:          "Langenzenn",
+	},
+	BankInfo{
+		BankID:        "76220073",
+		VersionNumber: "3.0",
+		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
+		VersionName:   "FinTS V3.0",
+		Institute:     "UniCredit Bank - HypoVereinsbank AG",
+		City:          "Fürth, Bay",
 	},
 	BankInfo{
 		BankID:        "76240011",
@@ -27783,7 +27599,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Herzogenaurach",
+		City:          "Erlangen",
 	},
 	BankInfo{
 		BankID:        "76320072",
@@ -27799,7 +27615,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Erlangen",
+		City:          "Neustadt a.d.Aisch",
 	},
 	BankInfo{
 		BankID:        "76320072",
@@ -27831,7 +27647,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Neustadt a.d.Aisch",
+		City:          "Herzogenaurach",
 	},
 	BankInfo{
 		BankID:        "76340061",
@@ -27846,7 +27662,7 @@ var data = []BankInfo{
 		VersionNumber: "3.0",
 		URL:           "https://banking-by1.s-fints-pt-by.de/fints30",
 		VersionName:   "FinTS V3.0",
-		Institute:     "Stadt- und Kreissparkasse Erlangen",
+		Institute:     "Stadt- und Kreissparkasse Erlangen Höchstadt Herzogenaurach",
 		City:          "Erlangen",
 	},
 	BankInfo{
@@ -27856,14 +27672,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 		Institute:     "Sparkasse Forchheim",
 		City:          "Forchheim",
-	},
-	BankInfo{
-		BankID:        "76351560",
-		VersionNumber: "3.0",
-		URL:           "https://banking-by1.s-fints-pt-by.de/fints30",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Kreissparkasse Höchstadt a. d. Aisch",
-		City:          "Höchstadt",
 	},
 	BankInfo{
 		BankID:        "76360033",
@@ -28023,6 +27831,14 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
+		City:          "Bamberg",
+	},
+	BankInfo{
+		BankID:        "77020070",
+		VersionNumber: "3.0",
+		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
+		VersionName:   "FinTS V3.0",
+		Institute:     "UniCredit Bank - HypoVereinsbank AG",
 		City:          "Lichtenfels, Bay",
 	},
 	BankInfo{
@@ -28032,14 +27848,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
 		City:          "Bad Staffelstein",
-	},
-	BankInfo{
-		BankID:        "77020070",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Bamberg",
 	},
 	BankInfo{
 		BankID:        "77040080",
@@ -28088,14 +27896,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 		Institute:     "Raiffeisen-Volksbank Bad Staffelstein",
 		City:          "Bad Staffelstein",
-	},
-	BankInfo{
-		BankID:        "77065141",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Raiffeisenbank Stegaurach",
-		City:          "Stegaurach",
 	},
 	BankInfo{
 		BankID:        "77069042",
@@ -28295,7 +28095,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Bayreuth",
+		City:          "Burgkunstadt",
 	},
 	BankInfo{
 		BankID:        "77320072",
@@ -28303,7 +28103,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Burgkunstadt",
+		City:          "Bayreuth",
 	},
 	BankInfo{
 		BankID:        "77320072",
@@ -28359,15 +28159,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Rehau, Oberfr",
-	},
-	BankInfo{
-		BankID:        "78020070",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Münchberg, Oberfr",
+		City:          "Selb",
 	},
 	BankInfo{
 		BankID:        "78020070",
@@ -28383,15 +28175,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Selb",
-	},
-	BankInfo{
-		BankID:        "78020070",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
-		VersionName:   "FinTS V3.0",
-		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Naila",
+		City:          "Münchberg, Oberfr",
 	},
 	BankInfo{
 		BankID:        "78020070",
@@ -28408,6 +28192,22 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
 		City:          "Helmbrechts, Oberfr",
+	},
+	BankInfo{
+		BankID:        "78020070",
+		VersionNumber: "3.0",
+		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
+		VersionName:   "FinTS V3.0",
+		Institute:     "UniCredit Bank - HypoVereinsbank AG",
+		City:          "Naila",
+	},
+	BankInfo{
+		BankID:        "78020070",
+		VersionNumber: "3.0",
+		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
+		VersionName:   "FinTS V3.0",
+		Institute:     "UniCredit Bank - HypoVereinsbank AG",
+		City:          "Rehau, Oberfr",
 	},
 	BankInfo{
 		BankID:        "78040081",
@@ -28575,7 +28375,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Fürstlich Castell'sche Bank",
-		City:          "Heilbronn",
+		City:          "Mannheim",
 	},
 	BankInfo{
 		BankID:        "79030001",
@@ -28584,14 +28384,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 		Institute:     "Fürstlich Castell'sche Bank",
 		City:          "Neustadt an der Aisch",
-	},
-	BankInfo{
-		BankID:        "79030001",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Fürstlich Castell'sche Bank",
-		City:          "Burghaslach",
 	},
 	BankInfo{
 		BankID:        "79030001",
@@ -28615,7 +28407,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Fürstlich Castell'sche Bank",
-		City:          "Mannheim",
+		City:          "Würzburg",
 	},
 	BankInfo{
 		BankID:        "79030001",
@@ -28623,7 +28415,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Fürstlich Castell'sche Bank",
-		City:          "Würzburg",
+		City:          "Nürnberg",
 	},
 	BankInfo{
 		BankID:        "79030001",
@@ -28648,14 +28440,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 		Institute:     "Fürstlich Castell'sche Bank",
 		City:          "München",
-	},
-	BankInfo{
-		BankID:        "79030001",
-		VersionNumber: "3.0",
-		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Fürstlich Castell'sche Bank",
-		City:          "Markt Einersheim",
 	},
 	BankInfo{
 		BankID:        "79030001",
@@ -28695,7 +28479,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Fürstlich Castell'sche Bank",
-		City:          "Nürnberg",
+		City:          "Kitzingen",
 	},
 	BankInfo{
 		BankID:        "79030001",
@@ -28703,7 +28487,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-pintan.gad.de/cgi-bin/hbciservlet",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Fürstlich Castell'sche Bank",
-		City:          "Kitzingen",
+		City:          "Heilbronn",
 	},
 	BankInfo{
 		BankID:        "79032038",
@@ -28800,22 +28584,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 		Institute:     "Raiffeisenbank Bütthard-Gaukönigshofen",
 		City:          "Bütthard",
-	},
-	BankInfo{
-		BankID:        "79069090",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Raiffeisenbank Ulsenheim-Gollhofen -alt-",
-		City:          "Gollhofen",
-	},
-	BankInfo{
-		BankID:        "79069145",
-		VersionNumber: "3.0",
-		URL:           "https://hbci11.fiducia.de/cgi-bin/hbciservlet",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Raiffeisenbank Kreuzwertheim-Hasloch -alt-",
-		City:          "Kreuzwertheim",
 	},
 	BankInfo{
 		BankID:        "79069150",
@@ -28951,7 +28719,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Gerolzhofen",
+		City:          "Fulda",
 	},
 	BankInfo{
 		BankID:        "79320075",
@@ -28967,7 +28735,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Bad Brückenau",
+		City:          "Schweinfurt",
 	},
 	BankInfo{
 		BankID:        "79320075",
@@ -28983,7 +28751,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Haßfurt",
+		City:          "Bad Königshofen i. Grabfeld",
 	},
 	BankInfo{
 		BankID:        "79320075",
@@ -28991,7 +28759,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Schweinfurt",
+		City:          "Gerolzhofen",
 	},
 	BankInfo{
 		BankID:        "79320075",
@@ -28999,7 +28767,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Fulda",
+		City:          "Mellrichstadt",
 	},
 	BankInfo{
 		BankID:        "79320075",
@@ -29023,7 +28791,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Mellrichstadt",
+		City:          "Bad Brückenau",
 	},
 	BankInfo{
 		BankID:        "79320075",
@@ -29031,7 +28799,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Bad Königshofen i. Grabfeld",
+		City:          "Haßfurt",
 	},
 	BankInfo{
 		BankID:        "79330111",
@@ -29047,7 +28815,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Bad Kissingen",
+		City:          "Schweinfurt",
 	},
 	BankInfo{
 		BankID:        "79340054",
@@ -29055,7 +28823,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Schweinfurt",
+		City:          "Bad Kissingen",
 	},
 	BankInfo{
 		BankID:        "79350101",
@@ -29119,7 +28887,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Alzenau i.UFr.",
+		City:          "Großostheim",
 	},
 	BankInfo{
 		BankID:        "79520070",
@@ -29167,7 +28935,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Großostheim",
+		City:          "Alzenau i.UFr.",
 	},
 	BankInfo{
 		BankID:        "79540049",
@@ -29303,7 +29071,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Halle (Saale)",
+		City:          "Köthen (Anhalt)",
 	},
 	BankInfo{
 		BankID:        "80020086",
@@ -29319,7 +29087,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Köthen (Anhalt)",
+		City:          "Halle (Saale)",
 	},
 	BankInfo{
 		BankID:        "80020086",
@@ -29351,7 +29119,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Halle",
+		City:          "Merseburg",
 	},
 	BankInfo{
 		BankID:        "80040000",
@@ -29359,7 +29127,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Merseburg",
+		City:          "Halle",
 	},
 	BankInfo{
 		BankID:        "80040000",
@@ -29527,7 +29295,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Aschersleben",
+		City:          "Magdeburg",
 	},
 	BankInfo{
 		BankID:        "81040000",
@@ -29535,7 +29303,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Burg",
+		City:          "Aschersleben",
 	},
 	BankInfo{
 		BankID:        "81040000",
@@ -29551,7 +29319,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Schönebeck",
+		City:          "Halberstadt",
 	},
 	BankInfo{
 		BankID:        "81040000",
@@ -29591,7 +29359,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Magdeburg",
+		City:          "Burg",
 	},
 	BankInfo{
 		BankID:        "81040000",
@@ -29599,7 +29367,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Halberstadt",
+		City:          "Schönebeck",
 	},
 	BankInfo{
 		BankID:        "81050555",
@@ -29679,7 +29447,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Staßfurt",
+		City:          "Schönebeck (Elbe)",
 	},
 	BankInfo{
 		BankID:        "81070000",
@@ -29711,7 +29479,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Schönebeck (Elbe)",
+		City:          "Magdeburg",
 	},
 	BankInfo{
 		BankID:        "81070000",
@@ -29727,7 +29495,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Magdeburg",
+		City:          "Staßfurt",
 	},
 	BankInfo{
 		BankID:        "81070000",
@@ -29735,7 +29503,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Stendal",
+		City:          "Zerbst/Anhalt",
 	},
 	BankInfo{
 		BankID:        "81070000",
@@ -29775,7 +29543,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Gardelegen",
+		City:          "Stendal",
 	},
 	BankInfo{
 		BankID:        "81070000",
@@ -29783,7 +29551,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Zerbst/Anhalt",
+		City:          "Gardelegen",
 	},
 	BankInfo{
 		BankID:        "81070024",
@@ -29855,7 +29623,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Magdeburg",
+		City:          "Salzwedel, Hansestadt",
 	},
 	BankInfo{
 		BankID:        "81070024",
@@ -29895,7 +29663,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Salzwedel, Hansestadt",
+		City:          "Magdeburg",
 	},
 	BankInfo{
 		BankID:        "81093034",
@@ -29951,7 +29719,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Apolda",
+		City:          "Jena",
 	},
 	BankInfo{
 		BankID:        "82040000",
@@ -29983,7 +29751,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Jena",
+		City:          "Erfurt",
 	},
 	BankInfo{
 		BankID:        "82040000",
@@ -29991,7 +29759,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Mittelhausen",
+		City:          "Mühlhausen",
 	},
 	BankInfo{
 		BankID:        "82040000",
@@ -30007,7 +29775,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Erfurt",
+		City:          "Saalfeld",
 	},
 	BankInfo{
 		BankID:        "82040000",
@@ -30055,7 +29823,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Saalfeld",
+		City:          "Apolda",
 	},
 	BankInfo{
 		BankID:        "82040000",
@@ -30063,7 +29831,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Mühlhausen",
+		City:          "Mittelhausen",
 	},
 	BankInfo{
 		BankID:        "82051000",
@@ -30159,7 +29927,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Worbis",
+		City:          "Jena",
 	},
 	BankInfo{
 		BankID:        "82070000",
@@ -30175,7 +29943,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Erfurt",
+		City:          "Bad Langensalza",
 	},
 	BankInfo{
 		BankID:        "82070000",
@@ -30199,7 +29967,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Eisenberg, Thür",
+		City:          "Ohrdruf",
 	},
 	BankInfo{
 		BankID:        "82070000",
@@ -30239,7 +30007,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Jena",
+		City:          "Erfurt",
 	},
 	BankInfo{
 		BankID:        "82070000",
@@ -30343,7 +30111,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Leinefelde",
+		City:          "Worbis",
 	},
 	BankInfo{
 		BankID:        "82070000",
@@ -30367,7 +30135,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Bad Langensalza",
+		City:          "Leinefelde",
 	},
 	BankInfo{
 		BankID:        "82070000",
@@ -30383,7 +30151,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Ohrdruf",
+		City:          "Eisenberg, Thür",
 	},
 	BankInfo{
 		BankID:        "82070024",
@@ -30391,7 +30159,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Leinefelde",
+		City:          "Erfurt",
 	},
 	BankInfo{
 		BankID:        "82070024",
@@ -30407,7 +30175,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Arnstadt",
+		City:          "Zeulenroda-Triebes",
 	},
 	BankInfo{
 		BankID:        "82070024",
@@ -30487,7 +30255,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Erfurt",
+		City:          "Leinefelde",
 	},
 	BankInfo{
 		BankID:        "82070024",
@@ -30495,7 +30263,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Nordhausen, Thür",
+		City:          "Meiningen",
 	},
 	BankInfo{
 		BankID:        "82070024",
@@ -30511,7 +30279,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Zeulenroda-Triebes",
+		City:          "Pößneck",
 	},
 	BankInfo{
 		BankID:        "82070024",
@@ -30527,7 +30295,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Pößneck",
+		City:          "Nordhausen, Thür",
 	},
 	BankInfo{
 		BankID:        "82070024",
@@ -30551,7 +30319,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Worbis",
+		City:          "Schmalkalden",
 	},
 	BankInfo{
 		BankID:        "82070024",
@@ -30607,7 +30375,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Schmalkalden",
+		City:          "Worbis",
 	},
 	BankInfo{
 		BankID:        "82070024",
@@ -30615,7 +30383,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Meiningen",
+		City:          "Arnstadt",
 	},
 	BankInfo{
 		BankID:        "82094004",
@@ -30671,14 +30439,6 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Hermsdorf",
-	},
-	BankInfo{
-		BankID:        "83040000",
-		VersionNumber: "3.0",
-		URL:           "",
-		VersionName:   "",
-		Institute:     "Commerzbank",
 		City:          "Gera",
 	},
 	BankInfo{
@@ -30688,6 +30448,14 @@ var data = []BankInfo{
 		VersionName:   "",
 		Institute:     "Commerzbank",
 		City:          "Greiz",
+	},
+	BankInfo{
+		BankID:        "83040000",
+		VersionNumber: "3.0",
+		URL:           "",
+		VersionName:   "",
+		Institute:     "Commerzbank",
+		City:          "Hermsdorf",
 	},
 	BankInfo{
 		BankID:        "83050000",
@@ -30871,7 +30639,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Bautzen, Sachs",
+		City:          "Dresden",
 	},
 	BankInfo{
 		BankID:        "85020086",
@@ -30887,7 +30655,7 @@ var data = []BankInfo{
 		URL:           "https://hbci-01.hypovereinsbank.de/bank/hbci",
 		VersionName:   "FinTS V3.0",
 		Institute:     "UniCredit Bank - HypoVereinsbank AG",
-		City:          "Dresden",
+		City:          "Bautzen, Sachs",
 	},
 	BankInfo{
 		BankID:        "85040000",
@@ -30895,7 +30663,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Pirna",
+		City:          "Riesa",
 	},
 	BankInfo{
 		BankID:        "85040000",
@@ -30919,7 +30687,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Hoyerswerda",
+		City:          "Pirna",
 	},
 	BankInfo{
 		BankID:        "85040000",
@@ -30927,7 +30695,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Meißen",
+		City:          "Dresden",
 	},
 	BankInfo{
 		BankID:        "85040000",
@@ -30943,7 +30711,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Riesa",
+		City:          "Meißen",
 	},
 	BankInfo{
 		BankID:        "85040000",
@@ -30951,7 +30719,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Dresden",
+		City:          "Hoyerswerda",
 	},
 	BankInfo{
 		BankID:        "85050100",
@@ -31071,6 +30839,14 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
+		City:          "Torgau",
+	},
+	BankInfo{
+		BankID:        "86040000",
+		VersionNumber: "3.0",
+		URL:           "",
+		VersionName:   "",
+		Institute:     "Commerzbank",
 		City:          "Leipzig",
 	},
 	BankInfo{
@@ -31112,14 +30888,6 @@ var data = []BankInfo{
 		VersionName:   "",
 		Institute:     "Commerzbank",
 		City:          "Döbeln",
-	},
-	BankInfo{
-		BankID:        "86040000",
-		VersionNumber: "3.0",
-		URL:           "",
-		VersionName:   "",
-		Institute:     "Commerzbank",
-		City:          "Torgau",
 	},
 	BankInfo{
 		BankID:        "86050200",
@@ -31175,7 +30943,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Oschatz",
+		City:          "Bitterfeld-Wolfen",
 	},
 	BankInfo{
 		BankID:        "86070000",
@@ -31183,7 +30951,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Leipzig",
+		City:          "Altenburg, Thür",
 	},
 	BankInfo{
 		BankID:        "86070000",
@@ -31207,7 +30975,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Bitterfeld-Wolfen",
+		City:          "Borna b Leipzig",
 	},
 	BankInfo{
 		BankID:        "86070000",
@@ -31215,7 +30983,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Borna b Leipzig",
+		City:          "Taucha b Leipzig",
 	},
 	BankInfo{
 		BankID:        "86070000",
@@ -31367,7 +31135,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Altenburg, Thür",
+		City:          "Oschatz",
 	},
 	BankInfo{
 		BankID:        "86070000",
@@ -31391,7 +31159,15 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Taucha b Leipzig",
+		City:          "Leipzig",
+	},
+	BankInfo{
+		BankID:        "86070024",
+		VersionNumber: "3.0",
+		URL:           "https://fints.deutsche-bank.de/",
+		VersionName:   "FinTS V3.0",
+		Institute:     "Deutsche Bank Privat und Geschäftskunden",
+		City:          "Leipzig",
 	},
 	BankInfo{
 		BankID:        "86070024",
@@ -31400,14 +31176,6 @@ var data = []BankInfo{
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
 		City:          "Wurzen",
-	},
-	BankInfo{
-		BankID:        "86070024",
-		VersionNumber: "3.0",
-		URL:           "https://fints.deutsche-bank.de/",
-		VersionName:   "FinTS V3.0",
-		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Altenburg, Thür",
 	},
 	BankInfo{
 		BankID:        "86070024",
@@ -31487,7 +31255,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Leipzig",
+		City:          "Halle (Saale)",
 	},
 	BankInfo{
 		BankID:        "86070024",
@@ -31575,7 +31343,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Zeitz, Elster",
+		City:          "Schkeuditz",
 	},
 	BankInfo{
 		BankID:        "86070024",
@@ -31607,7 +31375,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Halle (Saale)",
+		City:          "Altenburg, Thür",
 	},
 	BankInfo{
 		BankID:        "86070024",
@@ -31615,7 +31383,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Schkeuditz",
+		City:          "Zeitz, Elster",
 	},
 	BankInfo{
 		BankID:        "86095484",
@@ -31679,7 +31447,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Weischlitz",
+		City:          "Mittweida",
 	},
 	BankInfo{
 		BankID:        "87040000",
@@ -31687,7 +31455,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Freiberg",
+		City:          "Weischlitz",
 	},
 	BankInfo{
 		BankID:        "87040000",
@@ -31703,7 +31471,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Zwickau",
+		City:          "Chemnitz",
 	},
 	BankInfo{
 		BankID:        "87040000",
@@ -31727,7 +31495,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Mittweida",
+		City:          "Zwickau",
 	},
 	BankInfo{
 		BankID:        "87040000",
@@ -31735,7 +31503,7 @@ var data = []BankInfo{
 		URL:           "",
 		VersionName:   "",
 		Institute:     "Commerzbank",
-		City:          "Chemnitz",
+		City:          "Freiberg",
 	},
 	BankInfo{
 		BankID:        "87050000",
@@ -32023,7 +31791,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Coswig b Dresden",
+		City:          "Zittau",
 	},
 	BankInfo{
 		BankID:        "87070000",
@@ -32063,7 +31831,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Zittau",
+		City:          "Coswig b Dresden",
 	},
 	BankInfo{
 		BankID:        "87070000",
@@ -32079,7 +31847,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Frankenberg/Sa.",
+		City:          "Lichtenstein/Sa.",
 	},
 	BankInfo{
 		BankID:        "87070000",
@@ -32135,7 +31903,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank",
-		City:          "Lichtenstein/Sa.",
+		City:          "Frankenberg/Sa.",
 	},
 	BankInfo{
 		BankID:        "87070024",
@@ -32143,7 +31911,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Chemnitz, Sachs",
+		City:          "Aue, Sachs",
 	},
 	BankInfo{
 		BankID:        "87070024",
@@ -32159,7 +31927,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Aue, Sachs",
+		City:          "Chemnitz, Sachs",
 	},
 	BankInfo{
 		BankID:        "87070024",
@@ -32335,7 +32103,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Werdau, Sachs",
+		City:          "Löbau",
 	},
 	BankInfo{
 		BankID:        "87070024",
@@ -32343,7 +32111,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Marienberg, Erzgeb",
+		City:          "Zwickau",
 	},
 	BankInfo{
 		BankID:        "87070024",
@@ -32415,7 +32183,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Zwickau",
+		City:          "Reichenbach im Vogtland",
 	},
 	BankInfo{
 		BankID:        "87070024",
@@ -32463,7 +32231,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Löbau",
+		City:          "Werdau, Sachs",
 	},
 	BankInfo{
 		BankID:        "87070024",
@@ -32479,7 +32247,7 @@ var data = []BankInfo{
 		URL:           "https://fints.deutsche-bank.de/",
 		VersionName:   "FinTS V3.0",
 		Institute:     "Deutsche Bank Privat und Geschäftskunden",
-		City:          "Reichenbach im Vogtland",
+		City:          "Marienberg, Erzgeb",
 	},
 	BankInfo{
 		BankID:        "87095824",
