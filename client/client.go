@@ -94,13 +94,20 @@ type Client struct {
 	pinTanDialog *dialog.PinTanDialog
 }
 
-// Accounts return the basic account information for the provided client config.
-func (c *Client) Accounts() ([]domain.AccountInformation, error) {
-	if c.pinTanDialog.UserParameterDataVersion() == 0 {
+func (c *Client) init() error {
+	if c.pinTanDialog.BankParameterDataVersion() == 0 {
 		_, err := c.pinTanDialog.SyncClientSystemID()
 		if err != nil {
-			return nil, fmt.Errorf("Error while fetching accounts: %v", err)
+			return fmt.Errorf("Error while fetching accounts: %v", err)
 		}
+	}
+	return nil
+}
+
+// Accounts return the basic account information for the provided client config.
+func (c *Client) Accounts() ([]domain.AccountInformation, error) {
+	if err := c.init(); err != nil {
+		return nil, err
 	}
 	return c.pinTanDialog.Accounts, nil
 }
@@ -110,11 +117,8 @@ func (c *Client) Accounts() ([]domain.AccountInformation, error) {
 // proviced account. For the initial request no continuationReference is
 // needed, as this method will be called recursivly if the server sends one.
 func (c *Client) AccountTransactions(account domain.AccountConnection, timeframe domain.Timeframe, allAccounts bool, continuationReference string) ([]domain.AccountTransaction, error) {
-	if c.pinTanDialog.BankParameterDataVersion() == 0 {
-		_, err := c.pinTanDialog.SyncClientSystemID()
-		if err != nil {
-			return nil, fmt.Errorf("Error while fetching accounts: %v", err)
-		}
+	if err := c.init(); err != nil {
+		return nil, err
 	}
 	builder := segment.NewBuilder(c.pinTanDialog.SupportedSegments())
 	accountTransactionRequest, err := builder.AccountTransactionRequest(account, allAccounts)
@@ -183,6 +187,9 @@ func (c *Client) AccountTransactions(account domain.AccountConnection, timeframe
 // provided account. For the initial request no continuationReference is
 // needed, as this method will be called recursivly if the server sends one.
 func (c *Client) SepaAccountTransactions(account domain.InternationalAccountConnection, timeframe domain.Timeframe, allAccounts bool, continuationReference string) ([]domain.AccountTransaction, error) {
+	if err := c.init(); err != nil {
+		return nil, err
+	}
 	accountTransactionRequest := c.hbciVersion.SepaAccountTransactionRequest(account, allAccounts)
 	accountTransactionRequest.SetTransactionRange(timeframe)
 	if continuationReference != "" {
@@ -216,6 +223,9 @@ func (c *Client) SepaAccountTransactions(account domain.InternationalAccountConn
 // account. If allAccounts is true it will fetch also the information
 // associated with the account.
 func (c *Client) AccountInformation(account domain.AccountConnection, allAccounts bool) error {
+	if err := c.init(); err != nil {
+		return err
+	}
 	accountInformationRequest := segment.NewAccountInformationRequestSegmentV1(account, allAccounts)
 	decryptedMessage, err := c.pinTanDialog.SendMessage(message.NewHBCIMessage(c.hbciVersion, accountInformationRequest))
 	if err != nil {
@@ -233,11 +243,8 @@ func (c *Client) AccountInformation(account domain.AccountConnection, allAccount
 // If allAccounts is true it will fetch also the balances for all accounts
 // associated with the account.
 func (c *Client) AccountBalances(account domain.AccountConnection, allAccounts bool) ([]domain.AccountBalance, error) {
-	if c.pinTanDialog.BankParameterDataVersion() == 0 {
-		_, err := c.pinTanDialog.SyncClientSystemID()
-		if err != nil {
-			return nil, fmt.Errorf("Error while fetching accounts: %v", err)
-		}
+	if err := c.init(); err != nil {
+		return nil, err
 	}
 	builder := segment.NewBuilder(c.pinTanDialog.SupportedSegments())
 	accountBalanceRequest, err := builder.AccountBalanceRequest(account, allAccounts)
@@ -273,6 +280,9 @@ func (c *Client) AccountBalances(account domain.AccountConnection, allAccounts b
 // will be fetched.
 func (c *Client) Status(from, to time.Time, maxEntries int, continuationReference string) ([]domain.StatusAcknowledgement, error) {
 	statusRequest := c.hbciVersion.StatusProtocolRequest(from, to, maxEntries, continuationReference)
+	if err := c.init(); err != nil {
+		return nil, err
+	}
 	bankMessage, err := c.pinTanDialog.SendMessage(message.NewHBCIMessage(c.hbciVersion, statusRequest))
 	if err != nil {
 		return nil, err
