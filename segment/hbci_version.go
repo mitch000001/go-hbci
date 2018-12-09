@@ -40,6 +40,7 @@ type Builder interface {
 	AccountBalanceRequest(account domain.AccountConnection, allAccounts bool) (AccountBalanceRequest, error)
 	AccountTransactionRequest(account domain.AccountConnection, allAccounts bool) (*AccountTransactionRequestSegment, error)
 	SepaAccountTransactionRequest(account domain.InternationalAccountConnection, allAccounts bool) (*AccountTransactionRequestSegment, error)
+	StatusProtocolRequest(from, to time.Time, maxEntries int, continuationReference string) (StatusProtocolRequest, error)
 }
 
 // NewBuilder returns a new Builder which uses the supported segments to
@@ -88,4 +89,15 @@ func (b *builder) SepaAccountTransactionRequest(account domain.InternationalAcco
 		return nil, err
 	}
 	return request(account, allAccounts), nil
+}
+func (b *builder) StatusProtocolRequest(from, to time.Time, maxEntries int, continuationReference string) (StatusProtocolRequest, error) {
+	versions, ok := b.supportedSegments["HIPRO"]
+	if !ok {
+		return nil, fmt.Errorf("Segment %s not supported", "HKPRO")
+	}
+	request, err := StatusProtocolRequestBuilder(versions)
+	if err != nil {
+		return nil, err
+	}
+	return request(from, to, maxEntries, continuationReference), nil
 }

@@ -279,8 +279,12 @@ func (c *Client) AccountBalances(account domain.AccountConnection, allAccounts b
 // If a continuationReference is present, the status information attached to it
 // will be fetched.
 func (c *Client) Status(from, to time.Time, maxEntries int, continuationReference string) ([]domain.StatusAcknowledgement, error) {
-	statusRequest := c.hbciVersion.StatusProtocolRequest(from, to, maxEntries, continuationReference)
 	if err := c.init(); err != nil {
+		return nil, err
+	}
+	builder := segment.NewBuilder(c.pinTanDialog.SupportedSegments())
+	statusRequest, err := builder.StatusProtocolRequest(from, to, maxEntries, continuationReference)
+	if err != nil {
 		return nil, err
 	}
 	bankMessage, err := c.pinTanDialog.SendMessage(message.NewHBCIMessage(c.hbciVersion, statusRequest))

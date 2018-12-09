@@ -1,11 +1,28 @@
 package segment
 
 import (
+	"fmt"
+	"sort"
 	"time"
 
 	"github.com/mitch000001/go-hbci/domain"
 	"github.com/mitch000001/go-hbci/element"
 )
+
+func StatusProtocolRequestBuilder(versions []int) (func(from, to time.Time, maxEntries int, continuationReference string) StatusProtocolRequest, error) {
+	sort.Sort(sort.Reverse(sort.IntSlice(versions)))
+	for _, version := range versions {
+		switch version {
+		case 4:
+			return NewStatusProtocolRequestV3, nil
+		case 3:
+			return NewStatusProtocolRequestV4, nil
+		default:
+			continue
+		}
+	}
+	return nil, fmt.Errorf("unsupported versions %v", versions)
+}
 
 type StatusProtocolRequest interface {
 	ClientSegment
