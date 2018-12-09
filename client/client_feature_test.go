@@ -167,11 +167,10 @@ func newClient() *client.Client {
 		}
 	} else {
 		config = client.Config{
-			URL:         os.Getenv("GOHBCI_URL"),
-			AccountID:   os.Getenv("GOHBCI_USERID"),
-			BankID:      os.Getenv("GOHBCI_BLZ"),
-			PIN:         os.Getenv("GOHBCI_PIN"),
-			HBCIVersion: domain.HBCIVersion220,
+			URL:       os.Getenv("GOHBCI_URL"),
+			AccountID: os.Getenv("GOHBCI_USERID"),
+			BankID:    os.Getenv("GOHBCI_BLZ"),
+			PIN:       os.Getenv("GOHBCI_PIN"),
 		}
 	}
 	testAccount = domain.AccountConnection{AccountID: config.AccountID, CountryCode: 280, BankID: config.BankID}
