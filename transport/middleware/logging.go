@@ -28,6 +28,7 @@ func Logging(logger *log.Logger) transport.Middleware {
 
 			res, err := t.Do(req)
 			if err != nil {
+				logger.Printf("Error executing request:\n%v", err)
 				return nil, err
 			}
 			var responseBuf bytes.Buffer
