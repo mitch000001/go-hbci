@@ -65,8 +65,8 @@ func (m *MT940) AccountTransactions() []domain.AccountTransaction {
 			transaction.BankID = descr.BankID
 			transaction.AccountID = descr.AccountID
 			transaction.Name = descr.Name
-			transaction.Purpose = descr.Purpose
-			transaction.Purpose2 = descr.Purpose2
+			transaction.Purpose = strings.Join(descr.Purpose, " ")
+			transaction.Purpose2 = strings.Join(descr.Purpose2, " ")
 			transaction.TransactionID = descr.TransactionID
 		}
 		transactions = append(transactions, transaction)
