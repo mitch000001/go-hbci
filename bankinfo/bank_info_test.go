@@ -1,6 +1,60 @@
 package bankinfo
 
-import "testing"
+import (
+	"reflect"
+	"strings"
+	"testing"
+
+	"github.com/kr/pretty"
+)
+
+func Test_ParseBankInfos(t *testing.T) {
+	tests := []struct {
+		name       string
+		data       string
+		wantResult []BankInfo
+		wantError  error
+	}{
+		{
+			name: "success",
+			data: `Nr.;BLZ;Institut;Ort;RZ;Organisation;HBCI-Zugang DNS;HBCI- Zugang     IP-Adresse;HBCI-Version;DDV;RDH-1;RDH-2;RDH-3;RDH-4;RDH-5;RDH-6;RDH-7;RDH-8;RDH-9;RDH-10;RAH-7;RAH-9;RAH-10;PIN/TAN-Zugang URL;Version;Datum letzte Änderung;;;;;
+2;10010010;Postbank;Berlin;eigenes Rechenzentrum;BdB;;;;;;;;;;;;;;;;;;https://hbci.postbank.de/banking/hbci.do;FinTS V3.0;30.04.2015;;;;;
+3;10020200;BHF-Bank AG;Berlin;Bank-Verlag GmbH;BdB;hbciserver.bankverlag.de;nicht unterstützt;3.0;;ja;;ja;;ja;;;;;;;;;https://www.bv-activebanking.de/hbciTunnel/hbciTransfer.jsp;FinTS V3.0;;;;;;`,
+			wantResult: []BankInfo{
+				{
+					BankID:        "10010010",
+					VersionNumber: "",
+					URL:           "https://hbci.postbank.de/banking/hbci.do",
+					VersionName:   "FinTS V3.0",
+					Institute:     "Postbank",
+					City:          "Berlin",
+				},
+				{
+					BankID:        "10020200",
+					VersionNumber: "3.0",
+					URL:           "https://www.bv-activebanking.de/hbciTunnel/hbciTransfer.jsp",
+					VersionName:   "FinTS V3.0",
+					Institute:     "BHF-Bank AG",
+					City:          "Berlin",
+				},
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			info, err := ParseBankInfos(strings.NewReader(tt.data))
+
+			if !reflect.DeepEqual(tt.wantError, err) {
+				t.Errorf("Expected error to equal\n%v\n\tgot\n%v", tt.wantError, err)
+			}
+
+			if !reflect.DeepEqual(tt.wantResult, info) {
+				t.Errorf("Results differ:\n%v", pretty.Diff(tt.wantResult, info))
+			}
+		})
+	}
+}
 
 func TestFindByBankId(t *testing.T) {
 	data = []BankInfo{
