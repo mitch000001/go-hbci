@@ -540,7 +540,7 @@ func (d *dialog) extractEncryptedMessage(response *transport.Response) (*message
 		}
 		encMessage.EncryptedData = encSegment
 	} else {
-		return nil, fmt.Errorf("Malformed response: missing encrypted data: \n%q", response)
+		return nil, fmt.Errorf("Malformed response: missing encrypted data: \n%v", response)
 	}
 	return encMessage, nil
 }
