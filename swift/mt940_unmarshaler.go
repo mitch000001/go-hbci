@@ -72,7 +72,7 @@ func (m *MT940) Unmarshal(value []byte) error {
 			}
 		case bytes.HasPrefix(tag, []byte(":61:")):
 			transaction := &TransactionTag{}
-			err = transaction.Unmarshal(tag)
+			err = transaction.Unmarshal(tag, m.StartingBalance.BookingDate.Year())
 			if err != nil {
 				return err
 			}

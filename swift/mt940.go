@@ -3,7 +3,6 @@ package swift
 import (
 	"bytes"
 	"fmt"
-	"math"
 	"strconv"
 	"strings"
 	"time"
@@ -212,7 +211,7 @@ type TransactionTag struct {
 }
 
 // Unmarshal unmarshals value into t
-func (t *TransactionTag) Unmarshal(value []byte) error {
+func (t *TransactionTag) Unmarshal(value []byte, bookingYear int) error {
 	elements, err := extractTagElements(value)
 	if err != nil {
 		return err
@@ -235,13 +234,14 @@ func (t *TransactionTag) Unmarshal(value []byte) error {
 	if unicode.IsDigit(r) {
 		buf.UnreadRune()
 		dateBytes = buf.Next(4)
-		date, err = parseDate(dateBytes, t.ValutaDate.Year())
+		date, err = parseDate(dateBytes, bookingYear)
 		if err != nil {
 			return errors.WithMessage(err, "unmarshal transaction tag: parsing booking date")
 		}
 		t.BookingDate = domain.NewShortDate(date)
-		monthDiff := int(math.Abs(float64(t.ValutaDate.Month() - t.BookingDate.Month())))
-		if monthDiff > 1 {
+		diff := t.ValutaDate.Sub(t.BookingDate.Time).Hours() / 24
+		fmt.Println(diff)
+		if diff > 31 {
 			t.BookingDate = domain.NewShortDate(t.BookingDate.AddDate(1, 0, 0))
 		}
 	}
