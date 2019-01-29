@@ -2,6 +2,8 @@ package swift
 
 import (
 	"reflect"
+	"strconv"
+	"strings"
 	"testing"
 	"time"
 
@@ -150,4 +152,29 @@ func TestTransactionTagUnmarshal(t *testing.T) {
 			t.Fail()
 		}
 	}
+}
+
+func TestTransactionTagOrder(t *testing.T) {
+	testdata := "\r\n:20:HBCIKTOLST"
+	for i := 0; i < 10; i++ {
+		testdata += "\r\n:25:12345678/1234123456" +
+			"\r\n:28C:0" +
+			"\r\n:60F:C181105EUR1234,56" +
+			"\r\n:61:1811051105DR50,NMSCNONREF" +
+			"\r\n/OCMT/EUR50,//CHGS/   0,/" +
+			"\r\n:86:177?00SB-SEPA-Ueberweisung?20" + strconv.Itoa(i+10) + "                                                                                                                                                 ?30?31?32Max Meier                  ?33                           ?34000" +
+			"\r\n:62F:C190125EUR1234,56"
+
+	}
+	testdata += "\r\n-"
+	mt := &MT940{}
+	mt.Unmarshal([]byte(testdata))
+	for i, tr := range mt.Transactions {
+		if strings.TrimSpace(tr.Description.Purpose[0]) != strconv.Itoa(i+10) {
+			t.Logf("Purpose at index %d should be %d but is %s", i, i+10, tr.Description.Purpose[0])
+			t.Fail()
+		}
+
+	}
+
 }
