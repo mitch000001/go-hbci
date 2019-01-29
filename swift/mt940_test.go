@@ -139,7 +139,7 @@ func TestTransactionTagUnmarshal(t *testing.T) {
 	for _, test := range tests {
 		tag := &TransactionTag{}
 
-		err := tag.Unmarshal([]byte(test.marshaledValue))
+		err := tag.Unmarshal([]byte(test.marshaledValue), 2015)
 
 		if err != nil {
 			t.Logf("Expected no error, got %T:%v\n", err, err)
@@ -219,6 +219,7 @@ func TestTransactionWithRedefineCustomDataTag(t *testing.T) {
 
 func TestBookingDateBug(t *testing.T) {
 	testdata := "\r\n:20:HBCIKTOLST"
+	// Valuta Date 2019-01-01 Booking Date 2018-12-28
 	testdata += "\r\n:25:12345678/1234123456" +
 		"\r\n:28C:0" +
 		"\r\n:60F:C181228EUR1234,56" +
@@ -226,10 +227,19 @@ func TestBookingDateBug(t *testing.T) {
 		"\r\n/OCMT/EUR50,//CHGS/   0,/" +
 		"\r\n:86:177?00SB-SEPA-Ueberweisung?202018-12-28                                                                                                                                           ?30?31?32Max Maier                  ?33                           ?34000" +
 		"\r\n:62F:C190125EUR1234,56"
+	// Valuta Date 2019-01-01 Booking Date 2019-01-01
 	testdata += "\r\n:25:12345678/1234123456" +
 		"\r\n:28C:0" +
 		"\r\n:60F:C181228EUR1234,56" +
 		"\r\n:61:1901010101DR50,NMSCNONREF" +
+		"\r\n/OCMT/EUR50,//CHGS/   0,/" +
+		"\r\n:86:177?00SB-SEPA-Ueberweisung?202019-01-01                                                                                                                                           ?30?31?32Max Meier                  ?33                           ?34000" +
+		"\r\n:62F:C190125EUR1234,56"
+	// Valuta Date 2018-12-28 Booking Date 2019-01-01 (not sure if that can happen ? )
+	testdata += "\r\n:25:12345678/1234123456" +
+		"\r\n:28C:0" +
+		"\r\n:60F:C181228EUR1234,56" +
+		"\r\n:61:1812280101DR50,NMSCNONREF" +
 		"\r\n/OCMT/EUR50,//CHGS/   0,/" +
 		"\r\n:86:177?00SB-SEPA-Ueberweisung?202019-01-01                                                                                                                                           ?30?31?32Max Meier                  ?33                           ?34000" +
 		"\r\n:62F:C190125EUR1234,56"
