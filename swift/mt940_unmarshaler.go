@@ -17,10 +17,9 @@ func (m *MT940) Unmarshal(value []byte) error {
 	if len(tags) == 0 {
 		return fmt.Errorf("Malformed marshaled value")
 	}
-	transactions := make(map[int]*TransactionTag)
-	customTags := make(map[int]*CustomFieldTag)
-	closingBalanceIndex := -1
-	for i, tag := range tags {
+	balanceTagOpen := false
+	for _, tag := range tags {
+
 		switch {
 		case bytes.HasPrefix(tag, []byte(":20:")):
 			m.JobReference = &AlphaNumericTag{}
@@ -52,12 +51,16 @@ func (m *MT940) Unmarshal(value []byte) error {
 			if err != nil {
 				return errors.WithMessage(err, "unmarshal starting balance tag")
 			}
+			balanceTagOpen = true
 		case bytes.HasPrefix(tag, []byte(":62")):
+
 			m.ClosingBalance = &BalanceTag{}
 			err = m.ClosingBalance.Unmarshal(tag)
 			if err != nil {
 				return errors.WithMessage(err, "unmarshal closing balance tag")
 			}
+
+			balanceTagOpen = false
 		case bytes.HasPrefix(tag, []byte(":64:")):
 			m.CurrentValutaBalance = &BalanceTag{}
 			err = m.CurrentValutaBalance.Unmarshal(tag)
@@ -71,34 +74,29 @@ func (m *MT940) Unmarshal(value []byte) error {
 				return errors.WithMessage(err, "unmarshal future valuta balance tag")
 			}
 		case bytes.HasPrefix(tag, []byte(":61:")):
+
 			transaction := &TransactionTag{}
+
 			err = transaction.Unmarshal(tag)
 			if err != nil {
 				return err
 			}
-			transactions[i] = transaction
+			m.Transactions = append(m.Transactions, &TransactionSequence{Transaction: transaction})
 		case bytes.HasPrefix(tag, []byte(":86:")):
 			customField := &CustomFieldTag{}
 			err = customField.Unmarshal(tag)
 			if err != nil {
 				return err
 			}
-			customTags[i] = customField
+			if balanceTagOpen {
+				m.Transactions[len(m.Transactions)-1].Description = customField
+			} else {
+				m.CustomField = customField
+			}
 		default:
 			return fmt.Errorf("Malformed marshaled value")
 		}
 	}
-	for idx, transaction := range transactions {
-		sequence := &TransactionSequence{Transaction: transaction}
-		if cust, ok := customTags[idx+1]; ok {
-			sequence.Description = cust
-		}
-		m.Transactions = append(m.Transactions, sequence)
-	}
-	for k, cust := range customTags {
-		if k > closingBalanceIndex {
-			m.CustomField = cust
-		}
-	}
+
 	return nil
 }
