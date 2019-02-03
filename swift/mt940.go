@@ -240,7 +240,6 @@ func (t *TransactionTag) Unmarshal(value []byte, bookingYear int) error {
 		}
 		t.BookingDate = domain.NewShortDate(date)
 		diff := t.ValutaDate.Sub(t.BookingDate.Time).Hours() / 24
-		fmt.Println(diff)
 		if diff > 31 {
 			t.BookingDate = domain.NewShortDate(t.BookingDate.AddDate(1, 0, 0))
 		}
