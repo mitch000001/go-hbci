@@ -2,7 +2,6 @@ package swift
 
 import (
 	"reflect"
-	"strings"
 	"testing"
 	"time"
 
@@ -154,37 +153,63 @@ func TestTransactionTagUnmarshal(t *testing.T) {
 }
 
 func TestBookingDateBug(t *testing.T) {
-	testdata := "\r\n:20:HBCIKTOLST"
-	// Valuta Date 2019-01-01 Booking Date 2018-12-28
-	testdata += "\r\n:25:12345678/1234123456" +
-		"\r\n:28C:0" +
-		"\r\n:60F:C181228EUR1234,56" +
-		"\r\n:61:1901011228DR50,NMSCNONREF" +
-		"\r\n/OCMT/EUR50,//CHGS/   0,/" +
-		"\r\n:86:177?00SB-SEPA-Ueberweisung?202018-12-28                                                                                                                                           ?30?31?32Max Maier                  ?33                           ?34000" +
-		"\r\n:62F:C190125EUR1234,56"
-	// Valuta Date 2019-01-01 Booking Date 2019-01-01
-	testdata += "\r\n:25:12345678/1234123456" +
-		"\r\n:28C:0" +
-		"\r\n:60F:C181228EUR1234,56" +
-		"\r\n:61:1901010101DR50,NMSCNONREF" +
-		"\r\n/OCMT/EUR50,//CHGS/   0,/" +
-		"\r\n:86:177?00SB-SEPA-Ueberweisung?202019-01-01                                                                                                                                           ?30?31?32Max Meier                  ?33                           ?34000" +
-		"\r\n:62F:C190125EUR1234,56"
-	// Valuta Date 2018-12-28 Booking Date 2019-01-01 (not sure if that can happen ? )
-	testdata += "\r\n:25:12345678/1234123456" +
-		"\r\n:28C:0" +
-		"\r\n:60F:C181228EUR1234,56" +
-		"\r\n:61:1812280101DR50,NMSCNONREF" +
-		"\r\n/OCMT/EUR50,//CHGS/   0,/" +
-		"\r\n:86:177?00SB-SEPA-Ueberweisung?202019-01-01                                                                                                                                           ?30?31?32Max Meier                  ?33                           ?34000" +
-		"\r\n:62F:C190125EUR1234,56"
-	testdata += "\r\n-"
-	mt := &MT940{}
-	mt.Unmarshal([]byte(testdata))
-	for _, tr := range mt.Transactions {
-		if strings.TrimSpace(tr.Description.Purpose[0]) != tr.Transaction.BookingDate.String() {
-			t.Logf("Booking date should be %s but is %s", strings.TrimSpace(tr.Description.Purpose[0]), tr.Transaction.BookingDate.String())
+	tests := []struct {
+		testdata            string
+		expectedBookingDate string
+	}{
+		{
+			// Valuta Date 2019-01-01 Booking Date 2018-12-28
+			testdata: "\r\n:20:HBCIKTOLST" + "\r\n:25:12345678/1234123456" +
+				"\r\n:28C:0" +
+				"\r\n:60F:C181228EUR1234,56" +
+				"\r\n:61:1901011228DR50,NMSCNONREF" +
+				"\r\n/OCMT/EUR50,//CHGS/   0,/" +
+				"\r\n:86:177?00SB-SEPA-Ueberweisung?20                                                                                                                                                     ?30?31?32Max Maier                  ?33                           ?34000" +
+				"\r\n:62F:C190125EUR1234,56" +
+				"\r\n-",
+			expectedBookingDate: "2018-12-28",
+		},
+		// Valuta Date 2019-01-01 Booking Date 2019-01-01
+		{
+			testdata: "\r\n:20:HBCIKTOLST" + "\r\n:25:12345678/1234123456" +
+				"\r\n:28C:0" +
+				"\r\n:60F:C181228EUR1234,56" +
+				"\r\n:61:1901011228DR50,NMSCNONREF" +
+				"\r\n/OCMT/EUR50,//CHGS/   0,/" +
+				"\r\n:86:177?00SB-SEPA-Ueberweisung?20                                                                                                                                                     ?30?31?32Max Maier                  ?33                           ?34000" +
+				"\r\n:62F:C190125EUR1234,56" +
+				"\r\n-",
+			expectedBookingDate: "2018-12-28",
+		}, {
+			// Valuta Date 2018-12-28 Booking Date 2019-01-01 (not sure if that can happen ? )
+
+			testdata: "\r\n:20:HBCIKTOLST" + "\r\n:25:12345678/1234123456" +
+				"\r\n:28C:0" +
+				"\r\n:60F:C181228EUR1234,56" +
+				"\r\n:61:1812280101DR50,NMSCNONREF" +
+				"\r\n/OCMT/EUR50,//CHGS/   0,/" +
+				"\r\n:86:177?00SB-SEPA-Ueberweisung?20                                                                                                                                                     ?30?31?32Max Maier                  ?33                           ?34000" +
+				"\r\n:62F:C190125EUR1234,56" +
+				"\r\n-",
+			expectedBookingDate: "2019-01-01",
+		},
+	}
+
+	for _, test := range tests {
+		mt := &MT940{}
+
+		err := mt.Unmarshal([]byte(test.testdata))
+		if err != nil {
+			t.Log(err)
+			t.Fail()
+		}
+		if len(mt.Transactions) != 1 {
+			t.Log("There should be exactly one transaction")
+		}
+
+		if test.expectedBookingDate != mt.Transactions[0].Transaction.BookingDate.String() {
+
+			t.Logf("Booking date should be %s but is %s", test.expectedBookingDate, mt.Transactions[0].Transaction.BookingDate.String())
 			t.Fail()
 		}
 
