@@ -94,7 +94,7 @@ func (m *MT940) Unmarshal(value []byte) error {
 					return errors.New("Unexpected CustomTag before first TransactionTag")
 				}
 				if m.Transactions[indexLastSliceitem].Description != nil {
-					return errors.New(fmt.Sprintf("unexpedted CustomTag: CustomTag would replace Description of %v", m.Transactions[indexLastSliceitem]))
+					return errors.Errorf("Unexpected CustomTag: CustomTag would replace Description of %v", m.Transactions[indexLastSliceitem])
 				}
 				m.Transactions[indexLastSliceitem].Description = customField
 			} else {
