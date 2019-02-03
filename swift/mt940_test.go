@@ -153,66 +153,94 @@ func TestTransactionTagUnmarshal(t *testing.T) {
 }
 
 func TestBookingDateBug(t *testing.T) {
+
 	tests := []struct {
-		testdata            string
-		expectedBookingDate string
+		today                           string
+		balanceStartBookingDateString   string
+		balanceClosingBookingDateString string
+		bookingDateString               string
+		valutaDateString                string
 	}{
 		{
-			// Valuta Date 2019-01-01 Booking Date 2018-12-28
-			testdata: "\r\n:20:HBCIKTOLST" + "\r\n:25:12345678/1234123456" +
-				"\r\n:28C:0" +
-				"\r\n:60F:C181228EUR1234,56" +
-				"\r\n:61:1901011228DR50,NMSCNONREF" +
-				"\r\n/OCMT/EUR50,//CHGS/   0,/" +
-				"\r\n:86:177?00SB-SEPA-Ueberweisung?20                                                                                                                                                     ?30?31?32Max Maier                  ?33                           ?34000" +
-				"\r\n:62F:C190125EUR1234,56" +
-				"\r\n-",
-			expectedBookingDate: "2018-12-28",
+			today:                           "2019-02-10",
+			bookingDateString:               "2018-12-28",
+			valutaDateString:                "2019-01-01",
+			balanceStartBookingDateString:   "2018-12-28",
+			balanceClosingBookingDateString: "2019-01-25",
 		},
-		// Valuta Date 2019-01-01 Booking Date 2019-01-01
 		{
-			testdata: "\r\n:20:HBCIKTOLST" + "\r\n:25:12345678/1234123456" +
-				"\r\n:28C:0" +
-				"\r\n:60F:C181228EUR1234,56" +
-				"\r\n:61:1901011228DR50,NMSCNONREF" +
-				"\r\n/OCMT/EUR50,//CHGS/   0,/" +
-				"\r\n:86:177?00SB-SEPA-Ueberweisung?20                                                                                                                                                     ?30?31?32Max Maier                  ?33                           ?34000" +
-				"\r\n:62F:C190125EUR1234,56" +
-				"\r\n-",
-			expectedBookingDate: "2018-12-28",
+			today:                           "2019-02-10",
+			bookingDateString:               "2019-01-01",
+			valutaDateString:                "2019-01-01",
+			balanceStartBookingDateString:   "2018-12-28",
+			balanceClosingBookingDateString: "2019-01-25",
 		}, {
-			// Valuta Date 2018-12-28 Booking Date 2019-01-01 (not sure if that can happen ? )
-
-			testdata: "\r\n:20:HBCIKTOLST" + "\r\n:25:12345678/1234123456" +
-				"\r\n:28C:0" +
-				"\r\n:60F:C181228EUR1234,56" +
-				"\r\n:61:1812280101DR50,NMSCNONREF" +
-				"\r\n/OCMT/EUR50,//CHGS/   0,/" +
-				"\r\n:86:177?00SB-SEPA-Ueberweisung?20                                                                                                                                                     ?30?31?32Max Maier                  ?33                           ?34000" +
-				"\r\n:62F:C190125EUR1234,56" +
-				"\r\n-",
-			expectedBookingDate: "2019-01-01",
+			today:                           "2019-02-10",
+			bookingDateString:               "2019-01-01",
+			valutaDateString:                "2018-12-28",
+			balanceStartBookingDateString:   "2018-12-28",
+			balanceClosingBookingDateString: "2019-01-25",
+		}, {
+			today:                           "2100-02-10",
+			bookingDateString:               "2100-01-01",
+			valutaDateString:                "2099-12-28",
+			balanceStartBookingDateString:   "2099-12-28",
+			balanceClosingBookingDateString: "2100-01-25",
+		}, {
+			today:                           "2100-02-10",
+			bookingDateString:               "2100-01-01",
+			valutaDateString:                "2100-12-28",
+			balanceStartBookingDateString:   "2099-12-28",
+			balanceClosingBookingDateString: "2100-01-25",
 		},
 	}
 
 	for _, test := range tests {
 		mt := &MT940{}
-
-		err := mt.Unmarshal([]byte(test.testdata))
+		today, _ := time.Parse("2006-01-02", test.today)
+		mt.ReferenceDate = today
+		expectedBookingDate, _ := time.Parse("2006-01-02", test.bookingDateString)
+		expectedValutaDate, _ := time.Parse("2006-01-02", test.valutaDateString)
+		expectedBalanceStartBookingDate, _ := time.Parse("2006-01-02", test.balanceStartBookingDateString)
+		expectedBalanceClosingBookingDate, _ := time.Parse("2006-01-02", test.balanceClosingBookingDateString)
+		testdata := "\r\n:20:HBCIKTOLST" + "\r\n:25:12345678/1234123456" +
+			"\r\n:28C:0" +
+			"\r\n:60F:C" + expectedBalanceStartBookingDate.Format("060102") + "EUR1234,56" +
+			"\r\n:61:" + expectedValutaDate.Format("060102") + expectedBookingDate.Format("0102") + "DR50,NMSCNONREF" +
+			"\r\n/OCMT/EUR50,//CHGS/   0,/" +
+			"\r\n:86:177?00SB-SEPA-Ueberweisung?20                                                                                                                                                     ?30?31?32Max Maier                  ?33                           ?34000" +
+			"\r\n:62F:C" + expectedBalanceClosingBookingDate.Format("060102") + "EUR1234,56" +
+			"\r\n-"
+		err := mt.Unmarshal([]byte(testdata))
 		if err != nil {
 			t.Log(err)
 			t.Fail()
 		}
+
 		if len(mt.Transactions) != 1 {
 			t.Log("There should be exactly one transaction")
-		}
-
-		if test.expectedBookingDate != mt.Transactions[0].Transaction.BookingDate.String() {
-
-			t.Logf("Booking date should be %s but is %s", test.expectedBookingDate, mt.Transactions[0].Transaction.BookingDate.String())
 			t.Fail()
 		}
 
+		if test.bookingDateString != mt.Transactions[0].Transaction.BookingDate.String() {
+			t.Logf("Booking date should be %s but is %s", test.bookingDateString, mt.Transactions[0].Transaction.BookingDate.String())
+			t.Fail()
+		}
+
+		if test.valutaDateString != mt.Transactions[0].Transaction.ValutaDate.String() {
+			t.Logf("Valudate date should be %s but is %s", test.valutaDateString, mt.Transactions[0].Transaction.ValutaDate.String())
+			t.Fail()
+		}
+
+		if test.balanceStartBookingDateString != mt.StartingBalance.BookingDate.String() {
+			t.Logf("balance start booking date should be %s but is %s", test.balanceStartBookingDateString, mt.StartingBalance.BookingDate.String())
+			t.Fail()
+		}
+
+		if test.balanceClosingBookingDateString != mt.ClosingBalance.BookingDate.String() {
+			t.Logf("balance closing booking date should be %s but is %s", test.balanceClosingBookingDateString, mt.ClosingBalance.BookingDate.String())
+			t.Fail()
+		}
 	}
 
 }

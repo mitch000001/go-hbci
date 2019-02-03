@@ -14,6 +14,7 @@ import (
 
 // MT940 represents a S.W.I.F.T. Transaction Report
 type MT940 struct {
+	ReferenceDate        time.Time
 	JobReference         *AlphaNumericTag
 	Reference            *AlphaNumericTag
 	Account              *AccountTag
@@ -162,7 +163,7 @@ func (b *BalanceTag) Balance() domain.Balance {
 }
 
 // Unmarshal unmarshals value into b
-func (b *BalanceTag) Unmarshal(value []byte) error {
+func (b *BalanceTag) Unmarshal(value []byte, today time.Time) error {
 	elements, err := extractTagElements(value)
 	if err != nil {
 		return err
@@ -174,7 +175,7 @@ func (b *BalanceTag) Unmarshal(value []byte) error {
 	buf := bytes.NewBuffer(elements[1])
 	b.DebitCreditIndicator = string(buf.Next(1))
 	dateBytes := buf.Next(6)
-	date, err := parseDate(dateBytes, time.Now().Year())
+	date, err := parseDate(dateBytes, today.Year())
 	if err != nil {
 		return errors.WithMessage(err, "unmarshal balance tag: parsing booking date")
 	}
@@ -222,7 +223,7 @@ func (t *TransactionTag) Unmarshal(value []byte, bookingYear int) error {
 	t.Tag = string(elements[0])
 	buf := bytes.NewBuffer(elements[1])
 	dateBytes := buf.Next(6)
-	date, err := parseDate(dateBytes, time.Now().Year())
+	date, err := parseDate(dateBytes, bookingYear)
 	if err != nil {
 		return errors.WithMessage(err, "unmarshal transaction tag: parsing valuta date")
 	}
@@ -319,11 +320,24 @@ func parseDate(value []byte, referenceYear int) (time.Time, error) {
 	yearBegin := fmt.Sprintf("%d", referenceYear)[:offset]
 	dateString := yearBegin + string(value)
 	date, err := time.Parse("20060102", dateString)
+
 	if err != nil {
 		if strings.HasSuffix(dateString, "0229") {
 			return time.Date(referenceYear, 2, 29, 0, 0, 0, 0, time.UTC), nil
 		}
 		return time.Time{}, err
+	}
+
+	diff := date.Year() - referenceYear
+	if diff == 100 {
+		return time.Date(referenceYear, date.Month(), date.Day(), 0, 0, 0, 0, time.UTC), nil
+	}
+	if diff == 99 {
+		return time.Date(referenceYear-1, date.Month(), date.Day(), 0, 0, 0, 0, time.UTC), nil
+	}
+	if diff == -99 {
+		return time.Date(referenceYear+1, date.Month(), date.Day(), 0, 0, 0, 0, time.UTC), nil
+
 	}
 	return date.Truncate(24 * time.Hour), nil
 }
