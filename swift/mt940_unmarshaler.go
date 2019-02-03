@@ -89,7 +89,14 @@ func (m *MT940) Unmarshal(value []byte) error {
 				return err
 			}
 			if balanceTagOpen {
-				m.Transactions[len(m.Transactions)-1].Description = customField
+				indexLastSliceitem := len(m.Transactions) - 1
+				if indexLastSliceitem < 0 {
+					return errors.New("Unexpected CustomTag before first TransactionTag")
+				}
+				if m.Transactions[indexLastSliceitem].Description != nil {
+					return errors.New(fmt.Sprintf("unexpedted CustomTag: CustomTag would replace Description of %v", m.Transactions[indexLastSliceitem]))
+				}
+				m.Transactions[indexLastSliceitem].Description = customField
 			} else {
 				m.CustomField = customField
 			}

@@ -178,3 +178,41 @@ func TestTransactionTagOrder(t *testing.T) {
 	}
 
 }
+
+func TestTransactionListWithUnvalidData(t *testing.T) {
+	testdata := "\r\n:20:HBCIKTOLST"
+	testdata += "\r\n:25:12345678/1234123456" +
+		"\r\n:28C:0" +
+		"\r\n:60F:C181105EUR1234,56" +
+		"\r\n:86:177?00SB-SEPA-Ueberweisung?20                                                                                                                                                   ?30?31?32Max Meier                  ?33                           ?34000" +
+		"\r\n:62F:C190125EUR1234,56"
+
+	testdata += "\r\n-"
+	mt := &MT940{}
+	error := mt.Unmarshal([]byte(testdata))
+	if error == nil {
+		t.Log("Error expected because of CustomTag without TransactionTag")
+		t.Fail()
+	}
+
+}
+
+func TestTransactionWithRedefineCustomDataTag(t *testing.T) {
+	testdata := "\r\n:20:HBCIKTOLST"
+	testdata += "\r\n:25:12345678/1234123456" +
+		"\r\n:28C:0" +
+		"\r\n:60F:C181105EUR1234,56" +
+
+		"\r\n:61:1811051105DR50,NMSCNONREF" +
+		"\r\n:86:177?00SB-SEPA-Ueberweisung?20                                                                                                                                                   ?30?31?32Max Meier                  ?33                           ?34000" +
+		"\r\n:86:177?00SB-SEPA-Ueberweisung?20                                                                                                                                                   ?30?31?32Max Meier                  ?33                           ?34000" +
+		"\r\n:62F:C190125EUR1234,56"
+
+	testdata += "\r\n-"
+	mt := &MT940{}
+	error := mt.Unmarshal([]byte(testdata))
+	if error == nil {
+		t.Log("Error expected because of more than CustomTag after TransactionTag")
+		t.Fail()
+	}
+}
