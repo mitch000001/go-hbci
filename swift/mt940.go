@@ -3,6 +3,7 @@ package swift
 import (
 	"bytes"
 	"fmt"
+	"math"
 	"strconv"
 	"strings"
 	"time"
@@ -329,14 +330,18 @@ func parseDate(value []byte, referenceYear int) (time.Time, error) {
 	}
 
 	diff := date.Year() - referenceYear
-	if diff == 100 {
-		return time.Date(referenceYear, date.Month(), date.Day(), 0, 0, 0, 0, time.UTC), nil
-	}
-	if diff == 99 {
-		return time.Date(referenceYear-1, date.Month(), date.Day(), 0, 0, 0, 0, time.UTC), nil
-	}
-	if diff == -99 {
-		return time.Date(referenceYear+1, date.Month(), date.Day(), 0, 0, 0, 0, time.UTC), nil
+	//the referenceYear should be year of today,
+	// if we are close to century stepp in in 2099 wie could have differences from 99 years to 100 years
+	// assuming the maximum of fetched years can be 1 year. This logic could work with fetching up to 100 years
+	// for this we should pass fetchingYearsInPast as param to this method. If we would be able to fetch a longer time,
+	// the 2 digit year of swift is not enough. But this very theoretical
+	fetchingYearsInPast := float64(1)
+	if math.Abs(float64(diff)) >= (100 - fetchingYearsInPast) {
+		if math.Signbit(float64(diff)) {
+			date = time.Date(referenceYear+(diff+100), date.Month(), date.Day(), 0, 0, 0, 0, time.UTC)
+		} else {
+			date = time.Date(referenceYear+(diff-100), date.Month(), date.Day(), 0, 0, 0, 0, time.UTC)
+		}
 
 	}
 	return date.Truncate(24 * time.Hour), nil
