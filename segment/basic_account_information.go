@@ -94,12 +94,15 @@ func (a *AccountInformationV5) referencedId() string { return "HKVVB" }
 func (a *AccountInformationV5) sender() string       { return senderBank }
 
 func (a *AccountInformationV5) Account() domain.AccountInformation {
-	accountConnection := a.AccountConnection.Val()
 	info := domain.AccountInformation{
-		AccountConnection: accountConnection,
-		UserID:            a.UserID.Val(),
-		Currency:          a.AccountCurrency.Val(),
-		Name1:             a.Name1.Val(),
+		UserID: a.UserID.Val(),
+		Name1:  a.Name1.Val(),
+	}
+	if a.AccountConnection != nil {
+		info.AccountConnection = a.AccountConnection.Val()
+	}
+	if a.AccountCurrency != nil {
+		info.Currency = a.AccountCurrency.Val()
 	}
 	if a.Name2 != nil {
 		info.Name2 = a.Name2.Val()
@@ -152,12 +155,15 @@ func (a *AccountInformationV6) referencedId() string { return "HKVVB" }
 func (a *AccountInformationV6) sender() string       { return senderBank }
 
 func (a *AccountInformationV6) Account() domain.AccountInformation {
-	accountConnection := a.AccountConnection.Val()
 	info := domain.AccountInformation{
-		AccountConnection: accountConnection,
-		UserID:            a.UserID.Val(),
-		Currency:          a.AccountCurrency.Val(),
-		Name1:             a.Name1.Val(),
+		UserID: a.UserID.Val(),
+		Name1:  a.Name1.Val(),
+	}
+	if a.AccountConnection != nil {
+		info.AccountConnection = a.AccountConnection.Val()
+	}
+	if a.AccountCurrency != nil {
+		info.Currency = a.AccountCurrency.Val()
 	}
 	if a.Name2 != nil {
 		info.Name2 = a.Name2.Val()
