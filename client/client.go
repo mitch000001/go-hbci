@@ -23,7 +23,9 @@ type Config struct {
 	URL                string `json:"url"`
 	HBCIVersion        int    `json:"hbci_version"`
 	Transport          transport.Transport
-	EnableDebugLogging bool `json:"enable_debug_logging"`
+	ProductName        string `json:"product_name"`
+	ProductVersion     string `json:"product_version"`
+	EnableDebugLogging bool   `json:"enable_debug_logging"`
 }
 
 func (c Config) hbciVersion() (segment.HBCIVersion, error) {
@@ -70,11 +72,13 @@ func New(config Config) (*Client, error) {
 		hbciVersion = version
 	}
 	dcfg := dialog.Config{
-		BankID:      bankID,
-		HBCIURL:     url,
-		UserID:      config.AccountID,
-		HBCIVersion: hbciVersion,
-		Transport:   config.Transport,
+		BankID:         bankID,
+		HBCIURL:        url,
+		UserID:         config.AccountID,
+		HBCIVersion:    hbciVersion,
+		ProductName:    config.ProductName,
+		ProductVersion: config.ProductVersion,
+		Transport:      config.Transport,
 	}
 
 	d := dialog.NewPinTanDialog(dcfg)

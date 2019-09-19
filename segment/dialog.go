@@ -6,8 +6,8 @@ import (
 	"github.com/mitch000001/go-hbci/element"
 )
 
-const productName = "5A624F86A785F4024DD914404"
-const productVersion = hbci.Version
+const defaultProductName = "5A624F86A785F4024DD914404"
+const defaultProductVersion = hbci.Version
 
 func NewDialogEndSegment(dialogId string) *DialogEndSegment {
 	d := &DialogEndSegment{
@@ -35,7 +35,13 @@ func (d *DialogEndSegment) elements() []element.DataElement {
 
 const ProcessingPreparationID = "HKVVB"
 
-func NewProcessingPreparationSegmentV2(bdpVersion int, udpVersion int, language domain.Language) *ProcessingPreparationSegmentV2 {
+func NewProcessingPreparationSegmentV2(bdpVersion int, udpVersion int, language domain.Language, productName string, productVersion string) *ProcessingPreparationSegmentV2 {
+	if productName == "" {
+		productName = defaultProductName
+	}
+	if productVersion == "" {
+		productVersion = defaultProductVersion
+	}
 	p := &ProcessingPreparationSegmentV2{
 		BPDVersion:     element.NewNumber(bdpVersion, 3),
 		UPDVersion:     element.NewNumber(udpVersion, 3),
@@ -47,7 +53,13 @@ func NewProcessingPreparationSegmentV2(bdpVersion int, udpVersion int, language 
 	return p
 }
 
-func NewProcessingPreparationSegmentV3(bdpVersion int, udpVersion int, language domain.Language) *ProcessingPreparationSegmentV3 {
+func NewProcessingPreparationSegmentV3(bdpVersion int, udpVersion int, language domain.Language, productName string, productVersion string) *ProcessingPreparationSegmentV3 {
+	if productName == "" {
+		productName = defaultProductName
+	}
+	if productVersion == "" {
+		productVersion = defaultProductVersion
+	}
 	p := &ProcessingPreparationSegmentV3{
 		BPDVersion:     element.NewNumber(bdpVersion, 3),
 		UPDVersion:     element.NewNumber(udpVersion, 3),
