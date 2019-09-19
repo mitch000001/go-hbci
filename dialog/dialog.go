@@ -38,6 +38,8 @@ func newDialog(
 	hbciURL string,
 	userID string,
 	hbciVersion segment.HBCIVersion,
+	productName string,
+	productVersion string,
 	signatureProvider message.SignatureProvider,
 	cryptoProvider message.CryptoProvider,
 ) *dialog {
@@ -53,6 +55,8 @@ func newDialog(
 		cryptoProvider:    cryptoProvider,
 		dialogID:          initialDialogID,
 		hbciVersion:       hbciVersion,
+		productName:       productName,
+		productVersion:    productVersion,
 	}
 }
 
@@ -73,6 +77,8 @@ type dialog struct {
 	cryptoProvider    message.CryptoProvider
 	BankParameterData BankParameterData
 	hbciVersion       segment.HBCIVersion
+	productName       string
+	productVersion    string
 	supportedSegments []segment.VersionedSegment
 }
 
@@ -152,7 +158,7 @@ func (d *dialog) SyncClientSystemID() (string, error) {
 	syncMessage := message.NewSynchronisationMessage(d.hbciVersion)
 	syncMessage.Identification = segment.NewIdentificationSegment(d.BankID, d.clientID, initialClientSystemID, true)
 	syncMessage.ProcessingPreparation = segment.NewProcessingPreparationSegmentV3(
-		initialBankParameterDataVersion, initialUserParameterDataVersion, domain.German,
+		initialBankParameterDataVersion, initialUserParameterDataVersion, domain.German, d.productName, d.productVersion,
 	)
 	syncMessage.TanRequest = d.hbciVersion.TanProcess4Request(segment.IdentificationID)
 	syncMessage.Sync = d.hbciVersion.SynchronisationRequest(segment.SyncModeAquireClientID)
@@ -258,7 +264,7 @@ func (d *dialog) anonymousInit() error {
 	initMessage := message.NewDialogInitializationClientMessage(d.hbciVersion)
 	initMessage.Identification = segment.NewIdentificationSegment(d.BankID, anonymousClientID, initialClientSystemID, false)
 	initMessage.ProcessingPreparation = segment.NewProcessingPreparationSegmentV3(
-		d.BankParameterDataVersion(), d.UserParameterDataVersion(), d.Language,
+		d.BankParameterDataVersion(), d.UserParameterDataVersion(), d.Language, d.productName, d.productVersion,
 	)
 	initMessage.BasicMessage = d.newBasicMessage(initMessage)
 	initMessage.SetSegmentPositions()
@@ -341,7 +347,7 @@ func (d *dialog) init() error {
 	initMessage := message.NewDialogInitializationClientMessage(d.hbciVersion)
 	initMessage.Identification = segment.NewIdentificationSegment(d.BankID, d.clientID, d.ClientSystemID, true)
 	initMessage.ProcessingPreparation = segment.NewProcessingPreparationSegmentV3(
-		d.BankParameterDataVersion(), d.UserParameterDataVersion(), d.Language,
+		d.BankParameterDataVersion(), d.UserParameterDataVersion(), d.Language, d.productName, d.productVersion,
 	)
 	initMessage.TanRequest = d.hbciVersion.TanProcess4Request(segment.IdentificationID)
 	initMessage.BasicMessage = d.newBasicMessage(initMessage)
