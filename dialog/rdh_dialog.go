@@ -7,7 +7,7 @@ import (
 )
 
 // NewRDHDialog creates a dialog to use with cardreader flow
-func NewRDHDialog(bankID domain.BankID, hbciURL string, clientID string, hbciVersion segment.HBCIVersion) Dialog {
+func NewRDHDialog(bankID domain.BankID, hbciURL string, clientID string, hbciVersion segment.HBCIVersion, productName string) Dialog {
 	key, err := domain.GenerateSigningKey()
 	if err != nil {
 		panic(err)
@@ -15,7 +15,7 @@ func NewRDHDialog(bankID domain.BankID, hbciURL string, clientID string, hbciVer
 	signingKey := domain.NewRSAKey(key, domain.NewInitialKeyName(bankID.CountryCode, bankID.ID, clientID, "S"))
 	provider := message.NewRDHSignatureProvider(signingKey, 12345)
 	d := &rdhDialog{
-		dialog: newDialog(bankID, hbciURL, clientID, hbciVersion, provider, nil),
+		dialog: newDialog(bankID, hbciURL, clientID, hbciVersion, productName, provider, nil),
 	}
 	return d
 }

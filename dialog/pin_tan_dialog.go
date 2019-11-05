@@ -18,6 +18,7 @@ type Config struct {
 	HBCIURL     string
 	UserID      string
 	HBCIVersion segment.HBCIVersion
+	ProductName string
 	Transport   transport.Transport
 }
 
@@ -33,6 +34,7 @@ func NewPinTanDialog(config Config) *PinTanDialog {
 			config.HBCIURL,
 			config.UserID,
 			config.HBCIVersion,
+			config.ProductName,
 			signatureProvider,
 			cryptoProvider,
 		),

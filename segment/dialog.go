@@ -6,8 +6,8 @@ import (
 	"github.com/mitch000001/go-hbci/element"
 )
 
-const productName = "go-hbci library"
-const productVersion = hbci.Version
+const defaultProductName = "go-hbci library"
+const defaultProductVersion = hbci.Version
 
 func NewDialogEndSegment(dialogId string) *DialogEndSegment {
 	d := &DialogEndSegment{
@@ -33,13 +33,16 @@ func (d *DialogEndSegment) elements() []element.DataElement {
 	}
 }
 
-func NewProcessingPreparationSegment(bdpVersion int, udpVersion int, language domain.Language) *ProcessingPreparationSegment {
+func NewProcessingPreparationSegment(bdpVersion int, udpVersion int, language domain.Language, productName string) *ProcessingPreparationSegment {
+	if productName == "" {
+		productName = defaultProductName
+	}
 	p := &ProcessingPreparationSegment{
 		BPDVersion:     element.NewNumber(bdpVersion, 3),
 		UPDVersion:     element.NewNumber(udpVersion, 3),
 		DialogLanguage: element.NewNumber(int(language), 3),
 		ProductName:    element.NewAlphaNumeric(productName, 25),
-		ProductVersion: element.NewAlphaNumeric(productVersion, 5),
+		ProductVersion: element.NewAlphaNumeric(defaultProductVersion, 5),
 	}
 	p.ClientSegment = NewBasicSegment(4, p)
 	return p

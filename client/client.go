@@ -21,6 +21,7 @@ type Config struct {
 	PIN         string `json:"pin"`
 	URL         string `json:"url"`
 	HBCIVersion int    `json:"hbci_version"`
+	ProductName string `json:"product_name"`
 	Transport   transport.Transport
 }
 
@@ -71,6 +72,7 @@ func New(config Config) (*Client, error) {
 		HBCIURL:     url,
 		UserID:      config.AccountID,
 		HBCIVersion: hbciVersion,
+		ProductName: config.ProductName,
 		Transport:   config.Transport,
 	}
 
