@@ -47,7 +47,7 @@ func (m *MT940) Unmarshal(value []byte) error {
 			}
 		case bytes.HasPrefix(tag, []byte(":60")):
 			m.StartingBalance = &BalanceTag{}
-			err = m.StartingBalance.Unmarshal(tag)
+			err = m.StartingBalance.Unmarshal(tag, m.ReferenceDate)
 			if err != nil {
 				return errors.WithMessage(err, "unmarshal starting balance tag")
 			}
@@ -55,7 +55,7 @@ func (m *MT940) Unmarshal(value []byte) error {
 		case bytes.HasPrefix(tag, []byte(":62")):
 
 			m.ClosingBalance = &BalanceTag{}
-			err = m.ClosingBalance.Unmarshal(tag)
+			err = m.ClosingBalance.Unmarshal(tag, m.ReferenceDate)
 			if err != nil {
 				return errors.WithMessage(err, "unmarshal closing balance tag")
 			}
@@ -63,21 +63,20 @@ func (m *MT940) Unmarshal(value []byte) error {
 			balanceTagOpen = false
 		case bytes.HasPrefix(tag, []byte(":64:")):
 			m.CurrentValutaBalance = &BalanceTag{}
-			err = m.CurrentValutaBalance.Unmarshal(tag)
+			err = m.CurrentValutaBalance.Unmarshal(tag, m.ReferenceDate)
 			if err != nil {
 				return errors.WithMessage(err, "unmarshal current valuta balance tag")
 			}
 		case bytes.HasPrefix(tag, []byte(":65:")):
 			m.FutureValutaBalance = &BalanceTag{}
-			err = m.FutureValutaBalance.Unmarshal(tag)
+			err = m.FutureValutaBalance.Unmarshal(tag, m.ReferenceDate)
 			if err != nil {
 				return errors.WithMessage(err, "unmarshal future valuta balance tag")
 			}
 		case bytes.HasPrefix(tag, []byte(":61:")):
 
 			transaction := &TransactionTag{}
-
-			err = transaction.Unmarshal(tag)
+			err = transaction.Unmarshal(tag, m.StartingBalance.BookingDate.Year())
 			if err != nil {
 				return err
 			}

@@ -15,6 +15,7 @@ import (
 
 // MT940 represents a S.W.I.F.T. Transaction Report
 type MT940 struct {
+	ReferenceDate        time.Time
 	JobReference         *AlphaNumericTag
 	Reference            *AlphaNumericTag
 	Account              *AccountTag
@@ -163,7 +164,7 @@ func (b *BalanceTag) Balance() domain.Balance {
 }
 
 // Unmarshal unmarshals value into b
-func (b *BalanceTag) Unmarshal(value []byte) error {
+func (b *BalanceTag) Unmarshal(value []byte, today time.Time) error {
 	elements, err := extractTagElements(value)
 	if err != nil {
 		return err
@@ -175,7 +176,7 @@ func (b *BalanceTag) Unmarshal(value []byte) error {
 	buf := bytes.NewBuffer(elements[1])
 	b.DebitCreditIndicator = string(buf.Next(1))
 	dateBytes := buf.Next(6)
-	date, err := parseDate(dateBytes, time.Now().Year())
+	date, err := parseDate(dateBytes, today.Year())
 	if err != nil {
 		return errors.WithMessage(err, "unmarshal balance tag: parsing booking date")
 	}
@@ -212,7 +213,7 @@ type TransactionTag struct {
 }
 
 // Unmarshal unmarshals value into t
-func (t *TransactionTag) Unmarshal(value []byte) error {
+func (t *TransactionTag) Unmarshal(value []byte, bookingYear int) error {
 	elements, err := extractTagElements(value)
 	if err != nil {
 		return err
@@ -223,7 +224,7 @@ func (t *TransactionTag) Unmarshal(value []byte) error {
 	t.Tag = string(elements[0])
 	buf := bytes.NewBuffer(elements[1])
 	dateBytes := buf.Next(6)
-	date, err := parseDate(dateBytes, time.Now().Year())
+	date, err := parseDate(dateBytes, bookingYear)
 	if err != nil {
 		return errors.WithMessage(err, "unmarshal transaction tag: parsing valuta date")
 	}
@@ -235,13 +236,13 @@ func (t *TransactionTag) Unmarshal(value []byte) error {
 	if unicode.IsDigit(r) {
 		buf.UnreadRune()
 		dateBytes = buf.Next(4)
-		date, err = parseDate(dateBytes, t.ValutaDate.Year())
+		date, err = parseDate(dateBytes, bookingYear)
 		if err != nil {
 			return errors.WithMessage(err, "unmarshal transaction tag: parsing booking date")
 		}
 		t.BookingDate = domain.NewShortDate(date)
-		monthDiff := int(math.Abs(float64(t.ValutaDate.Month() - t.BookingDate.Month())))
-		if monthDiff > 1 {
+		diff := t.ValutaDate.Sub(t.BookingDate.Time).Hours() / 24
+		if diff > 31 {
 			t.BookingDate = domain.NewShortDate(t.BookingDate.AddDate(1, 0, 0))
 		}
 	}
@@ -320,11 +321,28 @@ func parseDate(value []byte, referenceYear int) (time.Time, error) {
 	yearBegin := fmt.Sprintf("%d", referenceYear)[:offset]
 	dateString := yearBegin + string(value)
 	date, err := time.Parse("20060102", dateString)
+
 	if err != nil {
 		if strings.HasSuffix(dateString, "0229") {
 			return time.Date(referenceYear, 2, 29, 0, 0, 0, 0, time.UTC), nil
 		}
 		return time.Time{}, err
+	}
+
+	diff := date.Year() - referenceYear
+	//the referenceYear should be year of today,
+	// if we are close to century stepp in in 2099 wie could have differences from 99 years to 100 years
+	// assuming the maximum of fetched years can be 1 year. This logic could work with fetching up to 100 years
+	// for this we should pass fetchingYearsInPast as param to this method. If we would be able to fetch a longer time,
+	// the 2 digit year of swift is not enough. But this very theoretical
+	fetchingYearsInPast := float64(1)
+	if math.Abs(float64(diff)) >= (100 - fetchingYearsInPast) {
+		if math.Signbit(float64(diff)) {
+			date = time.Date(referenceYear+(diff+100), date.Month(), date.Day(), 0, 0, 0, 0, time.UTC)
+		} else {
+			date = time.Date(referenceYear+(diff-100), date.Month(), date.Day(), 0, 0, 0, 0, time.UTC)
+		}
+
 	}
 	return date.Truncate(24 * time.Hour), nil
 }

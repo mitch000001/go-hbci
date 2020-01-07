@@ -3,6 +3,7 @@ package element
 import (
 	"github.com/mitch000001/go-hbci/domain"
 	"github.com/mitch000001/go-hbci/swift"
+	"time"
 )
 
 // SwiftMT940DataElement represents a DataElement containing SWIFT MT940
@@ -26,6 +27,7 @@ func (s *SwiftMT940DataElement) UnmarshalHBCI(value []byte) error {
 	}
 	for _, message := range messages {
 		tr := &swift.MT940{}
+		tr.ReferenceDate = time.Now()
 		err = tr.Unmarshal(message)
 		if err != nil {
 			return err
