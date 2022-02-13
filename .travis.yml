@@ -1,23 +1,13 @@
 language: go
 
 go:
-  - 1.9
-  - "1.10"
+  - "1.17"
   - tip
-
-env:
-  - DEP_VERSION="0.3.2"
 
 before_script:
   - go get golang.org/x/lint/golint/...
   - go vet ./bankinfo ./charset ./client ./cmd/... ./crypto ./dialog ./domain ./element ./generator ./iban ./internal ./message ./segment ./swift ./token ./transport
   - golint -set_exit_status bankinfo charset client cmd dialog domain element generator iban internal message #segment swift token transport
 
-before_install:
-  # Download the binary to bin folder in $GOPATH
-  - curl -L -s https://github.com/golang/dep/releases/download/v${DEP_VERSION}/dep-linux-amd64 -o $GOPATH/bin/dep
-  # Make the binary executable
-  - chmod +x $GOPATH/bin/dep
-
 install:
-  - dep ensure
+  - go build 
