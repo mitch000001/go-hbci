@@ -1,11 +1,11 @@
 language: go
 
 go:
-  - "1.17"
+  - "1.18"
   - tip
 
 before_script:
-  - go get golang.org/x/lint/golint/...
+  - go install golang.org/x/lint/golint@latest
   - go vet ./bankinfo ./charset ./client ./cmd/... ./crypto ./dialog ./domain ./element ./generator ./iban ./internal ./message ./segment ./swift ./token ./transport
   - golint -set_exit_status bankinfo charset client cmd dialog domain element generator iban internal message #segment swift token transport
 
