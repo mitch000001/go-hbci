@@ -1,6 +1,6 @@
 module github.com/mitch000001/go-hbci
 
-go 1.17
+go 1.18
 
 require (
 	github.com/kr/pretty v0.2.0
