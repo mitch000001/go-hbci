@@ -23,10 +23,10 @@ type Config struct {
 
 // NewPinTanDialog creates a new dialog to use for pin/tan transport
 func NewPinTanDialog(config Config) *PinTanDialog {
-	pinKey := domain.NewPinKey("", domain.NewPinTanKeyName(config.BankID, config.UserID, "S"))
-	signatureProvider := message.NewPinTanSignatureProvider(pinKey, "0")
-	pinKey = domain.NewPinKey("", domain.NewPinTanKeyName(config.BankID, config.UserID, "V"))
-	cryptoProvider := message.NewPinTanCryptoProvider(pinKey, "0")
+	pinKey := domain.NewPinKey("", domain.NewPinTanKeyName(config.BankID, config.UserID, domain.KeyTypeSigning))
+	signatureProvider := message.NewPinTanSignatureProvider(pinKey, initialClientSystemID)
+	pinKey = domain.NewPinKey("", domain.NewPinTanKeyName(config.BankID, config.UserID, domain.KeyTypeEncryption))
+	cryptoProvider := message.NewPinTanCryptoProvider(pinKey, initialClientSystemID)
 	d := &PinTanDialog{
 		dialog: newDialog(
 			config.BankID,
@@ -57,8 +57,8 @@ type PinTanDialog struct {
 
 // SetPin lets the user reset the pin after creation
 func (d *PinTanDialog) SetPin(pin string) {
-	pinKey := domain.NewPinKey(pin, domain.NewPinTanKeyName(d.BankID, d.UserID, "S"))
+	pinKey := domain.NewPinKey(pin, domain.NewPinTanKeyName(d.BankID, d.UserID, domain.KeyTypeSigning))
 	d.signatureProvider = message.NewPinTanSignatureProvider(pinKey, d.ClientSystemID)
-	pinKey = domain.NewPinKey(pin, domain.NewPinTanKeyName(d.BankID, d.UserID, "V"))
+	pinKey = domain.NewPinKey(pin, domain.NewPinTanKeyName(d.BankID, d.UserID, domain.KeyTypeEncryption))
 	d.cryptoProvider = message.NewPinTanCryptoProvider(pinKey, d.ClientSystemID)
 }

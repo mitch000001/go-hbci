@@ -25,9 +25,13 @@ type Dialog interface {
 	SendMessage(message.HBCIMessage) (message.BankMessage, error)
 }
 
-const initialDialogID = "0"
-const initialClientSystemID = "0"
-const anonymousClientID = "9999999999"
+const (
+	initialDialogID                 = "0"
+	initialClientSystemID           = "0"
+	initialBankParameterDataVersion = 0
+	initialUserParameterDataVersion = 0
+	anonymousClientID               = "9999999999"
+)
 
 func newDialog(
 	bankID domain.BankID,
@@ -134,7 +138,9 @@ func (d *dialog) SendMessage(clientMessage message.HBCIMessage) (message.BankMes
 func (d *dialog) SyncClientSystemID() (string, error) {
 	syncMessage := message.NewSynchronisationMessage(d.hbciVersion)
 	syncMessage.Identification = segment.NewIdentificationSegment(d.BankID, d.clientID, initialClientSystemID, true)
-	syncMessage.ProcessingPreparation = segment.NewProcessingPreparationSegment(0, 0, 1)
+	syncMessage.ProcessingPreparation = segment.NewProcessingPreparationSegment(
+		initialBankParameterDataVersion, initialUserParameterDataVersion, domain.German,
+	)
 	syncMessage.Sync = d.hbciVersion.SynchronisationRequest(segment.SyncModeAquireClientID)
 	syncMessage.BasicMessage = d.newBasicMessage(syncMessage)
 	signedSyncMessage, err := syncMessage.Sign(d.signatureProvider)
@@ -233,7 +239,9 @@ func (d *dialog) anonymousInit() error {
 	d.messageCount = 0
 	initMessage := message.NewDialogInitializationClientMessage(d.hbciVersion)
 	initMessage.Identification = segment.NewIdentificationSegment(d.BankID, anonymousClientID, initialClientSystemID, false)
-	initMessage.ProcessingPreparation = segment.NewProcessingPreparationSegment(d.BankParameterDataVersion(), d.UserParameterDataVersion(), d.Language)
+	initMessage.ProcessingPreparation = segment.NewProcessingPreparationSegment(
+		d.BankParameterDataVersion(), d.UserParameterDataVersion(), d.Language,
+	)
 	initMessage.BasicMessage = d.newBasicMessage(initMessage)
 	initMessage.SetNumbers()
 	bankMessage, err := d.request(initMessage)
@@ -314,7 +322,9 @@ func (d *dialog) init() error {
 	d.messageCount = 0
 	initMessage := message.NewDialogInitializationClientMessage(d.hbciVersion)
 	initMessage.Identification = segment.NewIdentificationSegment(d.BankID, d.clientID, d.ClientSystemID, true)
-	initMessage.ProcessingPreparation = segment.NewProcessingPreparationSegment(d.BankParameterDataVersion(), d.UserParameterDataVersion(), d.Language)
+	initMessage.ProcessingPreparation = segment.NewProcessingPreparationSegment(
+		d.BankParameterDataVersion(), d.UserParameterDataVersion(), d.Language,
+	)
 	initMessage.BasicMessage = d.newBasicMessage(initMessage)
 	signedInitMessage, err := initMessage.Sign(d.signatureProvider)
 	if err != nil {

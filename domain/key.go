@@ -24,10 +24,19 @@ type Key interface {
 	CanEncrypt() bool
 }
 
-const initialKeyVersion = 999
+const (
+	initialKeyNumber  = 999
+	initialKeyVersion = 999
+	KeyTypeSigning    = KeyType("S")
+	KeyTypeEncryption = KeyType("V")
+)
+
+type KeyType string
+
+func (k KeyType) String() string { return string(k) }
 
 // NewPinTanKeyName returns a new KeyName for the pin/tan flow
-func NewPinTanKeyName(bankID BankID, userID string, keyType string) *KeyName {
+func NewPinTanKeyName(bankID BankID, userID string, keyType KeyType) *KeyName {
 	return &KeyName{
 		BankID:     bankID,
 		UserID:     userID,
@@ -38,13 +47,13 @@ func NewPinTanKeyName(bankID BankID, userID string, keyType string) *KeyName {
 }
 
 // NewInitialKeyName represents a KeyName ready to use for initial communication
-func NewInitialKeyName(countryCode int, bankID, userID string, keyType string) *KeyName {
+func NewInitialKeyName(countryCode int, bankID, userID string, keyType KeyType) *KeyName {
 	return &KeyName{
 		BankID:     BankID{CountryCode: countryCode, ID: bankID},
 		UserID:     userID,
 		KeyType:    keyType,
-		KeyNumber:  999,
-		KeyVersion: 999,
+		KeyNumber:  initialKeyNumber,
+		KeyVersion: initialKeyVersion,
 	}
 }
 
@@ -52,20 +61,20 @@ func NewInitialKeyName(countryCode int, bankID, userID string, keyType string) *
 type KeyName struct {
 	BankID     BankID
 	UserID     string
-	KeyType    string
+	KeyType    KeyType
 	KeyNumber  int
 	KeyVersion int
 }
 
 // IsInitial returns true if the KeyName represents an initial KeyName, false otherwise
 func (k *KeyName) IsInitial() bool {
-	return k.KeyNumber == 999 && k.KeyVersion == 999
+	return k.KeyNumber == initialKeyNumber && k.KeyVersion == initialKeyVersion
 }
 
 // SetInitial resets the KeyName to reflect an initial KeyName
 func (k *KeyName) SetInitial() {
-	k.KeyNumber = 999
-	k.KeyVersion = 999
+	k.KeyNumber = initialKeyNumber
+	k.KeyVersion = initialKeyVersion
 }
 
 // NewPinKey returns a new PinKey
