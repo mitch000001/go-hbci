@@ -4,18 +4,18 @@ import "fmt"
 
 // NewReferencingSegmentHeader returns a new SegmentHeader with a reference to
 // another segment
-func NewReferencingSegmentHeader(id string, number, version, reference int) *SegmentHeader {
-	header := NewSegmentHeader(id, number, version)
+func NewReferencingSegmentHeader(id string, position, version, reference int) *SegmentHeader {
+	header := NewSegmentHeader(id, position, version)
 	header.Ref = NewNumber(reference, 3)
 	return header
 }
 
-// NewSegmentHeader returns a new SegmentHeader for the id, number and version
-func NewSegmentHeader(id string, number, version int) *SegmentHeader {
+// NewSegmentHeader returns a new SegmentHeader for the id, position and version
+func NewSegmentHeader(id string, position, version int) *SegmentHeader {
 	header := &SegmentHeader{
-		ID:      NewAlphaNumeric(id, 6),
-		Number:  NewNumber(number, 3),
-		Version: NewNumber(version, 3),
+		ID:       NewAlphaNumeric(id, 6),
+		Position: NewNumber(position, 3),
+		Version:  NewNumber(version, 3),
 	}
 	header.DataElement = NewDataElementGroup(segmentHeaderDEG, 4, header)
 	return header
@@ -24,10 +24,10 @@ func NewSegmentHeader(id string, number, version int) *SegmentHeader {
 // A SegmentHeader represents the metadata of a given segment such as ID or version
 type SegmentHeader struct {
 	DataElement
-	ID      *AlphaNumericDataElement
-	Number  *NumberDataElement
-	Version *NumberDataElement
-	Ref     *NumberDataElement
+	ID       *AlphaNumericDataElement
+	Position *NumberDataElement
+	Version  *NumberDataElement
+	Ref      *NumberDataElement
 }
 
 // Type returns the DataElementType of s
@@ -35,9 +35,9 @@ func (s *SegmentHeader) Type() DataElementType {
 	return segmentHeaderDEG
 }
 
-// SetNumber sets the number of the segment
-func (s *SegmentHeader) SetNumber(number int) {
-	*s.Number = *NewNumber(number, 3)
+// SetPosition sets the number of the segment
+func (s *SegmentHeader) SetPosition(pos int) {
+	*s.Position = *NewNumber(pos, 3)
 }
 
 // SetReference sets the reference to another segment
@@ -56,7 +56,7 @@ func (s *SegmentHeader) ReferencingSegment() int {
 // IsValid returns true if the DataElement and all its grouped elements
 // are valid, false otherwise
 func (s *SegmentHeader) IsValid() bool {
-	if s.ID == nil || s.Number == nil || s.Version == nil {
+	if s.ID == nil || s.Position == nil || s.Version == nil {
 		return false
 	}
 	return s.DataElement.IsValid()
@@ -66,7 +66,7 @@ func (s *SegmentHeader) IsValid() bool {
 func (s *SegmentHeader) GroupDataElements() []DataElement {
 	return []DataElement{
 		s.ID,
-		s.Number,
+		s.Position,
 		s.Version,
 		s.Ref,
 	}
@@ -90,8 +90,8 @@ func (s *SegmentHeader) UnmarshalHBCI(value []byte) error {
 		}
 	}
 	if len(elements) > 1 {
-		s.Number = &NumberDataElement{}
-		err = s.Number.UnmarshalHBCI(elements[1])
+		s.Position = &NumberDataElement{}
+		err = s.Position.UnmarshalHBCI(elements[1])
 		if err != nil {
 			return fmt.Errorf("Malformed segment header number: %v", err)
 		}
