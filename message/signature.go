@@ -40,7 +40,7 @@ func generateControlReference(key domain.Key) string {
 	io.WriteString(h, fmt.Sprintf("%d", keyName.BankID.CountryCode))
 	io.WriteString(h, keyName.BankID.ID)
 	io.WriteString(h, keyName.UserID)
-	io.WriteString(h, keyName.KeyType)
+	io.WriteString(h, string(keyName.KeyType))
 	io.WriteString(h, fmt.Sprintf("%d", keyName.KeyNumber))
 	io.WriteString(h, fmt.Sprintf("%d", keyName.KeyVersion))
 	return fmt.Sprintf("%x", h.Sum(nil))

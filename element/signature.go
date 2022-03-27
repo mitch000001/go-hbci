@@ -200,7 +200,7 @@ func NewKeyName(keyName domain.KeyName) *KeyNameDataElement {
 	a := &KeyNameDataElement{
 		Bank:       NewBankIdentification(keyName.BankID),
 		UserID:     NewIdentification(keyName.UserID),
-		KeyType:    NewAlphaNumeric(keyName.KeyType, 1),
+		KeyType:    NewAlphaNumeric(string(keyName.KeyType), 1),
 		KeyNumber:  NewNumber(keyName.KeyNumber, 3),
 		KeyVersion: NewNumber(keyName.KeyVersion, 3),
 	}
@@ -227,7 +227,7 @@ func (k *KeyNameDataElement) Val() domain.KeyName {
 			CountryCode: k.Bank.CountryCode.Val(),
 			ID:          k.Bank.BankID.Val()},
 		UserID:     k.UserID.Val(),
-		KeyType:    k.KeyType.Val(),
+		KeyType:    domain.KeyType(k.KeyType.Val()),
 		KeyNumber:  k.KeyNumber.Val(),
 		KeyVersion: k.KeyVersion.Val(),
 	}
