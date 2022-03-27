@@ -264,7 +264,7 @@ func (d *dialog) anonymousInit() error {
 		return err
 	}
 
-	bankInfoMessage := bankMessage.FindSegment("HIKIM")
+	bankInfoMessage := bankMessage.FindSegment(segment.BankAnnouncementID)
 	if bankInfoMessage != nil {
 		bankInfoSegment := bankInfoMessage.(*segment.BankAnnouncementSegment)
 		internal.Info.Printf("INFO:\n%s\n%s\n", bankInfoSegment.Subject.Val(), bankInfoSegment.Body.Val())
@@ -355,7 +355,7 @@ func (d *dialog) init() error {
 		return err
 	}
 
-	bankInfoMessage := decryptedMessage.FindSegment("HIKIM")
+	bankInfoMessage := decryptedMessage.FindSegment(segment.BankAnnouncementID)
 	if bankInfoMessage != nil {
 		bankInfoSegment := bankInfoMessage.(*segment.BankAnnouncementSegment)
 		internal.Info.Printf("INFO:\n%s\n%s\n", bankInfoSegment.Subject.Val(), bankInfoSegment.Body.Val())
@@ -439,12 +439,12 @@ func (d *dialog) newBasicMessage(hbciMessage message.HBCIMessage) *message.Basic
 }
 
 func (d *dialog) parseBankParameterData(bankMessage message.BankMessage) error {
-	bankParamData := bankMessage.FindSegment("HIBPA")
+	bankParamData := bankMessage.FindSegment(segment.CommonBankParameterID)
 	if bankParamData != nil {
 		paramSegment := bankParamData.(segment.CommonBankParameter)
 		d.BankParameterData = paramSegment.BankParameterData()
 	}
-	pinTanTransactions := bankMessage.FindSegment("DIPINS")
+	pinTanTransactions := bankMessage.FindSegment(segment.PinTanBusinessTransactionParamsID)
 	if pinTanTransactions != nil {
 		pinTanTransactionSegment := pinTanTransactions.(segment.PinTanBusinessTransactionParams)
 		pinTransactions := make(map[string]bool)
@@ -457,14 +457,14 @@ func (d *dialog) parseBankParameterData(bankMessage message.BankMessage) error {
 }
 
 func (d *dialog) parseUserParameterData(bankMessage message.BankMessage) error {
-	userParamData := bankMessage.FindSegment("HIUPA")
+	userParamData := bankMessage.FindSegment(segment.CommonUserParameterDataID)
 	if userParamData != nil {
 		paramSegment := userParamData.(segment.CommonUserParameterData)
 		d.UserParameterData = paramSegment.UserParameterData()
 		d.clientID = d.UserParameterData.UserID
 	}
 
-	accountData := bankMessage.FindSegments("HIUPD")
+	accountData := bankMessage.FindSegments(segment.AccountInformationID)
 	if accountData != nil {
 		for _, acc := range accountData {
 			infoSegment := acc.(segment.AccountInformation)
@@ -527,7 +527,7 @@ func (d *dialog) request(clientMessage message.ClientMessage) (message.BankMessa
 }
 
 func (d *dialog) extractEncryptedMessage(response *transport.Response) (*message.EncryptedMessage, error) {
-	messageHeader := response.FindSegment("HNHBK")
+	messageHeader := response.FindSegment(segment.MessageHeaderID)
 	if messageHeader == nil {
 		return nil, fmt.Errorf("Malformed response: missing Message Header")
 	}
@@ -556,7 +556,7 @@ func (d *dialog) extractEncryptedMessage(response *transport.Response) (*message
 }
 
 func extractUnencryptedMessage(response *transport.Response) (message.BankMessage, error) {
-	messageHeader := response.FindSegment("HNHBK")
+	messageHeader := response.FindSegment(segment.MessageHeaderID)
 	if messageHeader == nil {
 		return nil, fmt.Errorf("Malformed response: missing Message Header")
 	}

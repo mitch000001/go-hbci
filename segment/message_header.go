@@ -5,6 +5,8 @@ import (
 	"github.com/mitch000001/go-hbci/element"
 )
 
+const MessageHeaderID string = "HNHBK"
+
 func NewReferencingMessageHeaderSegment(size int, hbciVersion int, dialogId string, number int, referencingMessage domain.ReferencingMessage) *MessageHeaderSegment {
 	m := NewMessageHeaderSegment(size, hbciVersion, dialogId, number)
 	m.Ref = element.NewReferencingMessage(referencingMessage.DialogID, referencingMessage.MessageNumber)
@@ -34,7 +36,7 @@ type MessageHeaderSegment struct {
 }
 
 func (m *MessageHeaderSegment) Version() int         { return 3 }
-func (m *MessageHeaderSegment) ID() string           { return "HNHBK" }
+func (m *MessageHeaderSegment) ID() string           { return MessageHeaderID }
 func (m *MessageHeaderSegment) referencedId() string { return "" }
 func (m *MessageHeaderSegment) sender() string       { return senderBoth }
 

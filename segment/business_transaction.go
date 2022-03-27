@@ -57,6 +57,8 @@ func (b *BusinessTransactionParamsSegment) UnmarshalHBCI(value []byte) error {
 	return nil
 }
 
+const PinTanBusinessTransactionParamsID string = "DIPINS"
+
 type PinTanBusinessTransactionParams interface {
 	BankSegment
 	PinTanBusinessTransactions() []domain.PinTanBusinessTransaction
@@ -67,7 +69,9 @@ type PinTanBusinessTransactionParamsSegment struct {
 }
 
 func (p *PinTanBusinessTransactionParamsSegment) Version() int { return 1 }
-func (p *PinTanBusinessTransactionParamsSegment) ID() string   { return "DIPINS" }
+func (p *PinTanBusinessTransactionParamsSegment) ID() string {
+	return PinTanBusinessTransactionParamsID
+}
 
 func (p *PinTanBusinessTransactionParamsSegment) UnmarshalHBCI(value []byte) error {
 	businessTransactionSegment := &BusinessTransactionParamsSegment{}

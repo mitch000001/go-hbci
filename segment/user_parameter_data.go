@@ -5,6 +5,8 @@ import (
 	"github.com/mitch000001/go-hbci/element"
 )
 
+const CommonUserParameterDataID string = "HIUPA"
+
 //go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment CommonUserParameterDataSegment -segment_interface commonUserParameterDataSegment -segment_versions="CommonUserParameterDataV2:2:Segment,CommonUserParameterDataV3:3:Segment,CommonUserParameterDataV4:4:Segment"
 
 type CommonUserParameterData interface {
@@ -37,7 +39,7 @@ type CommonUserParameterDataV2 struct {
 }
 
 func (c *CommonUserParameterDataV2) Version() int         { return 2 }
-func (c *CommonUserParameterDataV2) ID() string           { return "HIUPA" }
+func (c *CommonUserParameterDataV2) ID() string           { return CommonUserParameterDataID }
 func (c *CommonUserParameterDataV2) referencedId() string { return "HKVVB" }
 func (c *CommonUserParameterDataV2) sender() string       { return senderBank }
 
@@ -75,7 +77,7 @@ type CommonUserParameterDataV3 struct {
 }
 
 func (c *CommonUserParameterDataV3) Version() int         { return 3 }
-func (c *CommonUserParameterDataV3) ID() string           { return "HIUPA" }
+func (c *CommonUserParameterDataV3) ID() string           { return CommonUserParameterDataID }
 func (c *CommonUserParameterDataV3) referencedId() string { return "HKVVB" }
 func (c *CommonUserParameterDataV3) sender() string       { return senderBank }
 
@@ -115,7 +117,7 @@ type CommonUserParameterDataV4 struct {
 }
 
 func (c *CommonUserParameterDataV4) Version() int         { return 4 }
-func (c *CommonUserParameterDataV4) ID() string           { return "HIUPA" }
+func (c *CommonUserParameterDataV4) ID() string           { return CommonUserParameterDataID }
 func (c *CommonUserParameterDataV4) referencedId() string { return "HKVVB" }
 func (c *CommonUserParameterDataV4) sender() string       { return senderBank }
 

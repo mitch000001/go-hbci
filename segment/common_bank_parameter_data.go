@@ -5,6 +5,8 @@ import (
 	"github.com/mitch000001/go-hbci/element"
 )
 
+const CommonBankParameterID string = "HIBPA"
+
 type CommonBankParameter interface {
 	BankSegment
 	BankParameterData() domain.BankParameterData
@@ -33,7 +35,7 @@ type CommonBankParameterV2 struct {
 }
 
 func (c *CommonBankParameterV2) Version() int         { return 2 }
-func (c *CommonBankParameterV2) ID() string           { return "HIBPA" }
+func (c *CommonBankParameterV2) ID() string           { return CommonBankParameterID }
 func (c *CommonBankParameterV2) referencedId() string { return "HKVVB" }
 func (c *CommonBankParameterV2) sender() string       { return senderBank }
 
