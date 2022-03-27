@@ -15,17 +15,19 @@ import (
 	"github.com/mitch000001/go-hbci/generator"
 )
 
-var segmentFlag = flag.String("segment", "", "'MyAwesomeSegment'")
-var segmentInterfaceFlag = flag.String("segment_interface", "Segment", "'MyAwesomeInterface'")
-var segmentVersionsFlag segmentVersions
+var segmentName string
+var segmentInterface string
+var segmentVersions segmentVersionsFlag
 
 func init() {
-	flag.Var(&segmentVersionsFlag, "segment_versions", "'MyAwesomeSegmentVersion1:1,MyAwesomeSegmentVersion2:2'")
+	flag.StringVar(&segmentName, "segment", "", "'MyAwesomeSegment'")
+	flag.StringVar(&segmentInterface, "segment_interface", "Segment", "'MyAwesomeInterface'")
+	flag.Var(&segmentVersions, "segment_versions", "'MyAwesomeSegmentVersion1:1,MyAwesomeSegmentVersion2:2'")
 }
 
 func main() {
 	flag.Parse()
-	if *segmentFlag == "" {
+	if segmentName == "" {
 		fmt.Printf("You must provide a segment to generate the unmarshaler\n")
 		os.Exit(1)
 	}
@@ -37,12 +39,12 @@ func main() {
 		fmt.Println(err)
 	}
 	segment := generator.SegmentIdentifier{
-		Name:          *segmentFlag,
-		InterfaceName: *segmentInterfaceFlag,
-		Versions:      segmentVersionsFlag,
+		Name:          segmentName,
+		InterfaceName: segmentInterface,
+		Versions:      segmentVersions,
 	}
 	var generated io.Reader
-	if len(segmentVersionsFlag) != 0 {
+	if len(segmentVersions) != 0 {
 		segmentGenerator := generator.NewVersionedSegmentUnmarshaler(segment, packageName, fileSet, f)
 		generated, err = segmentGenerator.Generate()
 	} else {
@@ -71,9 +73,9 @@ func main() {
 	}
 }
 
-type segmentVersions []generator.SegmentIdentifier
+type segmentVersionsFlag []generator.SegmentIdentifier
 
-func (s *segmentVersions) String() string {
+func (s *segmentVersionsFlag) String() string {
 	var buf bytes.Buffer
 	for _, version := range *s {
 		fmt.Fprintf(&buf, "%s:%d:%s", version.Name, version.Version, version.InterfaceName)
@@ -81,7 +83,7 @@ func (s *segmentVersions) String() string {
 	return buf.String()
 }
 
-func (s *segmentVersions) Set(in string) error {
+func (s *segmentVersionsFlag) Set(in string) error {
 	unquoted, err := strconv.Unquote(in)
 	if err != nil {
 		return fmt.Errorf("Invalid input: %q (%v)", in, err)
