@@ -96,7 +96,7 @@ func NewPublicKeyTransmissionSegment(dialogId string, number int, messageReferen
 		KeyName:    element.NewKeyName(keyName),
 		PublicKey:  element.NewPublicKey(pubKey),
 	}
-	header := element.NewReferencingSegmentHeader("HIISA", number, 2, refSegment.Header().Number.Val())
+	header := element.NewReferencingSegmentHeader("HIISA", number, 2, refSegment.Header().Position.Val())
 	p.Segment = NewBasicSegmentWithHeader(header, p)
 	return p
 }
@@ -205,7 +205,7 @@ func NewPublicKeyRevocationConfirmationSegment(dialogId string, number int, mess
 		RevocationReason: element.NewAlphaNumeric(reason, 3),
 		Date:             element.NewSecurityDate(element.SecurityTimestamp, time.Now()),
 	}
-	header := element.NewReferencingSegmentHeader("HISSP", number, 2, refSegment.Header().Number.Val())
+	header := element.NewReferencingSegmentHeader("HISSP", number, 2, refSegment.Header().Position.Val())
 	p.Segment = NewBasicSegmentWithHeader(header, p)
 	return p
 }

@@ -40,7 +40,7 @@ func (m *MessageAcknowledgement) UnmarshalHBCI(value []byte) error {
 			return err
 		}
 		if segmentRef := seg.Header().ReferencingSegment(); segmentRef != -1 {
-			ack.SetReferencingSegmentNumber(segmentRef)
+			ack.SetReferencingSegmentPosition(segmentRef)
 		}
 		ack.SetReferencingMessage(m.referencingMessage)
 		ack.SetType(domain.MessageAcknowledgement)
@@ -105,7 +105,7 @@ func (s *SegmentAcknowledgement) UnmarshalHBCI(value []byte) error {
 		if err != nil {
 			return err
 		}
-		ack.SetReferencingSegmentNumber(seg.Header().ReferencingSegment())
+		ack.SetReferencingSegmentPosition(seg.Header().ReferencingSegment())
 		ack.SetReferencingMessage(s.referencingMessage)
 		ack.SetType(domain.SegmentAcknowledgement)
 		acknowledgements[i] = ack
