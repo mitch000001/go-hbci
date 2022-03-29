@@ -17,7 +17,7 @@ const (
 
 type Segment interface {
 	Header() *element.SegmentHeader
-	SetNumber(func() int)
+	SetPosition(func() int)
 	String() string
 }
 
@@ -62,13 +62,13 @@ func SegmentFromHeaderBytes(headerBytes []byte, seg basicSegment) (*segment, err
 	return NewBasicSegmentWithHeader(header, seg), nil
 }
 
-func NewReferencingBasicSegment(number int, ref int, seg basicSegment) *segment {
-	header := element.NewReferencingSegmentHeader(seg.ID(), number, seg.Version(), ref)
+func NewReferencingBasicSegment(position int, ref int, seg basicSegment) *segment {
+	header := element.NewReferencingSegmentHeader(seg.ID(), position, seg.Version(), ref)
 	return NewBasicSegmentWithHeader(header, seg)
 }
 
-func NewBasicSegment(number int, seg basicSegment) *segment {
-	header := element.NewSegmentHeader(seg.ID(), number, seg.Version())
+func NewBasicSegment(position int, seg basicSegment) *segment {
+	header := element.NewSegmentHeader(seg.ID(), position, seg.Version())
 	return NewBasicSegmentWithHeader(header, seg)
 }
 
@@ -135,8 +135,8 @@ func (s *segment) Version() int {
 	return s.header.Version.Val()
 }
 
-func (s *segment) SetNumber(numberFn func() int) {
-	s.header.SetNumber(numberFn())
+func (s *segment) SetPosition(positionFn func() int) {
+	s.header.SetPosition(positionFn())
 }
 
 func (s *segment) SetReference(ref int) {

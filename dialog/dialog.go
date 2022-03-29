@@ -213,7 +213,7 @@ func (d *dialog) SendAnonymousMessage(clientMessage message.HBCIMessage) (messag
 	defer func() { logErr(d.anonymousEnd()) }()
 	// TODO: add checks if job needs signature or not
 	requestMessage := d.newBasicMessage(clientMessage)
-	requestMessage.SetNumbers()
+	requestMessage.SetSegmentPositions()
 	bankMessage, err := d.request(requestMessage)
 	if err != nil {
 		return nil, err
@@ -243,7 +243,7 @@ func (d *dialog) anonymousInit() error {
 		d.BankParameterDataVersion(), d.UserParameterDataVersion(), d.Language,
 	)
 	initMessage.BasicMessage = d.newBasicMessage(initMessage)
-	initMessage.SetNumbers()
+	initMessage.SetSegmentPositions()
 	bankMessage, err := d.request(initMessage)
 	if err != nil {
 		return err
@@ -289,7 +289,7 @@ func (d *dialog) anonymousInit() error {
 func (d *dialog) anonymousEnd() error {
 	dialogEnd := message.NewDialogFinishingMessage(d.hbciVersion, d.dialogID)
 	dialogEnd.BasicMessage = d.newBasicMessage(dialogEnd)
-	dialogEnd.SetNumbers()
+	dialogEnd.SetSegmentPositions()
 
 	decryptedMessage, err := d.request(dialogEnd)
 	if err != nil {

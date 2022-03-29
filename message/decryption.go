@@ -82,7 +82,7 @@ func (d *decryptedMessage) FindSegments(segmentID string) []segment.Segment {
 	return d.unmarshaler.SegmentsByID(segmentID)
 }
 
-func (d *decryptedMessage) SegmentNumber(segmentID string) int {
+func (d *decryptedMessage) SegmentPosition(segmentID string) int {
 	seg := d.unmarshaler.MarshaledSegmentByID(segmentID)
 	if len(seg) == 0 {
 		return -1
@@ -96,7 +96,7 @@ func (d *decryptedMessage) SegmentNumber(segmentID string) int {
 	if err != nil {
 		return -1
 	}
-	return header.Number.Val()
+	return header.Position.Val()
 }
 
 func (d *decryptedMessage) HBCISegments() []segment.ClientSegment {

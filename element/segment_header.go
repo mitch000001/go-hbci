@@ -4,9 +4,9 @@ import "fmt"
 
 // NewReferencingSegmentHeader returns a new SegmentHeader with a reference to
 // another segment
-func NewReferencingSegmentHeader(id string, position, version, reference int) *SegmentHeader {
+func NewReferencingSegmentHeader(id string, position, version, referencePosition int) *SegmentHeader {
 	header := NewSegmentHeader(id, position, version)
-	header.Ref = NewNumber(reference, 3)
+	header.Ref = NewNumber(referencePosition, 3)
 	return header
 }
 

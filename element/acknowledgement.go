@@ -31,13 +31,13 @@ func NewAcknowledgement(acknowledgement domain.Acknowledgement) *Acknowledgement
 // transmit information from the bank institute to the client.
 type AcknowledgementDataElement struct {
 	DataElement
-	Code                     *DigitDataElement
-	ReferenceDataElement     *AlphaNumericDataElement
-	Text                     *AlphaNumericDataElement
-	Params                   *ParamsDataElement
-	referencingMessage       domain.ReferencingMessage
-	referencingSegmentNumber int
-	typ                      string
+	Code                       *DigitDataElement
+	ReferenceDataElement       *AlphaNumericDataElement
+	Text                       *AlphaNumericDataElement
+	Params                     *ParamsDataElement
+	referencingMessage         domain.ReferencingMessage
+	referencingSegmentPosition int
+	typ                        string
 }
 
 // SetReferencingMessage is used by MessageAcknowledgements to set the reference
@@ -47,10 +47,10 @@ func (a *AcknowledgementDataElement) SetReferencingMessage(reference domain.Refe
 	a.referencingMessage = reference
 }
 
-// SetReferencingSegmentNumber is a setter for setting the Segment number this
+// SetReferencingSegmentPosition is a setter for setting the Segment position this
 // Acknowledgement is referring to.
-func (a *AcknowledgementDataElement) SetReferencingSegmentNumber(number int) {
-	a.referencingSegmentNumber = number
+func (a *AcknowledgementDataElement) SetReferencingSegmentPosition(position int) {
+	a.referencingSegmentPosition = position
 }
 
 // SetType sets the type of the Acknowledgement. There are only two types of
@@ -71,7 +71,7 @@ func (a *AcknowledgementDataElement) Val() domain.Acknowledgement {
 		Params:                   a.Params.Val(),
 		Type:                     a.typ,
 		ReferencingMessage:       a.referencingMessage,
-		ReferencingSegmentNumber: a.referencingSegmentNumber,
+		ReferencingSegmentNumber: a.referencingSegmentPosition,
 	}
 }
 

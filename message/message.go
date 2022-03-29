@@ -17,7 +17,7 @@ type Message interface {
 	FindMarshaledSegments(segmentID string) [][]byte
 	FindSegment(segmentID string) segment.Segment
 	FindSegments(segmentID string) []segment.Segment
-	SegmentNumber(segmentID string) int
+	SegmentPosition(segmentID string) int
 }
 
 // ClientMessage represents a message composed by the client
@@ -44,7 +44,7 @@ type HBCIMessage interface {
 // A SignedHBCIMessage represents a HBCI message that can be signed
 type SignedHBCIMessage interface {
 	HBCIMessage
-	SetNumbers()
+	SetSegmentPositions()
 	SetSignatureHeader(*segment.SignatureHeaderSegment)
 	SetSignatureEnd(*segment.SignatureEndSegment)
 }
@@ -107,8 +107,8 @@ type BasicMessage struct {
 	marshaledContent []byte
 }
 
-// SetNumbers sets the message number on every segment within the message
-func (b *BasicMessage) SetNumbers() {
+// SetSegmentPositions sets the message number on every segment within the message
+func (b *BasicMessage) SetSegmentPositions() {
 	if b.HBCIMessage == nil {
 		panic(fmt.Errorf("HBCIMessage must be set"))
 	}
@@ -117,19 +117,19 @@ func (b *BasicMessage) SetNumbers() {
 		n++
 		return n
 	}
-	b.Header.SetNumber(num)
+	b.Header.SetPosition(num)
 	if b.SignatureBegin != nil {
-		b.SignatureBegin.SetNumber(num)
+		b.SignatureBegin.SetPosition(num)
 	}
 	for _, segment := range b.HBCIMessage.HBCISegments() {
 		if !reflect.ValueOf(segment).IsNil() {
-			segment.SetNumber(num)
+			segment.SetPosition(num)
 		}
 	}
 	if b.SignatureEnd != nil {
-		b.SignatureEnd.SetNumber(num)
+		b.SignatureEnd.SetPosition(num)
 	}
-	b.End.SetNumber(num)
+	b.End.SetPosition(num)
 }
 
 // SetSize writes the size of the marshaled message into the message header
@@ -238,7 +238,7 @@ func (b *BasicMessage) Sign(provider SignatureProvider) (*BasicSignedMessage, er
 	b.SignatureBegin = b.hbciVersion.SignatureHeader()
 	provider.WriteSignatureHeader(b.SignatureBegin)
 	b.SignatureEnd = b.hbciVersion.SignatureEnd()
-	b.SetNumbers()
+	b.SetSegmentPositions()
 	var buffer bytes.Buffer
 	buffer.WriteString(b.SignatureBegin.String())
 	for _, segment := range b.HBCIMessage.HBCISegments() {
@@ -350,8 +350,8 @@ func (b *BasicMessage) FindMarshaledSegments(segmentID string) [][]byte {
 	return segments
 }
 
-// SegmentNumber returns the segment number for the given segmentID
-func (b *BasicMessage) SegmentNumber(segmentID string) int {
+// SegmentPosition returns the segment position for the given segmentID
+func (b *BasicMessage) SegmentPosition(segmentID string) int {
 	idx := -1
 	// TODO: implement
 	//for i, segment := range b.HBCIMessage.HBCISegments() {
@@ -373,12 +373,12 @@ type BasicSignedMessage struct {
 	message *BasicMessage
 }
 
-// SetNumbers sets the message numbers in all segments
-func (b *BasicSignedMessage) SetNumbers() {
+// SetSegmentPositions sets the message numbers in all segments
+func (b *BasicSignedMessage) SetSegmentPositions() {
 	if b.message.SignatureBegin == nil || b.message.SignatureEnd == nil {
-		panic(fmt.Errorf("Cannot call set Numbers when signature is not set"))
+		panic(fmt.Errorf("Cannot set segment positions when signature is not set"))
 	}
-	b.message.SetNumbers()
+	b.message.SetSegmentPositions()
 }
 
 // SetSignatureHeader sets the SignatureHeader
