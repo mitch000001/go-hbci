@@ -7,7 +7,7 @@ import (
 
 const MessageHeaderID string = "HNHBK"
 
-func NewReferencingMessageHeaderSegment(size int, hbciVersion int, dialogId string, number int, referencingMessage domain.ReferencingMessage) *MessageHeaderSegment {
+func NewReferencingMessageHeaderSegment(size int, hbciVersion int, dialogId string, number int, referencingMessage domain.MessageReference) *MessageHeaderSegment {
 	m := NewMessageHeaderSegment(size, hbciVersion, dialogId, number)
 	m.Ref = element.NewReferencingMessage(referencingMessage.DialogID, referencingMessage.MessageNumber)
 	return m
@@ -40,8 +40,8 @@ func (m *MessageHeaderSegment) ID() string           { return MessageHeaderID }
 func (m *MessageHeaderSegment) referencedId() string { return "" }
 func (m *MessageHeaderSegment) sender() string       { return senderBoth }
 
-func (m *MessageHeaderSegment) ReferencingMessage() domain.ReferencingMessage {
-	var reference domain.ReferencingMessage
+func (m *MessageHeaderSegment) ReferencingMessage() domain.MessageReference {
+	var reference domain.MessageReference
 	if m.Ref != nil {
 		reference = m.Ref.Val()
 	}

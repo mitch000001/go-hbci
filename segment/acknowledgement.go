@@ -10,7 +10,7 @@ import (
 type MessageAcknowledgement struct {
 	Segment
 	acknowledgements   []*element.AcknowledgementDataElement
-	referencingMessage domain.ReferencingMessage
+	referencingMessage domain.MessageReference
 }
 
 func (m *MessageAcknowledgement) Version() int         { return 2 }
@@ -50,7 +50,7 @@ func (m *MessageAcknowledgement) UnmarshalHBCI(value []byte) error {
 	return nil
 }
 
-func (m *MessageAcknowledgement) SetReferencingMessage(reference domain.ReferencingMessage) {
+func (m *MessageAcknowledgement) SetReferencingMessage(reference domain.MessageReference) {
 	m.referencingMessage = reference
 }
 
@@ -76,7 +76,7 @@ func (m *MessageAcknowledgement) elements() []element.DataElement {
 type SegmentAcknowledgement struct {
 	Segment
 	acknowledgements   []*element.AcknowledgementDataElement
-	referencingMessage domain.ReferencingMessage
+	referencingMessage domain.MessageReference
 }
 
 func (s *SegmentAcknowledgement) Version() int         { return 2 }
@@ -114,7 +114,7 @@ func (s *SegmentAcknowledgement) UnmarshalHBCI(value []byte) error {
 	return nil
 }
 
-func (s *SegmentAcknowledgement) SetReferencingMessage(reference domain.ReferencingMessage) {
+func (s *SegmentAcknowledgement) SetReferencingMessage(reference domain.MessageReference) {
 	s.referencingMessage = reference
 }
 

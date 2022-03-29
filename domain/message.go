@@ -1,8 +1,8 @@
 package domain
 
-// ReferencingMessage represents a reference to another message within a given
+// MessageReference represents a reference to another message within a given
 // dialog
-type ReferencingMessage struct {
+type MessageReference struct {
 	DialogID      string
 	MessageNumber int
 }

@@ -28,8 +28,8 @@ type ReferencingMessageDataElement struct {
 }
 
 // Val returns the value of r as domain.ReferencingMessage
-func (r *ReferencingMessageDataElement) Val() domain.ReferencingMessage {
-	return domain.ReferencingMessage{
+func (r *ReferencingMessageDataElement) Val() domain.MessageReference {
+	return domain.MessageReference{
 		DialogID:      r.DialogID.Val(),
 		MessageNumber: r.MessageNumber.Val(),
 	}
