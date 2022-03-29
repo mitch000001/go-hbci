@@ -43,7 +43,7 @@ type Acknowledgement struct {
 	ReferenceDataElement     string
 	Text                     string
 	Params                   []string
-	ReferencingMessage       ReferencingMessage
+	ReferencingMessage       MessageReference
 	ReferencingSegmentNumber int
 }
 

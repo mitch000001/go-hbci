@@ -35,7 +35,7 @@ type AcknowledgementDataElement struct {
 	ReferenceDataElement       *AlphaNumericDataElement
 	Text                       *AlphaNumericDataElement
 	Params                     *ParamsDataElement
-	referencingMessage         domain.ReferencingMessage
+	referencingMessage         domain.MessageReference
 	referencingSegmentPosition int
 	typ                        string
 }
@@ -43,7 +43,7 @@ type AcknowledgementDataElement struct {
 // SetReferencingMessage is used by MessageAcknowledgements to set the reference
 // to the previously sent message. This is needed to identify the message within
 // an ongoing dialog.
-func (a *AcknowledgementDataElement) SetReferencingMessage(reference domain.ReferencingMessage) {
+func (a *AcknowledgementDataElement) SetReferencingMessage(reference domain.MessageReference) {
 	a.referencingMessage = reference
 }
 

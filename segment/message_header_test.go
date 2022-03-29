@@ -37,7 +37,7 @@ func TestMessageHeaderSegmentUnmarshalHBCI(t *testing.T) {
 	}
 
 	expected = NewReferencingMessageHeaderSegment(
-		123, 220, "dialogID", 3, domain.ReferencingMessage{DialogID: "abcde", MessageNumber: 1},
+		123, 220, "dialogID", 3, domain.MessageReference{DialogID: "abcde", MessageNumber: 1},
 	).String()
 	actual = header.String()
 
