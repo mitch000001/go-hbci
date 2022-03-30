@@ -63,7 +63,7 @@ func main() {
 	}
 	defer file.Close()
 	fileSet = token.NewFileSet()
-	newAstFile, err := parser.ParseFile(fileSet, newFileName, generated, 0)
+	newAstFile, err := parser.ParseFile(fileSet, newFileName, generated, parser.ParseComments)
 	if err != nil {
 		fmt.Println(err)
 	}
