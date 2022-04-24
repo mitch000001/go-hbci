@@ -44,7 +44,7 @@ func TestParseBankInfos(t *testing.T) {
 	}
 
 	var expectedResult = []BankInfo{
-		BankInfo{
+		{
 			BankID:        "1000000",
 			VersionNumber: "3.0",
 			URL:           "https://foo.example.com",

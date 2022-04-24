@@ -12,11 +12,13 @@ import (
 
 const (
 	bankIdentifierHeader = "BLZ"
+	bicHeader            = "BIC"
 	bankInstituteHeader  = "Institut"
 	versionNumberHeader  = "HBCI-Version"
 	urlHeader            = "PIN/TAN-Zugang URL"
 	versionNameHeader    = "Version"
 	cityHeader           = "Ort"
+	lastChangedHeader    = "Datum letzte Änderung"
 )
 
 const (
@@ -44,11 +46,13 @@ func ParseBankInfos(reader io.Reader) ([]BankInfo, error) {
 		}
 		bankInfo := BankInfo{
 			BankID:        strings.TrimSpace(record.Get(bankIdentifierHeader)),
+			BIC:           strings.TrimSpace(record.Get(bicIdentifier)),
 			VersionNumber: strings.TrimSpace(record.Get(versionNumberHeader)),
 			URL:           strings.TrimSpace(record.Get(urlHeader)),
 			VersionName:   strings.TrimSpace(record.Get(versionNameHeader)),
 			Institute:     strings.TrimSpace(record.Get(bankInstituteHeader)),
 			City:          strings.TrimSpace(record.Get(cityHeader)),
+			LastChanged:   strings.TrimSpace(record.Get(lastChangedHeader)),
 		}
 		bankInfos = append(bankInfos, bankInfo)
 	}

@@ -34,11 +34,13 @@ func FindByBankID(bankID string) BankInfo {
 // of a given bank institute. The institute is referenced by its BankID.
 type BankInfo struct {
 	BankID        string
+	BIC           string
 	VersionNumber string
 	URL           string
 	VersionName   string
 	Institute     string
 	City          string
+	LastChanged   string
 }
 
 // HbciVersion tries to parse the HBCI version out of VersionName and
