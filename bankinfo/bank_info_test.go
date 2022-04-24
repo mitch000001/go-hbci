@@ -28,6 +28,7 @@ func Test_ParseBankInfos(t *testing.T) {
 					VersionName:   "FinTS V3.0",
 					Institute:     "Postbank",
 					City:          "Berlin",
+					LastChanged:   "30.04.2015",
 				},
 				{
 					BankID:        "10020200",
@@ -36,6 +37,7 @@ func Test_ParseBankInfos(t *testing.T) {
 					VersionName:   "FinTS V3.0",
 					Institute:     "BHF-Bank AG",
 					City:          "Berlin",
+					LastChanged:   "",
 				},
 			},
 		},
@@ -58,9 +60,9 @@ func Test_ParseBankInfos(t *testing.T) {
 
 func TestFindByBankId(t *testing.T) {
 	data = []BankInfo{
-		BankInfo{BankID: "1000000", URL: "1"},
-		BankInfo{BankID: "2000000", URL: "2"},
-		BankInfo{BankID: "3000000", URL: "3"},
+		{BankID: "1000000", URL: "1"},
+		{BankID: "2000000", URL: "2"},
+		{BankID: "3000000", URL: "3"},
 	}
 
 	var url string
