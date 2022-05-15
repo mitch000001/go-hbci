@@ -1,11 +1,10 @@
-// +build feature
-
 package client_test
 
 import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"strconv"
 	"testing"
 	"time"
 
@@ -18,6 +17,7 @@ var testAccount domain.AccountConnection
 var sepaTestAccount domain.InternationalAccountConnection
 
 func TestClientAccountTransactions(t *testing.T) {
+	skipWhenE2EDisabled(t)
 	c := newClient()
 
 	timeframe := domain.Timeframe{
@@ -41,6 +41,7 @@ func TestClientAccountTransactions(t *testing.T) {
 }
 
 func TestClientSepaAccountTransactions(t *testing.T) {
+	skipWhenE2EDisabled(t)
 	c := newClient()
 
 	timeframe := domain.Timeframe{
@@ -64,6 +65,7 @@ func TestClientSepaAccountTransactions(t *testing.T) {
 }
 
 func TestClientAccountInformation(t *testing.T) {
+	skipWhenE2EDisabled(t)
 	c := newClient()
 
 	err := c.AccountInformation(testAccount, true)
@@ -75,6 +77,7 @@ func TestClientAccountInformation(t *testing.T) {
 }
 
 func TestClientAccountBalances(t *testing.T) {
+	skipWhenE2EDisabled(t)
 	c := newClient()
 
 	balances, err := c.AccountBalances(testAccount, true)
@@ -95,6 +98,7 @@ func TestClientAccountBalances(t *testing.T) {
 }
 
 func TestClientAccounts(t *testing.T) {
+	skipWhenE2EDisabled(t)
 	c := newClient()
 
 	accounts, err := c.Accounts()
@@ -119,6 +123,7 @@ func TestClientAccounts(t *testing.T) {
 }
 
 func TestClientStatus(t *testing.T) {
+	skipWhenE2EDisabled(t)
 	c := newClient()
 
 	statuus, err := c.Status(time.Now().Add(-48*time.Hour), time.Now(), 10, "")
@@ -134,6 +139,7 @@ func TestClientStatus(t *testing.T) {
 }
 
 func TestAnonymousClientCommunicationAccess(t *testing.T) {
+	skipWhenE2EDisabled(t)
 	a := &client.AnonymousClient{
 		Client: newClient(),
 	}
@@ -188,4 +194,23 @@ func newClient() *client.Client {
 		panic(err)
 	}
 	return c
+}
+
+func skipWhenE2EDisabled(t *testing.T) {
+	if testE2E() {
+		return
+	}
+	t.Skip("Enable client e2e tests by setting env var `GOHBCI_TEST_E2E_CLIENT` to `true`")
+}
+
+func testE2E() bool {
+	val, ok := os.LookupEnv("GOHBCI_TEST_E2E_CLIENT")
+	if !ok {
+		return false
+	}
+	testE2E, err := strconv.ParseBool(val)
+	if err != nil {
+		return false
+	}
+	return testE2E
 }
