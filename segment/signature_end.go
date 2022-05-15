@@ -21,7 +21,10 @@ func NewSignatureEndSegmentV1() *SignatureEndSegment {
 type signatureEndSegment interface {
 	ClientSegment
 	SignatureEnd
+	Unmarshaler
 }
+
+//go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment SignatureEndSegment -segment_interface signatureEndSegment -segment_versions="SignatureEndV1:1:ClientSegment,SignatureEndV2:2:ClientSegment"
 
 type SignatureEndSegment struct {
 	signatureEndSegment
