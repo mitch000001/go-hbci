@@ -5,6 +5,8 @@ import (
 	"github.com/mitch000001/go-hbci/element"
 )
 
+const IdentificationID = "HKIDN"
+
 func NewIdentificationSegment(bankId domain.BankID, clientId string, clientSystemId string, systemIdRequired bool) *IdentificationSegment {
 	var clientSystemStatus *element.NumberDataElement
 	if systemIdRequired {
@@ -31,7 +33,7 @@ type IdentificationSegment struct {
 }
 
 func (i *IdentificationSegment) Version() int         { return 2 }
-func (i *IdentificationSegment) ID() string           { return "HKIDN" }
+func (i *IdentificationSegment) ID() string           { return IdentificationID }
 func (i *IdentificationSegment) referencedId() string { return "" }
 func (i *IdentificationSegment) sender() string       { return senderUser }
 

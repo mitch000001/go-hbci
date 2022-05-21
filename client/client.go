@@ -109,6 +109,10 @@ func (c *Client) Accounts() ([]domain.AccountInformation, error) {
 	if err := c.init(); err != nil {
 		return nil, err
 	}
+	err := c.pinTanDialog.SyncUserParameterData()
+	if err != nil {
+		return nil, fmt.Errorf("error getting accounts")
+	}
 	return c.pinTanDialog.Accounts, nil
 }
 
@@ -129,7 +133,9 @@ func (c *Client) AccountTransactions(account domain.AccountConnection, timeframe
 	if continuationReference != "" {
 		accountTransactionRequest.SetContinuationReference(continuationReference)
 	}
-	decryptedMessage, err := c.pinTanDialog.SendMessage(message.NewHBCIMessage(c.hbciVersion, accountTransactionRequest))
+	decryptedMessage, err := c.pinTanDialog.SendMessage(
+		message.NewHBCIMessage(c.hbciVersion, c.hbciVersion.TanProcess4Request(segment.IdentificationID), accountTransactionRequest),
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -195,7 +201,9 @@ func (c *Client) SepaAccountTransactions(account domain.InternationalAccountConn
 	if continuationReference != "" {
 		accountTransactionRequest.SetContinuationReference(continuationReference)
 	}
-	decryptedMessage, err := c.pinTanDialog.SendMessage(message.NewHBCIMessage(c.hbciVersion, accountTransactionRequest))
+	decryptedMessage, err := c.pinTanDialog.SendMessage(
+		message.NewHBCIMessage(c.hbciVersion, c.hbciVersion.TanProcess4Request(segment.IdentificationID), accountTransactionRequest),
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -227,7 +235,9 @@ func (c *Client) AccountInformation(account domain.AccountConnection, allAccount
 		return err
 	}
 	accountInformationRequest := segment.NewAccountInformationRequestSegmentV1(account, allAccounts)
-	decryptedMessage, err := c.pinTanDialog.SendMessage(message.NewHBCIMessage(c.hbciVersion, accountInformationRequest))
+	decryptedMessage, err := c.pinTanDialog.SendMessage(
+		message.NewHBCIMessage(c.hbciVersion, c.hbciVersion.TanProcess4Request(segment.IdentificationID), accountInformationRequest),
+	)
 	if err != nil {
 		return err
 	}
@@ -252,7 +262,11 @@ func (c *Client) AccountBalances(account domain.AccountConnection, allAccounts b
 		return nil, err
 	}
 	decryptedMessage, err := c.pinTanDialog.SendMessage(
-		message.NewHBCIMessage(c.hbciVersion, accountBalanceRequest),
+		message.NewHBCIMessage(
+			c.hbciVersion,
+			c.hbciVersion.TanProcess4Request(segment.IdentificationID),
+			accountBalanceRequest,
+		),
 	)
 	if err != nil {
 		return nil, err
@@ -287,17 +301,17 @@ func (c *Client) Status(from, to time.Time, maxEntries int, continuationReferenc
 	if err != nil {
 		return nil, err
 	}
-	bankMessage, err := c.pinTanDialog.SendMessage(message.NewHBCIMessage(c.hbciVersion, statusRequest))
+	bankMessage, err := c.pinTanDialog.SendMessage(
+		message.NewHBCIMessage(c.hbciVersion, c.hbciVersion.TanProcess4Request(segment.IdentificationID), statusRequest),
+	)
 	if err != nil {
 		return nil, err
 	}
 	var statusAcknowledgements []domain.StatusAcknowledgement
 	statusResponses := bankMessage.FindSegments("HIPRO")
-	if statusResponses != nil {
-		for _, seg := range statusResponses {
-			statusResponse := seg.(segment.StatusProtocolResponse)
-			statusAcknowledgements = append(statusAcknowledgements, statusResponse.Status())
-		}
+	for _, seg := range statusResponses {
+		statusResponse := seg.(segment.StatusProtocolResponse)
+		statusAcknowledgements = append(statusAcknowledgements, statusResponse.Status())
 	}
 	return statusAcknowledgements, nil
 }

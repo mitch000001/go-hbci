@@ -11,4 +11,5 @@ var FINTS300 = HBCIVersion{
 	AccountTransactionRequest:     NewAccountTransactionRequestSegmentV6,
 	SepaAccountTransactionRequest: NewAccountTransactionRequestSegmentV7,
 	StatusProtocolRequest:         NewStatusProtocolRequestV4,
+	TanProcess4Request:            NewTanProcess4RequestSegmentV6,
 }

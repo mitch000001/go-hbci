@@ -16,6 +16,7 @@ type DialogInitializationClientMessage struct {
 	*BasicMessage
 	Identification             *segment.IdentificationSegment
 	ProcessingPreparation      *segment.ProcessingPreparationSegment
+	TanRequest                 *segment.TanRequestSegment
 	PublicSigningKeyRequest    *segment.PublicKeyRequestSegment
 	PublicEncryptionKeyRequest *segment.PublicKeyRequestSegment
 	PublicKeyRequest           *segment.PublicKeyRequestSegment
@@ -32,6 +33,7 @@ func (d *DialogInitializationClientMessage) HBCISegments() []segment.ClientSegme
 	return []segment.ClientSegment{
 		d.Identification,
 		d.ProcessingPreparation,
+		d.TanRequest,
 		d.PublicSigningKeyRequest,
 		d.PublicEncryptionKeyRequest,
 		d.PublicKeyRequest,
@@ -42,6 +44,7 @@ func (d *DialogInitializationClientMessage) jobs() []segment.Segment {
 	return []segment.Segment{
 		d.Identification,
 		d.ProcessingPreparation,
+		d.TanRequest,
 		d.PublicSigningKeyRequest,
 		d.PublicEncryptionKeyRequest,
 	}

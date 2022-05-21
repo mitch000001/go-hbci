@@ -12,4 +12,5 @@ var HBCI220 = HBCIVersion{
 	AccountBalanceRequest:     NewAccountBalanceRequestV5,
 	AccountTransactionRequest: NewAccountTransactionRequestSegmentV5,
 	StatusProtocolRequest:     NewStatusProtocolRequestV3,
+	TanProcess4Request:        NewTanProcess4RequestSegmentV6,
 }
