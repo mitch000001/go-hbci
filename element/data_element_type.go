@@ -62,6 +62,8 @@ const (
 	allowedBusinessTransactionDEG
 	disposalEligiblePersonDEG
 	securityProfileDEG
+	tan2StepSubmissionParameterDEG
+	tan2StepSubmissionProcessParameterDEG
 )
 
 var typeName = map[DataElementType]string{
@@ -93,25 +95,27 @@ var typeName = map[DataElementType]string{
 	acknowlegdementParamsGDEG:              "Rückmeldungsparameter",
 	pinTanBusinessTransactionParameterGDEG: "Geschäftsvorfallspezifische PIN-TAN-Informationen",
 	// DataElementGroups
-	segmentHeaderDEG:              "Segmentkopf",
-	referenceMessageDEG:           "Bezugsnachricht",
-	acknowledgementDEG:            "Rückmeldung",
-	securityIdentificationDEG:     "Sicherheitsidentifikation, Details",
-	securityDateDEG:               "Sicherheitsdatum und -uhrzeit",
-	hashAlgorithmDEG:              "Hashalgorithmus",
-	signatureAlgorithmDEG:         "Signaturalgorithmus",
-	encryptionAlgorithmDEG:        "Verschlüsselungsalgorithmus",
-	keyNameDEG:                    "Schlüsselname",
-	certificateDEG:                "Zertifikat",
-	publicKeyDEG:                  "Öffentlicher Schlüssel",
-	supportedLanguagesDEG:         "Unterstützte Sprachen",
-	supportedHBCIVersionDEG:       "Unterstützte HBCI-Versionen",
-	communicationParameterDEG:     "Kommunikationsparameter",
-	pinTanDEG:                     "PIN-TAN",
-	accountLimitDEG:               "Kontolimit",
-	allowedBusinessTransactionDEG: "Erlaubte Geschäftsvorfälle",
-	disposalEligiblePersonDEG:     "Verfügungsberechtigte",
-	securityProfileDEG:            "Sicherheitsprofil",
+	segmentHeaderDEG:                      "Segmentkopf",
+	referenceMessageDEG:                   "Bezugsnachricht",
+	acknowledgementDEG:                    "Rückmeldung",
+	securityIdentificationDEG:             "Sicherheitsidentifikation, Details",
+	securityDateDEG:                       "Sicherheitsdatum und -uhrzeit",
+	hashAlgorithmDEG:                      "Hashalgorithmus",
+	signatureAlgorithmDEG:                 "Signaturalgorithmus",
+	encryptionAlgorithmDEG:                "Verschlüsselungsalgorithmus",
+	keyNameDEG:                            "Schlüsselname",
+	certificateDEG:                        "Zertifikat",
+	publicKeyDEG:                          "Öffentlicher Schlüssel",
+	supportedLanguagesDEG:                 "Unterstützte Sprachen",
+	supportedHBCIVersionDEG:               "Unterstützte HBCI-Versionen",
+	communicationParameterDEG:             "Kommunikationsparameter",
+	pinTanDEG:                             "PIN-TAN",
+	accountLimitDEG:                       "Kontolimit",
+	allowedBusinessTransactionDEG:         "Erlaubte Geschäftsvorfälle",
+	disposalEligiblePersonDEG:             "Verfügungsberechtigte",
+	securityProfileDEG:                    "Sicherheitsprofil",
+	tan2StepSubmissionParameterDEG:        "Parameter Zwei-Schritt-TAN-Einreichung",
+	tan2StepSubmissionProcessParameterDEG: "Verfahrensparameter Zwei-Schritt-Verfahren",
 }
 
 func (d DataElementType) String() string {

@@ -27,6 +27,7 @@ type HBCIVersion struct {
 	AccountTransactionRequest     func(account domain.AccountConnection, allAccounts bool) *AccountTransactionRequestSegment
 	SepaAccountTransactionRequest func(account domain.InternationalAccountConnection, allAccounts bool) *AccountTransactionRequestSegment
 	StatusProtocolRequest         func(from, to time.Time, maxEntries int, continuationReference string) StatusProtocolRequest
+	TanProcess4Request            func(referencingSegmentID string) *TanRequestSegment
 }
 
 // Version returns the HBCI version as integer

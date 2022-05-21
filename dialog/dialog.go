@@ -135,12 +135,26 @@ func (d *dialog) SendMessage(clientMessage message.HBCIMessage) (message.BankMes
 	return decryptedMessage, nil
 }
 
+func (d *dialog) SyncUserParameterData() error {
+	internal.Info.Printf("Initializing dialog")
+	err := d.init()
+	if err != nil {
+		return err
+	}
+	defer func() {
+		internal.Info.Printf("Ending dialog")
+		logErr(d.end())
+	}()
+	return nil
+}
+
 func (d *dialog) SyncClientSystemID() (string, error) {
 	syncMessage := message.NewSynchronisationMessage(d.hbciVersion)
 	syncMessage.Identification = segment.NewIdentificationSegment(d.BankID, d.clientID, initialClientSystemID, true)
 	syncMessage.ProcessingPreparation = segment.NewProcessingPreparationSegment(
 		initialBankParameterDataVersion, initialUserParameterDataVersion, domain.German,
 	)
+	syncMessage.TanRequest = d.hbciVersion.TanProcess4Request(segment.IdentificationID)
 	syncMessage.Sync = d.hbciVersion.SynchronisationRequest(segment.SyncModeAquireClientID)
 	syncMessage.BasicMessage = d.newBasicMessage(syncMessage)
 	signedSyncMessage, err := syncMessage.Sign(d.signatureProvider)
@@ -325,6 +339,7 @@ func (d *dialog) init() error {
 	initMessage.ProcessingPreparation = segment.NewProcessingPreparationSegment(
 		d.BankParameterDataVersion(), d.UserParameterDataVersion(), d.Language,
 	)
+	initMessage.TanRequest = d.hbciVersion.TanProcess4Request(segment.IdentificationID)
 	initMessage.BasicMessage = d.newBasicMessage(initMessage)
 	signedInitMessage, err := initMessage.Sign(d.signatureProvider)
 	if err != nil {

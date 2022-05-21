@@ -70,6 +70,9 @@ func (d *basicDataElement) MarshalHBCI() ([]byte, error) {
 func (d *basicDataElement) UnmarshalHBCI(value []byte) error {
 	return fmt.Errorf("Not implemented")
 }
+func (d *basicDataElement) MarshalYAML() (interface{}, error) {
+	return d.val, nil
+}
 
 // NewDataElementGroup returns a new DataElement that embodies group
 func NewDataElementGroup(typ DataElementType, elementCount int, group DataElementGroup) DataElement {
@@ -211,6 +214,10 @@ func (a *arrayElementGroup) IsValid() bool {
 // GroupDataElements returns the grouped DataElements
 func (a *arrayElementGroup) GroupDataElements() []DataElement {
 	return a.array
+}
+
+func (a *arrayElementGroup) MarshalYAML() (interface{}, error) {
+	return a.array, nil
 }
 
 func escape(in string) string {
