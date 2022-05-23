@@ -11,7 +11,7 @@ type CompressionMethodSegment struct {
 
 func (c *CompressionMethodSegment) Version() int         { return 1 }
 func (c *CompressionMethodSegment) ID() string           { return "HIKPV" }
-func (c *CompressionMethodSegment) referencedId() string { return "HKVVB" }
+func (c *CompressionMethodSegment) referencedId() string { return ProcessingPreparationID }
 func (c *CompressionMethodSegment) sender() string       { return senderBank }
 
 func (c *CompressionMethodSegment) elements() []element.DataElement {

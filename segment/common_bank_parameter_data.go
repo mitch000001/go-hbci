@@ -36,7 +36,7 @@ type CommonBankParameterV2 struct {
 
 func (c *CommonBankParameterV2) Version() int         { return 2 }
 func (c *CommonBankParameterV2) ID() string           { return CommonBankParameterID }
-func (c *CommonBankParameterV2) referencedId() string { return "HKVVB" }
+func (c *CommonBankParameterV2) referencedId() string { return ProcessingPreparationID }
 func (c *CommonBankParameterV2) sender() string       { return senderBank }
 
 func (c *CommonBankParameterV2) elements() []element.DataElement {
@@ -79,7 +79,7 @@ type CommonBankParameterV3 struct {
 
 func (c *CommonBankParameterV3) Version() int         { return 3 }
 func (c *CommonBankParameterV3) ID() string           { return "HIBPA" }
-func (c *CommonBankParameterV3) referencedId() string { return "HKVVB" }
+func (c *CommonBankParameterV3) referencedId() string { return ProcessingPreparationID }
 func (c *CommonBankParameterV3) sender() string       { return senderBank }
 
 func (c *CommonBankParameterV3) elements() []element.DataElement {
