@@ -15,9 +15,12 @@ func NewDecryptedMessage(header *segment.MessageHeaderSegment, end *segment.Mess
 	if err != nil {
 		return nil, fmt.Errorf("Malformed decrypted message bytes: %v", err)
 	}
-	messageAcknowledgement := unmarshaler.SegmentByID("HIRMG").(*segment.MessageAcknowledgement)
-	messageAcknowledgement.SetReferencingMessage(header.ReferencingMessage())
-	acknowledgements := messageAcknowledgement.Acknowledgements()
+	var acknowledgements []domain.Acknowledgement
+	messageAcknowledgement, ok := unmarshaler.SegmentByID("HIRMG").(*segment.MessageAcknowledgement)
+	if ok {
+		messageAcknowledgement.SetReferencingMessage(header.ReferencingMessage())
+		acknowledgements = append(acknowledgements, messageAcknowledgement.Acknowledgements()...)
+	}
 	for _, seg := range unmarshaler.SegmentsByID("HIRMS") {
 		if segmentAcknowledgement, ok := seg.(*segment.SegmentAcknowledgement); ok {
 			acknowledgements = append(acknowledgements, segmentAcknowledgement.Acknowledgements()...)

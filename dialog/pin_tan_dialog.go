@@ -45,7 +45,7 @@ func NewPinTanDialog(config Config) *PinTanDialog {
 		dialogTransport = config.Transport
 	}
 	dialogTransport = middleware.Base64Encoding(base64.StdEncoding)(dialogTransport)
-	dialogTransport = middleware.Logging(internal.Debug)(dialogTransport)
+	dialogTransport = middleware.Logging(internal.Debug, cryptoProvider)(dialogTransport)
 	d.transport = dialogTransport
 	return d
 }
