@@ -12,7 +12,7 @@ type AccountInformation interface {
 	Account() domain.AccountInformation
 }
 
-//go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment AccountInformationSegment -segment_interface accountInformationSegment -segment_versions="AccountInformationV4:4:Segment,AccountInformationV5:5:Segment,AccountInformationV6:6:Segment"
+//go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment AccountInformationSegment -segment_interface accountInformationSegment -segment_versions="AccountInformationV4:4:Segment,AccountInformationV5:5:Segment,AccountInformationV6:6:Segment,AccountInformationV7:7:Segment"
 
 type AccountInformationSegment struct {
 	accountInformationSegment
@@ -184,6 +184,69 @@ func (a *AccountInformationV6) Account() domain.AccountInformation {
 }
 
 func (a *AccountInformationV6) elements() []element.DataElement {
+	return []element.DataElement{
+		a.AccountConnection,
+		a.IBAN,
+		a.UserID,
+		a.AccountType,
+		a.AccountCurrency,
+		a.Name1,
+		a.Name2,
+		a.AccountProductID,
+		a.AccountLimit,
+		a.AllowedBusinessTransactions,
+		a.AccountExtensions,
+	}
+}
+
+type AccountInformationV7 struct {
+	Segment
+	AccountConnection           *element.AccountConnectionDataElement
+	IBAN                        *element.AlphaNumericDataElement
+	UserID                      *element.IdentificationDataElement
+	AccountType                 *element.NumberDataElement
+	AccountCurrency             *element.CurrencyDataElement
+	Name1                       *element.AlphaNumericDataElement
+	Name2                       *element.AlphaNumericDataElement
+	AccountProductID            *element.AlphaNumericDataElement
+	AccountLimit                *element.AccountLimitDataElement
+	AllowedBusinessTransactions *element.AllowedBusinessTransactionsDataElement
+	AccountExtensions           *element.AlphaNumericDataElement
+}
+
+func (a *AccountInformationV7) Version() int         { return 7 }
+func (a *AccountInformationV7) ID() string           { return AccountInformationID }
+func (a *AccountInformationV7) referencedId() string { return ProcessingPreparationID }
+func (a *AccountInformationV7) sender() string       { return senderBank }
+
+func (a *AccountInformationV7) Account() domain.AccountInformation {
+	info := domain.AccountInformation{
+		UserID: a.UserID.Val(),
+		Name1:  a.Name1.Val(),
+	}
+	if a.AccountConnection != nil {
+		info.AccountConnection = a.AccountConnection.Val()
+	}
+	if a.AccountCurrency != nil {
+		info.Currency = a.AccountCurrency.Val()
+	}
+	if a.Name2 != nil {
+		info.Name2 = a.Name2.Val()
+	}
+	if a.AccountProductID != nil {
+		info.ProductID = a.AccountProductID.Val()
+	}
+	if a.AccountLimit != nil {
+		limit := a.AccountLimit.Val()
+		info.Limit = &limit
+	}
+	if a.AllowedBusinessTransactions != nil {
+		info.AllowedBusinessTransactions = a.AllowedBusinessTransactions.AllowedBusinessTransactions()
+	}
+	return info
+}
+
+func (a *AccountInformationV7) elements() []element.DataElement {
 	return []element.DataElement{
 		a.AccountConnection,
 		a.IBAN,

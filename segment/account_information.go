@@ -244,7 +244,7 @@ type AccountInformationResponseSegment struct {
 
 func (a *AccountInformationResponseSegment) Version() int         { return 1 }
 func (a *AccountInformationResponseSegment) ID() string           { return "HIKIF" }
-func (a *AccountInformationResponseSegment) referencedId() string { return "HKKIF" }
+func (a *AccountInformationResponseSegment) referencedId() string { return "" }
 func (a *AccountInformationResponseSegment) sender() string       { return senderBank }
 
 func (a *AccountInformationResponseSegment) elements() []element.DataElement {
