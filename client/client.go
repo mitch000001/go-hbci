@@ -98,7 +98,7 @@ func (c *Client) init() error {
 	if c.pinTanDialog.BankParameterDataVersion() == 0 {
 		_, err := c.pinTanDialog.SyncClientSystemID()
 		if err != nil {
-			return fmt.Errorf("Error while fetching accounts: %v", err)
+			return fmt.Errorf("error while fetching accounts: %v", err)
 		}
 	}
 	return nil
@@ -179,10 +179,10 @@ func (c *Client) AccountTransactions(account domain.AccountConnection, timeframe
 			}
 		}
 		if len(errs) != 0 {
-			return nil, fmt.Errorf("Got errors: %s", strings.Join(errs, "\t"))
+			return nil, fmt.Errorf("got errors: %s", strings.Join(errs, "\t"))
 		}
 	} else {
-		return nil, fmt.Errorf("Malformed response: expected HIKAZ segment")
+		return nil, fmt.Errorf("malformed response: expected HIKAZ segment")
 	}
 
 	return accountTransactions, nil
@@ -221,7 +221,7 @@ func (c *Client) SepaAccountTransactions(account domain.InternationalAccountConn
 			accountTransactions = append(accountTransactions, seg.Transactions()...)
 		}
 	} else {
-		return nil, fmt.Errorf("Malformed response: expected HIKAZ segment")
+		return nil, fmt.Errorf("malformed response: expected HIKAZ segment")
 	}
 
 	return accountTransactions, nil
@@ -246,7 +246,7 @@ func (c *Client) AccountInformation(account domain.AccountConnection, allAccount
 		fmt.Printf("Account Info: %s\n", accountInfoResponse)
 		return nil
 	}
-	return fmt.Errorf("Malformed response: expected HIKIF segment")
+	return fmt.Errorf("malformed response: expected HIKIF segment")
 }
 
 // AccountBalances retrieves the balance for the provided account.
@@ -278,12 +278,12 @@ func (c *Client) AccountBalances(account domain.AccountConnection, allAccounts b
 			balanceSegment := &segment.AccountBalanceResponseSegment{}
 			err = balanceSegment.UnmarshalHBCI(marshaledSegment)
 			if err != nil {
-				return nil, fmt.Errorf("Error while parsing account balance: %v", err)
+				return nil, fmt.Errorf("error while parsing account balance: %v", err)
 			}
 			balances = append(balances, balanceSegment.AccountBalance())
 		}
 	} else {
-		return nil, fmt.Errorf("Malformed response: expected HISAL segment")
+		return nil, fmt.Errorf("malformed response: expected HISAL segment")
 	}
 
 	return balances, nil

@@ -130,7 +130,7 @@ func (d *dialog) SendMessage(clientMessage message.HBCIMessage) (message.BankMes
 		}
 	}
 	if len(errors) > 0 {
-		return nil, fmt.Errorf("Institute returned errors:\n%s", strings.Join(errors, "\n"))
+		return nil, fmt.Errorf("institute returned errors:\n%s", strings.Join(errors, "\n"))
 	}
 	return decryptedMessage, nil
 }
@@ -169,12 +169,12 @@ func (d *dialog) SyncClientSystemID() (string, error) {
 
 	decryptedMessage, err := d.request(encryptedSyncMessage)
 	if err != nil {
-		return "", fmt.Errorf("Error while extracting encrypted message: %v", err)
+		return "", fmt.Errorf("error while extracting encrypted message: %v", err)
 	}
 
 	messageHeader := decryptedMessage.MessageHeader()
 	if messageHeader == nil {
-		return "", fmt.Errorf("Malformed response message: %q", decryptedMessage)
+		return "", fmt.Errorf("malformed response message: %q", decryptedMessage)
 	}
 	d.dialogID = messageHeader.DialogID.Val()
 	d.supportedSegments = decryptedMessage.SupportedSegments()
@@ -190,7 +190,7 @@ func (d *dialog) SyncClientSystemID() (string, error) {
 		}
 	}
 	if len(errors) > 0 {
-		return "", fmt.Errorf("Institute returned errors:\n%s", strings.Join(errors, "\n"))
+		return "", fmt.Errorf("institute returned errors:\n%s", strings.Join(errors, "\n"))
 	}
 
 	syncResponse := decryptedMessage.FindSegment("HISYN")
@@ -198,7 +198,7 @@ func (d *dialog) SyncClientSystemID() (string, error) {
 		syncSegment := syncResponse.(segment.SynchronisationResponse)
 		d.SetClientSystemID(syncSegment.ClientSystemID())
 	} else {
-		return "", fmt.Errorf("Malformed message: missing unmarshaler for SynchronisationResponse")
+		return "", fmt.Errorf("malformed message: missing unmarshaler for SynchronisationResponse")
 	}
 
 	err = d.parseBankParameterData(decryptedMessage)
@@ -264,7 +264,7 @@ func (d *dialog) anonymousInit() error {
 	}
 	messageHeader := bankMessage.MessageHeader()
 	if messageHeader == nil {
-		return fmt.Errorf("Malformed response message: %q", bankMessage)
+		return fmt.Errorf("malformed response message: %q", bankMessage)
 	}
 	d.dialogID = messageHeader.DialogID.Val()
 
@@ -352,11 +352,11 @@ func (d *dialog) init() error {
 
 	decryptedMessage, err := d.request(encryptedInitMessage)
 	if err != nil {
-		return fmt.Errorf("Error while initializing dialog: %v", err)
+		return fmt.Errorf("error while initializing dialog: %v", err)
 	}
 	messageHeader := decryptedMessage.MessageHeader()
 	if messageHeader == nil {
-		return fmt.Errorf("Malformed response message: %q", decryptedMessage)
+		return fmt.Errorf("malformed response message: %q", decryptedMessage)
 	}
 	d.dialogID = messageHeader.DialogID.Val()
 
@@ -509,11 +509,11 @@ func (d *dialog) request(clientMessage message.ClientMessage) (message.BankMessa
 
 	response, err := d.transport.Do(request)
 	if err != nil {
-		return nil, fmt.Errorf("Transport#Do: %v", err)
+		return nil, fmt.Errorf("error executing Transport request: %v", err)
 	}
 	response, err = transport.ReadResponse(bufio.NewReader(response.Body), response.Request)
 	if err != nil {
-		return nil, fmt.Errorf("Transport#ReadRequest: %v", err)
+		return nil, fmt.Errorf("error reading response from Transport: %v", err)
 	}
 
 	var bankMessage message.BankMessage
@@ -525,7 +525,7 @@ func (d *dialog) request(clientMessage message.ClientMessage) (message.BankMessa
 
 		decryptedMessage, err := encMessage.Decrypt(d.cryptoProvider)
 		if err != nil {
-			return nil, fmt.Errorf("Error while decrypting message: %v", err)
+			return nil, fmt.Errorf("error while decrypting message: %v", err)
 		}
 		internal.Debug.Printf("Response:\n %s\n", decryptedMessage.MessageHeader())
 		bankMessage = decryptedMessage
@@ -544,12 +544,12 @@ func (d *dialog) request(clientMessage message.ClientMessage) (message.BankMessa
 func (d *dialog) extractEncryptedMessage(response *transport.Response) (*message.EncryptedMessage, error) {
 	messageHeader := response.FindSegment(segment.MessageHeaderID)
 	if messageHeader == nil {
-		return nil, fmt.Errorf("Malformed response: missing Message Header")
+		return nil, fmt.Errorf("malformed response: missing Message Header")
 	}
 	header := &segment.MessageHeaderSegment{}
 	err := header.UnmarshalHBCI(messageHeader)
 	if err != nil {
-		return nil, fmt.Errorf("Error while unmarshaling message header: %v", err)
+		return nil, fmt.Errorf("error while unmarshaling message header: %v", err)
 	}
 	// TODO: parse messageEnd
 	// TODO: parse encryptionHeader
@@ -561,11 +561,11 @@ func (d *dialog) extractEncryptedMessage(response *transport.Response) (*message
 		encSegment := &segment.EncryptedDataSegment{}
 		err = encSegment.UnmarshalHBCI(encryptedData)
 		if err != nil {
-			return nil, fmt.Errorf("Error while unmarshaling encrypted data: %v", err)
+			return nil, fmt.Errorf("error while unmarshaling encrypted data: %v", err)
 		}
 		encMessage.EncryptedData = encSegment
 	} else {
-		return nil, fmt.Errorf("Malformed response: missing encrypted data: \n%v", response)
+		return nil, fmt.Errorf("malformed response: missing encrypted data: \n%v", response)
 	}
 	return encMessage, nil
 }
@@ -573,7 +573,7 @@ func (d *dialog) extractEncryptedMessage(response *transport.Response) (*message
 func extractUnencryptedMessage(response *transport.Response) (message.BankMessage, error) {
 	messageHeader := response.FindSegment(segment.MessageHeaderID)
 	if messageHeader == nil {
-		return nil, fmt.Errorf("Malformed response: missing Message Header")
+		return nil, fmt.Errorf("malformed response: missing Message Header")
 	}
 	header := &segment.MessageHeaderSegment{}
 	err := header.UnmarshalHBCI(messageHeader)
@@ -583,7 +583,7 @@ func extractUnencryptedMessage(response *transport.Response) (message.BankMessag
 	// TODO: parse messageEnd
 	decryptedMessage, err := message.NewDecryptedMessage(header, nil, response.MarshaledResponse)
 	if err != nil {
-		return nil, fmt.Errorf("Error while unmarshaling unencrypted data: %v", err)
+		return nil, fmt.Errorf("error while unmarshaling unencrypted data: %v", err)
 	}
 	return decryptedMessage, nil
 }

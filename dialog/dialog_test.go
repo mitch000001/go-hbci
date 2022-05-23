@@ -203,7 +203,7 @@ func TestPinTanDialogSyncClientSystemID(t *testing.T) {
 
 	if err != nil {
 		errMessage := err.Error()
-		expectedMessage := "Institute returned errors:\nMessageAcknowledgement for message 0 (), segment 1: Code: 9000, Position: none, Text: 'Nachricht enthält Fehler'"
+		expectedMessage := "institute returned errors:\nMessageAcknowledgement for message 0 (), segment 1: Code: 9000, Position: none, Text: 'Nachricht enthält Fehler'"
 		if expectedMessage != errMessage {
 			t.Logf("Expected error to equal\n%q\n\tgot\n%q\n", expectedMessage, errMessage)
 			t.Fail()
