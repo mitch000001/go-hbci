@@ -37,7 +37,7 @@ type AccountInformationV4 struct {
 
 func (a *AccountInformationV4) Version() int         { return 4 }
 func (a *AccountInformationV4) ID() string           { return AccountInformationID }
-func (a *AccountInformationV4) referencedId() string { return "HKVVB" }
+func (a *AccountInformationV4) referencedId() string { return ProcessingPreparationID }
 func (a *AccountInformationV4) sender() string       { return senderBank }
 
 func (a *AccountInformationV4) Account() domain.AccountInformation {
@@ -92,7 +92,7 @@ type AccountInformationV5 struct {
 
 func (a *AccountInformationV5) Version() int         { return 5 }
 func (a *AccountInformationV5) ID() string           { return AccountInformationID }
-func (a *AccountInformationV5) referencedId() string { return "HKVVB" }
+func (a *AccountInformationV5) referencedId() string { return ProcessingPreparationID }
 func (a *AccountInformationV5) sender() string       { return senderBank }
 
 func (a *AccountInformationV5) Account() domain.AccountInformation {
@@ -153,7 +153,7 @@ type AccountInformationV6 struct {
 
 func (a *AccountInformationV6) Version() int         { return 6 }
 func (a *AccountInformationV6) ID() string           { return AccountInformationID }
-func (a *AccountInformationV6) referencedId() string { return "HKVVB" }
+func (a *AccountInformationV6) referencedId() string { return ProcessingPreparationID }
 func (a *AccountInformationV6) sender() string       { return senderBank }
 
 func (a *AccountInformationV6) Account() domain.AccountInformation {

@@ -15,7 +15,7 @@ func NewDialogInitializationClientMessage(hbciVersion segment.HBCIVersion) *Dial
 type DialogInitializationClientMessage struct {
 	*BasicMessage
 	Identification             *segment.IdentificationSegment
-	ProcessingPreparation      *segment.ProcessingPreparationSegment
+	ProcessingPreparation      *segment.ProcessingPreparationSegmentV3
 	TanRequest                 *segment.TanRequestSegment
 	PublicSigningKeyRequest    *segment.PublicKeyRequestSegment
 	PublicEncryptionKeyRequest *segment.PublicKeyRequestSegment
@@ -103,5 +103,5 @@ type DialogCancellationMessage struct {
 type AnonymousDialogMessage struct {
 	*BasicMessage
 	Identification        *segment.IdentificationSegment
-	ProcessingPreparation *segment.ProcessingPreparationSegment
+	ProcessingPreparation *segment.ProcessingPreparationSegmentV3
 }

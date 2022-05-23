@@ -17,7 +17,7 @@ func NewSynchronisationMessage(hbciVersion segment.HBCIVersion) *Synchronisation
 type SynchronisationMessage struct {
 	*BasicMessage
 	Identification             *segment.IdentificationSegment
-	ProcessingPreparation      *segment.ProcessingPreparationSegment
+	ProcessingPreparation      *segment.ProcessingPreparationSegmentV3
 	TanRequest                 *segment.TanRequestSegment
 	PublicSigningKeyRequest    *segment.PublicKeyRequestSegment
 	PublicEncryptionKeyRequest *segment.PublicKeyRequestSegment

@@ -33,8 +33,10 @@ func (d *DialogEndSegment) elements() []element.DataElement {
 	}
 }
 
-func NewProcessingPreparationSegment(bdpVersion int, udpVersion int, language domain.Language) *ProcessingPreparationSegment {
-	p := &ProcessingPreparationSegment{
+const ProcessingPreparationID = "HKVVB"
+
+func NewProcessingPreparationSegmentV2(bdpVersion int, udpVersion int, language domain.Language) *ProcessingPreparationSegmentV2 {
+	p := &ProcessingPreparationSegmentV2{
 		BPDVersion:     element.NewNumber(bdpVersion, 3),
 		UPDVersion:     element.NewNumber(udpVersion, 3),
 		DialogLanguage: element.NewNumber(int(language), 3),
@@ -45,7 +47,19 @@ func NewProcessingPreparationSegment(bdpVersion int, udpVersion int, language do
 	return p
 }
 
-type ProcessingPreparationSegment struct {
+func NewProcessingPreparationSegmentV3(bdpVersion int, udpVersion int, language domain.Language) *ProcessingPreparationSegmentV3 {
+	p := &ProcessingPreparationSegmentV3{
+		BPDVersion:     element.NewNumber(bdpVersion, 3),
+		UPDVersion:     element.NewNumber(udpVersion, 3),
+		DialogLanguage: element.NewNumber(int(language), 3),
+		ProductName:    element.NewAlphaNumeric(productName, 25),
+		ProductVersion: element.NewAlphaNumeric(productVersion, 5),
+	}
+	p.ClientSegment = NewBasicSegment(4, p)
+	return p
+}
+
+type ProcessingPreparationSegmentV2 struct {
 	ClientSegment
 	BPDVersion *element.NumberDataElement
 	UPDVersion *element.NumberDataElement
@@ -54,18 +68,48 @@ type ProcessingPreparationSegment struct {
 	// --------------------------------------------------------------------------------------------
 	// 1				 | Deutsch	   | de (German) ￼	      | Deutsch ￼ ￼		| 1 (Latin 1)
 	// 2				 | Englisch	   | en (English)		  | Englisch		| 1 (Latin 1)
-	// 3 				 | Französisch | fr (French)  		  | Französisch ￼	| 1 (Latin 1)
+	// 3 				 | Französisch | fr (French)  		   | Französisch ￼	  | 1 (Latin 1)
 	DialogLanguage *element.NumberDataElement
 	ProductName    *element.AlphaNumericDataElement
 	ProductVersion *element.AlphaNumericDataElement
 }
 
-func (p *ProcessingPreparationSegment) Version() int         { return 2 }
-func (p *ProcessingPreparationSegment) ID() string           { return "HKVVB" }
-func (p *ProcessingPreparationSegment) referencedId() string { return "" }
-func (p *ProcessingPreparationSegment) sender() string       { return senderUser }
+func (p *ProcessingPreparationSegmentV2) Version() int         { return 2 }
+func (p *ProcessingPreparationSegmentV2) ID() string           { return ProcessingPreparationID }
+func (p *ProcessingPreparationSegmentV2) referencedId() string { return "" }
+func (p *ProcessingPreparationSegmentV2) sender() string       { return senderUser }
 
-func (p *ProcessingPreparationSegment) elements() []element.DataElement {
+func (p *ProcessingPreparationSegmentV2) elements() []element.DataElement {
+	return []element.DataElement{
+		p.BPDVersion,
+		p.UPDVersion,
+		p.DialogLanguage,
+		p.ProductName,
+		p.ProductVersion,
+	}
+}
+
+type ProcessingPreparationSegmentV3 struct {
+	ClientSegment
+	BPDVersion *element.NumberDataElement
+	UPDVersion *element.NumberDataElement
+	// 0 for Standard = Institute language
+	// Sprachkennzeichen | Bedeutung   | Sprachencode ISO 639 | ISO 8859 Subset | ISO 8859- Codeset
+	// --------------------------------------------------------------------------------------------
+	// 1				 | Deutsch	   | de (German) ￼	      | Deutsch ￼ ￼		| 1 (Latin 1)
+	// 2				 | Englisch	   | en (English)		  | Englisch		| 1 (Latin 1)
+	// 3 				 | Französisch | fr (French)  		   | Französisch ￼	  | 1 (Latin 1)
+	DialogLanguage *element.NumberDataElement
+	ProductName    *element.AlphaNumericDataElement
+	ProductVersion *element.AlphaNumericDataElement
+}
+
+func (p *ProcessingPreparationSegmentV3) Version() int         { return 3 }
+func (p *ProcessingPreparationSegmentV3) ID() string           { return ProcessingPreparationID }
+func (p *ProcessingPreparationSegmentV3) referencedId() string { return "" }
+func (p *ProcessingPreparationSegmentV3) sender() string       { return senderUser }
+
+func (p *ProcessingPreparationSegmentV3) elements() []element.DataElement {
 	return []element.DataElement{
 		p.BPDVersion,
 		p.UPDVersion,

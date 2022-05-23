@@ -40,7 +40,7 @@ type CommonUserParameterDataV2 struct {
 
 func (c *CommonUserParameterDataV2) Version() int         { return 2 }
 func (c *CommonUserParameterDataV2) ID() string           { return CommonUserParameterDataID }
-func (c *CommonUserParameterDataV2) referencedId() string { return "HKVVB" }
+func (c *CommonUserParameterDataV2) referencedId() string { return ProcessingPreparationID }
 func (c *CommonUserParameterDataV2) sender() string       { return senderBank }
 
 func (c *CommonUserParameterDataV2) elements() []element.DataElement {
@@ -78,7 +78,7 @@ type CommonUserParameterDataV3 struct {
 
 func (c *CommonUserParameterDataV3) Version() int         { return 3 }
 func (c *CommonUserParameterDataV3) ID() string           { return CommonUserParameterDataID }
-func (c *CommonUserParameterDataV3) referencedId() string { return "HKVVB" }
+func (c *CommonUserParameterDataV3) referencedId() string { return ProcessingPreparationID }
 func (c *CommonUserParameterDataV3) sender() string       { return senderBank }
 
 func (c *CommonUserParameterDataV3) elements() []element.DataElement {
@@ -118,7 +118,7 @@ type CommonUserParameterDataV4 struct {
 
 func (c *CommonUserParameterDataV4) Version() int         { return 4 }
 func (c *CommonUserParameterDataV4) ID() string           { return CommonUserParameterDataID }
-func (c *CommonUserParameterDataV4) referencedId() string { return "HKVVB" }
+func (c *CommonUserParameterDataV4) referencedId() string { return ProcessingPreparationID }
 func (c *CommonUserParameterDataV4) sender() string       { return senderBank }
 
 func (c *CommonUserParameterDataV4) elements() []element.DataElement {

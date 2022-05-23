@@ -151,7 +151,7 @@ func (d *dialog) SyncUserParameterData() error {
 func (d *dialog) SyncClientSystemID() (string, error) {
 	syncMessage := message.NewSynchronisationMessage(d.hbciVersion)
 	syncMessage.Identification = segment.NewIdentificationSegment(d.BankID, d.clientID, initialClientSystemID, true)
-	syncMessage.ProcessingPreparation = segment.NewProcessingPreparationSegment(
+	syncMessage.ProcessingPreparation = segment.NewProcessingPreparationSegmentV3(
 		initialBankParameterDataVersion, initialUserParameterDataVersion, domain.German,
 	)
 	syncMessage.TanRequest = d.hbciVersion.TanProcess4Request(segment.IdentificationID)
@@ -253,7 +253,7 @@ func (d *dialog) anonymousInit() error {
 	d.messageCount = 0
 	initMessage := message.NewDialogInitializationClientMessage(d.hbciVersion)
 	initMessage.Identification = segment.NewIdentificationSegment(d.BankID, anonymousClientID, initialClientSystemID, false)
-	initMessage.ProcessingPreparation = segment.NewProcessingPreparationSegment(
+	initMessage.ProcessingPreparation = segment.NewProcessingPreparationSegmentV3(
 		d.BankParameterDataVersion(), d.UserParameterDataVersion(), d.Language,
 	)
 	initMessage.BasicMessage = d.newBasicMessage(initMessage)
@@ -336,7 +336,7 @@ func (d *dialog) init() error {
 	d.messageCount = 0
 	initMessage := message.NewDialogInitializationClientMessage(d.hbciVersion)
 	initMessage.Identification = segment.NewIdentificationSegment(d.BankID, d.clientID, d.ClientSystemID, true)
-	initMessage.ProcessingPreparation = segment.NewProcessingPreparationSegment(
+	initMessage.ProcessingPreparation = segment.NewProcessingPreparationSegmentV3(
 		d.BankParameterDataVersion(), d.UserParameterDataVersion(), d.Language,
 	)
 	initMessage.TanRequest = d.hbciVersion.TanProcess4Request(segment.IdentificationID)

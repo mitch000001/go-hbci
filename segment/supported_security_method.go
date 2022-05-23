@@ -12,7 +12,7 @@ type SecurityMethodSegment struct {
 
 func (s *SecurityMethodSegment) Version() int         { return 2 }
 func (s *SecurityMethodSegment) ID() string           { return "HISHV" }
-func (s *SecurityMethodSegment) referencedId() string { return "HKVVB" }
+func (s *SecurityMethodSegment) referencedId() string { return ProcessingPreparationID }
 func (s *SecurityMethodSegment) sender() string       { return senderBank }
 
 func (s *SecurityMethodSegment) elements() []element.DataElement {

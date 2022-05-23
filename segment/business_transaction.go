@@ -20,7 +20,7 @@ type BusinessTransactionParamsSegment struct {
 
 func (b *BusinessTransactionParamsSegment) Version() int         { return b.version }
 func (b *BusinessTransactionParamsSegment) ID() string           { return b.id }
-func (b *BusinessTransactionParamsSegment) referencedId() string { return "HKVVB" }
+func (b *BusinessTransactionParamsSegment) referencedId() string { return ProcessingPreparationID }
 func (b *BusinessTransactionParamsSegment) sender() string       { return senderBank }
 
 func (b *BusinessTransactionParamsSegment) elements() []element.DataElement {
