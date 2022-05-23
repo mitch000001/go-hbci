@@ -6,7 +6,7 @@ import (
 	"github.com/mitch000001/go-hbci/element"
 )
 
-const productName = "go-hbci library"
+const productName = "5A624F86A785F4024DD914404"
 const productVersion = hbci.Version
 
 func NewDialogEndSegment(dialogId string) *DialogEndSegment {
