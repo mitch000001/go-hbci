@@ -178,10 +178,12 @@ func (d *dialog) SyncClientSystemID() (string, error) {
 	}
 	d.dialogID = messageHeader.DialogID.Val()
 	d.supportedSegments = decryptedMessage.SupportedSegments()
-
 	var errors []string
 	acknowledgements := decryptedMessage.Acknowledgements()
 	for _, ack := range acknowledgements {
+		if ack.IsSuccess() {
+			internal.Debug.Printf("%v\n", ack)
+		}
 		if ack.IsWarning() {
 			internal.Info.Printf("%v\n", ack)
 		}
@@ -191,6 +193,9 @@ func (d *dialog) SyncClientSystemID() (string, error) {
 	}
 	if len(errors) > 0 {
 		return "", fmt.Errorf("institute returned errors:\n%s", strings.Join(errors, "\n"))
+	}
+	if err := d.updateSecurityFunctionIfNeeded(decryptedMessage); err != nil {
+		return "", fmt.Errorf("error updating security function: %w", err)
 	}
 
 	syncResponse := decryptedMessage.FindSegment("HISYN")
@@ -376,17 +381,14 @@ func (d *dialog) init() error {
 		internal.Info.Printf("INFO:\n%s\n%s\n", bankInfoSegment.Subject.Val(), bankInfoSegment.Body.Val())
 	}
 
-	newSecurityFn := d.securityFn
-	errors := make([]string, 0)
+	var errors []string
 	acknowledgements := decryptedMessage.Acknowledgements()
 	for _, ack := range acknowledgements {
-		if ack.Code == element.AcknowledgementSupportedSecurityFunction {
-			supportedSecurityFns := ack.Params
-			if len(supportedSecurityFns) != 0 {
-				internal.Info.Printf("Supported securityFunctions: %q\n", supportedSecurityFns)
-				// TODO: proper handling of each case, see FINTS3.0 docu
-				newSecurityFn = supportedSecurityFns[0]
-			}
+		if ack.IsSuccess() {
+			internal.Debug.Printf("%v\n", ack)
+		}
+		if ack.IsWarning() {
+			internal.Info.Printf("%v\n", ack)
 		}
 		if ack.IsError() {
 			errors = append(errors, ack.String())
@@ -395,16 +397,9 @@ func (d *dialog) init() error {
 	if len(errors) > 0 {
 		return fmt.Errorf("DialogEnd: Institute returned errors:\n%s", strings.Join(errors, "\n"))
 	}
-	if d.securityFn != newSecurityFn {
-		err = d.end()
-		if err != nil {
-			return err
-		}
-		d.SetSecurityFunction(newSecurityFn)
-		err = d.init()
-		if err != nil {
-			return err
-		}
+
+	if err := d.updateSecurityFunctionIfNeeded(decryptedMessage); err != nil {
+		return fmt.Errorf("error updating security function: %w", err)
 	}
 
 	return nil
@@ -451,6 +446,80 @@ func (d *dialog) newBasicMessage(hbciMessage message.HBCIMessage) *message.Basic
 	clientMessage.Header = segment.NewMessageHeaderSegment(-1, d.hbciVersion.Version(), d.dialogID, messageNum)
 	clientMessage.End = segment.NewMessageEndSegment(-1, messageNum)
 	return clientMessage
+}
+
+func (d *dialog) updateSecurityFunctionIfNeeded(message message.BankMessage) error {
+	if !d.hasSupportedSecurityAcknowledgement(message) {
+		return nil
+	}
+	supportedSecurityFns, ok := d.supportedSecurityFunctionsFromBankMessage(message)
+	if !ok {
+		return fmt.Errorf("no supported security function implemented")
+	}
+	oldSecurityFn := d.securityFn
+	newSecurityFn := ""
+	newSecurityFnName := ""
+	// TODO: proper handling of each case, see FINTS3.0 docu -> Ask user which to use
+	for fn, name := range supportedSecurityFns {
+		newSecurityFn = fn
+		newSecurityFnName = name
+		break
+	}
+	if oldSecurityFn != newSecurityFn {
+		internal.Info.Printf(
+			"New supported security function found. Setting new security function %q (%s).", newSecurityFnName, newSecurityFn,
+		)
+		d.SetSecurityFunction(newSecurityFn)
+
+	}
+	return nil
+}
+
+func (d *dialog) hasSupportedSecurityAcknowledgement(message message.BankMessage) bool {
+	rawTanBPDSegment := message.FindSegment(segment.TanBankParameterID)
+	if rawTanBPDSegment == nil {
+		return false
+	}
+	for _, ack := range message.Acknowledgements() {
+		if ack.Code == element.AcknowledgementSupportedSecurityFunction {
+			return true
+		}
+	}
+	return false
+}
+
+func (d *dialog) supportedSecurityFunctionsFromBankMessage(message message.BankMessage) (map[string]string, bool) {
+	acknowledgements := message.Acknowledgements()
+	var supportedSecurityFns []string
+	for _, ack := range acknowledgements {
+		if ack.Code == element.AcknowledgementSupportedSecurityFunction {
+			supportedSecurityFns = ack.Params
+			break
+		}
+	}
+	if len(supportedSecurityFns) == 0 {
+		return nil, false
+	}
+	securityFunctions := map[string]string{}
+	rawSegment := message.FindSegment(segment.TanBankParameterID)
+	if rawSegment == nil {
+		return nil, false
+	}
+	availableSecurityFns := map[string]*element.Tan2StepSubmissionProcessParameterV6{}
+	for _, pp := range rawSegment.(*segment.TanBankParameterV6).Tan2StepSubmissionParameter.ProcessParameters.GroupDataElements() {
+		tan2StepPP := pp.(*element.Tan2StepSubmissionProcessParameterV6)
+		fn := tan2StepPP.SecurityFunction.Val()
+		availableSecurityFns[fn] = tan2StepPP
+	}
+	for _, sf := range supportedSecurityFns {
+		if pp, ok := availableSecurityFns[sf]; ok {
+			securityFunctions[sf] = pp.TwoStepProcessName.Val()
+		}
+	}
+	if len(securityFunctions) == 0 {
+		return nil, false
+	}
+	return securityFunctions, true
 }
 
 func (d *dialog) parseBankParameterData(bankMessage message.BankMessage) error {

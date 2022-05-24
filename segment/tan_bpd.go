@@ -5,6 +5,8 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+const TanBankParameterID = "HITANS"
+
 type TanBankParameter interface {
 	BankSegment
 }
@@ -27,7 +29,7 @@ type TanBankParameterV6 struct {
 }
 
 func (t *TanBankParameterV6) Version() int         { return 6 }
-func (t *TanBankParameterV6) ID() string           { return "HITANS" }
+func (t *TanBankParameterV6) ID() string           { return TanBankParameterID }
 func (t *TanBankParameterV6) referencedId() string { return ProcessingPreparationID }
 func (t *TanBankParameterV6) sender() string       { return senderBank }
 
