@@ -43,11 +43,11 @@ func TestPinTanBusinessTransactionParamsSegmentUnmarshalHBCI(t *testing.T) {
 	segment := &PinTanBusinessTransactionParamsSegment{}
 
 	pinTanBusinessTransactions := []domain.PinTanBusinessTransaction{
-		domain.PinTanBusinessTransaction{
+		{
 			SegmentID: "HKSAL",
 			NeedsTan:  false,
 		},
-		domain.PinTanBusinessTransaction{
+		{
 			SegmentID: "HKUEB",
 			NeedsTan:  true,
 		},
@@ -80,11 +80,11 @@ func TestPinTanBusinessTransactionParamsSegmentUnmarshalHBCI(t *testing.T) {
 
 func TestPinTanBusinessTransactionParamsSegmentPinTanBusinessTransactions(t *testing.T) {
 	pinTanBusinessTransactions := []domain.PinTanBusinessTransaction{
-		domain.PinTanBusinessTransaction{
+		{
 			SegmentID: "HKSAL",
 			NeedsTan:  false,
 		},
-		domain.PinTanBusinessTransaction{
+		{
 			SegmentID: "HKUEB",
 			NeedsTan:  true,
 		},
@@ -100,8 +100,8 @@ func TestPinTanBusinessTransactionParamsSegmentPinTanBusinessTransactions(t *tes
 	segment.Segment = NewReferencingBasicSegment(3, 4, segment)
 
 	expectedTransactions := []domain.PinTanBusinessTransaction{
-		domain.PinTanBusinessTransaction{SegmentID: "HKSAL", NeedsTan: false},
-		domain.PinTanBusinessTransaction{SegmentID: "HKUEB", NeedsTan: true},
+		{SegmentID: "HKSAL", NeedsTan: false},
+		{SegmentID: "HKUEB", NeedsTan: true},
 	}
 
 	pinTanTransactions := segment.PinTanBusinessTransactions()

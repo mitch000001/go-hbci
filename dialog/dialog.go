@@ -71,7 +71,7 @@ type dialog struct {
 	securityFn        string
 	signatureProvider message.SignatureProvider
 	cryptoProvider    message.CryptoProvider
-	BankParameterData domain.BankParameterData
+	BankParameterData BankParameterData
 	hbciVersion       segment.HBCIVersion
 	supportedSegments []segment.VersionedSegment
 }
@@ -455,11 +455,19 @@ func (d *dialog) newBasicMessage(hbciMessage message.HBCIMessage) *message.Basic
 
 func (d *dialog) parseBankParameterData(bankMessage message.BankMessage) error {
 	bankParamData := bankMessage.FindSegment(segment.CommonBankParameterID)
-	if bankParamData != nil {
-		paramSegment := bankParamData.(segment.CommonBankParameter)
-		d.BankParameterData = paramSegment.BankParameterData()
+	if bankParamData == nil {
+		return nil
 	}
-	pinTanTransactions := bankMessage.FindSegment(segment.PinTanBusinessTransactionParamsID)
+	paramSegment, ok := bankParamData.(segment.CommonBankParameter)
+	if !ok {
+		return fmt.Errorf("error converting common bank parameter data")
+	}
+	d.supportedSegments = bankMessage.SupportedSegments()
+	d.BankParameterData = BankParameterData{
+		BankParameterData:          paramSegment.BankParameterData(),
+		SupportedSegmentParameters: make([]SegmentParameter, len(d.supportedSegments)),
+	}
+	pinTanTransactions := bankMessage.FindSegment(segment.PinTanBankParameterID)
 	if pinTanTransactions != nil {
 		pinTanTransactionSegment := pinTanTransactions.(segment.PinTanBusinessTransactionParams)
 		pinTransactions := make(map[string]bool)
@@ -467,6 +475,16 @@ func (d *dialog) parseBankParameterData(bankMessage message.BankMessage) error {
 			pinTransactions[transaction.SegmentID] = transaction.NeedsTan
 		}
 		d.BankParameterData.PinTanBusinessTransactions = pinTransactions
+	}
+	for i, s := range d.supportedSegments {
+		param := SegmentParameter{
+			VersionedSegment: s,
+		}
+		parameterData := bankMessage.FindSegment(s.ID)
+		if parameterData != nil && parameterData.Header().Version.Val() == s.Version {
+			param.Parameters = parameterData
+		}
+		d.BankParameterData.SupportedSegmentParameters[i] = param
 	}
 	return nil
 }
@@ -480,13 +498,10 @@ func (d *dialog) parseUserParameterData(bankMessage message.BankMessage) error {
 	}
 
 	accountData := bankMessage.FindSegments(segment.AccountInformationID)
-	if accountData != nil {
-		for _, acc := range accountData {
-			infoSegment := acc.(segment.AccountInformation)
-			d.Accounts = append(d.Accounts, infoSegment.Account())
-		}
+	for _, acc := range accountData {
+		infoSegment := acc.(segment.AccountInformation)
+		d.Accounts = append(d.Accounts, infoSegment.Account())
 	}
-
 	return nil
 }
 

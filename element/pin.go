@@ -1,5 +1,12 @@
 package element
 
+import (
+	"bytes"
+	"fmt"
+
+	"github.com/mitch000001/go-hbci/internal"
+)
+
 const defaultPinTan = "\x00\x00\x00\x00\x00\x00\x00\x00"
 
 // NewCustomSignature returns a new CustomSignatureDataElement for the pin and
@@ -49,4 +56,67 @@ func (p *PinTanDataElement) GroupDataElements() []DataElement {
 		p.PIN,
 		p.TAN,
 	}
+}
+
+type PinTanSpecificParamDataElement struct {
+	DataElement
+	PinMinLength                 *NumberDataElement                   `yaml:"PinMinLength"`
+	PinMaxLength                 *NumberDataElement                   `yaml:"PinMaxLength"`
+	TanMaxLength                 *NumberDataElement                   `yaml:"TanMaxLength"`
+	UserIDText                   *AlphaNumericDataElement             `yaml:"UserIDText"`
+	CustomerIDText               *AlphaNumericDataElement             `yaml:"CustomerIDText"`
+	JobSpecificPinTanInformation *PinTanBusinessTransactionParameters `yaml:"JobSpecificPinTanInformation"`
+}
+
+// Elements returns the grouped DataElements
+func (p *PinTanSpecificParamDataElement) Elements() []DataElement {
+	return []DataElement{
+		p.PinMinLength,
+		p.PinMaxLength,
+		p.TanMaxLength,
+		p.UserIDText,
+		p.CustomerIDText,
+		p.JobSpecificPinTanInformation,
+	}
+}
+
+// UnmarshalHBCI unmarshals value
+func (t *PinTanSpecificParamDataElement) UnmarshalHBCI(value []byte) error {
+	elements, err := ExtractElements(value)
+	if err != nil {
+		return err
+	}
+	iter := internal.NewIterator(elements)
+	var PinMinLength NumberDataElement
+	if err := PinMinLength.UnmarshalHBCI(iter.Next()); err != nil {
+		return fmt.Errorf("error unmarshaling PinMinLength: %v", err)
+	}
+	t.PinMinLength = &PinMinLength
+	var PinMaxLength NumberDataElement
+	if err := PinMaxLength.UnmarshalHBCI(iter.Next()); err != nil {
+		return fmt.Errorf("error unmarshaling PinMaxLength: %v", err)
+	}
+	t.PinMaxLength = &PinMaxLength
+	var TanMaxLength NumberDataElement
+	if err := TanMaxLength.UnmarshalHBCI(iter.Next()); err != nil {
+		return fmt.Errorf("error unmarshaling TanMaxLength: %v", err)
+	}
+	t.TanMaxLength = &TanMaxLength
+	var UserIDText AlphaNumericDataElement
+	if err := UserIDText.UnmarshalHBCI(iter.Next()); err != nil {
+		return fmt.Errorf("error unmarshaling UserIDText: %v", err)
+	}
+	t.UserIDText = &UserIDText
+	var CustomerIDText AlphaNumericDataElement
+	if err := CustomerIDText.UnmarshalHBCI(iter.Next()); err != nil {
+		return fmt.Errorf("error unmarshaling CustomerIDText: %v", err)
+	}
+	t.CustomerIDText = &CustomerIDText
+	var JobSpecificPinTanInformation PinTanBusinessTransactionParameters
+	if err := JobSpecificPinTanInformation.UnmarshalHBCI(bytes.Join(iter.Remainder(), []byte(":"))); err != nil {
+		return fmt.Errorf("error unmarshaling JobSpecificPinTanInformation: %v", err)
+	}
+	t.JobSpecificPinTanInformation = &JobSpecificPinTanInformation
+	t.DataElement = NewGroupDataElementGroup(pinTanSpecificParamDataElementDEG, 2, t)
+	return nil
 }

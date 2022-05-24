@@ -64,6 +64,7 @@ const (
 	securityProfileDEG
 	tan2StepSubmissionParameterDEG
 	tan2StepSubmissionProcessParameterDEG
+	pinTanSpecificParamDataElementDEG
 )
 
 var typeName = map[DataElementType]string{
@@ -116,6 +117,7 @@ var typeName = map[DataElementType]string{
 	securityProfileDEG:                    "Sicherheitsprofil",
 	tan2StepSubmissionParameterDEG:        "Parameter Zwei-Schritt-TAN-Einreichung",
 	tan2StepSubmissionProcessParameterDEG: "Verfahrensparameter Zwei-Schritt-Verfahren",
+	pinTanSpecificParamDataElementDEG:     "Parameter PIN/TAN-spezifische Informationen",
 }
 
 func (d DataElementType) String() string {

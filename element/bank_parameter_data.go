@@ -256,9 +256,9 @@ func (p *PinTanBusinessTransactionParameters) UnmarshalHBCI(value []byte) error 
 // PinTanBusinessTransactionParameter defines a specific
 // PinTanBusinessTransactionParameter DataElement
 type PinTanBusinessTransactionParameter struct {
-	DataElement
-	SegmentID *AlphaNumericDataElement
-	NeedsTAN  *BooleanDataElement
+	DataElement `yaml:"-"`
+	SegmentID   *AlphaNumericDataElement `yaml:"segmentID"`
+	NeedsTAN    *BooleanDataElement      `yaml:"needsTan"`
 }
 
 // Elements returns the elements of this DataElement.
