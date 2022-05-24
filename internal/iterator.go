@@ -8,6 +8,7 @@ type Iterator interface {
 	Next() []byte
 	NextString() string
 	HasNext() bool
+	Remainder() [][]byte
 }
 
 type arrayIterator struct {
@@ -30,4 +31,8 @@ func (a *arrayIterator) NextString() string {
 
 func (a *arrayIterator) HasNext() bool {
 	return a.position < len(a.data)
+}
+
+func (a *arrayIterator) Remainder() [][]byte {
+	return a.data[a.position:]
 }

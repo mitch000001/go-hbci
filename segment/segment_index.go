@@ -75,6 +75,7 @@ func init() {
 	KnownSegments.mustAddToIndex(VersionedSegment{CommonBankParameterID, 2}, func() Segment { return &CommonBankParameterV2{} })
 	KnownSegments.mustAddToIndex(VersionedSegment{CommonBankParameterID, 3}, func() Segment { return &CommonBankParameterV3{} })
 	KnownSegments.mustAddToIndex(VersionedSegment{PinTanBusinessTransactionParamsID, 1}, func() Segment { return &PinTanBusinessTransactionParamsSegment{} })
+	KnownSegments.mustAddToIndex(VersionedSegment{PinTanBankParameterID, 1}, func() Segment { return &PinTanBankParameterV1{} })
 	KnownSegments.mustAddToIndex(VersionedSegment{CommonUserParameterDataID, 2}, func() Segment { return &CommonUserParameterDataV2{} })
 	KnownSegments.mustAddToIndex(VersionedSegment{CommonUserParameterDataID, 3}, func() Segment { return &CommonUserParameterDataV3{} })
 	KnownSegments.mustAddToIndex(VersionedSegment{CommonUserParameterDataID, 4}, func() Segment { return &CommonUserParameterDataV4{} })
