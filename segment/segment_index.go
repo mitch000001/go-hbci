@@ -90,6 +90,6 @@ func init() {
 	KnownSegments.mustAddToIndex(VersionedSegment{"HIKAZ", 7}, func() Segment { return &AccountTransactionResponseSegmentV7{} })
 	KnownSegments.mustAddToIndex(VersionedSegment{"HIPRO", 3}, func() Segment { return &StatusProtocolResponseSegmentV3{} })
 	KnownSegments.mustAddToIndex(VersionedSegment{"HIPRO", 4}, func() Segment { return &StatusProtocolResponseSegmentV4{} })
-	KnownSegments.mustAddToIndex(VersionedSegment{"HITANS", 6}, func() Segment { return &TanBankParameterV6{} })
+	KnownSegments.mustAddToIndex(VersionedSegment{TanBankParameterID, 6}, func() Segment { return &TanBankParameterV6{} })
 	KnownSegments.mustAddToIndex(VersionedSegment{"HITAN", 6}, func() Segment { return &TanResponseSegmentV6{} })
 }
