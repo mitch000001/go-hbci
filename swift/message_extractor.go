@@ -29,7 +29,7 @@ func (m *MessageExtractor) Extract() ([][]byte, error) {
 	for m.lexer.HasNext() {
 		tok := m.lexer.Next()
 		if tok.Type() == token.ERROR {
-			return nil, fmt.Errorf("%T: SyntaxError at position %d: %q\n(%q)", m, tok.Pos(), tok.Value(), m.rawSwiftMessage)
+			return nil, &SyntaxError{Token: tok, RawMessage: m.rawSwiftMessage}
 		}
 		current = append(current, tok.Value()...)
 		if tok.Type() == token.SWIFT_MESSAGE_SEPARATOR {
@@ -40,4 +40,17 @@ func (m *MessageExtractor) Extract() ([][]byte, error) {
 	result := make([][]byte, len(m.extractedMessages))
 	copy(result, m.extractedMessages)
 	return result, nil
+}
+
+type SyntaxError struct {
+	Token      token.Token
+	RawMessage []byte
+}
+
+func (s *SyntaxError) Error() string {
+	return fmt.Sprintf("syntax error at position %d: %q\n(%q)", s.Token.Pos(), s.Token.Value(), s.RawMessage)
+}
+
+func (s SyntaxError) IsUnexpectedEndOfInput() bool {
+	return token.IsUnexpectedEndOfInput(s.Token)
 }

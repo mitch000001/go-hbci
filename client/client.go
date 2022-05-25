@@ -2,7 +2,6 @@ package client
 
 import (
 	"fmt"
-	"strings"
 	"time"
 
 	"github.com/mitch000001/go-hbci/bankinfo"
@@ -11,6 +10,7 @@ import (
 	"github.com/mitch000001/go-hbci/element"
 	"github.com/mitch000001/go-hbci/message"
 	"github.com/mitch000001/go-hbci/segment"
+	"github.com/mitch000001/go-hbci/swift"
 	"github.com/mitch000001/go-hbci/transport"
 )
 
@@ -124,68 +124,20 @@ func (c *Client) AccountTransactions(account domain.AccountConnection, timeframe
 	if err := c.init(); err != nil {
 		return nil, err
 	}
-	builder := segment.NewBuilder(c.pinTanDialog.SupportedSegments())
-	accountTransactionRequest, err := builder.AccountTransactionRequest(account, allAccounts)
+	requestBuilder := func() (segment.AccountTransactionRequest, error) {
+		builder := segment.NewBuilder(c.pinTanDialog.SupportedSegments())
+		return builder.AccountTransactionRequest(account, allAccounts)
+	}
+	bookedSwiftTransactions, err := c.accountTransactions(requestBuilder, timeframe, continuationReference)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error executing HBCI request: %w", err)
 	}
-	accountTransactionRequest.SetTransactionRange(timeframe)
-	if continuationReference != "" {
-		accountTransactionRequest.SetContinuationReference(continuationReference)
-	}
-	decryptedMessage, err := c.pinTanDialog.SendMessage(
-		message.NewHBCIMessage(c.hbciVersion, c.hbciVersion.TanProcess4Request(segment.IdentificationID), accountTransactionRequest),
-	)
+	unmarshaler := swift.NewMT940MessagesUnmarshaler()
+	tx, err := unmarshaler.UnmarshalMT940(bookedSwiftTransactions.Data)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error unmarshaling SWIFT transactions: %w", err)
 	}
-	acknowledgements := decryptedMessage.Acknowledgements()
-	for _, ack := range acknowledgements {
-		if ack.Code == element.AcknowledgementAdditionalInformation {
-			fmt.Printf("Additional information: %+v\n", ack)
-		}
-	}
-	var accountTransactions []domain.AccountTransaction
-	accountTransactionResponses := decryptedMessage.FindSegments("HIKAZ")
-	if accountTransactionResponses != nil {
-		type response struct {
-			transactions []domain.AccountTransaction
-			err          error
-		}
-		resFn := func(tr []domain.AccountTransaction, err error) response {
-			return response{tr, err}
-		}
-		responses := make(chan response, len(accountTransactionResponses))
-		for _, unmarshaledSegment := range accountTransactionResponses {
-			seg := unmarshaledSegment.(segment.AccountTransactionResponse)
-			accountTransactions = append(accountTransactions, seg.Transactions()...)
-			if seg != nil {
-				go func() {
-					responses <- resFn(c.AccountTransactions(account, timeframe, allAccounts, continuationReference))
-				}()
-			} else {
-				responses <- resFn([]domain.AccountTransaction{}, nil)
-			}
-		}
-		var errs []string
-		for {
-			if len(responses) == 0 {
-				break
-			}
-			res := <-responses
-			accountTransactions = append(accountTransactions, res.transactions...)
-			if res.err != nil {
-				errs = append(errs, fmt.Sprintf("%T:%v", res.err, res.err))
-			}
-		}
-		if len(errs) != 0 {
-			return nil, fmt.Errorf("got errors: %s", strings.Join(errs, "\t"))
-		}
-	} else {
-		return nil, fmt.Errorf("malformed response: expected HIKAZ segment")
-	}
-
-	return accountTransactions, nil
+	return tx, nil
 }
 
 // SepaAccountTransactions return all transactions for the provided timeframe.
@@ -196,7 +148,27 @@ func (c *Client) SepaAccountTransactions(account domain.InternationalAccountConn
 	if err := c.init(); err != nil {
 		return nil, err
 	}
-	accountTransactionRequest := c.hbciVersion.SepaAccountTransactionRequest(account, allAccounts)
+	requestBuilder := func() (segment.AccountTransactionRequest, error) {
+		builder := segment.NewBuilder(c.pinTanDialog.SupportedSegments())
+		return builder.SepaAccountTransactionRequest(account, allAccounts)
+	}
+	bookedSwiftTransactions, err := c.accountTransactions(requestBuilder, timeframe, continuationReference)
+	if err != nil {
+		return nil, fmt.Errorf("error executing HBCI request: %w", err)
+	}
+	unmarshaler := swift.NewMT940MessagesUnmarshaler()
+	tx, err := unmarshaler.UnmarshalMT940(bookedSwiftTransactions.Data)
+	if err != nil {
+		return nil, fmt.Errorf("error unmarshaling SWIFT transactions: %w", err)
+	}
+	return tx, nil
+}
+
+func (c *Client) accountTransactions(requestBuilder func() (segment.AccountTransactionRequest, error), timeframe domain.Timeframe, continuationReference string) (*swift.MT940Messages, error) {
+	accountTransactionRequest, err := requestBuilder()
+	if err != nil {
+		return nil, fmt.Errorf("error building request: %w", err)
+	}
 	accountTransactionRequest.SetTransactionRange(timeframe)
 	if continuationReference != "" {
 		accountTransactionRequest.SetContinuationReference(continuationReference)
@@ -205,26 +177,34 @@ func (c *Client) SepaAccountTransactions(account domain.InternationalAccountConn
 		message.NewHBCIMessage(c.hbciVersion, c.hbciVersion.TanProcess4Request(segment.IdentificationID), accountTransactionRequest),
 	)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error sending hbci request: %w", err)
 	}
+	var bookedSwiftTransactions []*swift.MT940Messages
+	accountTransactionResponses := decryptedMessage.FindSegments("HIKAZ")
+	for _, unmarshaledSegment := range accountTransactionResponses {
+		seg, ok := unmarshaledSegment.(segment.AccountTransactionResponse)
+		if !ok {
+			return nil, fmt.Errorf("malformed segment found with ID `HIKAZ`")
+		}
+		bookedSwiftTransactions = append(bookedSwiftTransactions, seg.BookedSwiftTransactions())
+	}
+	var newContinuationReference string
 	acknowledgements := decryptedMessage.Acknowledgements()
 	for _, ack := range acknowledgements {
 		if ack.Code == element.AcknowledgementAdditionalInformation {
-			fmt.Printf("Additional information: %+v\n", ack)
+			newContinuationReference = ack.Params[0]
+			break
 		}
 	}
-	var accountTransactions []domain.AccountTransaction
-	accountTransactionResponses := decryptedMessage.FindSegments("HIKAZ")
-	if accountTransactionResponses != nil {
-		for _, unmarshaledSegment := range accountTransactionResponses {
-			seg := unmarshaledSegment.(segment.AccountTransactionResponse)
-			accountTransactions = append(accountTransactions, seg.Transactions()...)
-		}
-	} else {
-		return nil, fmt.Errorf("malformed response: expected HIKAZ segment")
+	tx := swift.MergeMT940Messages(bookedSwiftTransactions...)
+	if newContinuationReference == "" {
+		return tx, nil
 	}
-
-	return accountTransactions, nil
+	msg, err := c.accountTransactions(requestBuilder, timeframe, newContinuationReference)
+	if err != nil {
+		return nil, err
+	}
+	return swift.MergeMT940Messages(msg, tx), err
 }
 
 // AccountInformation will print all information attached to the provided

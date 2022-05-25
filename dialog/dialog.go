@@ -177,7 +177,6 @@ func (d *dialog) SyncClientSystemID() (string, error) {
 		return "", fmt.Errorf("malformed response message: %q", decryptedMessage)
 	}
 	d.dialogID = messageHeader.DialogID.Val()
-	d.supportedSegments = decryptedMessage.SupportedSegments()
 	var errors []string
 	acknowledgements := decryptedMessage.Acknowledgements()
 	for _, ack := range acknowledgements {

@@ -7,6 +7,7 @@ import (
 
 	"github.com/mitch000001/go-hbci/domain"
 	"github.com/mitch000001/go-hbci/element"
+	"github.com/mitch000001/go-hbci/swift"
 )
 
 var accountTransactionRequests = map[int](func(account domain.AccountConnection, allAccounts bool) *AccountTransactionRequestSegment){
@@ -40,10 +41,10 @@ func SepaAccountTransactionRequestBuilder(versions []int) (func(account domain.I
 }
 
 type AccountTransactionRequestSegment struct {
-	accountTransactionRequestSegment
+	AccountTransactionRequest
 }
 
-type accountTransactionRequestSegment interface {
+type AccountTransactionRequest interface {
 	ClientSegment
 	SetContinuationReference(string)
 	SetTransactionRange(domain.Timeframe)
@@ -57,7 +58,7 @@ func NewAccountTransactionRequestSegmentV5(account domain.AccountConnection, all
 	v5.ClientSegment = NewBasicSegment(1, v5)
 
 	segment := &AccountTransactionRequestSegment{
-		accountTransactionRequestSegment: v5,
+		AccountTransactionRequest: v5,
 	}
 	return segment
 }
@@ -113,7 +114,7 @@ func NewAccountTransactionRequestSegmentV6(account domain.AccountConnection, all
 	v6.ClientSegment = NewBasicSegment(1, v6)
 
 	segment := &AccountTransactionRequestSegment{
-		accountTransactionRequestSegment: v6,
+		AccountTransactionRequest: v6,
 	}
 	return segment
 }
@@ -169,7 +170,7 @@ func NewAccountTransactionRequestSegmentV7(account domain.InternationalAccountCo
 	v7.ClientSegment = NewBasicSegment(1, v7)
 
 	segment := &AccountTransactionRequestSegment{
-		accountTransactionRequestSegment: v7,
+		AccountTransactionRequest: v7,
 	}
 	return segment
 }
@@ -219,7 +220,7 @@ func (a *AccountTransactionRequestV7) elements() []element.DataElement {
 
 type AccountTransactionResponse interface {
 	BankSegment
-	Transactions() []domain.AccountTransaction
+	BookedSwiftTransactions() *swift.MT940Messages
 }
 
 //go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment AccountTransactionResponseSegment -segment_interface AccountTransactionResponse -segment_versions="AccountTransactionResponseSegmentV5:5:Segment,AccountTransactionResponseSegmentV6:6:Segment,AccountTransactionResponseSegmentV7:7:Segment"
@@ -234,7 +235,7 @@ type AccountTransactionResponseSegmentV5 struct {
 	UnbookedTransactions *element.BinaryDataElement
 }
 
-func (a *AccountTransactionResponseSegmentV5) Transactions() []domain.AccountTransaction {
+func (a *AccountTransactionResponseSegmentV5) BookedSwiftTransactions() *swift.MT940Messages {
 	return a.BookedTransactions.Val()
 }
 
@@ -256,7 +257,7 @@ type AccountTransactionResponseSegmentV6 struct {
 	UnbookedTransactions *element.BinaryDataElement
 }
 
-func (a *AccountTransactionResponseSegmentV6) Transactions() []domain.AccountTransaction {
+func (a *AccountTransactionResponseSegmentV6) BookedSwiftTransactions() *swift.MT940Messages {
 	return a.BookedTransactions.Val()
 }
 
@@ -278,7 +279,7 @@ type AccountTransactionResponseSegmentV7 struct {
 	UnbookedTransactions *element.BinaryDataElement
 }
 
-func (a *AccountTransactionResponseSegmentV7) Transactions() []domain.AccountTransaction {
+func (a *AccountTransactionResponseSegmentV7) BookedSwiftTransactions() *swift.MT940Messages {
 	return a.BookedTransactions.Val()
 }
 
