@@ -1,7 +1,6 @@
 package segment
 
 import (
-	"fmt"
 	"sort"
 	"time"
 
@@ -23,7 +22,7 @@ func AccountBalanceRequestBuilder(versions []int) (func(account domain.AccountCo
 			return builder, nil
 		}
 	}
-	return nil, fmt.Errorf("unsupported versions %v", versions)
+	return nil, &unsupportedSegmentVersionError{segmentID: "HKSAL", versions: versions}
 }
 
 type AccountBalanceRequest interface {

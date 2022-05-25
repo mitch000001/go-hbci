@@ -73,7 +73,7 @@ func fetchTransactions(account domain.InternationalAccountConnection, timeframe 
 		fmt.Println(err)
 		os.Exit(1)
 	}
-	fmt.Print(domain.AccountTransactions(transactions))
+	fmt.Print(transactions)
 }
 
 func fetchSepaTransactions(account domain.InternationalAccountConnection, timeframe domain.Timeframe) {
@@ -82,7 +82,7 @@ func fetchSepaTransactions(account domain.InternationalAccountConnection, timefr
 		fmt.Println(err)
 		os.Exit(1)
 	}
-	fmt.Print(domain.AccountTransactions(transactions))
+	fmt.Print(transactions)
 }
 
 func init() {

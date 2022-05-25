@@ -1,6 +1,7 @@
 package segment
 
 import (
+	"errors"
 	"fmt"
 	"time"
 
@@ -33,6 +34,19 @@ type HBCIVersion struct {
 // Version returns the HBCI version as integer
 func (v HBCIVersion) Version() int {
 	return v.version
+}
+
+func IsUnsupportedSegmentVersionError(err error) bool {
+	return errors.Is(err, &unsupportedSegmentVersionError{})
+}
+
+type unsupportedSegmentVersionError struct {
+	segmentID string
+	versions  []int
+}
+
+func (u *unsupportedSegmentVersionError) Error() string {
+	return fmt.Sprintf("unsupported versions %v for segment %s", u.versions, u.segmentID)
 }
 
 // Builder represents a builder which returns certain builders based on the

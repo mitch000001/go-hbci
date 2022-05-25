@@ -67,7 +67,7 @@ func (a *AccountTransactionResponseSegmentV5) UnmarshalHBCI(value []byte) error 
 		}
 	}
 	if len(elements) > 2 && len(elements[2]) > 0 {
-		a.UnbookedTransactions = &element.BinaryDataElement{}
+		a.UnbookedTransactions = &element.SwiftMT942DataElement{}
 		if len(elements)+1 > 2 {
 			err = a.UnbookedTransactions.UnmarshalHBCI(bytes.Join(elements[2:], []byte("+")))
 		} else {
@@ -101,7 +101,7 @@ func (a *AccountTransactionResponseSegmentV6) UnmarshalHBCI(value []byte) error 
 		}
 	}
 	if len(elements) > 2 && len(elements[2]) > 0 {
-		a.UnbookedTransactions = &element.BinaryDataElement{}
+		a.UnbookedTransactions = &element.SwiftMT942DataElement{}
 		if len(elements)+1 > 2 {
 			err = a.UnbookedTransactions.UnmarshalHBCI(bytes.Join(elements[2:], []byte("+")))
 		} else {
@@ -135,7 +135,7 @@ func (a *AccountTransactionResponseSegmentV7) UnmarshalHBCI(value []byte) error 
 		}
 	}
 	if len(elements) > 2 && len(elements[2]) > 0 {
-		a.UnbookedTransactions = &element.BinaryDataElement{}
+		a.UnbookedTransactions = &element.SwiftMT942DataElement{}
 		if len(elements)+1 > 2 {
 			err = a.UnbookedTransactions.UnmarshalHBCI(bytes.Join(elements[2:], []byte("+")))
 		} else {

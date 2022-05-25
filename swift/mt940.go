@@ -15,16 +15,16 @@ import (
 
 // MT940 represents a S.W.I.F.T. Transaction Report
 type MT940 struct {
-	JobReference         *AlphaNumericTag
-	Reference            *AlphaNumericTag
-	Account              *AccountTag
-	StatementNumber      *StatementNumberTag
-	StartingBalance      *BalanceTag
+	JobReference         *AlphaNumericTag    `swift:"20"`
+	Reference            *AlphaNumericTag    `swift:"21"`
+	Account              *AccountTag         `swift:"25"`
+	StatementNumber      *StatementNumberTag `swift:"28C"`
+	StartingBalance      *BalanceTag         `swift:"60a"`
 	Transactions         []*TransactionSequence
-	ClosingBalance       *BalanceTag
-	CurrentValutaBalance *BalanceTag
-	FutureValutaBalance  *BalanceTag
-	CustomField          *CustomFieldTag
+	ClosingBalance       *BalanceTag     `swift:"62a"`
+	CurrentValutaBalance *BalanceTag     `swift:"64"`
+	FutureValutaBalance  *BalanceTag     `swift:"65"`
+	CustomField          *CustomFieldTag `swift:"86"`
 }
 
 // AccountTransactions returns a slice of account transactions created from m
@@ -72,6 +72,56 @@ func (m *MT940) AccountTransactions() []domain.AccountTransaction {
 		transactions = append(transactions, transaction)
 	}
 	return transactions
+}
+
+// AccountTransactions returns a slice of account transactions created from m
+func (m *MT940) BookedAccountTransactions() domain.BookedAccountTransactions {
+	accountConnection := domain.AccountConnection{BankID: m.Account.BankID, AccountID: m.Account.AccountID, CountryCode: 280}
+	var transactions []domain.Transaction
+	for _, transactionSequence := range m.Transactions {
+		tr := transactionSequence.Transaction
+		descr := transactionSequence.Description
+		var amount float64
+		if tr.DebitCreditIndicator == "D" {
+			amount = -tr.Amount
+		} else {
+			amount = tr.Amount
+		}
+		transaction := domain.Transaction{
+			Amount:      domain.Amount{Amount: amount, Currency: m.StartingBalance.Currency},
+			ValutaDate:  tr.ValutaDate.Time,
+			BookingDate: tr.BookingDate.Time,
+		}
+		if descr != nil {
+			transaction.BookingText = descr.BookingText
+			transaction.BankID = descr.BankID
+			transaction.AccountID = descr.AccountID
+			transaction.Name = descr.Name
+			transaction.Purpose = strings.Join(descr.Purpose, " ")
+			transaction.Purpose2 = strings.Join(descr.Purpose2, " ")
+			transaction.TransactionID = descr.TransactionID
+		}
+		transactions = append(transactions, transaction)
+	}
+	bookedTransactions := domain.BookedAccountTransactions{
+		Account: accountConnection,
+		AccountBalanceBefore: domain.Balance{
+			Amount: domain.Amount{
+				Amount:   m.StartingBalance.Amount,
+				Currency: m.StartingBalance.Currency,
+			},
+			TransmissionDate: m.StartingBalance.BookingDate.Time,
+		},
+		AccountBalanceAfter: domain.Balance{
+			Amount: domain.Amount{
+				Amount:   m.ClosingBalance.Amount,
+				Currency: m.ClosingBalance.Currency,
+			},
+			TransmissionDate: m.ClosingBalance.BookingDate.Time,
+		},
+		Transactions: transactions,
+	}
+	return bookedTransactions
 }
 
 // AccountTag represents an account in S.W.I.F.T.
@@ -193,8 +243,8 @@ func (b *BalanceTag) Unmarshal(value []byte) error {
 // A TransactionSequence represents a transaction with an additional
 // description in S.W.I.F.T.
 type TransactionSequence struct {
-	Transaction *TransactionTag
-	Description *CustomFieldTag
+	Transaction *TransactionTag `swift:"61"`
+	Description *CustomFieldTag `swift:"86"`
 }
 
 // A TransactionTag represents a transaction in S.W.I.F.T.

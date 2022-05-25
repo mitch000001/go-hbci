@@ -35,8 +35,11 @@ func TestClientAccountTransactions(t *testing.T) {
 		t.Fail()
 	}
 
-	for _, tr := range transactions {
-		fmt.Printf("Transaction: %s\n", tr)
+	for _, tr := range transactions.BookedTransactions {
+		fmt.Printf("Booked Transaction: %s\n", tr)
+	}
+	for _, tr := range transactions.UnbookedTransactions {
+		fmt.Printf("Unbooked Transaction: %s\n", tr)
 	}
 }
 
@@ -59,8 +62,11 @@ func TestClientSepaAccountTransactions(t *testing.T) {
 		t.Fail()
 	}
 
-	for _, tr := range transactions {
-		fmt.Printf("Transaction: %s\n", tr)
+	for _, tr := range transactions.BookedTransactions {
+		fmt.Printf("Booked Transaction: %s\n", tr)
+	}
+	for _, tr := range transactions.UnbookedTransactions {
+		fmt.Printf("Unbooked Transaction: %s\n", tr)
 	}
 }
 
