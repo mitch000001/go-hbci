@@ -1,7 +1,6 @@
 package element
 
 import (
-	"github.com/mitch000001/go-hbci/domain"
 	"github.com/mitch000001/go-hbci/swift"
 )
 
@@ -9,7 +8,7 @@ import (
 // binary data
 type SwiftMT940DataElement struct {
 	*BinaryDataElement
-	swiftMT940Elements []*swift.MT940
+	swiftMT940Messages *swift.MT940Messages
 }
 
 // UnmarshalHBCI unmarshals value into s
@@ -19,27 +18,11 @@ func (s *SwiftMT940DataElement) UnmarshalHBCI(value []byte) error {
 	if err != nil {
 		return err
 	}
-	messageExtractor := swift.NewMessageExtractor(s.BinaryDataElement.Val())
-	messages, err := messageExtractor.Extract()
-	if err != nil {
-		return err
-	}
-	for _, message := range messages {
-		tr := &swift.MT940{}
-		err = tr.Unmarshal(message)
-		if err != nil {
-			return err
-		}
-		s.swiftMT940Elements = append(s.swiftMT940Elements, tr)
-	}
+	s.swiftMT940Messages = swift.NewMT940Messages(s.BinaryDataElement.Val())
 	return nil
 }
 
-// Val returns the embodied transactions as []domain.AccountTransaction
-func (s *SwiftMT940DataElement) Val() []domain.AccountTransaction {
-	var transactions []domain.AccountTransaction
-	for _, mt940 := range s.swiftMT940Elements {
-		transactions = append(transactions, mt940.AccountTransactions()...)
-	}
-	return transactions
+// Val returns the embodied transactions as *swift.MT940Messages
+func (s *SwiftMT940DataElement) Val() *swift.MT940Messages {
+	return s.swiftMT940Messages
 }

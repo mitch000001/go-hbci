@@ -4,6 +4,15 @@ import (
 	"bytes"
 )
 
+const unexpectedEOF = "unexpected end of input"
+
+func IsUnexpectedEndOfInput(t Token) bool {
+	if t.Type() != ERROR {
+		return false
+	}
+	return string(t.Value()) == unexpectedEOF
+}
+
 // NewSwiftLexer returns a SwiftLexer ready for parsing the given input string
 func NewSwiftLexer(name string, input []byte) *SwiftLexer {
 	lexer := NewLexer(name, input)
@@ -65,7 +74,7 @@ func lexSwiftSyntaxSymbol(l *Lexer) LexerStateFn {
 		p := l.peek()
 		switch {
 		case p == eof:
-			return l.errorf("Unexpected end of input")
+			return l.errorf(unexpectedEOF)
 		case p == dash:
 			l.next()
 			l.emit(SWIFT_MESSAGE_SEPARATOR)
@@ -107,7 +116,7 @@ func lexSwiftAlpha(l *Lexer) LexerStateFn {
 		l.emit(SWIFT_ALPHA)
 		return lexSwiftStart
 	case r == eof:
-		return l.errorf("Unexpected end of input")
+		return l.errorf(unexpectedEOF)
 	case isSwiftAlphaNumeric(r):
 		return lexSwiftAlphaNumeric
 	default:
@@ -126,7 +135,7 @@ func lexSwiftCharacter(l *Lexer) LexerStateFn {
 		l.emit(SWIFT_CHARACTER)
 		return lexSwiftStart
 	case r == eof:
-		return l.errorf("Unexpected end of input")
+		return l.errorf(unexpectedEOF)
 	case isSwiftAlphaNumeric(r):
 		return lexSwiftAlphaNumeric
 	default:
@@ -146,7 +155,7 @@ func lexSwiftAlphaNumeric(l *Lexer) LexerStateFn {
 		l.next()
 		return lexSwiftAlphaNumeric
 	case r == eof:
-		return l.errorf("Unexpected end of input")
+		return l.errorf(unexpectedEOF)
 	case isSwiftAlphaNumeric(r):
 		return lexSwiftAlphaNumeric
 	default:
