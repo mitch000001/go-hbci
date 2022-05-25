@@ -23,7 +23,7 @@ func TestClientBalances(t *testing.T) {
 		Name1:             "Muster",
 		Name2:             "Max",
 		AllowedBusinessTransactions: []domain.BusinessTransaction{
-			domain.BusinessTransaction{ID: "HKSAL", NeededSignatures: 1},
+			{ID: "HKSAL", NeededSignatures: 1},
 		},
 	}
 
@@ -35,6 +35,7 @@ func TestClientBalances(t *testing.T) {
 		"abcde",
 		"HIRMG:2:2:1+0020::Auftrag entgegengenommen'",
 		"HISYN:193:4:5+LRZYhZNbV2IBAAAd0?+VNqlkXrAQA'",
+		"HIBPA:2:2:+12+280:10000000+Bank Name+3+1+201:210:220+0'",
 		"HISALS:3:5:4+3+1'",
 	)
 	initResponse := encryptedTestMessage(
