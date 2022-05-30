@@ -10,7 +10,7 @@ type TanBankParameter interface {
 	BankSegment
 }
 
-//go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment TanBankParameterSegment -segment_interface TanBankParameter -segment_versions="TanBankParameterV6:6:Segment"
+//go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment TanBankParameterSegment -segment_interface TanBankParameter -segment_versions="TanBankParameterV6:6:Segment,TanBankParameterV7:7:Segment"
 
 type TanBankParameterSegment struct {
 	TanBankParameter
@@ -41,3 +41,27 @@ func (t *TanBankParameterV6) elements() []element.DataElement {
 	}
 }
 
+// TanBankParameterV7
+//
+// Zwei-Schritt-TAN-Einreichung, Parameter
+type TanBankParameterV7 struct {
+	Segment                     `yaml:"-"`
+	MaxJobs                     *element.NumberDataElement             `yaml:"MaxJobs"`
+	MinSignatures               *element.NumberDataElement             `yaml:"MinSignatures"`
+	SecurityClass               *element.CodeDataElement               `yaml:"SecurityClass"`
+	Tan2StepSubmissionParameter *element.Tan2StepSubmissionParameterV7 `yaml:"Tan2StepSubmissionParameter"`
+}
+
+func (t *TanBankParameterV7) Version() int         { return 7 }
+func (t *TanBankParameterV7) ID() string           { return TanBankParameterID }
+func (t *TanBankParameterV7) referencedId() string { return ProcessingPreparationID }
+func (t *TanBankParameterV7) sender() string       { return senderBank }
+
+func (t *TanBankParameterV7) elements() []element.DataElement {
+	return []element.DataElement{
+		t.MaxJobs,
+		t.MinSignatures,
+		t.SecurityClass,
+		t.Tan2StepSubmissionParameter,
+	}
+}

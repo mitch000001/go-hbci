@@ -10,12 +10,15 @@ import (
 )
 
 var (
-	_ BankSegment = &TanBankParameterV6{}
+	_	BankSegment	= &TanBankParameterV6{}
+	_	BankSegment	= &TanBankParameterV7{}
 )
 
 func init() {
 	v6 := TanBankParameterV6{}
 	KnownSegments.mustAddToIndex(VersionedSegment{v6.ID(), v6.Version()}, func() Segment { return &TanBankParameterV6{} })
+	v7 := TanBankParameterV7{}
+	KnownSegments.mustAddToIndex(VersionedSegment{v7.ID(), v7.Version()}, func() Segment { return &TanBankParameterV7{} })
 }
 
 func (t *TanBankParameterSegment) UnmarshalHBCI(value []byte) error {
@@ -32,6 +35,12 @@ func (t *TanBankParameterSegment) UnmarshalHBCI(value []byte) error {
 	switch header.Version.Val() {
 	case 6:
 		segment = &TanBankParameterV6{}
+		err = segment.UnmarshalHBCI(value)
+		if err != nil {
+			return err
+		}
+	case 7:
+		segment = &TanBankParameterV7{}
 		err = segment.UnmarshalHBCI(value)
 		if err != nil {
 			return err
@@ -79,6 +88,54 @@ func (t *TanBankParameterV6) UnmarshalHBCI(value []byte) error {
 	}
 	if len(elements) > 4 && len(elements[4]) > 0 {
 		t.Tan2StepSubmissionParameter = &element.Tan2StepSubmissionParameterV6{}
+		if len(elements)+1 > 4 {
+			err = t.Tan2StepSubmissionParameter.UnmarshalHBCI(bytes.Join(elements[4:], []byte("+")))
+		} else {
+			err = t.Tan2StepSubmissionParameter.UnmarshalHBCI(elements[4])
+		}
+		if err != nil {
+			return fmt.Errorf("error unmarshaling Tan2StepSubmissionParameter: %w", err)
+		}
+	}
+	return nil
+}
+
+func (t *TanBankParameterV7) UnmarshalHBCI(value []byte) error {
+	elements, err := ExtractElements(value)
+	if err != nil {
+		return err
+	}
+	if len(elements) == 0 {
+		return fmt.Errorf("malformed marshaled value: no elements extracted")
+	}
+	seg, err := SegmentFromHeaderBytes(elements[0], t)
+	if err != nil {
+		return err
+	}
+	t.Segment = seg
+	if len(elements) > 1 && len(elements[1]) > 0 {
+		t.MaxJobs = &element.NumberDataElement{}
+		err = t.MaxJobs.UnmarshalHBCI(elements[1])
+		if err != nil {
+			return fmt.Errorf("error unmarshaling MaxJobs: %w", err)
+		}
+	}
+	if len(elements) > 2 && len(elements[2]) > 0 {
+		t.MinSignatures = &element.NumberDataElement{}
+		err = t.MinSignatures.UnmarshalHBCI(elements[2])
+		if err != nil {
+			return fmt.Errorf("error unmarshaling MinSignatures: %w", err)
+		}
+	}
+	if len(elements) > 3 && len(elements[3]) > 0 {
+		t.SecurityClass = &element.CodeDataElement{}
+		err = t.SecurityClass.UnmarshalHBCI(elements[3])
+		if err != nil {
+			return fmt.Errorf("error unmarshaling SecurityClass: %w", err)
+		}
+	}
+	if len(elements) > 4 && len(elements[4]) > 0 {
+		t.Tan2StepSubmissionParameter = &element.Tan2StepSubmissionParameterV7{}
 		if len(elements)+1 > 4 {
 			err = t.Tan2StepSubmissionParameter.UnmarshalHBCI(bytes.Join(elements[4:], []byte("+")))
 		} else {
