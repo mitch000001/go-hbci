@@ -2,7 +2,6 @@ package segment
 
 import (
 	"github.com/mitch000001/go-hbci/element"
-	"gopkg.in/yaml.v3"
 )
 
 const TanBankParameterID = "HITANS"
@@ -21,11 +20,11 @@ type TanBankParameterSegment struct {
 //
 // Zwei-Schritt-TAN-Einreichung, Parameter
 type TanBankParameterV6 struct {
-	Segment
-	MaxJobs                     *element.NumberDataElement
-	MinSignatures               *element.NumberDataElement
-	SecurityClass               *element.CodeDataElement
-	Tan2StepSubmissionParameter *element.Tan2StepSubmissionParameterV6
+	Segment                     `yaml:"-"`
+	MaxJobs                     *element.NumberDataElement             `yaml:"MaxJobs"`
+	MinSignatures               *element.NumberDataElement             `yaml:"MinSignatures"`
+	SecurityClass               *element.CodeDataElement               `yaml:"SecurityClass"`
+	Tan2StepSubmissionParameter *element.Tan2StepSubmissionParameterV6 `yaml:"Tan2StepSubmissionParameter"`
 }
 
 func (t *TanBankParameterV6) Version() int         { return 6 }
@@ -42,11 +41,3 @@ func (t *TanBankParameterV6) elements() []element.DataElement {
 	}
 }
 
-func (t *TanBankParameterV6) MarshalYAML() (interface{}, error) {
-	return map[string]yaml.Marshaler{
-		"MaxJobs":                     t.MaxJobs,
-		"MinSignatures":               t.MinSignatures,
-		"SecurityClass":               t.SecurityClass,
-		"Tan2StepSubmissionParameter": t.Tan2StepSubmissionParameter,
-	}, nil
-}
