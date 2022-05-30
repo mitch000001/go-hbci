@@ -506,25 +506,34 @@ func (d *dialog) supportedSecurityFunctionsFromBankMessage(message message.BankM
 		return nil, false
 	}
 	securityFunctions := map[string]string{}
-	rawSegment := message.FindSegment(segment.TanBankParameterID)
-	if rawSegment == nil {
-		return nil, false
-	}
-	availableSecurityFns := map[string]*element.Tan2StepSubmissionProcessParameterV6{}
-	for _, pp := range rawSegment.(*segment.TanBankParameterV6).Tan2StepSubmissionParameter.ProcessParameters.GroupDataElements() {
-		tan2StepPP := pp.(*element.Tan2StepSubmissionProcessParameterV6)
-		fn := tan2StepPP.SecurityFunction.Val()
-		availableSecurityFns[fn] = tan2StepPP
-	}
+	availableSecurityFns := extractAvailableSecurityFnsFromMessage(message)
 	for _, sf := range supportedSecurityFns {
 		if pp, ok := availableSecurityFns[sf]; ok {
-			securityFunctions[sf] = pp.TwoStepProcessName.Val()
+			securityFunctions[sf] = pp.TwoStepProcessName
 		}
 	}
 	if len(securityFunctions) == 0 {
 		return nil, false
 	}
 	return securityFunctions, true
+}
+
+func extractAvailableSecurityFnsFromMessage(message message.BankMessage) map[string]domain.TanProcessParameter {
+	rawSegments := message.FindSegments(segment.TanBankParameterID)
+	availableSecurityFns := map[string]domain.TanProcessParameter{}
+	for _, rawSegment := range rawSegments {
+		if rawSegment == nil {
+			return nil
+		}
+		tanBankParams, ok := rawSegment.(segment.TanBankParameter)
+		if !ok {
+			return nil
+		}
+		for _, pp := range tanBankParams.TanProcessParameters() {
+			availableSecurityFns[pp.SecurityFunction] = pp
+		}
+	}
+	return availableSecurityFns
 }
 
 func (d *dialog) parseBankParameterData(bankMessage message.BankMessage) error {
