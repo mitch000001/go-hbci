@@ -2,6 +2,7 @@ package client
 
 import (
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/mitch000001/go-hbci/bankinfo"
@@ -13,19 +14,22 @@ import (
 	"github.com/mitch000001/go-hbci/segment"
 	"github.com/mitch000001/go-hbci/swift"
 	"github.com/mitch000001/go-hbci/transport"
+	"gopkg.in/yaml.v3"
 )
 
 // Config defines the basic configuration needed for a Client to work.
 type Config struct {
-	BankID             string `json:"bank_id"`
-	AccountID          string `json:"account_id"`
-	PIN                string `json:"pin"`
-	URL                string `json:"url"`
-	HBCIVersion        int    `json:"hbci_version"`
-	Transport          transport.Transport
-	ProductName        string `json:"product_name"`
-	ProductVersion     string `json:"product_version"`
-	EnableDebugLogging bool   `json:"enable_debug_logging"`
+	BankID                 string `json:"bank_id"`
+	AccountID              string `json:"account_id"`
+	PIN                    string `json:"pin"`
+	URL                    string `json:"url"`
+	HBCIVersion            int    `json:"hbci_version"`
+	Transport              transport.Transport
+	ProductName            string `json:"product_name"`
+	ProductVersion         string `json:"product_version"`
+	StoreBankParameterData bool   `json:"store_bank_parameter_data"`
+	StoreUserParameterData bool   `json:"store_user_parameter_data"`
+	EnableDebugLogging     bool   `json:"enable_debug_logging"`
 }
 
 func (c Config) hbciVersion() (segment.HBCIVersion, error) {
@@ -108,6 +112,19 @@ func (c *Client) init() error {
 			return fmt.Errorf("error while fetching accounts: %v", err)
 		}
 	}
+	if c.config.StoreBankParameterData {
+		path := fmt.Sprintf("bpd_%s_%d.yaml", c.config.BankID, c.pinTanDialog.BankParameterDataVersion())
+		if err := storeDataToDisk(c.pinTanDialog.BankParameterData, path); err != nil {
+			return fmt.Errorf("error writing Bank Parameter data to disk: %w", err)
+		}
+	}
+	if c.config.StoreUserParameterData {
+		path := fmt.Sprintf("upd_%s_%d.yaml", c.config.BankID, c.pinTanDialog.UserParameterDataVersion())
+		if err := storeDataToDisk(c.pinTanDialog.UserParameterData, path); err != nil {
+			return fmt.Errorf("error writing User Parameter data to disk: %w", err)
+		}
+	}
+
 	return nil
 }
 
@@ -376,4 +393,23 @@ func (a *AnonymousClient) CommunicationAccess(from, to domain.BankID, maxEntries
 		return nil, err
 	}
 	return []byte(fmt.Sprintf("%+#v", decryptedMessage)), nil
+}
+
+func storeDataToDisk(data interface{}, path string) error {
+	stored := map[string]interface{}{
+		"meta": map[string]string{
+			"createdAt": time.Now().Format(time.RFC3339),
+		},
+		"parameterData": data,
+	}
+	f, err := os.Create(path)
+	if err != nil {
+		return fmt.Errorf("error creating file for path %q: %w", path, err)
+	}
+	defer f.Close()
+	enc := yaml.NewEncoder(f)
+	if err := enc.Encode(stored); err != nil {
+		return fmt.Errorf("error marshaling data into yaml: %w", err)
+	}
+	return nil
 }

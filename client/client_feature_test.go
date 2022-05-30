@@ -179,6 +179,8 @@ func newClient() *client.Client {
 			PIN:       os.Getenv("GOHBCI_PIN"),
 		}
 	}
+	config.StoreBankParameterData = os.Getenv("GOHBCI_STORE_BPD") == "true"
+	config.StoreUserParameterData = os.Getenv("GOHBCI_STORE_UPD") == "true"
 	testAccount = domain.AccountConnection{AccountID: config.AccountID, CountryCode: 280, BankID: config.BankID}
 	i, err := iban.NewGerman(config.BankID, config.AccountID)
 	if err != nil {

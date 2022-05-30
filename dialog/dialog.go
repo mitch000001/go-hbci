@@ -553,12 +553,23 @@ func (d *dialog) parseBankParameterData(bankMessage message.BankMessage) error {
 	for i, s := range d.supportedSegments {
 		param := SegmentParameter{
 			VersionedSegment: s,
-		}
-		parameterData := bankMessage.FindSegment(s.ID)
-		if parameterData != nil && parameterData.Header().Version.Val() == s.Version {
-			param.Parameters = parameterData
+			Parameters:       extractBPDParameterSegmentFromMessage(bankMessage, s),
 		}
 		d.BankParameterData.SupportedSegmentParameters[i] = param
+	}
+	return nil
+}
+
+func extractBPDParameterSegmentFromMessage(message message.BankMessage, segment segment.VersionedSegment) segment.Segment {
+	parameterDataSegments := message.FindSegments(segment.ID)
+	for _, parameterData := range parameterDataSegments {
+		if parameterData == nil {
+			continue
+		}
+		if parameterData.Header().Version.Val() != segment.Version {
+			continue
+		}
+		return parameterData
 	}
 	return nil
 }
