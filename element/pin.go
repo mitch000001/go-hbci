@@ -86,7 +86,7 @@ func (p *PinTanDataElement) UnmarshalHBCI(value []byte) error {
 }
 
 type PinTanSpecificParamDataElement struct {
-	DataElement
+	DataElement                  `yaml:"-"`
 	PinMinLength                 *NumberDataElement                   `yaml:"PinMinLength"`
 	PinMaxLength                 *NumberDataElement                   `yaml:"PinMaxLength"`
 	TanMaxLength                 *NumberDataElement                   `yaml:"TanMaxLength"`

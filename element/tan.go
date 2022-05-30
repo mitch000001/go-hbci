@@ -6,7 +6,6 @@ import (
 
 	"github.com/mitch000001/go-hbci/charset"
 	"github.com/mitch000001/go-hbci/internal"
-	"gopkg.in/yaml.v3"
 )
 
 // Gültigkeitsdatum und –uhrzeit für Challenge
@@ -34,13 +33,13 @@ func (t *TanChallengeExpiryDate) GroupDataElements() []DataElement {
 //
 // Auftragsspezifische Bankparameterdaten für den Geschäftsvorfall „Zwei- Schritt-TAN-Einreichung“.
 type Tan2StepSubmissionParameterV6 struct {
-	DataElement
+	DataElement `yaml:"-"`
 	// Ein-Schritt-Verfahren erlaubt
 	//
 	// Angabe, ob Ein-Schritt-Verfahren erlaubt ist oder nicht. Darüber wird das Kundenprodukt informiert,
 	// ob die Einreichung von Aufträgen im Ein-Schritt- Verfahren zusätzlich zu den definierten
 	// Zwei-Schritt-Verfahren zugelassen ist.
-	OneStepProcessAllowed *BooleanDataElement
+	OneStepProcessAllowed *BooleanDataElement `yaml:"OneStepProcessAllowed"`
 	// Mehr als ein TAN-pflichtiger Auftrag pro Nachricht erlaubt
 	//
 	// Angabe, ob in einer FinTS-Nachricht mehr als ein TAN-pflichtiger Auftrag gesendet werden darf.
@@ -51,7 +50,7 @@ type Tan2StepSubmissionParameterV6 struct {
 	// Anzahl der TANs, d. h. es ist pro Signaturab- schluss nur eine TAN erlaubt, die bei Angabe von „J“
 	// aber ggf. für mehrere Aufträge gilt. Dieser Parameter gilt sowohl für das Einschritt- als auch das
 	// Zwei-Schritt-Verfahren.
-	MoreThanOneObligatoryTanJobAllowed *BooleanDataElement
+	MoreThanOneObligatoryTanJobAllowed *BooleanDataElement `yaml:"MoreThanOneObligatoryTanJobAllowed"`
 	// Auftrags-Hashwertverfahren
 	//
 	// Information, welches Verfahren für die Hashwertbildung über den Kunden- auftrag verwendet werden soll.
@@ -60,9 +59,9 @@ type Tan2StepSubmissionParameterV6 struct {
 	// 0: Auftrags-Hashwert nicht unterstützt
 	// 1: RIPEMD-160
 	// 2: SHA-1
-	JobHashMethod *CodeDataElement
+	JobHashMethod *CodeDataElement `yaml:"JobHashMethod"`
 	// FIXME: docs
-	ProcessParameters *Tan2StepSubmissionProcessParametersV6
+	ProcessParameters *Tan2StepSubmissionProcessParametersV6 `yaml:"ProcessParameters"`
 }
 
 // Elements returns the elements of this DataElement.
@@ -104,33 +103,11 @@ func (t *Tan2StepSubmissionParameterV6) UnmarshalHBCI(value []byte) error {
 	return nil
 }
 
-func (t *Tan2StepSubmissionParameterV6) MarshalYAML() (interface{}, error) {
-	return map[string]yaml.Marshaler{
-		"OneStepProcessAllowed":              t.OneStepProcessAllowed,
-		"MoreThanOneObligatoryTanJobAllowed": t.MoreThanOneObligatoryTanJobAllowed,
-		"JobHashMethod":                      t.JobHashMethod,
-		"ProcessParameters":                  t.ProcessParameters,
-	}, nil
-}
-
 // Tan2StepSubmissionParametersV6 represents a slice of
 // Tan2StepSubmissionParameterV6 DataElements
 type Tan2StepSubmissionProcessParametersV6 struct {
 	*arrayElementGroup
 }
-
-// func (t *Tan2StepSubmissionProcessParametersV6) MarshalYAML() (interface{}, error) {
-// 	return t.GroupDataElements(), nil
-// }
-
-// // Val returns the underlying Tan2StepSubmissionParameters
-// func (p *Tan2StepSubmissionParameters) Val() []domain.PinTanBusinessTransaction {
-// 	transactions := make([]domain.PinTanBusinessTransaction, len(p.array))
-// 	for i, elem := range p.array {
-// 		transactions[i] = elem.(*PinTanBusinessTransactionParameter).Val()
-// 	}
-// 	return transactions
-// }
 
 // UnmarshalHBCI unmarshals value into the Tan2StepSubmissionParameters
 func (t *Tan2StepSubmissionProcessParametersV6) UnmarshalHBCI(value []byte) error {
@@ -138,46 +115,48 @@ func (t *Tan2StepSubmissionProcessParametersV6) UnmarshalHBCI(value []byte) erro
 	if err != nil {
 		return err
 	}
-	if len(elements)%21 != 0 {
-		return fmt.Errorf("malformed marshaled value: value pairs not even")
+	var param Tan2StepSubmissionProcessParameterV6
+	paramElements := len(param.Elements())
+	if len(elements)%paramElements != 0 {
+		return fmt.Errorf("malformed marshaled value: value pairs not even: %d/%d", len(elements), paramElements)
 	}
-	dataElements := make([]DataElement, len(elements)/21)
-	for i := 0; i < len(elements); i += 21 {
-		elem := bytes.Join(elements[i:i+21], []byte(":"))
+	dataElements := make([]DataElement, len(elements)/paramElements)
+	for i := 0; i < len(elements); i += paramElements {
+		elem := bytes.Join(elements[i:i+paramElements], []byte(":"))
 		param := &Tan2StepSubmissionProcessParameterV6{}
 		err := param.UnmarshalHBCI(elem)
 		if err != nil {
 			return err
 		}
-		dataElements[i/21] = param
+		dataElements[i/paramElements] = param
 	}
 	t.arrayElementGroup = newArrayElementGroup(tan2StepSubmissionProcessParameterDEG, len(dataElements), len(dataElements), dataElements)
 	return nil
 }
 
 type Tan2StepSubmissionProcessParameterV6 struct {
-	DataElement
-	SecurityFunction                       *CodeDataElement
-	TanProcess                             *CodeDataElement
-	TechnicalIDTanProcess                  *IdentificationDataElement
-	ZKATanProcess                          *AlphaNumericDataElement
-	ZKATanProcessVersion                   *AlphaNumericDataElement
-	TwoStepProcessName                     *AlphaNumericDataElement
-	TwoStepProcessMaxInputValue            *NumberDataElement
-	TwoStepProcessAllowedFormat            *CodeDataElement
-	TwoStepProcessReturnValueText          *AlphaNumericDataElement
-	TwoStepProcessReturnValueTextMaxLength *NumberDataElement
-	MultiTANAllowed                        *BooleanDataElement
-	TanTimeAndDialogReference              *CodeDataElement
-	JobCancellationAllowed                 *BooleanDataElement
-	SMSAccountRequired                     *CodeDataElement
-	IssuerAccountRequired                  *CodeDataElement
-	ChallengeClassRequired                 *BooleanDataElement
-	ChallengeStructured                    *BooleanDataElement
-	InitializationMode                     *CodeDataElement
-	TanMediumDescriptionRequired           *CodeDataElement
-	HHD_UCResponseRequired                 *BooleanDataElement
-	SupportedActiveTanMedia                *NumberDataElement
+	DataElement                            `yaml:"-"`
+	SecurityFunction                       *CodeDataElement           `yaml:"SecurityFunction"`
+	TanProcess                             *CodeDataElement           `yaml:"TanProcess"`
+	TechnicalIDTanProcess                  *IdentificationDataElement `yaml:"TechnicalIDTanProcess"`
+	ZKATanProcess                          *AlphaNumericDataElement   `yaml:"ZKATanProcess"`
+	ZKATanProcessVersion                   *AlphaNumericDataElement   `yaml:"ZKATanProcessVersion"`
+	TwoStepProcessName                     *AlphaNumericDataElement   `yaml:"TwoStepProcessName"`
+	TwoStepProcessMaxInputValue            *NumberDataElement         `yaml:"TwoStepProcessMaxInputValue"`
+	TwoStepProcessAllowedFormat            *CodeDataElement           `yaml:"TwoStepProcessAllowedFormat"`
+	TwoStepProcessReturnValueText          *AlphaNumericDataElement   `yaml:"TwoStepProcessReturnValueText"`
+	TwoStepProcessReturnValueTextMaxLength *NumberDataElement         `yaml:"TwoStepProcessReturnValueTextMaxLength"`
+	MultiTANAllowed                        *BooleanDataElement        `yaml:"MultiTANAllowed"`
+	TanTimeAndDialogReference              *CodeDataElement           `yaml:"TanTimeAndDialogReference"`
+	JobCancellationAllowed                 *BooleanDataElement        `yaml:"JobCancellationAllowed"`
+	SMSAccountRequired                     *CodeDataElement           `yaml:"SMSAccountRequired"`
+	IssuerAccountRequired                  *CodeDataElement           `yaml:"IssuerAccountRequired"`
+	ChallengeClassRequired                 *BooleanDataElement        `yaml:"ChallengeClassRequired"`
+	ChallengeStructured                    *BooleanDataElement        `yaml:"ChallengeStructured"`
+	InitializationMode                     *CodeDataElement           `yaml:"InitializationMode"`
+	TanMediumDescriptionRequired           *CodeDataElement           `yaml:"TanMediumDescriptionRequired"`
+	HHD_UCResponseRequired                 *BooleanDataElement        `yaml:"HHD_UCResponseRequired"`
+	SupportedActiveTanMedia                *NumberDataElement         `yaml:"SupportedActiveTanMedia"`
 }
 
 // Elements returns the elements of this DataElement.
@@ -206,12 +185,6 @@ func (t *Tan2StepSubmissionProcessParameterV6) Elements() []DataElement {
 		t.SupportedActiveTanMedia,
 	}
 }
-
-// // Val returns the underlying PinTanBusinessTransaction
-// func (t *Tan2StepSubmissionProcessParameterV6) Val() interface{} {
-// 	return domain.PinTanBusinessTransaction{
-// 	}
-// }
 
 // UnmarshalHBCI unmarshals value
 func (t *Tan2StepSubmissionProcessParameterV6) UnmarshalHBCI(value []byte) error {
@@ -277,28 +250,3 @@ func (t *Tan2StepSubmissionProcessParameterV6) UnmarshalHBCI(value []byte) error
 	return nil
 }
 
-func (t Tan2StepSubmissionProcessParameterV6) MarshalYAML() (interface{}, error) {
-	return map[string]yaml.Marshaler{
-		"SecurityFunction":                       t.SecurityFunction,
-		"TanProcess":                             t.TanProcess,
-		"TechnicalIDTanProcess":                  t.TechnicalIDTanProcess,
-		"ZKATanProcess":                          t.ZKATanProcess,
-		"ZKATanProcessVersion":                   t.ZKATanProcessVersion,
-		"TwoStepProcessName":                     t.TwoStepProcessName,
-		"TwoStepProcessMaxInputValue":            t.TwoStepProcessMaxInputValue,
-		"TwoStepProcessAllowedFormat":            t.TwoStepProcessAllowedFormat,
-		"TwoStepProcessReturnValueText":          t.TwoStepProcessReturnValueText,
-		"TwoStepProcessReturnValueTextMaxLength": t.TwoStepProcessReturnValueTextMaxLength,
-		"MultiTANAllowed":                        t.MultiTANAllowed,
-		"TanTimeAndDialogReference":              t.TanTimeAndDialogReference,
-		"JobCancellationAllowed":                 t.JobCancellationAllowed,
-		"SMSAccountRequired":                     t.SMSAccountRequired,
-		"IssuerAccountRequired":                  t.IssuerAccountRequired,
-		"ChallengeClassRequired":                 t.ChallengeClassRequired,
-		"ChallengeStructured":                    t.ChallengeStructured,
-		"InitializationMode":                     t.InitializationMode,
-		"TanMediumDescriptionRequired":           t.TanMediumDescriptionRequired,
-		"HHD_UCResponseRequired":                 t.HHD_UCResponseRequired,
-		"SupportedActiveTanMedia":                t.SupportedActiveTanMedia,
-	}, nil
-}
