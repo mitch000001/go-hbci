@@ -263,8 +263,6 @@ func (t *TransactionTag) Unmarshal(value []byte) error {
 				t.CurrencyKind = string(runes[1:])
 			} else if len(runes) == 1 {
 				t.DebitCreditIndicator = string(runes)
-			} else {
-				return fmt.Errorf("%T: Malformed marshaled value", t)
 			}
 			break
 		}
