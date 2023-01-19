@@ -39,20 +39,20 @@ func (m *MT940) Unmarshal(value []byte) error {
 			if err != nil {
 				return err
 			}
-		case bytes.HasPrefix(tag, []byte(":28C:")):
+		case bytes.HasPrefix(tag, []byte(":28:")):
 			m.StatementNumber = &StatementNumberTag{}
 			err = m.StatementNumber.Unmarshal(tag)
 			if err != nil {
 				return err
 			}
-		case bytes.HasPrefix(tag, []byte(":60")):
+		case bytes.HasPrefix(tag, []byte(":60F")):
 			m.StartingBalance = &BalanceTag{}
 			err = m.StartingBalance.Unmarshal(tag)
 			if err != nil {
 				return errors.WithMessage(err, "unmarshal starting balance tag")
 			}
 			balanceTagOpen = true
-		case bytes.HasPrefix(tag, []byte(":62")):
+		case bytes.HasPrefix(tag, []byte(":62F")):
 
 			m.ClosingBalance = &BalanceTag{}
 			err = m.ClosingBalance.Unmarshal(tag)
