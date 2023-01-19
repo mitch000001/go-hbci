@@ -92,11 +92,11 @@ func (a *AccountTag) Unmarshal(value []byte) error {
 	}
 	a.Tag = string(elements[0])
 	fields := bytes.Split(elements[1], []byte("/"))
-	if len(fields) != 2 {
-		return fmt.Errorf("%T: Malformed marshaled value", a)
-	}
+	// if len(fields) != 2 {
+	// 	return fmt.Errorf("%T: Malformed marshaled value", a)
+	// }
 	a.BankID = string(fields[0])
-	a.AccountID = string(fields[1])
+	a.AccountID = ""
 	return nil
 }
 
