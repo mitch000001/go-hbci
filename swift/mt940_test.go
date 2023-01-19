@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/kr/pretty"
-	"github.com/mitch000001/go-hbci/domain"
+	"github.com/zerodhafundhouse/citi-mt940/domain"
 )
 
 func TestAccountTagUnmarshal(t *testing.T) {

@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/mitch000001/go-hbci/charset"
-	"github.com/mitch000001/go-hbci/internal"
+	"github.com/zerodhafundhouse/citi-mt940/charset"
+	"github.com/zerodhafundhouse/citi-mt940/internal"
 )
 
 // A Tag represents a S.W.I.F.T. tag

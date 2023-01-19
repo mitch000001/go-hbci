@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/mitch000001/go-hbci/domain"
+	"github.com/zerodhafundhouse/citi-mt940/domain"
 )
 
 func NewMT940Messages(data []byte) *MT940Messages {

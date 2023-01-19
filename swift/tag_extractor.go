@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"fmt"
 
-	"github.com/mitch000001/go-hbci/charset"
-	"github.com/mitch000001/go-hbci/token"
+	"github.com/zerodhafundhouse/citi-mt940/charset"
+	"github.com/zerodhafundhouse/citi-mt940/token"
 )
 
 type rawTag struct {

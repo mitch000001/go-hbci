@@ -9,8 +9,8 @@ import (
 	"time"
 	"unicode"
 
-	"github.com/mitch000001/go-hbci/domain"
 	"github.com/pkg/errors"
+	"github.com/zerodhafundhouse/citi-mt940/domain"
 )
 
 // MT940 represents a S.W.I.F.T. Transaction Report

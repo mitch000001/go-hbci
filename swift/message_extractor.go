@@ -3,7 +3,7 @@ package swift
 import (
 	"fmt"
 
-	"github.com/mitch000001/go-hbci/token"
+	"github.com/zerodhafundhouse/citi-mt940/token"
 )
 
 // NewMessageExtractor returns a message extractor feasable extracting
