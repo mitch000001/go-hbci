@@ -65,7 +65,7 @@ func (at AccountTransactions) String() string {
 type AccountTransaction struct {
 	Account              AccountConnection
 	Amount               Amount
-	ValutaDate           time.Time
+	ValueDate            time.Time
 	BookingDate          time.Time
 	BookingText          string
 	BankID               string

@@ -43,7 +43,7 @@ func (m *MT940) AccountTransactions() []domain.AccountTransaction {
 		transaction := domain.AccountTransaction{
 			Account:     accountConnection,
 			Amount:      domain.Amount{Amount: amount, Currency: m.StartingBalance.Currency},
-			ValutaDate:  tr.ValutaDate.Time,
+			ValueDate:   tr.ValueDate.Time,
 			BookingDate: tr.BookingDate.Time,
 			AccountBalanceBefore: domain.Balance{
 				Amount: domain.Amount{
@@ -200,7 +200,7 @@ type TransactionSequence struct {
 // A TransactionTag represents a transaction in S.W.I.F.T.
 type TransactionTag struct {
 	Tag                   string
-	ValutaDate            domain.ShortDate
+	ValueDate             domain.ShortDate
 	BookingDate           domain.ShortDate
 	DebitCreditIndicator  string
 	CurrencyKind          string
@@ -227,7 +227,7 @@ func (t *TransactionTag) Unmarshal(value []byte) error {
 	if err != nil {
 		return errors.WithMessage(err, "unmarshal transaction tag: parsing valuta date")
 	}
-	t.ValutaDate = domain.NewShortDate(date)
+	t.ValueDate = domain.NewShortDate(date)
 	r, _, err := buf.ReadRune()
 	if err != nil {
 		return err
@@ -235,12 +235,12 @@ func (t *TransactionTag) Unmarshal(value []byte) error {
 	if unicode.IsDigit(r) {
 		buf.UnreadRune()
 		dateBytes = buf.Next(4)
-		date, err = parseDate(dateBytes, t.ValutaDate.Year())
+		date, err = parseDate(dateBytes, t.ValueDate.Year())
 		if err != nil {
 			return errors.WithMessage(err, "unmarshal transaction tag: parsing booking date")
 		}
 		t.BookingDate = domain.NewShortDate(date)
-		monthDiff := int(math.Abs(float64(t.ValutaDate.Month() - t.BookingDate.Month())))
+		monthDiff := int(math.Abs(float64(t.ValueDate.Month() - t.BookingDate.Month())))
 		if monthDiff > 1 {
 			t.BookingDate = domain.NewShortDate(t.BookingDate.AddDate(1, 0, 0))
 		}

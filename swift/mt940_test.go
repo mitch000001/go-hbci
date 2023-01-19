@@ -47,7 +47,7 @@ func TestTransactionTagUnmarshal(t *testing.T) {
 			":61:1511301202DR4,52N024NONREF//ABC\r\n/DEF",
 			&TransactionTag{
 				Tag:                   ":61:",
-				ValutaDate:            domain.ShortDate{Time: domain.Date(2015, time.November, 30, time.Local).Truncate(24 * time.Hour)},
+				ValueDate:             domain.ShortDate{Time: domain.Date(2015, time.November, 30, time.Local).Truncate(24 * time.Hour)},
 				BookingDate:           domain.ShortDate{Time: domain.Date(2015, time.December, 2, time.Local).Truncate(24 * time.Hour)},
 				DebitCreditIndicator:  "D",
 				CurrencyKind:          "R",
@@ -63,7 +63,7 @@ func TestTransactionTagUnmarshal(t *testing.T) {
 			":61:1512300102DR4,52N024NONREF//ABC\r\n/DEF",
 			&TransactionTag{
 				Tag:                   ":61:",
-				ValutaDate:            domain.ShortDate{Time: domain.Date(2015, time.December, 30, time.Local).Truncate(24 * time.Hour)},
+				ValueDate:             domain.ShortDate{Time: domain.Date(2015, time.December, 30, time.Local).Truncate(24 * time.Hour)},
 				BookingDate:           domain.ShortDate{Time: domain.Date(2016, time.January, 2, time.Local).Truncate(24 * time.Hour)},
 				DebitCreditIndicator:  "D",
 				CurrencyKind:          "R",
@@ -79,7 +79,7 @@ func TestTransactionTagUnmarshal(t *testing.T) {
 			":61:1508010803DR4,52N024NONREF//ABC\r\n/DEF",
 			&TransactionTag{
 				Tag:                   ":61:",
-				ValutaDate:            domain.ShortDate{Time: domain.Date(2015, 8, 1, time.Local).Truncate(24 * time.Hour)},
+				ValueDate:             domain.ShortDate{Time: domain.Date(2015, 8, 1, time.Local).Truncate(24 * time.Hour)},
 				BookingDate:           domain.ShortDate{Time: domain.Date(2015, 8, 3, time.Local).Truncate(24 * time.Hour)},
 				DebitCreditIndicator:  "D",
 				CurrencyKind:          "R",
@@ -95,7 +95,7 @@ func TestTransactionTagUnmarshal(t *testing.T) {
 			":61:1508010803DR4,52N024NONREF//ABC",
 			&TransactionTag{
 				Tag:                  ":61:",
-				ValutaDate:           domain.ShortDate{Time: domain.Date(2015, 8, 1, time.Local).Truncate(24 * time.Hour)},
+				ValueDate:            domain.ShortDate{Time: domain.Date(2015, 8, 1, time.Local).Truncate(24 * time.Hour)},
 				BookingDate:          domain.ShortDate{Time: domain.Date(2015, 8, 3, time.Local).Truncate(24 * time.Hour)},
 				DebitCreditIndicator: "D",
 				CurrencyKind:         "R",
@@ -110,7 +110,7 @@ func TestTransactionTagUnmarshal(t *testing.T) {
 			":61:1508010803DR4,52N024NONREF\r\n/DEF",
 			&TransactionTag{
 				Tag:                   ":61:",
-				ValutaDate:            domain.ShortDate{Time: domain.Date(2015, 8, 1, time.Local).Truncate(24 * time.Hour)},
+				ValueDate:             domain.ShortDate{Time: domain.Date(2015, 8, 1, time.Local).Truncate(24 * time.Hour)},
 				BookingDate:           domain.ShortDate{Time: domain.Date(2015, 8, 3, time.Local).Truncate(24 * time.Hour)},
 				DebitCreditIndicator:  "D",
 				CurrencyKind:          "R",
@@ -125,7 +125,7 @@ func TestTransactionTagUnmarshal(t *testing.T) {
 			":61:1508010803DR4,52N024NONREF",
 			&TransactionTag{
 				Tag:                  ":61:",
-				ValutaDate:           domain.ShortDate{Time: domain.Date(2015, 8, 1, time.Local).Truncate(24 * time.Hour)},
+				ValueDate:            domain.ShortDate{Time: domain.Date(2015, 8, 1, time.Local).Truncate(24 * time.Hour)},
 				BookingDate:          domain.ShortDate{Time: domain.Date(2015, 8, 3, time.Local).Truncate(24 * time.Hour)},
 				DebitCreditIndicator: "D",
 				CurrencyKind:         "R",
