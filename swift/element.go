@@ -150,10 +150,7 @@ func (c *CustomFieldTag) Unmarshal(value []byte) error {
 		return err
 	}
 	c.Tag = tag.ID
-	tID, err := strconv.Atoi(charset.ToUTF8(tag.Value[:3]))
-	if err != nil {
-		return err
-	}
+	tID, _ := strconv.Atoi(charset.ToUTF8(tag.Value[:3]))
 	c.TransactionID = tID
 	marshaledFields := tag.Value[3:]
 	marshaledFields = bytes.Replace(
