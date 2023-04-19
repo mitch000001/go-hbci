@@ -3,6 +3,7 @@ package swift
 import (
 	"bytes"
 	"fmt"
+	"regexp"
 	"strconv"
 
 	"github.com/zerodhafundhouse/citi-mt940/charset"
@@ -116,6 +117,7 @@ type CustomFieldTag struct {
 	AccountID          string
 	Name               string
 	MessageKeyAddition int
+	Utr                string
 	Purpose2           []string
 }
 
@@ -205,6 +207,12 @@ func (c *CustomFieldTag) Unmarshal(value []byte) error {
 			internal.Debug.Printf("Unmarshal CustomFieldTag: unknown fieldKey: %s\n", fieldKey)
 		}
 	}
+	re := regexp.MustCompile("UTR\\s+(\\w+)")
+	match := re.FindStringSubmatch(string(value))
+	if len(match) >= 2 {
+		c.Utr = match[1]
+	}
+
 	return nil
 }
 
