@@ -123,7 +123,7 @@ func (d *dialog) SendMessage(clientMessage message.HBCIMessage) (message.BankMes
 	acknowledgements := decryptedMessage.Acknowledgements()
 	for _, ack := range acknowledgements {
 		if ack.IsWarning() {
-			fmt.Printf("%v\n", ack)
+			internal.Info.Printf("%v\n", ack)
 		}
 		if ack.IsError() {
 			errors = append(errors, ack.String())
