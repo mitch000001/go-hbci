@@ -27,8 +27,14 @@ func (s *StatusProtocolResponseSegment) UnmarshalHBCI(value []byte) error {
 		if err != nil {
 			return err
 		}
+	case 4:
+		segment = &StatusProtocolResponseSegmentV4{}
+		err = segment.UnmarshalHBCI(value)
+		if err != nil {
+			return err
+		}
 	default:
-		return fmt.Errorf("Unknown segment version: %d", header.Version.Val())
+		return fmt.Errorf("unknown segment version: %d", header.Version.Val())
 	}
 	s.StatusProtocolResponse = segment
 	return nil
@@ -40,7 +46,7 @@ func (s *StatusProtocolResponseSegmentV3) UnmarshalHBCI(value []byte) error {
 		return err
 	}
 	if len(elements) == 0 {
-		return fmt.Errorf("Malformed marshaled value")
+		return fmt.Errorf("malformed marshaled value: no elements extracted")
 	}
 	seg, err := SegmentFromHeaderBytes(elements[0], s)
 	if err != nil {
@@ -51,28 +57,28 @@ func (s *StatusProtocolResponseSegmentV3) UnmarshalHBCI(value []byte) error {
 		s.ReferencingMessage = &element.ReferencingMessageDataElement{}
 		err = s.ReferencingMessage.UnmarshalHBCI(elements[1])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling ReferencingMessage: %w", err)
 		}
 	}
 	if len(elements) > 2 && len(elements[2]) > 0 {
 		s.ReferencingSegment = &element.NumberDataElement{}
 		err = s.ReferencingSegment.UnmarshalHBCI(elements[2])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling ReferencingSegment: %w", err)
 		}
 	}
 	if len(elements) > 3 && len(elements[3]) > 0 {
 		s.Date = &element.DateDataElement{}
 		err = s.Date.UnmarshalHBCI(elements[3])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling Date: %w", err)
 		}
 	}
 	if len(elements) > 4 && len(elements[4]) > 0 {
 		s.Time = &element.TimeDataElement{}
 		err = s.Time.UnmarshalHBCI(elements[4])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling Time: %w", err)
 		}
 	}
 	if len(elements) > 5 && len(elements[5]) > 0 {
@@ -83,7 +89,62 @@ func (s *StatusProtocolResponseSegmentV3) UnmarshalHBCI(value []byte) error {
 			err = s.Acknowledgement.UnmarshalHBCI(elements[5])
 		}
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling Acknowledgement: %w", err)
+		}
+	}
+	return nil
+}
+
+func (s *StatusProtocolResponseSegmentV4) UnmarshalHBCI(value []byte) error {
+	elements, err := ExtractElements(value)
+	if err != nil {
+		return err
+	}
+	if len(elements) == 0 {
+		return fmt.Errorf("malformed marshaled value: no elements extracted")
+	}
+	seg, err := SegmentFromHeaderBytes(elements[0], s)
+	if err != nil {
+		return err
+	}
+	s.Segment = seg
+	if len(elements) > 1 && len(elements[1]) > 0 {
+		s.ReferencingMessage = &element.ReferencingMessageDataElement{}
+		err = s.ReferencingMessage.UnmarshalHBCI(elements[1])
+		if err != nil {
+			return fmt.Errorf("error unmarshaling ReferencingMessage: %w", err)
+		}
+	}
+	if len(elements) > 2 && len(elements[2]) > 0 {
+		s.ReferencingSegment = &element.NumberDataElement{}
+		err = s.ReferencingSegment.UnmarshalHBCI(elements[2])
+		if err != nil {
+			return fmt.Errorf("error unmarshaling ReferencingSegment: %w", err)
+		}
+	}
+	if len(elements) > 3 && len(elements[3]) > 0 {
+		s.Date = &element.DateDataElement{}
+		err = s.Date.UnmarshalHBCI(elements[3])
+		if err != nil {
+			return fmt.Errorf("error unmarshaling Date: %w", err)
+		}
+	}
+	if len(elements) > 4 && len(elements[4]) > 0 {
+		s.Time = &element.TimeDataElement{}
+		err = s.Time.UnmarshalHBCI(elements[4])
+		if err != nil {
+			return fmt.Errorf("error unmarshaling Time: %w", err)
+		}
+	}
+	if len(elements) > 5 && len(elements[5]) > 0 {
+		s.Acknowledgement = &element.AcknowledgementDataElement{}
+		if len(elements)+1 > 5 {
+			err = s.Acknowledgement.UnmarshalHBCI(bytes.Join(elements[5:], []byte("+")))
+		} else {
+			err = s.Acknowledgement.UnmarshalHBCI(elements[5])
+		}
+		if err != nil {
+			return fmt.Errorf("error unmarshaling Acknowledgement: %w", err)
 		}
 	}
 	return nil

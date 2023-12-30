@@ -137,7 +137,7 @@ func (a *AllowedBusinessTransactionDataElement) UnmarshalHBCI(value []byte) erro
 		return err
 	}
 	if len(elements) < 2 {
-		return fmt.Errorf("Malformed marshaled value")
+		return fmt.Errorf("malformed marshaled value")
 	}
 	a.DataElement = NewDataElementGroup(allowedBusinessTransactionDEG, 5, a)
 	a.BusinessTransactionID = &AlphaNumericDataElement{}

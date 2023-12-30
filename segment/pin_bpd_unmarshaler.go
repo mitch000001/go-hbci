@@ -28,7 +28,7 @@ func (p *PinTanBankParameterSegment) UnmarshalHBCI(value []byte) error {
 			return err
 		}
 	default:
-		return fmt.Errorf("Unknown segment version: %d", header.Version.Val())
+		return fmt.Errorf("unknown segment version: %d", header.Version.Val())
 	}
 	p.PinTanBankParameter = segment
 	return nil
@@ -40,7 +40,7 @@ func (p *PinTanBankParameterV1) UnmarshalHBCI(value []byte) error {
 		return err
 	}
 	if len(elements) == 0 {
-		return fmt.Errorf("Malformed marshaled value")
+		return fmt.Errorf("malformed marshaled value: no elements extracted")
 	}
 	seg, err := SegmentFromHeaderBytes(elements[0], p)
 	if err != nil {
@@ -51,21 +51,21 @@ func (p *PinTanBankParameterV1) UnmarshalHBCI(value []byte) error {
 		p.MaxJobs = &element.NumberDataElement{}
 		err = p.MaxJobs.UnmarshalHBCI(elements[1])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling MaxJobs: %w", err)
 		}
 	}
 	if len(elements) > 2 && len(elements[2]) > 0 {
 		p.MinSignatures = &element.NumberDataElement{}
 		err = p.MinSignatures.UnmarshalHBCI(elements[2])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling MinSignatures: %w", err)
 		}
 	}
 	if len(elements) > 3 && len(elements[3]) > 0 {
 		p.XXX_Unknown = &element.NumberDataElement{}
 		err = p.XXX_Unknown.UnmarshalHBCI(elements[3])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling XXX_Unknown: %w", err)
 		}
 	}
 	if len(elements) > 4 && len(elements[4]) > 0 {
@@ -76,7 +76,7 @@ func (p *PinTanBankParameterV1) UnmarshalHBCI(value []byte) error {
 			err = p.PinTanSpecificParams.UnmarshalHBCI(elements[4])
 		}
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling PinTanSpecificParams: %w", err)
 		}
 	}
 	return nil

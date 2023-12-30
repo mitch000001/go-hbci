@@ -28,7 +28,7 @@ func (s *SecurityProfileDataElement) UnmarshalHBCI(value []byte) error {
 		return err
 	}
 	if len(elements) < 2 {
-		return fmt.Errorf("Malformed marshaled value")
+		return fmt.Errorf("malformed marshaled value")
 	}
 	s.DataElement = NewDataElementGroup(securityProfileDEG, 5, s)
 	s.SecurityMethod = &AlphaNumericDataElement{}

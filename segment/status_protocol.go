@@ -103,7 +103,7 @@ type StatusProtocolResponse interface {
 	Status() domain.StatusAcknowledgement
 }
 
-//go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment StatusProtocolResponseSegment -segment_interface StatusProtocolResponse -segment_versions="StatusProtocolResponseSegmentV3:3:Segment"
+//go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment StatusProtocolResponseSegment -segment_interface StatusProtocolResponse -segment_versions="StatusProtocolResponseSegmentV3:3:Segment,StatusProtocolResponseSegmentV4:4:Segment"
 
 type StatusProtocolResponseSegment struct {
 	StatusProtocolResponse

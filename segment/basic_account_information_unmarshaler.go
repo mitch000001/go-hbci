@@ -46,7 +46,7 @@ func (a *AccountInformationSegment) UnmarshalHBCI(value []byte) error {
 			return err
 		}
 	default:
-		return fmt.Errorf("Unknown segment version: %d", header.Version.Val())
+		return fmt.Errorf("unknown segment version: %d", header.Version.Val())
 	}
 	a.accountInformationSegment = segment
 	return nil
@@ -58,7 +58,7 @@ func (a *AccountInformationV4) UnmarshalHBCI(value []byte) error {
 		return err
 	}
 	if len(elements) == 0 {
-		return fmt.Errorf("Malformed marshaled value")
+		return fmt.Errorf("malformed marshaled value: no elements extracted")
 	}
 	seg, err := SegmentFromHeaderBytes(elements[0], a)
 	if err != nil {
@@ -69,49 +69,49 @@ func (a *AccountInformationV4) UnmarshalHBCI(value []byte) error {
 		a.AccountConnection = &element.AccountConnectionDataElement{}
 		err = a.AccountConnection.UnmarshalHBCI(elements[1])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling AccountConnection: %w", err)
 		}
 	}
 	if len(elements) > 2 && len(elements[2]) > 0 {
 		a.UserID = &element.IdentificationDataElement{}
 		err = a.UserID.UnmarshalHBCI(elements[2])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling UserID: %w", err)
 		}
 	}
 	if len(elements) > 3 && len(elements[3]) > 0 {
 		a.AccountCurrency = &element.CurrencyDataElement{}
 		err = a.AccountCurrency.UnmarshalHBCI(elements[3])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling AccountCurrency: %w", err)
 		}
 	}
 	if len(elements) > 4 && len(elements[4]) > 0 {
 		a.Name1 = &element.AlphaNumericDataElement{}
 		err = a.Name1.UnmarshalHBCI(elements[4])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling Name1: %w", err)
 		}
 	}
 	if len(elements) > 5 && len(elements[5]) > 0 {
 		a.Name2 = &element.AlphaNumericDataElement{}
 		err = a.Name2.UnmarshalHBCI(elements[5])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling Name2: %w", err)
 		}
 	}
 	if len(elements) > 6 && len(elements[6]) > 0 {
 		a.AccountProductID = &element.AlphaNumericDataElement{}
 		err = a.AccountProductID.UnmarshalHBCI(elements[6])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling AccountProductID: %w", err)
 		}
 	}
 	if len(elements) > 7 && len(elements[7]) > 0 {
 		a.AccountLimit = &element.AccountLimitDataElement{}
 		err = a.AccountLimit.UnmarshalHBCI(elements[7])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling AccountLimit: %w", err)
 		}
 	}
 	if len(elements) > 8 && len(elements[8]) > 0 {
@@ -122,7 +122,7 @@ func (a *AccountInformationV4) UnmarshalHBCI(value []byte) error {
 			err = a.AllowedBusinessTransactions.UnmarshalHBCI(elements[8])
 		}
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling AllowedBusinessTransactions: %w", err)
 		}
 	}
 	return nil
@@ -134,7 +134,7 @@ func (a *AccountInformationV5) UnmarshalHBCI(value []byte) error {
 		return err
 	}
 	if len(elements) == 0 {
-		return fmt.Errorf("Malformed marshaled value")
+		return fmt.Errorf("malformed marshaled value: no elements extracted")
 	}
 	seg, err := SegmentFromHeaderBytes(elements[0], a)
 	if err != nil {
@@ -145,56 +145,56 @@ func (a *AccountInformationV5) UnmarshalHBCI(value []byte) error {
 		a.AccountConnection = &element.AccountConnectionDataElement{}
 		err = a.AccountConnection.UnmarshalHBCI(elements[1])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling AccountConnection: %w", err)
 		}
 	}
 	if len(elements) > 2 && len(elements[2]) > 0 {
 		a.UserID = &element.IdentificationDataElement{}
 		err = a.UserID.UnmarshalHBCI(elements[2])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling UserID: %w", err)
 		}
 	}
 	if len(elements) > 3 && len(elements[3]) > 0 {
 		a.AccountType = &element.NumberDataElement{}
 		err = a.AccountType.UnmarshalHBCI(elements[3])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling AccountType: %w", err)
 		}
 	}
 	if len(elements) > 4 && len(elements[4]) > 0 {
 		a.AccountCurrency = &element.CurrencyDataElement{}
 		err = a.AccountCurrency.UnmarshalHBCI(elements[4])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling AccountCurrency: %w", err)
 		}
 	}
 	if len(elements) > 5 && len(elements[5]) > 0 {
 		a.Name1 = &element.AlphaNumericDataElement{}
 		err = a.Name1.UnmarshalHBCI(elements[5])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling Name1: %w", err)
 		}
 	}
 	if len(elements) > 6 && len(elements[6]) > 0 {
 		a.Name2 = &element.AlphaNumericDataElement{}
 		err = a.Name2.UnmarshalHBCI(elements[6])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling Name2: %w", err)
 		}
 	}
 	if len(elements) > 7 && len(elements[7]) > 0 {
 		a.AccountProductID = &element.AlphaNumericDataElement{}
 		err = a.AccountProductID.UnmarshalHBCI(elements[7])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling AccountProductID: %w", err)
 		}
 	}
 	if len(elements) > 8 && len(elements[8]) > 0 {
 		a.AccountLimit = &element.AccountLimitDataElement{}
 		err = a.AccountLimit.UnmarshalHBCI(elements[8])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling AccountLimit: %w", err)
 		}
 	}
 	if len(elements) > 9 && len(elements[9]) > 0 {
@@ -205,7 +205,7 @@ func (a *AccountInformationV5) UnmarshalHBCI(value []byte) error {
 			err = a.AllowedBusinessTransactions.UnmarshalHBCI(elements[9])
 		}
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling AllowedBusinessTransactions: %w", err)
 		}
 	}
 	return nil
@@ -217,7 +217,7 @@ func (a *AccountInformationV6) UnmarshalHBCI(value []byte) error {
 		return err
 	}
 	if len(elements) == 0 {
-		return fmt.Errorf("Malformed marshaled value")
+		return fmt.Errorf("malformed marshaled value: no elements extracted")
 	}
 	seg, err := SegmentFromHeaderBytes(elements[0], a)
 	if err != nil {
@@ -228,70 +228,70 @@ func (a *AccountInformationV6) UnmarshalHBCI(value []byte) error {
 		a.AccountConnection = &element.AccountConnectionDataElement{}
 		err = a.AccountConnection.UnmarshalHBCI(elements[1])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling AccountConnection: %w", err)
 		}
 	}
 	if len(elements) > 2 && len(elements[2]) > 0 {
 		a.IBAN = &element.AlphaNumericDataElement{}
 		err = a.IBAN.UnmarshalHBCI(elements[2])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling IBAN: %w", err)
 		}
 	}
 	if len(elements) > 3 && len(elements[3]) > 0 {
 		a.UserID = &element.IdentificationDataElement{}
 		err = a.UserID.UnmarshalHBCI(elements[3])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling UserID: %w", err)
 		}
 	}
 	if len(elements) > 4 && len(elements[4]) > 0 {
 		a.AccountType = &element.NumberDataElement{}
 		err = a.AccountType.UnmarshalHBCI(elements[4])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling AccountType: %w", err)
 		}
 	}
 	if len(elements) > 5 && len(elements[5]) > 0 {
 		a.AccountCurrency = &element.CurrencyDataElement{}
 		err = a.AccountCurrency.UnmarshalHBCI(elements[5])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling AccountCurrency: %w", err)
 		}
 	}
 	if len(elements) > 6 && len(elements[6]) > 0 {
 		a.Name1 = &element.AlphaNumericDataElement{}
 		err = a.Name1.UnmarshalHBCI(elements[6])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling Name1: %w", err)
 		}
 	}
 	if len(elements) > 7 && len(elements[7]) > 0 {
 		a.Name2 = &element.AlphaNumericDataElement{}
 		err = a.Name2.UnmarshalHBCI(elements[7])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling Name2: %w", err)
 		}
 	}
 	if len(elements) > 8 && len(elements[8]) > 0 {
 		a.AccountProductID = &element.AlphaNumericDataElement{}
 		err = a.AccountProductID.UnmarshalHBCI(elements[8])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling AccountProductID: %w", err)
 		}
 	}
 	if len(elements) > 9 && len(elements[9]) > 0 {
 		a.AccountLimit = &element.AccountLimitDataElement{}
 		err = a.AccountLimit.UnmarshalHBCI(elements[9])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling AccountLimit: %w", err)
 		}
 	}
 	if len(elements) > 10 && len(elements[10]) > 0 {
 		a.AllowedBusinessTransactions = &element.AllowedBusinessTransactionsDataElement{}
 		err = a.AllowedBusinessTransactions.UnmarshalHBCI(elements[10])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling AllowedBusinessTransactions: %w", err)
 		}
 	}
 	if len(elements) > 11 && len(elements[11]) > 0 {
@@ -302,7 +302,7 @@ func (a *AccountInformationV6) UnmarshalHBCI(value []byte) error {
 			err = a.AccountExtensions.UnmarshalHBCI(elements[11])
 		}
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling AccountExtensions: %w", err)
 		}
 	}
 	return nil
@@ -314,7 +314,7 @@ func (a *AccountInformationV7) UnmarshalHBCI(value []byte) error {
 		return err
 	}
 	if len(elements) == 0 {
-		return fmt.Errorf("Malformed marshaled value")
+		return fmt.Errorf("malformed marshaled value: no elements extracted")
 	}
 	seg, err := SegmentFromHeaderBytes(elements[0], a)
 	if err != nil {
@@ -325,70 +325,70 @@ func (a *AccountInformationV7) UnmarshalHBCI(value []byte) error {
 		a.AccountConnection = &element.AccountConnectionDataElement{}
 		err = a.AccountConnection.UnmarshalHBCI(elements[1])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling AccountConnection: %w", err)
 		}
 	}
 	if len(elements) > 2 && len(elements[2]) > 0 {
 		a.IBAN = &element.AlphaNumericDataElement{}
 		err = a.IBAN.UnmarshalHBCI(elements[2])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling IBAN: %w", err)
 		}
 	}
 	if len(elements) > 3 && len(elements[3]) > 0 {
 		a.UserID = &element.IdentificationDataElement{}
 		err = a.UserID.UnmarshalHBCI(elements[3])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling UserID: %w", err)
 		}
 	}
 	if len(elements) > 4 && len(elements[4]) > 0 {
 		a.AccountType = &element.NumberDataElement{}
 		err = a.AccountType.UnmarshalHBCI(elements[4])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling AccountType: %w", err)
 		}
 	}
 	if len(elements) > 5 && len(elements[5]) > 0 {
 		a.AccountCurrency = &element.CurrencyDataElement{}
 		err = a.AccountCurrency.UnmarshalHBCI(elements[5])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling AccountCurrency: %w", err)
 		}
 	}
 	if len(elements) > 6 && len(elements[6]) > 0 {
 		a.Name1 = &element.AlphaNumericDataElement{}
 		err = a.Name1.UnmarshalHBCI(elements[6])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling Name1: %w", err)
 		}
 	}
 	if len(elements) > 7 && len(elements[7]) > 0 {
 		a.Name2 = &element.AlphaNumericDataElement{}
 		err = a.Name2.UnmarshalHBCI(elements[7])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling Name2: %w", err)
 		}
 	}
 	if len(elements) > 8 && len(elements[8]) > 0 {
 		a.AccountProductID = &element.AlphaNumericDataElement{}
 		err = a.AccountProductID.UnmarshalHBCI(elements[8])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling AccountProductID: %w", err)
 		}
 	}
 	if len(elements) > 9 && len(elements[9]) > 0 {
 		a.AccountLimit = &element.AccountLimitDataElement{}
 		err = a.AccountLimit.UnmarshalHBCI(elements[9])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling AccountLimit: %w", err)
 		}
 	}
 	if len(elements) > 10 && len(elements[10]) > 0 {
 		a.AllowedBusinessTransactions = &element.AllowedBusinessTransactionsDataElement{}
 		err = a.AllowedBusinessTransactions.UnmarshalHBCI(elements[10])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling AllowedBusinessTransactions: %w", err)
 		}
 	}
 	if len(elements) > 11 && len(elements[11]) > 0 {
@@ -399,7 +399,7 @@ func (a *AccountInformationV7) UnmarshalHBCI(value []byte) error {
 			err = a.AccountExtensions.UnmarshalHBCI(elements[11])
 		}
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling AccountExtensions: %w", err)
 		}
 	}
 	return nil

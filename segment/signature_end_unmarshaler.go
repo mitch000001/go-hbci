@@ -34,7 +34,7 @@ func (s *SignatureEndSegment) UnmarshalHBCI(value []byte) error {
 			return err
 		}
 	default:
-		return fmt.Errorf("Unknown segment version: %d", header.Version.Val())
+		return fmt.Errorf("unknown segment version: %d", header.Version.Val())
 	}
 	s.signatureEndSegment = segment
 	return nil
@@ -46,7 +46,7 @@ func (s *SignatureEndV1) UnmarshalHBCI(value []byte) error {
 		return err
 	}
 	if len(elements) == 0 {
-		return fmt.Errorf("Malformed marshaled value")
+		return fmt.Errorf("malformed marshaled value: no elements extracted")
 	}
 	seg, err := SegmentFromHeaderBytes(elements[0], s)
 	if err != nil {
@@ -57,14 +57,14 @@ func (s *SignatureEndV1) UnmarshalHBCI(value []byte) error {
 		s.SecurityControlRef = &element.AlphaNumericDataElement{}
 		err = s.SecurityControlRef.UnmarshalHBCI(elements[1])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling SecurityControlRef: %w", err)
 		}
 	}
 	if len(elements) > 2 && len(elements[2]) > 0 {
 		s.Signature = &element.BinaryDataElement{}
 		err = s.Signature.UnmarshalHBCI(elements[2])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling Signature: %w", err)
 		}
 	}
 	if len(elements) > 3 && len(elements[3]) > 0 {
@@ -75,7 +75,7 @@ func (s *SignatureEndV1) UnmarshalHBCI(value []byte) error {
 			err = s.PinTan.UnmarshalHBCI(elements[3])
 		}
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling PinTan: %w", err)
 		}
 	}
 	return nil
@@ -87,7 +87,7 @@ func (s *SignatureEndV2) UnmarshalHBCI(value []byte) error {
 		return err
 	}
 	if len(elements) == 0 {
-		return fmt.Errorf("Malformed marshaled value")
+		return fmt.Errorf("malformed marshaled value: no elements extracted")
 	}
 	seg, err := SegmentFromHeaderBytes(elements[0], s)
 	if err != nil {
@@ -98,14 +98,14 @@ func (s *SignatureEndV2) UnmarshalHBCI(value []byte) error {
 		s.SecurityControlRef = &element.AlphaNumericDataElement{}
 		err = s.SecurityControlRef.UnmarshalHBCI(elements[1])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling SecurityControlRef: %w", err)
 		}
 	}
 	if len(elements) > 2 && len(elements[2]) > 0 {
 		s.Signature = &element.BinaryDataElement{}
 		err = s.Signature.UnmarshalHBCI(elements[2])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling Signature: %w", err)
 		}
 	}
 	if len(elements) > 3 && len(elements[3]) > 0 {
@@ -116,7 +116,7 @@ func (s *SignatureEndV2) UnmarshalHBCI(value []byte) error {
 			err = s.CustomSignature.UnmarshalHBCI(elements[3])
 		}
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling CustomSignature: %w", err)
 		}
 	}
 	return nil

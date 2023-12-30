@@ -70,7 +70,7 @@ func (e *EncryptionAlgorithmDataElement) UnmarshalHBCI(value []byte) error {
 		return err
 	}
 	if len(elements) < 7 {
-		return fmt.Errorf("Malformed marshaled value")
+		return fmt.Errorf("malformed marshaled value")
 	}
 	e.DataElement = NewDataElementGroup(encryptionAlgorithmDEG, 5, e)
 	e.Usage = &AlphaNumericDataElement{}

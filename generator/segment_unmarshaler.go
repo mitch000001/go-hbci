@@ -131,19 +131,19 @@ func (s *segmentTemplateExecutor) execute() (io.Reader, error) {
 	}
 	t, err := template.New("executor").Funcs(funcMap).Parse(segmentExecutorTemplate)
 	if err != nil {
-		return nil, fmt.Errorf("Error while parsing template: %v", err)
+		return nil, fmt.Errorf("error while parsing template: %v", err)
 	}
 	t, err = t.Parse(segmentUnmarshalingTemplate)
 	if err != nil {
-		return nil, fmt.Errorf("Error while parsing template: %v", err)
+		return nil, fmt.Errorf("error while parsing template: %v", err)
 	}
 	t, err = t.Parse(packageDeclTemplate)
 	if err != nil {
-		return nil, fmt.Errorf("Error while parsing template: %v", err)
+		return nil, fmt.Errorf("error while parsing template: %v", err)
 	}
 	t, err = t.Parse(generationNoticeTemplate)
 	if err != nil {
-		return nil, fmt.Errorf("Error while parsing template: %v", err)
+		return nil, fmt.Errorf("error while parsing template: %v", err)
 	}
 	var buf bytes.Buffer
 	err = t.Execute(&buf, s.templateObject)
@@ -173,7 +173,7 @@ type fieldExtractor struct {
 func (f *fieldExtractor) extractFields() ([]field, error) {
 	object := f.file.Scope.Lookup(f.segment.Name)
 	if object == nil {
-		return nil, fmt.Errorf("No segment with name %q found", f.segment.Name)
+		return nil, fmt.Errorf("no segment with name %q found", f.segment.Name)
 	}
 	elemVisitor := &elementVisitor{fileSet: f.fileSet, object: object, receiverName: f.segment.Name}
 	ast.Walk(elemVisitor, f.file)
@@ -253,7 +253,7 @@ func ({{.NameVar}} *{{.Name}}) UnmarshalHBCI(value []byte) error {
 		return err
 	}
 	if len(elements) == 0 {
-		return fmt.Errorf("Malformed marshaled value")
+		return fmt.Errorf("malformed marshaled value: no elements extracted")
 	}
 	seg, err := SegmentFromHeaderBytes(elements[0], {{.NameVar}})
 	if err != nil {
@@ -268,7 +268,7 @@ func ({{.NameVar}} *{{.Name}}) UnmarshalHBCI(value []byte) error {
 			err = {{ $.NameVar }}.{{ $field.Name }}.UnmarshalHBCI(elements[{{ plusOne $idx }}])
 		}{{else}}err = {{ $.NameVar }}.{{ $field.Name }}.UnmarshalHBCI(elements[{{ plusOne $idx }}]){{end}}
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling {{ $field.Name }}: %w", err)
 		}
 	}{{ end }}
 	return nil
@@ -342,7 +342,7 @@ func ({{.NameVar}} *{{.Name}}) UnmarshalHBCI(value []byte) error {
 			return err
 		}{{end}}
 	{{end}}default:
-		return fmt.Errorf("Unknown segment version: %d", header.Version.Val())
+		return fmt.Errorf("unknown segment version: %d", header.Version.Val())
 	}
 	{{.NameVar}}.{{.InterfaceName}} = segment
 	return nil

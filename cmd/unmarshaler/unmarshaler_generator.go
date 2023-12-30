@@ -94,11 +94,11 @@ func (s *segmentVersionsFlag) Set(in string) error {
 	for _, seg := range segments {
 		parts := strings.Split(seg, ":")
 		if len(parts) < 2 {
-			return fmt.Errorf("Malformed versioned segment: %q", seg)
+			return fmt.Errorf("malformed versioned segment: %q", seg)
 		}
 		version, err := strconv.Atoi(parts[1])
 		if err != nil {
-			return fmt.Errorf("Malformed segment version: %v", err)
+			return fmt.Errorf("malformed segment version: %v", err)
 		}
 		var interfaceName string
 		if len(parts) == 3 {

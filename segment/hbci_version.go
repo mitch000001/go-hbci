@@ -65,7 +65,7 @@ func (b *builder) AccountBalanceRequest(account domain.AccountConnection, allAcc
 	}
 	request, err := AccountBalanceRequestBuilder(versions)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error building account balance request (HKSAL): %w", err)
 	}
 	return request(account, allAccounts), nil
 }

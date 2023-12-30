@@ -24,7 +24,7 @@ func (m *MessageAcknowledgement) UnmarshalHBCI(value []byte) error {
 		return err
 	}
 	if len(elements) == 0 {
-		return fmt.Errorf("Malformed marshaled value")
+		return fmt.Errorf("malformed marshaled value")
 	}
 	seg, err := SegmentFromHeaderBytes(elements[0], m)
 	if err != nil {
@@ -90,7 +90,7 @@ func (s *SegmentAcknowledgement) UnmarshalHBCI(value []byte) error {
 		return err
 	}
 	if len(elements) == 0 {
-		return fmt.Errorf("Malformed marshaled value")
+		return fmt.Errorf("malformed marshaled value")
 	}
 	seg, err := SegmentFromHeaderBytes(elements[0], s)
 	if err != nil {

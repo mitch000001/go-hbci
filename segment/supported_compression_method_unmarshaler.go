@@ -15,7 +15,7 @@ func (c *CompressionMethodSegment) UnmarshalHBCI(value []byte) error {
 		return err
 	}
 	if len(elements) == 0 {
-		return fmt.Errorf("Malformed marshaled value")
+		return fmt.Errorf("malformed marshaled value: no elements extracted")
 	}
 	seg, err := SegmentFromHeaderBytes(elements[0], c)
 	if err != nil {
@@ -30,7 +30,7 @@ func (c *CompressionMethodSegment) UnmarshalHBCI(value []byte) error {
 			err = c.SupportedCompressionMethods.UnmarshalHBCI(elements[1])
 		}
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling SupportedCompressionMethods: %w", err)
 		}
 	}
 	return nil

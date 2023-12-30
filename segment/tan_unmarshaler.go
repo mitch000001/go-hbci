@@ -28,7 +28,7 @@ func (t *TanResponseSegment) UnmarshalHBCI(value []byte) error {
 			return err
 		}
 	default:
-		return fmt.Errorf("Unknown segment version: %d", header.Version.Val())
+		return fmt.Errorf("unknown segment version: %d", header.Version.Val())
 	}
 	t.TanResponse = segment
 	return nil
@@ -40,7 +40,7 @@ func (t *TanResponseSegmentV6) UnmarshalHBCI(value []byte) error {
 		return err
 	}
 	if len(elements) == 0 {
-		return fmt.Errorf("Malformed marshaled value")
+		return fmt.Errorf("malformed marshaled value: no elements extracted")
 	}
 	seg, err := SegmentFromHeaderBytes(elements[0], t)
 	if err != nil {
@@ -51,14 +51,14 @@ func (t *TanResponseSegmentV6) UnmarshalHBCI(value []byte) error {
 		t.TANProcess = &element.AlphaNumericDataElement{}
 		err = t.TANProcess.UnmarshalHBCI(elements[1])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling TANProcess: %w", err)
 		}
 	}
 	if len(elements) > 2 && len(elements[2]) > 0 {
 		t.JobHash = &element.BinaryDataElement{}
 		err = t.JobHash.UnmarshalHBCI(elements[2])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling JobHash: %w", err)
 		}
 	}
 	if len(elements) > 3 && len(elements[3]) > 0 {
@@ -69,7 +69,7 @@ func (t *TanResponseSegmentV6) UnmarshalHBCI(value []byte) error {
 			err = t.JobReference.UnmarshalHBCI(elements[3])
 		}
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling JobReference: %w", err)
 		}
 	}
 	return nil

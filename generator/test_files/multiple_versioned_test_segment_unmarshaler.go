@@ -34,7 +34,7 @@ func (m *MultipleVersionedTestSegment) UnmarshalHBCI(value []byte) error {
 			return err
 		}
 	default:
-		return fmt.Errorf("Unknown segment version: %d", header.Version.Val())
+		return fmt.Errorf("unknown segment version: %d", header.Version.Val())
 	}
 	m.BankSegment = segment
 	return nil
@@ -46,7 +46,7 @@ func (m *MultipleVersionedTestSegmentV1) UnmarshalHBCI(value []byte) error {
 		return err
 	}
 	if len(elements) == 0 {
-		return fmt.Errorf("Malformed marshaled value")
+		return fmt.Errorf("malformed marshaled value: no elements extracted")
 	}
 	seg, err := SegmentFromHeaderBytes(elements[0], m)
 	if err != nil {
@@ -57,7 +57,7 @@ func (m *MultipleVersionedTestSegmentV1) UnmarshalHBCI(value []byte) error {
 		m.Abc = &element.AlphaNumericDataElement{}
 		err = m.Abc.UnmarshalHBCI(elements[1])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling Abc: %w", err)
 		}
 	}
 	if len(elements) > 2 && len(elements[2]) > 0 {
@@ -68,7 +68,7 @@ func (m *MultipleVersionedTestSegmentV1) UnmarshalHBCI(value []byte) error {
 			err = m.Def.UnmarshalHBCI(elements[2])
 		}
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling Def: %w", err)
 		}
 	}
 	return nil
@@ -80,7 +80,7 @@ func (m *MultipleVersionedTestSegmentV2) UnmarshalHBCI(value []byte) error {
 		return err
 	}
 	if len(elements) == 0 {
-		return fmt.Errorf("Malformed marshaled value")
+		return fmt.Errorf("malformed marshaled value: no elements extracted")
 	}
 	seg, err := SegmentFromHeaderBytes(elements[0], m)
 	if err != nil {
@@ -91,7 +91,7 @@ func (m *MultipleVersionedTestSegmentV2) UnmarshalHBCI(value []byte) error {
 		m.Abc = &element.AlphaNumericDataElement{}
 		err = m.Abc.UnmarshalHBCI(elements[1])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling Abc: %w", err)
 		}
 	}
 	if len(elements) > 2 && len(elements[2]) > 0 {
@@ -102,7 +102,7 @@ func (m *MultipleVersionedTestSegmentV2) UnmarshalHBCI(value []byte) error {
 			err = m.Def.UnmarshalHBCI(elements[2])
 		}
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling Def: %w", err)
 		}
 	}
 	return nil

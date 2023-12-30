@@ -48,7 +48,7 @@ func (s *SecurityIdentificationDataElement) UnmarshalHBCI(value []byte) error {
 		return err
 	}
 	if len(elements) < 3 {
-		return fmt.Errorf("Malformed marshaled value")
+		return fmt.Errorf("malformed marshaled value")
 	}
 	s.DataElement = NewDataElementGroup(securityIdentificationDEG, 3, s)
 	if len(elements) > 0 && len(elements[0]) > 0 {

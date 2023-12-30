@@ -15,7 +15,7 @@ func (s *SecurityMethodSegment) UnmarshalHBCI(value []byte) error {
 		return err
 	}
 	if len(elements) == 0 {
-		return fmt.Errorf("Malformed marshaled value")
+		return fmt.Errorf("malformed marshaled value: no elements extracted")
 	}
 	seg, err := SegmentFromHeaderBytes(elements[0], s)
 	if err != nil {
@@ -26,7 +26,7 @@ func (s *SecurityMethodSegment) UnmarshalHBCI(value []byte) error {
 		s.MixAllowed = &element.BooleanDataElement{}
 		err = s.MixAllowed.UnmarshalHBCI(elements[1])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling MixAllowed: %w", err)
 		}
 	}
 	if len(elements) > 2 && len(elements[2]) > 0 {
@@ -37,7 +37,7 @@ func (s *SecurityMethodSegment) UnmarshalHBCI(value []byte) error {
 			err = s.SupportedMethods.UnmarshalHBCI(elements[2])
 		}
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling SupportedMethods: %w", err)
 		}
 	}
 	return nil

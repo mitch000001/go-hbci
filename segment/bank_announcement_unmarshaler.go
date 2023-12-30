@@ -15,7 +15,7 @@ func (b *BankAnnouncementSegment) UnmarshalHBCI(value []byte) error {
 		return err
 	}
 	if len(elements) == 0 {
-		return fmt.Errorf("Malformed marshaled value")
+		return fmt.Errorf("malformed marshaled value: no elements extracted")
 	}
 	seg, err := SegmentFromHeaderBytes(elements[0], b)
 	if err != nil {
@@ -26,7 +26,7 @@ func (b *BankAnnouncementSegment) UnmarshalHBCI(value []byte) error {
 		b.Subject = &element.AlphaNumericDataElement{}
 		err = b.Subject.UnmarshalHBCI(elements[1])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling Subject: %w", err)
 		}
 	}
 	if len(elements) > 2 && len(elements[2]) > 0 {
@@ -37,7 +37,7 @@ func (b *BankAnnouncementSegment) UnmarshalHBCI(value []byte) error {
 			err = b.Body.UnmarshalHBCI(elements[2])
 		}
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling Body: %w", err)
 		}
 	}
 	return nil

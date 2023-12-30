@@ -15,7 +15,7 @@ func (c *CommunicationAccessResponseSegment) UnmarshalHBCI(value []byte) error {
 		return err
 	}
 	if len(elements) == 0 {
-		return fmt.Errorf("Malformed marshaled value")
+		return fmt.Errorf("malformed marshaled value: no elements extracted")
 	}
 	seg, err := SegmentFromHeaderBytes(elements[0], c)
 	if err != nil {
@@ -26,14 +26,14 @@ func (c *CommunicationAccessResponseSegment) UnmarshalHBCI(value []byte) error {
 		c.BankID = &element.BankIdentificationDataElement{}
 		err = c.BankID.UnmarshalHBCI(elements[1])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling BankID: %w", err)
 		}
 	}
 	if len(elements) > 2 && len(elements[2]) > 0 {
 		c.StandardLanguage = &element.NumberDataElement{}
 		err = c.StandardLanguage.UnmarshalHBCI(elements[2])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling StandardLanguage: %w", err)
 		}
 	}
 	if len(elements) > 3 && len(elements[3]) > 0 {
@@ -44,7 +44,7 @@ func (c *CommunicationAccessResponseSegment) UnmarshalHBCI(value []byte) error {
 			err = c.CommunicationParams.UnmarshalHBCI(elements[3])
 		}
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling CommunicationParams: %w", err)
 		}
 	}
 	return nil
