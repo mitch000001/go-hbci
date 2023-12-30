@@ -224,42 +224,42 @@ func (i *InternationalAccountConnectionDataElement) UnmarshalHBCI(value []byte) 
 		return err
 	}
 	if len(elements) == 0 {
-		return fmt.Errorf("Malformed AccountConnection")
+		return fmt.Errorf("malformed AccountConnection")
 	}
 	i.DataElement = NewGroupDataElementGroup(internationalAccountConnectionGDEG, 5, i)
 	if len(elements) > 0 && len(elements[0]) > 0 {
 		i.IBAN = &AlphaNumericDataElement{}
 		err = i.IBAN.UnmarshalHBCI(elements[0])
 		if err != nil {
-			return err
+			return fmt.Errorf("malformed IBAN: %w", err)
 		}
 	}
 	if len(elements) > 1 && len(elements[1]) > 0 {
 		i.BIC = &AlphaNumericDataElement{}
 		err = i.BIC.UnmarshalHBCI(elements[1])
 		if err != nil {
-			return err
+			return fmt.Errorf("malformed BIC: %w", err)
 		}
 	}
 	if len(elements) > 2 && len(elements[2]) > 0 {
 		i.AccountID = &IdentificationDataElement{}
 		err = i.AccountID.UnmarshalHBCI(elements[2])
 		if err != nil {
-			return err
+			return fmt.Errorf("malformed AccountID: %w", err)
 		}
 	}
 	if len(elements) > 3 && len(elements[3]) > 0 {
 		i.SubAccountCharacteristics = &IdentificationDataElement{}
 		err = i.SubAccountCharacteristics.UnmarshalHBCI(elements[3])
 		if err != nil {
-			return err
+			return fmt.Errorf("malformed SubAccountCharacteristics: %w", err)
 		}
 	}
 	if len(elements) > 4 && len(elements[4]) > 0 {
 		i.BankID = &BankIdentificationDataElement{}
-		err = i.BankID.UnmarshalHBCI(elements[4])
+		err = i.BankID.UnmarshalHBCI(bytes.Join(elements[4:], []byte(":")))
 		if err != nil {
-			return err
+			return fmt.Errorf("malformed BankID: %w", err)
 		}
 	}
 	return nil
