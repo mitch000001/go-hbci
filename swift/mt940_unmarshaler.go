@@ -15,7 +15,7 @@ func (m *MT940) Unmarshal(value []byte) error {
 		return err
 	}
 	if len(tags) == 0 {
-		return fmt.Errorf("Malformed marshaled value")
+		return fmt.Errorf("malformed marshaled value")
 	}
 	balanceTagOpen := false
 	for _, tag := range tags {
@@ -101,7 +101,7 @@ func (m *MT940) Unmarshal(value []byte) error {
 				m.CustomField = customField
 			}
 		default:
-			return fmt.Errorf("Malformed marshaled value")
+			return fmt.Errorf("malformed marshaled value")
 		}
 	}
 

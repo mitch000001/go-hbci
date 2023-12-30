@@ -113,7 +113,7 @@ func (s *SupportedHBCIVersionsDataElement) UnmarshalHBCI(value []byte) error {
 		return err
 	}
 	if len(elements) == 0 || len(elements) > 9 {
-		return fmt.Errorf("Malformed marshaled value")
+		return fmt.Errorf("malformed marshaled value")
 	}
 	versions := make([]DataElement, len(elements))
 	for i, elem := range elements {
@@ -163,7 +163,7 @@ func (s *SupportedLanguagesDataElement) UnmarshalHBCI(value []byte) error {
 		return err
 	}
 	if len(elements) == 0 || len(elements) > 9 {
-		return fmt.Errorf("Malformed marshaled value")
+		return fmt.Errorf("malformed marshaled value")
 	}
 	languages := make([]DataElement, len(elements))
 	for i, elem := range elements {
@@ -237,7 +237,7 @@ func (p *PinTanBusinessTransactionParameters) UnmarshalHBCI(value []byte) error 
 		return err
 	}
 	if len(elements)%2 != 0 {
-		return fmt.Errorf("Malformed marshaled value: value pairs not even")
+		return fmt.Errorf("malformed marshaled value: value pairs not even")
 	}
 	dataElements := make([]DataElement, len(elements)/2)
 	for i := 0; i < len(elements); i += 2 {

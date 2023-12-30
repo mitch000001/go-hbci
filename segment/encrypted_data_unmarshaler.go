@@ -15,7 +15,7 @@ func (e *EncryptedDataSegment) UnmarshalHBCI(value []byte) error {
 		return err
 	}
 	if len(elements) == 0 {
-		return fmt.Errorf("Malformed marshaled value")
+		return fmt.Errorf("malformed marshaled value: no elements extracted")
 	}
 	seg, err := SegmentFromHeaderBytes(elements[0], e)
 	if err != nil {
@@ -30,7 +30,7 @@ func (e *EncryptedDataSegment) UnmarshalHBCI(value []byte) error {
 			err = e.Data.UnmarshalHBCI(elements[1])
 		}
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling Data: %w", err)
 		}
 	}
 	return nil

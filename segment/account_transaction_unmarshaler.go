@@ -40,7 +40,7 @@ func (a *AccountTransactionResponseSegment) UnmarshalHBCI(value []byte) error {
 			return err
 		}
 	default:
-		return fmt.Errorf("Unknown segment version: %d", header.Version.Val())
+		return fmt.Errorf("unknown segment version: %d", header.Version.Val())
 	}
 	a.AccountTransactionResponse = segment
 	return nil
@@ -52,7 +52,7 @@ func (a *AccountTransactionResponseSegmentV5) UnmarshalHBCI(value []byte) error 
 		return err
 	}
 	if len(elements) == 0 {
-		return fmt.Errorf("Malformed marshaled value")
+		return fmt.Errorf("malformed marshaled value: no elements extracted")
 	}
 	seg, err := SegmentFromHeaderBytes(elements[0], a)
 	if err != nil {
@@ -63,7 +63,7 @@ func (a *AccountTransactionResponseSegmentV5) UnmarshalHBCI(value []byte) error 
 		a.BookedTransactions = &element.SwiftMT940DataElement{}
 		err = a.BookedTransactions.UnmarshalHBCI(elements[1])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling BookedTransactions: %w", err)
 		}
 	}
 	if len(elements) > 2 && len(elements[2]) > 0 {
@@ -74,7 +74,7 @@ func (a *AccountTransactionResponseSegmentV5) UnmarshalHBCI(value []byte) error 
 			err = a.UnbookedTransactions.UnmarshalHBCI(elements[2])
 		}
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling UnbookedTransactions: %w", err)
 		}
 	}
 	return nil
@@ -86,7 +86,7 @@ func (a *AccountTransactionResponseSegmentV6) UnmarshalHBCI(value []byte) error 
 		return err
 	}
 	if len(elements) == 0 {
-		return fmt.Errorf("Malformed marshaled value")
+		return fmt.Errorf("malformed marshaled value: no elements extracted")
 	}
 	seg, err := SegmentFromHeaderBytes(elements[0], a)
 	if err != nil {
@@ -97,7 +97,7 @@ func (a *AccountTransactionResponseSegmentV6) UnmarshalHBCI(value []byte) error 
 		a.BookedTransactions = &element.SwiftMT940DataElement{}
 		err = a.BookedTransactions.UnmarshalHBCI(elements[1])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling BookedTransactions: %w", err)
 		}
 	}
 	if len(elements) > 2 && len(elements[2]) > 0 {
@@ -108,7 +108,7 @@ func (a *AccountTransactionResponseSegmentV6) UnmarshalHBCI(value []byte) error 
 			err = a.UnbookedTransactions.UnmarshalHBCI(elements[2])
 		}
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling UnbookedTransactions: %w", err)
 		}
 	}
 	return nil
@@ -120,7 +120,7 @@ func (a *AccountTransactionResponseSegmentV7) UnmarshalHBCI(value []byte) error 
 		return err
 	}
 	if len(elements) == 0 {
-		return fmt.Errorf("Malformed marshaled value")
+		return fmt.Errorf("malformed marshaled value: no elements extracted")
 	}
 	seg, err := SegmentFromHeaderBytes(elements[0], a)
 	if err != nil {
@@ -131,7 +131,7 @@ func (a *AccountTransactionResponseSegmentV7) UnmarshalHBCI(value []byte) error 
 		a.BookedTransactions = &element.SwiftMT940DataElement{}
 		err = a.BookedTransactions.UnmarshalHBCI(elements[1])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling BookedTransactions: %w", err)
 		}
 	}
 	if len(elements) > 2 && len(elements[2]) > 0 {
@@ -142,7 +142,7 @@ func (a *AccountTransactionResponseSegmentV7) UnmarshalHBCI(value []byte) error 
 			err = a.UnbookedTransactions.UnmarshalHBCI(elements[2])
 		}
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling UnbookedTransactions: %w", err)
 		}
 	}
 	return nil

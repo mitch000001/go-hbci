@@ -102,7 +102,7 @@ func (a *AcknowledgementDataElement) UnmarshalHBCI(value []byte) error {
 		return err
 	}
 	if len(chunks) < 3 {
-		return fmt.Errorf("Malformed acknowledgment to unmarshal")
+		return fmt.Errorf("malformed acknowledgment to unmarshal")
 	}
 	code, err := strconv.Atoi(charset.ToUTF8(chunks[0]))
 	if err != nil {
@@ -152,7 +152,7 @@ func (p *ParamsDataElement) UnmarshalHBCI(value []byte) error {
 		return nil
 	}
 	if len(elements) > 10 {
-		return fmt.Errorf("Malformed params")
+		return fmt.Errorf("malformed params")
 	}
 	dataElements := make([]DataElement, len(elements))
 	for i, elem := range elements {

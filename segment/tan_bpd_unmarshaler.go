@@ -28,7 +28,7 @@ func (t *TanBankParameterSegment) UnmarshalHBCI(value []byte) error {
 			return err
 		}
 	default:
-		return fmt.Errorf("Unknown segment version: %d", header.Version.Val())
+		return fmt.Errorf("unknown segment version: %d", header.Version.Val())
 	}
 	t.TanBankParameter = segment
 	return nil
@@ -40,7 +40,7 @@ func (t *TanBankParameterV6) UnmarshalHBCI(value []byte) error {
 		return err
 	}
 	if len(elements) == 0 {
-		return fmt.Errorf("Malformed marshaled value")
+		return fmt.Errorf("malformed marshaled value: no elements extracted")
 	}
 	seg, err := SegmentFromHeaderBytes(elements[0], t)
 	if err != nil {
@@ -51,21 +51,21 @@ func (t *TanBankParameterV6) UnmarshalHBCI(value []byte) error {
 		t.MaxJobs = &element.NumberDataElement{}
 		err = t.MaxJobs.UnmarshalHBCI(elements[1])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling MaxJobs: %w", err)
 		}
 	}
 	if len(elements) > 2 && len(elements[2]) > 0 {
 		t.MinSignatures = &element.NumberDataElement{}
 		err = t.MinSignatures.UnmarshalHBCI(elements[2])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling MinSignatures: %w", err)
 		}
 	}
 	if len(elements) > 3 && len(elements[3]) > 0 {
 		t.SecurityClass = &element.CodeDataElement{}
 		err = t.SecurityClass.UnmarshalHBCI(elements[3])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling SecurityClass: %w", err)
 		}
 	}
 	if len(elements) > 4 && len(elements[4]) > 0 {
@@ -76,7 +76,7 @@ func (t *TanBankParameterV6) UnmarshalHBCI(value []byte) error {
 			err = t.Tan2StepSubmissionParameter.UnmarshalHBCI(elements[4])
 		}
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling Tan2StepSubmissionParameter: %w", err)
 		}
 	}
 	return nil

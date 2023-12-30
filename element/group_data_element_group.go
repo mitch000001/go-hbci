@@ -1,6 +1,7 @@
 package element
 
 import (
+	"bytes"
 	"fmt"
 	"math"
 	"strconv"
@@ -50,7 +51,7 @@ func (a *AmountDataElement) UnmarshalHBCI(value []byte) error {
 		return err
 	}
 	if len(elements) != 2 {
-		return fmt.Errorf("Malformed marshaled value")
+		return fmt.Errorf("malformed marshaled value")
 	}
 	a.Amount = &ValueDataElement{}
 	err = a.Amount.UnmarshalHBCI(elements[0])
@@ -106,7 +107,7 @@ func (b *BankIdentificationDataElement) UnmarshalHBCI(value []byte) error {
 		return err
 	}
 	if len(elements) < 2 {
-		return fmt.Errorf("Malformed marshaled value")
+		return fmt.Errorf("malformed marshaled value: less than 2 elements: %s", elements)
 	}
 	countryCode := &CountryCodeDataElement{}
 	err = countryCode.UnmarshalHBCI(elements[0])
@@ -156,7 +157,7 @@ func (a *AccountConnectionDataElement) UnmarshalHBCI(value []byte) error {
 		return err
 	}
 	if len(elements) < 4 {
-		return fmt.Errorf("Malformed AccountConnection")
+		return fmt.Errorf("malformed AccountConnection")
 	}
 	countryCode, err := strconv.Atoi(charset.ToUTF8(elements[2]))
 	if err != nil {
@@ -189,7 +190,7 @@ func NewInternationalAccountConnection(conn domain.InternationalAccountConnectio
 		BIC:                       NewAlphaNumeric(conn.BIC, 11),
 		AccountID:                 NewIdentification(conn.AccountID),
 		SubAccountCharacteristics: NewIdentification(conn.SubAccountCharacteristics),
-		BankID: NewBankIdentification(conn.BankID),
+		BankID:                    NewBankIdentification(conn.BankID),
 	}
 	i.DataElement = NewGroupDataElementGroup(internationalAccountConnectionGDEG, 5, i)
 	return i

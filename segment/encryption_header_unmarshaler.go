@@ -34,7 +34,7 @@ func (e *EncryptionHeaderSegment) UnmarshalHBCI(value []byte) error {
 			return err
 		}
 	default:
-		return fmt.Errorf("Unknown segment version: %d", header.Version.Val())
+		return fmt.Errorf("unknown segment version: %d", header.Version.Val())
 	}
 	e.encryptionHeaderSegment = segment
 	return nil
@@ -46,7 +46,7 @@ func (e *EncryptionHeaderV2) UnmarshalHBCI(value []byte) error {
 		return err
 	}
 	if len(elements) == 0 {
-		return fmt.Errorf("Malformed marshaled value")
+		return fmt.Errorf("malformed marshaled value: no elements extracted")
 	}
 	seg, err := SegmentFromHeaderBytes(elements[0], e)
 	if err != nil {
@@ -57,49 +57,49 @@ func (e *EncryptionHeaderV2) UnmarshalHBCI(value []byte) error {
 		e.SecurityFunction = &element.AlphaNumericDataElement{}
 		err = e.SecurityFunction.UnmarshalHBCI(elements[1])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling SecurityFunction: %w", err)
 		}
 	}
 	if len(elements) > 2 && len(elements[2]) > 0 {
 		e.SecuritySupplierRole = &element.AlphaNumericDataElement{}
 		err = e.SecuritySupplierRole.UnmarshalHBCI(elements[2])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling SecuritySupplierRole: %w", err)
 		}
 	}
 	if len(elements) > 3 && len(elements[3]) > 0 {
 		e.SecurityID = &element.SecurityIdentificationDataElement{}
 		err = e.SecurityID.UnmarshalHBCI(elements[3])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling SecurityID: %w", err)
 		}
 	}
 	if len(elements) > 4 && len(elements[4]) > 0 {
 		e.SecurityDate = &element.SecurityDateDataElement{}
 		err = e.SecurityDate.UnmarshalHBCI(elements[4])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling SecurityDate: %w", err)
 		}
 	}
 	if len(elements) > 5 && len(elements[5]) > 0 {
 		e.EncryptionAlgorithm = &element.EncryptionAlgorithmDataElement{}
 		err = e.EncryptionAlgorithm.UnmarshalHBCI(elements[5])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling EncryptionAlgorithm: %w", err)
 		}
 	}
 	if len(elements) > 6 && len(elements[6]) > 0 {
 		e.KeyName = &element.KeyNameDataElement{}
 		err = e.KeyName.UnmarshalHBCI(elements[6])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling KeyName: %w", err)
 		}
 	}
 	if len(elements) > 7 && len(elements[7]) > 0 {
 		e.CompressionFunction = &element.AlphaNumericDataElement{}
 		err = e.CompressionFunction.UnmarshalHBCI(elements[7])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling CompressionFunction: %w", err)
 		}
 	}
 	if len(elements) > 8 && len(elements[8]) > 0 {
@@ -110,7 +110,7 @@ func (e *EncryptionHeaderV2) UnmarshalHBCI(value []byte) error {
 			err = e.Certificate.UnmarshalHBCI(elements[8])
 		}
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling Certificate: %w", err)
 		}
 	}
 	return nil
@@ -122,7 +122,7 @@ func (e *EncryptionHeaderSegmentV3) UnmarshalHBCI(value []byte) error {
 		return err
 	}
 	if len(elements) == 0 {
-		return fmt.Errorf("Malformed marshaled value")
+		return fmt.Errorf("malformed marshaled value: no elements extracted")
 	}
 	seg, err := SegmentFromHeaderBytes(elements[0], e)
 	if err != nil {
@@ -133,56 +133,56 @@ func (e *EncryptionHeaderSegmentV3) UnmarshalHBCI(value []byte) error {
 		e.SecurityProfile = &element.SecurityProfileDataElement{}
 		err = e.SecurityProfile.UnmarshalHBCI(elements[1])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling SecurityProfile: %w", err)
 		}
 	}
 	if len(elements) > 2 && len(elements[2]) > 0 {
 		e.SecurityFunction = &element.CodeDataElement{}
 		err = e.SecurityFunction.UnmarshalHBCI(elements[2])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling SecurityFunction: %w", err)
 		}
 	}
 	if len(elements) > 3 && len(elements[3]) > 0 {
 		e.SecuritySupplierRole = &element.CodeDataElement{}
 		err = e.SecuritySupplierRole.UnmarshalHBCI(elements[3])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling SecuritySupplierRole: %w", err)
 		}
 	}
 	if len(elements) > 4 && len(elements[4]) > 0 {
 		e.SecurityID = &element.SecurityIdentificationDataElement{}
 		err = e.SecurityID.UnmarshalHBCI(elements[4])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling SecurityID: %w", err)
 		}
 	}
 	if len(elements) > 5 && len(elements[5]) > 0 {
 		e.SecurityDate = &element.SecurityDateDataElement{}
 		err = e.SecurityDate.UnmarshalHBCI(elements[5])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling SecurityDate: %w", err)
 		}
 	}
 	if len(elements) > 6 && len(elements[6]) > 0 {
 		e.EncryptionAlgorithm = &element.EncryptionAlgorithmDataElement{}
 		err = e.EncryptionAlgorithm.UnmarshalHBCI(elements[6])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling EncryptionAlgorithm: %w", err)
 		}
 	}
 	if len(elements) > 7 && len(elements[7]) > 0 {
 		e.KeyName = &element.KeyNameDataElement{}
 		err = e.KeyName.UnmarshalHBCI(elements[7])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling KeyName: %w", err)
 		}
 	}
 	if len(elements) > 8 && len(elements[8]) > 0 {
 		e.CompressionFunction = &element.CodeDataElement{}
 		err = e.CompressionFunction.UnmarshalHBCI(elements[8])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling CompressionFunction: %w", err)
 		}
 	}
 	if len(elements) > 9 && len(elements[9]) > 0 {
@@ -193,7 +193,7 @@ func (e *EncryptionHeaderSegmentV3) UnmarshalHBCI(value []byte) error {
 			err = e.Certificate.UnmarshalHBCI(elements[9])
 		}
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling Certificate: %w", err)
 		}
 	}
 	return nil

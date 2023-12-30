@@ -28,7 +28,7 @@ func (v *VersionedTestSegmentCustomInterface) UnmarshalHBCI(value []byte) error 
 			return err
 		}
 	default:
-		return fmt.Errorf("Unknown segment version: %d", header.Version.Val())
+		return fmt.Errorf("unknown segment version: %d", header.Version.Val())
 	}
 	v.versionedTestSegmentCustomInterface = segment
 	return nil
@@ -40,7 +40,7 @@ func (v *VersionedTestSegmentCustomInterfaceV1) UnmarshalHBCI(value []byte) erro
 		return err
 	}
 	if len(elements) == 0 {
-		return fmt.Errorf("Malformed marshaled value")
+		return fmt.Errorf("malformed marshaled value: no elements extracted")
 	}
 	seg, err := SegmentFromHeaderBytes(elements[0], v)
 	if err != nil {
@@ -51,7 +51,7 @@ func (v *VersionedTestSegmentCustomInterfaceV1) UnmarshalHBCI(value []byte) erro
 		v.Abc = &element.AlphaNumericDataElement{}
 		err = v.Abc.UnmarshalHBCI(elements[1])
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling Abc: %w", err)
 		}
 	}
 	if len(elements) > 2 && len(elements[2]) > 0 {
@@ -62,7 +62,7 @@ func (v *VersionedTestSegmentCustomInterfaceV1) UnmarshalHBCI(value []byte) erro
 			err = v.Def.UnmarshalHBCI(elements[2])
 		}
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling Def: %w", err)
 		}
 	}
 	return nil

@@ -48,7 +48,7 @@ func (r *ReferencingMessageDataElement) IsValid() bool {
 func (r *ReferencingMessageDataElement) UnmarshalHBCI(value []byte) error {
 	elements, err := ExtractElements(value)
 	if len(elements) != 2 {
-		return fmt.Errorf("Malformed marshaled value")
+		return fmt.Errorf("malformed marshaled value")
 	}
 	dialogID := charset.ToUTF8(elements[0])
 	num, err := strconv.Atoi(charset.ToUTF8(elements[1]))
