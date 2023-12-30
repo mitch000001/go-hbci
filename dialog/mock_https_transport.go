@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
-	"io/ioutil"
+	"io"
 
 	"github.com/mitch000001/go-hbci/transport"
 )
@@ -113,7 +113,7 @@ func (m *mockHTTPSTransport) checkAndAdaptBoundaries(req *transport.Request) {
 		if m.errors == nil {
 			m.errors = make([]error, m.callCount)
 		}
-		reqBytes, err := ioutil.ReadAll(req.Body)
+		reqBytes, err := io.ReadAll(req.Body)
 		if err != nil {
 			m.errors = append(m.errors, fmt.Errorf("Unexpected request: %+#v\nBody: %v", req, err))
 		} else {

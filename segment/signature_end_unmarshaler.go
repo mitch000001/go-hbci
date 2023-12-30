@@ -9,6 +9,18 @@ import (
 	"github.com/mitch000001/go-hbci/element"
 )
 
+var (
+	_	BankSegment	= &SignatureEndV1{}
+	_	BankSegment	= &SignatureEndV2{}
+)
+
+func init() {
+	v1 := SignatureEndV1{}
+	KnownSegments.mustAddToIndex(VersionedSegment{v1.ID(), v1.Version()}, func() Segment { return &SignatureEndV1{} })
+	v2 := SignatureEndV2{}
+	KnownSegments.mustAddToIndex(VersionedSegment{v2.ID(), v2.Version()}, func() Segment { return &SignatureEndV2{} })
+}
+
 func (s *SignatureEndSegment) UnmarshalHBCI(value []byte) error {
 	elements, err := ExtractElements(value)
 	if err != nil {

@@ -2,7 +2,9 @@ package generator
 
 import (
 	"bytes"
-	"io/ioutil"
+	"fmt"
+	"io"
+	"os"
 	"testing"
 
 	"go/parser"
@@ -19,7 +21,11 @@ func TestSegmentUnmarshalerGeneratorGenerate(t *testing.T) {
 		t.FailNow()
 	}
 
-	expectedSrc, err := ioutil.ReadFile("test_files/test_segment_unmarshaler.go")
+	expectedSrc, err := os.ReadFile("test_files/test_segment_unmarshaler.go")
+	if err != nil {
+		t.Logf("Error reading test fixtures: %v", err)
+		t.FailNow()
+	}
 
 	generator := NewSegmentUnmarshaler(SegmentIdentifier{Name: "TestSegment", InterfaceName: "Segment"}, "test_files", fileSet, f)
 
@@ -34,7 +40,7 @@ func TestSegmentUnmarshalerGeneratorGenerate(t *testing.T) {
 		t.Logf("Expected reader not to be nil")
 		t.Fail()
 	} else {
-		generatedSourcebytes, err := ioutil.ReadAll(reader)
+		generatedSourcebytes, err := io.ReadAll(reader)
 		if err != nil {
 			t.Logf("Error while parsing source: %T:%v\n", err, err)
 			t.FailNow()
@@ -81,7 +87,11 @@ func TestVersionedSegmentUnmarshalerGeneratorGenerate(t *testing.T) {
 			t.FailNow()
 		}
 
-		expectedSrc, err := ioutil.ReadFile(expectedFixtureFile)
+		expectedSrc, err := os.ReadFile(expectedFixtureFile)
+		if err != nil {
+			t.Logf("Error reading test fixtures: %v", err)
+			t.FailNow()
+		}
 
 		generator := NewVersionedSegmentUnmarshaler(segmentIdentifier, "test_files", fileSet, f)
 
@@ -96,7 +106,7 @@ func TestVersionedSegmentUnmarshalerGeneratorGenerate(t *testing.T) {
 			t.Logf("Expected reader not to be nil")
 			t.Fail()
 		} else {
-			generatedSourcebytes, err := ioutil.ReadAll(reader)
+			generatedSourcebytes, err := io.ReadAll(reader)
 			if err != nil {
 				t.Logf("Error while parsing source: %T:%v\n", err, err)
 				t.FailNow()
@@ -188,11 +198,13 @@ func diffPrettyPrint(diffs []diffmatchpatch.Diff) string {
 		switch diff.Type {
 		case diffmatchpatch.DiffInsert:
 			buff.WriteString("\u2588>>> + >>> ")
-			buff.WriteString(text)
+			fmt.Fprintf(&buff, "%q", text)
+			// buff.WriteString(text)
 			buff.WriteString(" <<< + <<<\u2588")
 		case diffmatchpatch.DiffDelete:
 			buff.WriteString("\u2588>>> - >>> ")
-			buff.WriteString(text)
+			fmt.Fprintf(&buff, "%q", text)
+			// buff.WriteString(text)
 			buff.WriteString(" <<< - <<<\u2588")
 		case diffmatchpatch.DiffEqual:
 			buff.WriteString(text)

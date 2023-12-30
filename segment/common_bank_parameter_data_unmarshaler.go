@@ -9,6 +9,18 @@ import (
 	"github.com/mitch000001/go-hbci/element"
 )
 
+var (
+	_	BankSegment	= &CommonBankParameterV2{}
+	_	BankSegment	= &CommonBankParameterV3{}
+)
+
+func init() {
+	v2 := CommonBankParameterV2{}
+	KnownSegments.mustAddToIndex(VersionedSegment{v2.ID(), v2.Version()}, func() Segment { return &CommonBankParameterV2{} })
+	v3 := CommonBankParameterV3{}
+	KnownSegments.mustAddToIndex(VersionedSegment{v3.ID(), v3.Version()}, func() Segment { return &CommonBankParameterV3{} })
+}
+
 func (c *CommonBankParameterSegment) UnmarshalHBCI(value []byte) error {
 	elements, err := ExtractElements(value)
 	if err != nil {

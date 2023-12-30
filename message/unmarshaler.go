@@ -41,10 +41,11 @@ func (u *Unmarshaler) Unmarshal() error {
 		return err
 	}
 	for _, seg := range rawSegments {
-		segmentID, err := extractVersionedSegmentIdentifier(seg)
+		header, err := extractSegmentHeader(seg)
 		if err != nil {
 			return err
 		}
+		segmentID := segment.VersionedSegment{ID: header.ID.Val(), Version: header.Version.Val()}
 		if segment.KnownSegments.IsUnmarshaler(segmentID) {
 			unmarshaler, err := segment.KnownSegments.UnmarshalerForSegment(segmentID)
 			if err != nil {
@@ -52,7 +53,7 @@ func (u *Unmarshaler) Unmarshal() error {
 			}
 			err = unmarshaler.UnmarshalHBCI(seg)
 			if err != nil {
-				return err
+				return fmt.Errorf("error unmarshaling segment %q: %w", header, err)
 			}
 			segments, ok := u.segments[segmentID.ID]
 			if !ok {
@@ -138,4 +139,17 @@ func extractVersionedSegmentIdentifier(segmentBytes []byte) (segment.VersionedSe
 	}
 	id = segment.VersionedSegment{ID: header.ID.Val(), Version: header.Version.Val()}
 	return id, nil
+}
+
+func extractSegmentHeader(segmentBytes []byte) (*element.SegmentHeader, error) {
+	elements, err := segment.ExtractElements(segmentBytes)
+	if err != nil {
+		return nil, err
+	}
+	header := &element.SegmentHeader{}
+	err = header.UnmarshalHBCI(elements[0])
+	if err != nil {
+		return nil, err
+	}
+	return header, nil
 }

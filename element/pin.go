@@ -58,6 +58,33 @@ func (p *PinTanDataElement) GroupDataElements() []DataElement {
 	}
 }
 
+// UnmarshalHBCI unmarshals value into the DataElement
+func (p *PinTanDataElement) UnmarshalHBCI(value []byte) error {
+	elements, err := ExtractElements(value)
+	if err != nil {
+		return err
+	}
+	if len(elements) < 2 {
+		return fmt.Errorf("malformed marshaled value")
+	}
+	p.DataElement = NewDataElementGroup(securityIdentificationDEG, 3, p)
+	if len(elements) > 0 && len(elements[0]) > 0 {
+		p.PIN = &AlphaNumericDataElement{}
+		err = p.PIN.UnmarshalHBCI(elements[0])
+		if err != nil {
+			return err
+		}
+	}
+	if len(elements) > 1 && len(elements[1]) > 0 {
+		p.TAN = &AlphaNumericDataElement{}
+		err = p.TAN.UnmarshalHBCI(elements[1])
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 type PinTanSpecificParamDataElement struct {
 	DataElement
 	PinMinLength                 *NumberDataElement                   `yaml:"PinMinLength"`

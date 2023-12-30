@@ -3,6 +3,7 @@ package transport
 import (
 	"encoding/base64"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -152,7 +153,7 @@ func (m *MockHTTPTransport) checkAndAdaptBoundaries(req *http.Request) {
 		if m.errors == nil {
 			m.errors = make([]error, m.callCount)
 		} else {
-			bodyBytes, _ := ioutil.ReadAll(req.Body)
+			bodyBytes, _ := io.ReadAll(req.Body)
 			m.errors = append(m.errors, fmt.Errorf("Unexpected request: %+#v\nBody: %q", req, bodyBytes))
 		}
 	}
