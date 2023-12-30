@@ -101,14 +101,14 @@ func (a *AccountBalanceRequestSegmentV6) SetContinuationMark(continuationMark st
 	a.ContinuationReference = element.NewAlphaNumeric(continuationMark, 35)
 }
 
-//go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment AccountBalanceResponseSegment
+//go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment AccountBalanceResponseSegmentV5
 
 type AccountBalanceResponse interface {
 	BankSegment
 	AccountBalance() domain.AccountBalance
 }
 
-type AccountBalanceResponseSegment struct {
+type AccountBalanceResponseSegmentV5 struct {
 	Segment
 	AccountConnection  *element.AccountConnectionDataElement
 	AccountProductName *element.AlphaNumericDataElement
@@ -123,12 +123,12 @@ type AccountBalanceResponseSegment struct {
 	DueDate            *element.DateDataElement
 }
 
-func (a *AccountBalanceResponseSegment) Version() int         { return 5 }
-func (a *AccountBalanceResponseSegment) ID() string           { return "HISAL" }
-func (a *AccountBalanceResponseSegment) referencedId() string { return "HKSAL" }
-func (a *AccountBalanceResponseSegment) sender() string       { return senderBank }
+func (a *AccountBalanceResponseSegmentV5) Version() int         { return 5 }
+func (a *AccountBalanceResponseSegmentV5) ID() string           { return "HISAL" }
+func (a *AccountBalanceResponseSegmentV5) referencedId() string { return "HKSAL" }
+func (a *AccountBalanceResponseSegmentV5) sender() string       { return senderBank }
 
-func (a *AccountBalanceResponseSegment) AccountBalance() domain.AccountBalance {
+func (a *AccountBalanceResponseSegmentV5) AccountBalance() domain.AccountBalance {
 	balance := domain.AccountBalance{
 		Account:       a.AccountConnection.Val(),
 		ProductName:   a.AccountProductName.Val(),
@@ -157,7 +157,7 @@ func (a *AccountBalanceResponseSegment) AccountBalance() domain.AccountBalance {
 	}
 	if t := a.BookingTime; t != nil {
 		val := t.Val()
-		balance.BookingDate.Add(val.Sub(time.Time{}))
+		*balance.BookingDate = balance.BookingDate.Add(val.Sub(time.Time{}))
 	}
 	if dueDate := a.DueDate; dueDate != nil {
 		val := dueDate.Val()
@@ -166,7 +166,7 @@ func (a *AccountBalanceResponseSegment) AccountBalance() domain.AccountBalance {
 	return balance
 }
 
-func (a *AccountBalanceResponseSegment) elements() []element.DataElement {
+func (a *AccountBalanceResponseSegmentV5) elements() []element.DataElement {
 	return []element.DataElement{
 		a.AccountConnection,
 		a.AccountProductName,

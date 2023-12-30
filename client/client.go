@@ -255,7 +255,7 @@ func (c *Client) AccountBalances(account domain.AccountConnection, allAccounts b
 	balanceResponses := decryptedMessage.FindMarshaledSegments("HISAL")
 	if balanceResponses != nil {
 		for _, marshaledSegment := range balanceResponses {
-			balanceSegment := &segment.AccountBalanceResponseSegment{}
+			balanceSegment := &segment.AccountBalanceResponseSegmentV5{}
 			err = balanceSegment.UnmarshalHBCI(marshaledSegment)
 			if err != nil {
 				return nil, fmt.Errorf("error while parsing account balance: %v", err)

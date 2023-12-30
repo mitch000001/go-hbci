@@ -83,7 +83,7 @@ func init() {
 	KnownSegments.mustAddToIndex(VersionedSegment{AccountInformationID, 5}, func() Segment { return &AccountInformationV5{} })
 	KnownSegments.mustAddToIndex(VersionedSegment{AccountInformationID, 6}, func() Segment { return &AccountInformationV6{} })
 	KnownSegments.mustAddToIndex(VersionedSegment{AccountInformationID, 7}, func() Segment { return &AccountInformationV7{} })
-	KnownSegments.mustAddToIndex(VersionedSegment{"HISAL", 5}, func() Segment { return &AccountBalanceResponseSegment{} })
+	KnownSegments.mustAddToIndex(VersionedSegment{"HISAL", 5}, func() Segment { return &AccountBalanceResponseSegmentV5{} })
 	KnownSegments.mustAddToIndex(VersionedSegment{"HIKIF", 1}, func() Segment { return &AccountInformationResponseSegment{} })
 	KnownSegments.mustAddToIndex(VersionedSegment{"HIKAZ", 5}, func() Segment { return &AccountTransactionResponseSegmentV5{} })
 	KnownSegments.mustAddToIndex(VersionedSegment{"HIKAZ", 6}, func() Segment { return &AccountTransactionResponseSegmentV6{} })
