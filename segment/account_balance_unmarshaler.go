@@ -9,13 +9,13 @@ import (
 	"github.com/mitch000001/go-hbci/element"
 )
 
-func (a *AccountBalanceResponseSegment) UnmarshalHBCI(value []byte) error {
+func (a *AccountBalanceResponseSegmentV5) UnmarshalHBCI(value []byte) error {
 	elements, err := ExtractElements(value)
 	if err != nil {
 		return err
 	}
 	if len(elements) == 0 {
-		return fmt.Errorf("Malformed marshaled value")
+		return fmt.Errorf("malformed marshaled value: no elements extracted")
 	}
 	seg, err := SegmentFromHeaderBytes(elements[0], a)
 	if err != nil {

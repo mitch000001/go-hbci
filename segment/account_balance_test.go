@@ -12,7 +12,7 @@ func TestAccountBalanceResponseSegmentUnmarshalHBCI(t *testing.T) {
 	test := "HISAL:4:5:3+100000000::280:10000000+Sichteinlagen+EUR+C:1000,15:EUR:20150812+C:20,:EUR:20150812+500,:EUR+1499,85:EUR'"
 	date := time.Date(2015, 8, 12, 0, 0, 0, 0, time.Local)
 
-	expectedSegment := &AccountBalanceResponseSegment{
+	expectedSegment := &AccountBalanceResponseSegmentV5{
 		AccountConnection:  element.NewAccountConnection(domain.AccountConnection{AccountID: "100000000", CountryCode: 280, BankID: "10000000"}),
 		AccountProductName: element.NewAlphaNumeric("Sichteinlagen", 35),
 		AccountCurrency:    element.NewCurrency("EUR"),
@@ -25,7 +25,7 @@ func TestAccountBalanceResponseSegmentUnmarshalHBCI(t *testing.T) {
 
 	expected := expectedSegment.String()
 
-	segment := &AccountBalanceResponseSegment{}
+	segment := &AccountBalanceResponseSegmentV5{}
 
 	err := segment.UnmarshalHBCI([]byte(test))
 
