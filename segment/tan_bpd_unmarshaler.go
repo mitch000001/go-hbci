@@ -9,6 +9,15 @@ import (
 	"github.com/mitch000001/go-hbci/element"
 )
 
+var (
+	_ BankSegment = &TanBankParameterV6{}
+)
+
+func init() {
+	v6 := TanBankParameterV6{}
+	KnownSegments.mustAddToIndex(VersionedSegment{v6.ID(), v6.Version()}, func() Segment { return &TanBankParameterV6{} })
+}
+
 func (t *TanBankParameterSegment) UnmarshalHBCI(value []byte) error {
 	elements, err := ExtractElements(value)
 	if err != nil {

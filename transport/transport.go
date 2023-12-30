@@ -46,7 +46,7 @@ type Request struct {
 // SegmentExtractor	to have it ready to use.
 func ReadResponse(r *bufio.Reader, req *Request) (*Response, error) {
 	var buf bytes.Buffer
-	marshaledMessage, err := ioutil.ReadAll(io.TeeReader(r, &buf))
+	marshaledMessage, err := io.ReadAll(io.TeeReader(r, &buf))
 	if err != nil {
 		return nil, err
 	}

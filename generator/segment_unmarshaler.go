@@ -133,6 +133,10 @@ func (s *segmentTemplateExecutor) execute() (io.Reader, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error while parsing template: %v", err)
 	}
+	t, err = t.Parse(segmentUnmarshalerCheckTemplate)
+	if err != nil {
+		return nil, fmt.Errorf("error while parsing template: %v", err)
+	}
 	t, err = t.Parse(segmentUnmarshalingTemplate)
 	if err != nil {
 		return nil, fmt.Errorf("error while parsing template: %v", err)
@@ -233,7 +237,20 @@ const generationNoticeTemplate = `{{ define "generation_notice" }}// Code genera
 
 const segmentExecutorTemplate = `{{template "generation_notice" .}}
 {{template "package_declaration" .}}
+{{template "unmarshaler" .}}
 {{template "segment" .}}
+`
+
+const segmentUnmarshalerCheckTemplate = `
+{{define "unmarshaler"}}
+var (
+	_ BankSegment = &{{.Name}}{}
+)
+
+func init() {
+	s := {{.Name}}{}
+	KnownSegments.mustAddToIndex(VersionedSegment{s.ID(), s.Version()}, func() Segment { return &{{.Name}}{} })
+}{{ end }}
 `
 
 const packageDeclTemplate = `{{define "package_declaration"}}package {{.Package}}
@@ -290,35 +307,56 @@ func (v *versionedSegmentTemplateExecutor) execute() (io.Reader, error) {
 	}
 	t, err := template.New("executor").Funcs(funcMap).Parse(versionedSegmentExecutorTemplate)
 	if err != nil {
-		return nil, fmt.Errorf("Error while parsing template: %v", err)
+		return nil, fmt.Errorf("error while parsing template: %v", err)
 	}
 	t, err = t.Parse(versionedSegmentUnmarshalingTemplate)
 	if err != nil {
-		return nil, fmt.Errorf("Error while parsing template: %v", err)
+		return nil, fmt.Errorf("error while parsing template: %v", err)
+	}
+	t, err = t.Parse(versionedSegmentUnmarshalerCheckTemplate)
+	if err != nil {
+		return nil, fmt.Errorf("error while parsing template: %v", err)
 	}
 	t, err = t.Parse(segmentUnmarshalingTemplate)
 	if err != nil {
-		return nil, fmt.Errorf("Error while parsing template: %v", err)
+		return nil, fmt.Errorf("error while parsing template: %v", err)
 	}
 	t, err = t.Parse(packageDeclTemplate)
 	if err != nil {
-		return nil, fmt.Errorf("Error while parsing template: %v", err)
+		return nil, fmt.Errorf("error while parsing template: %v", err)
 	}
 	t, err = t.Parse(generationNoticeTemplate)
 	if err != nil {
-		return nil, fmt.Errorf("Error while parsing template: %v", err)
+		return nil, fmt.Errorf("error while parsing template: %v", err)
 	}
 	var buf bytes.Buffer
 	err = t.Execute(&buf, v.templateObject)
 	if err != nil {
-		return nil, fmt.Errorf("Error while executing template: %v", err)
+		return nil, fmt.Errorf("error while executing template: %v", err)
 	}
 	return &buf, nil
 }
 
 const versionedSegmentExecutorTemplate = `{{template "generation_notice" .}}
-{{template "package_declaration" .}}
+{{template "package_declaration" . }}
+{{template "versioned_unmarshaler" . }}
 {{template "versioned_segment" .}}
+`
+
+const versionedSegmentUnmarshalerCheckTemplate = `
+{{define "versioned_unmarshaler"}}
+var (
+{{- range $version := .SegmentVersions }}
+	_ BankSegment = &{{$version.Name}}{}
+{{- end }}
+)
+
+func init() {
+{{- range $version := .SegmentVersions }}
+	v{{$version.Version}} := {{$version.Name}}{}
+	KnownSegments.mustAddToIndex(VersionedSegment{v{{$version.Version}}.ID(), v{{$version.Version}}.Version()}, func() Segment { return &{{$version.Name}}{} })
+{{- end }}
+}{{ end }}
 `
 
 const versionedSegmentUnmarshalingTemplate = `

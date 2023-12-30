@@ -9,6 +9,18 @@ import (
 	"github.com/mitch000001/go-hbci/element"
 )
 
+var (
+	_	BankSegment	= &SynchronisationResponseSegmentV3{}
+	_	BankSegment	= &SynchronisationResponseSegmentV4{}
+)
+
+func init() {
+	v3 := SynchronisationResponseSegmentV3{}
+	KnownSegments.mustAddToIndex(VersionedSegment{v3.ID(), v3.Version()}, func() Segment { return &SynchronisationResponseSegmentV3{} })
+	v4 := SynchronisationResponseSegmentV4{}
+	KnownSegments.mustAddToIndex(VersionedSegment{v4.ID(), v4.Version()}, func() Segment { return &SynchronisationResponseSegmentV4{} })
+}
+
 func (s *SynchronisationResponseSegment) UnmarshalHBCI(value []byte) error {
 	elements, err := ExtractElements(value)
 	if err != nil {

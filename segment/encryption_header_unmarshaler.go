@@ -9,6 +9,18 @@ import (
 	"github.com/mitch000001/go-hbci/element"
 )
 
+var (
+	_	BankSegment	= &EncryptionHeaderV2{}
+	_	BankSegment	= &EncryptionHeaderSegmentV3{}
+)
+
+func init() {
+	v2 := EncryptionHeaderV2{}
+	KnownSegments.mustAddToIndex(VersionedSegment{v2.ID(), v2.Version()}, func() Segment { return &EncryptionHeaderV2{} })
+	v3 := EncryptionHeaderSegmentV3{}
+	KnownSegments.mustAddToIndex(VersionedSegment{v3.ID(), v3.Version()}, func() Segment { return &EncryptionHeaderSegmentV3{} })
+}
+
 func (e *EncryptionHeaderSegment) UnmarshalHBCI(value []byte) error {
 	elements, err := ExtractElements(value)
 	if err != nil {

@@ -3,6 +3,7 @@ package transport
 import (
 	"bytes"
 	"encoding/base64"
+	"io"
 	"io/ioutil"
 	"reflect"
 	"strings"
@@ -85,7 +86,7 @@ func TestUTF8Encoding(t *testing.T) {
 		}
 	}
 	{
-		actual, err := ioutil.ReadAll(response.Body)
+		actual, err := io.ReadAll(response.Body)
 		if err != nil {
 			panic(err)
 		}
@@ -96,7 +97,7 @@ func TestUTF8Encoding(t *testing.T) {
 		}
 	}
 	{
-		actual, err := ioutil.ReadAll(transportRequest.Body)
+		actual, err := io.ReadAll(transportRequest.Body)
 		if err != nil {
 			panic(err)
 		}
@@ -172,7 +173,7 @@ func TestBase64Encoding(t *testing.T) {
 		}
 	}
 	{
-		actual, err := ioutil.ReadAll(response.Body)
+		actual, err := io.ReadAll(response.Body)
 		if err != nil {
 			panic(err)
 		}
@@ -183,7 +184,7 @@ func TestBase64Encoding(t *testing.T) {
 		}
 	}
 	{
-		actual, err := ioutil.ReadAll(transportRequest.Body)
+		actual, err := io.ReadAll(transportRequest.Body)
 		if err != nil {
 			panic(err)
 		}

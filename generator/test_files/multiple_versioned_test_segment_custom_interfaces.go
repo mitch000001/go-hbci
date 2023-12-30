@@ -18,6 +18,10 @@ func (m *MultipleVersionedTestSegmentCustomInterfacesV1) elements() []element.Da
 		m.Def,
 	}
 }
+func (m MultipleVersionedTestSegmentCustomInterfacesV1) ID() string {
+	return "MultipleVersionedTestSegmentCustomInterfacesV1"
+}
+func (m MultipleVersionedTestSegmentCustomInterfacesV1) Version() int { return 1 }
 
 type MultipleVersionedTestSegmentCustomInterfacesV2 struct {
 	versionInterface2
@@ -31,3 +35,7 @@ func (m *MultipleVersionedTestSegmentCustomInterfacesV2) elements() []element.Da
 		m.Def,
 	}
 }
+func (m MultipleVersionedTestSegmentCustomInterfacesV2) ID() string {
+	return "MultipleVersionedTestSegmentCustomInterfacesV2"
+}
+func (m MultipleVersionedTestSegmentCustomInterfacesV2) Version() int { return 2 }

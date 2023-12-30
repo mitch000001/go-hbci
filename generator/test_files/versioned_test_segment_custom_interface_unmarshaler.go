@@ -9,6 +9,15 @@ import (
 	"github.com/mitch000001/go-hbci/element"
 )
 
+var (
+	_ BankSegment = &VersionedTestSegmentCustomInterfaceV1{}
+)
+
+func init() {
+	v1 := VersionedTestSegmentCustomInterfaceV1{}
+	KnownSegments.mustAddToIndex(VersionedSegment{v1.ID(), v1.Version()}, func() Segment { return &VersionedTestSegmentCustomInterfaceV1{} })
+}
+
 func (v *VersionedTestSegmentCustomInterface) UnmarshalHBCI(value []byte) error {
 	elements, err := ExtractElements(value)
 	if err != nil {

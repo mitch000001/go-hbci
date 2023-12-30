@@ -1,6 +1,7 @@
 package element
 
 import (
+	"bytes"
 	"fmt"
 	"time"
 
@@ -127,6 +128,40 @@ func (s *SecurityDateDataElement) GroupDataElements() []DataElement {
 	}
 }
 
+// UnmarshalHBCI unmarshals value into the DataElement
+func (s *SecurityDateDataElement) UnmarshalHBCI(value []byte) error {
+	elements, err := ExtractElements(value)
+	if err != nil {
+		return err
+	}
+	if len(elements) < 1 {
+		return fmt.Errorf("malformed marshaled value")
+	}
+	s.DataElement = NewDataElementGroup(securityIdentificationDEG, 3, s)
+	if len(elements) > 0 && len(elements[0]) > 0 {
+		s.DateIdentifier = &AlphaNumericDataElement{}
+		err = s.DateIdentifier.UnmarshalHBCI(elements[0])
+		if err != nil {
+			return err
+		}
+	}
+	if len(elements) > 1 && len(elements[1]) > 0 {
+		s.Date = &DateDataElement{}
+		err = s.Date.UnmarshalHBCI(elements[1])
+		if err != nil {
+			return err
+		}
+	}
+	if len(elements) > 2 && len(elements[2]) > 0 {
+		s.Time = &TimeDataElement{}
+		err = s.Time.UnmarshalHBCI(elements[2])
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 // NewDefaultHashAlgorithm creates a default HashAlgorithmDataElement with
 // values ready to use for initial dialog comm
 func NewDefaultHashAlgorithm() *HashAlgorithmDataElement {
@@ -162,6 +197,47 @@ func (h *HashAlgorithmDataElement) GroupDataElements() []DataElement {
 	}
 }
 
+// UnmarshalHBCI unmarshals value into the DataElement
+func (s *HashAlgorithmDataElement) UnmarshalHBCI(value []byte) error {
+	elements, err := ExtractElements(value)
+	if err != nil {
+		return err
+	}
+	if len(elements) < 3 {
+		return fmt.Errorf("malformed marshaled value")
+	}
+	s.DataElement = NewDataElementGroup(securityIdentificationDEG, 4, s)
+	if len(elements) > 0 && len(elements[0]) > 0 {
+		s.Usage = &AlphaNumericDataElement{}
+		err = s.Usage.UnmarshalHBCI(elements[0])
+		if err != nil {
+			return err
+		}
+	}
+	if len(elements) > 1 && len(elements[1]) > 0 {
+		s.Algorithm = &AlphaNumericDataElement{}
+		err = s.Algorithm.UnmarshalHBCI(elements[1])
+		if err != nil {
+			return err
+		}
+	}
+	if len(elements) > 2 && len(elements[2]) > 0 {
+		s.AlgorithmParamID = &AlphaNumericDataElement{}
+		err = s.AlgorithmParamID.UnmarshalHBCI(elements[2])
+		if err != nil {
+			return err
+		}
+	}
+	if len(elements) > 3 && len(elements[3]) > 0 {
+		s.AlgorithmParamValue = &BinaryDataElement{}
+		err = s.AlgorithmParamValue.UnmarshalHBCI(elements[3])
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 // NewRDHSignatureAlgorithm creates a SignatureAlgorithm ready to use for RDH
 func NewRDHSignatureAlgorithm() *SignatureAlgorithmDataElement {
 	s := &SignatureAlgorithmDataElement{
@@ -193,6 +269,40 @@ func (s *SignatureAlgorithmDataElement) GroupDataElements() []DataElement {
 		s.Algorithm,
 		s.OperationMode,
 	}
+}
+
+// UnmarshalHBCI unmarshals value into the DataElement
+func (s *SignatureAlgorithmDataElement) UnmarshalHBCI(value []byte) error {
+	elements, err := ExtractElements(value)
+	if err != nil {
+		return err
+	}
+	if len(elements) < 3 {
+		return fmt.Errorf("malformed marshaled value")
+	}
+	s.DataElement = NewDataElementGroup(securityIdentificationDEG, 3, s)
+	if len(elements) > 0 && len(elements[0]) > 0 {
+		s.Usage = &AlphaNumericDataElement{}
+		err = s.Usage.UnmarshalHBCI(elements[0])
+		if err != nil {
+			return err
+		}
+	}
+	if len(elements) > 1 && len(elements[1]) > 0 {
+		s.Algorithm = &AlphaNumericDataElement{}
+		err = s.Algorithm.UnmarshalHBCI(elements[1])
+		if err != nil {
+			return err
+		}
+	}
+	if len(elements) > 2 && len(elements[2]) > 0 {
+		s.OperationMode = &AlphaNumericDataElement{}
+		err = s.OperationMode.UnmarshalHBCI(elements[2])
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // NewKeyName creates a new KeyNameDataElement for keyName
@@ -242,6 +352,54 @@ func (k *KeyNameDataElement) GroupDataElements() []DataElement {
 		k.KeyNumber,
 		k.KeyVersion,
 	}
+}
+
+// UnmarshalHBCI unmarshals value into the DataElement
+func (s *KeyNameDataElement) UnmarshalHBCI(value []byte) error {
+	elements, err := ExtractElements(value)
+	if err != nil {
+		return err
+	}
+	if len(elements) < 6 {
+		return fmt.Errorf("malformed marshaled value")
+	}
+	s.DataElement = NewDataElementGroup(securityIdentificationDEG, 5, s)
+	if len(elements) > 0 && len(elements[0]) > 0 {
+		s.Bank = &BankIdentificationDataElement{}
+		err = s.Bank.UnmarshalHBCI(bytes.Join(elements[0:2], []byte(":")))
+		if err != nil {
+			return err
+		}
+	}
+	if len(elements) > 2 && len(elements[2]) > 0 {
+		s.UserID = &IdentificationDataElement{}
+		err = s.UserID.UnmarshalHBCI(elements[2])
+		if err != nil {
+			return err
+		}
+	}
+	if len(elements) > 3 && len(elements[3]) > 0 {
+		s.KeyType = &AlphaNumericDataElement{}
+		err = s.KeyType.UnmarshalHBCI(elements[3])
+		if err != nil {
+			return err
+		}
+	}
+	if len(elements) > 4 && len(elements[4]) > 0 {
+		s.KeyNumber = &NumberDataElement{}
+		err = s.KeyNumber.UnmarshalHBCI(elements[4])
+		if err != nil {
+			return err
+		}
+	}
+	if len(elements) > 5 && len(elements[5]) > 0 {
+		s.KeyVersion = &NumberDataElement{}
+		err = s.KeyVersion.UnmarshalHBCI(elements[5])
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // NewCertificate embodies a certificate into a DataElement

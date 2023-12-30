@@ -9,6 +9,18 @@ import (
 	"github.com/mitch000001/go-hbci/element"
 )
 
+var (
+	_	BankSegment	= &StatusProtocolResponseSegmentV3{}
+	_	BankSegment	= &StatusProtocolResponseSegmentV4{}
+)
+
+func init() {
+	v3 := StatusProtocolResponseSegmentV3{}
+	KnownSegments.mustAddToIndex(VersionedSegment{v3.ID(), v3.Version()}, func() Segment { return &StatusProtocolResponseSegmentV3{} })
+	v4 := StatusProtocolResponseSegmentV4{}
+	KnownSegments.mustAddToIndex(VersionedSegment{v4.ID(), v4.Version()}, func() Segment { return &StatusProtocolResponseSegmentV4{} })
+}
+
 func (s *StatusProtocolResponseSegment) UnmarshalHBCI(value []byte) error {
 	elements, err := ExtractElements(value)
 	if err != nil {

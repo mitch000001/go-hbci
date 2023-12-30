@@ -9,6 +9,18 @@ import (
 	"github.com/mitch000001/go-hbci/element"
 )
 
+var (
+	_ BankSegment = &MultipleVersionedTestSegmentV1{}
+	_ BankSegment = &MultipleVersionedTestSegmentV2{}
+)
+
+func init() {
+	v1 := MultipleVersionedTestSegmentV1{}
+	KnownSegments.mustAddToIndex(VersionedSegment{v1.ID(), v1.Version()}, func() Segment { return &MultipleVersionedTestSegmentV1{} })
+	v2 := MultipleVersionedTestSegmentV2{}
+	KnownSegments.mustAddToIndex(VersionedSegment{v2.ID(), v2.Version()}, func() Segment { return &MultipleVersionedTestSegmentV2{} })
+}
+
 func (m *MultipleVersionedTestSegment) UnmarshalHBCI(value []byte) error {
 	elements, err := ExtractElements(value)
 	if err != nil {

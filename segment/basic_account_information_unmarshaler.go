@@ -9,6 +9,24 @@ import (
 	"github.com/mitch000001/go-hbci/element"
 )
 
+var (
+	_	BankSegment	= &AccountInformationV4{}
+	_	BankSegment	= &AccountInformationV5{}
+	_	BankSegment	= &AccountInformationV6{}
+	_	BankSegment	= &AccountInformationV7{}
+)
+
+func init() {
+	v4 := AccountInformationV4{}
+	KnownSegments.mustAddToIndex(VersionedSegment{v4.ID(), v4.Version()}, func() Segment { return &AccountInformationV4{} })
+	v5 := AccountInformationV5{}
+	KnownSegments.mustAddToIndex(VersionedSegment{v5.ID(), v5.Version()}, func() Segment { return &AccountInformationV5{} })
+	v6 := AccountInformationV6{}
+	KnownSegments.mustAddToIndex(VersionedSegment{v6.ID(), v6.Version()}, func() Segment { return &AccountInformationV6{} })
+	v7 := AccountInformationV7{}
+	KnownSegments.mustAddToIndex(VersionedSegment{v7.ID(), v7.Version()}, func() Segment { return &AccountInformationV7{} })
+}
+
 func (a *AccountInformationSegment) UnmarshalHBCI(value []byte) error {
 	elements, err := ExtractElements(value)
 	if err != nil {

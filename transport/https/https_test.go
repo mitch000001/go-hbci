@@ -3,6 +3,7 @@ package transport
 import (
 	"bytes"
 	"encoding/base64"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -57,11 +58,11 @@ func TestHttpsBase64Transport(t *testing.T) {
 		t.Fail()
 	}
 
-	httpResponseBytes, err := ioutil.ReadAll(httpResponse.Body)
+	httpResponseBytes, err := io.ReadAll(httpResponse.Body)
 	if err != nil {
 		panic(err)
 	}
-	httpBase64ResponseBytes, err := ioutil.ReadAll(httpBase64Respose.Body)
+	httpBase64ResponseBytes, err := io.ReadAll(httpBase64Respose.Body)
 	if err != nil {
 		panic(err)
 	}
@@ -88,11 +89,11 @@ func TestHttpsBase64Transport(t *testing.T) {
 		t.Fail()
 	}
 
-	httpRequest, err := ioutil.ReadAll(requests[0].Body)
+	httpRequest, err := io.ReadAll(requests[0].Body)
 	if err != nil {
 		panic(err)
 	}
-	httpBase64Request, err := ioutil.ReadAll(requests[1].Body)
+	httpBase64Request, err := io.ReadAll(requests[1].Body)
 	if err != nil {
 		panic(err)
 	}
