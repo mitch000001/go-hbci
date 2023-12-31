@@ -39,6 +39,7 @@ func (v HBCIVersion) Version() int {
 // provided versions
 type Builder interface {
 	AccountBalanceRequest(account domain.AccountConnection, allAccounts bool) (AccountBalanceRequest, error)
+	SepaAccountBalanceRequest(account domain.InternationalAccountConnection, allAccounts bool) (AccountBalanceRequest, error)
 	AccountTransactionRequest(account domain.AccountConnection, allAccounts bool) (*AccountTransactionRequestSegment, error)
 	SepaAccountTransactionRequest(account domain.InternationalAccountConnection, allAccounts bool) (*AccountTransactionRequestSegment, error)
 	StatusProtocolRequest(from, to time.Time, maxEntries int, continuationReference string) (StatusProtocolRequest, error)
@@ -64,6 +65,17 @@ func (b *builder) AccountBalanceRequest(account domain.AccountConnection, allAcc
 		return nil, fmt.Errorf("Segment %s not supported", "HKSAL")
 	}
 	request, err := AccountBalanceRequestBuilder(versions)
+	if err != nil {
+		return nil, fmt.Errorf("error building account balance request (HKSAL): %w", err)
+	}
+	return request(account, allAccounts), nil
+}
+func (b *builder) SepaAccountBalanceRequest(account domain.InternationalAccountConnection, allAccounts bool) (AccountBalanceRequest, error) {
+	versions, ok := b.supportedSegments["HISALS"]
+	if !ok {
+		return nil, fmt.Errorf("Segment %s not supported", "HKSAL")
+	}
+	request, err := SepaAccountBalanceRequestBuilder(versions)
 	if err != nil {
 		return nil, fmt.Errorf("error building account balance request (HKSAL): %w", err)
 	}

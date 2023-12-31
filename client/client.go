@@ -27,7 +27,7 @@ type Config struct {
 func (c Config) hbciVersion() (segment.HBCIVersion, error) {
 	version, ok := segment.SupportedHBCIVersions[c.HBCIVersion]
 	if !ok {
-		return version, fmt.Errorf("Unsupported HBCI version. Supported versions are %v", domain.SupportedHBCIVersions)
+		return version, fmt.Errorf("unsupported HBCI version. Supported versions are %v", domain.SupportedHBCIVersions)
 	}
 	return version, nil
 }
@@ -62,7 +62,7 @@ func New(config Config) (*Client, error) {
 	} else {
 		version, ok := segment.SupportedHBCIVersions[bankInfo.HbciVersion()]
 		if !ok {
-			return nil, fmt.Errorf("Unsupported HBCI version. Supported versions are %v", domain.SupportedHBCIVersions)
+			return nil, fmt.Errorf("unsupported HBCI version. Supported versions are %v", domain.SupportedHBCIVersions)
 		}
 		hbciVersion = version
 	}
@@ -252,20 +252,78 @@ func (c *Client) AccountBalances(account domain.AccountConnection, allAccounts b
 		return nil, err
 	}
 	var balances []domain.AccountBalance
-	balanceResponses := decryptedMessage.FindMarshaledSegments("HISAL")
-	if balanceResponses != nil {
-		for _, marshaledSegment := range balanceResponses {
-			balanceSegment := &segment.AccountBalanceResponseSegmentV5{}
-			err = balanceSegment.UnmarshalHBCI(marshaledSegment)
-			if err != nil {
-				return nil, fmt.Errorf("error while parsing account balance: %v", err)
-			}
-			balances = append(balances, balanceSegment.AccountBalance())
+	balanceResponses := decryptedMessage.FindSegments(segment.AccountBalanceResponseID)
+	for _, unmarshaledSegment := range balanceResponses {
+		seg, ok := unmarshaledSegment.(segment.AccountBalanceResponse)
+		if !ok {
+			return nil, fmt.Errorf("malformed segment found with ID %q", segment.AccountBalanceResponseID)
 		}
-	} else {
+		balances = append(balances, seg.AccountBalance())
+	}
+	if len(balanceResponses) == 0 {
 		return nil, fmt.Errorf("malformed response: expected HISAL segment")
 	}
 
+	return balances, nil
+}
+
+// AccountBalances retrieves the balance for the provided account.
+// If allAccounts is true it will fetch also the balances for all accounts
+// associated with the account.
+func (c *Client) SepaAccountBalances(account domain.InternationalAccountConnection, allAccounts bool, continuationReference string) ([]domain.SepaAccountBalance, error) {
+	if err := c.init(); err != nil {
+		return nil, err
+	}
+	builder := segment.NewBuilder(c.pinTanDialog.SupportedSegments())
+	accountBalanceRequest, err := builder.SepaAccountBalanceRequest(account, allAccounts)
+	if err != nil {
+		return nil, err
+	}
+	if continuationReference != "" {
+		accountBalanceRequest.SetContinuationMark(continuationReference)
+	}
+	decryptedMessage, err := c.pinTanDialog.SendMessage(
+		message.NewHBCIMessage(
+			c.hbciVersion,
+			c.hbciVersion.TanProcess4Request(segment.IdentificationID),
+			accountBalanceRequest,
+		),
+	)
+	if err != nil {
+		return nil, err
+	}
+	var balances []domain.SepaAccountBalance
+	balanceResponses := decryptedMessage.FindSegments(segment.AccountBalanceResponseID)
+	for _, unmarshaledSegment := range balanceResponses {
+		seg, ok := unmarshaledSegment.(segment.AccountBalanceResponse)
+		if !ok {
+			return nil, fmt.Errorf("malformed segment found with ID %q", segment.AccountBalanceResponseID)
+		}
+		sepaBalances, err := seg.SepaAccountBalance()
+		if err != nil {
+			return nil, fmt.Errorf("could not get sepa balances: %w", err)
+		}
+		balances = append(balances, sepaBalances)
+	}
+	if len(balanceResponses) == 0 {
+		return nil, fmt.Errorf("malformed response: expected HISAL segment")
+	}
+	var newContinuationReference string
+	acknowledgements := decryptedMessage.Acknowledgements()
+	for _, ack := range acknowledgements {
+		if ack.Code == element.AcknowledgementAdditionalInformation {
+			newContinuationReference = ack.Params[0]
+			break
+		}
+	}
+	if newContinuationReference == "" {
+		return balances, nil
+	}
+	nextBal, err := c.SepaAccountBalances(account, allAccounts, newContinuationReference)
+	if err != nil {
+		return nil, err
+	}
+	balances = append(balances, nextBal...)
 	return balances, nil
 }
 
