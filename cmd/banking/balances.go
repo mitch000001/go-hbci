@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/mitch000001/go-hbci/bankinfo"
 	"github.com/mitch000001/go-hbci/domain"
 	"github.com/mitch000001/go-hbci/iban"
 	"github.com/spf13/cobra"
@@ -46,23 +47,35 @@ will fetch the balance for account 123456789.`,
 		}
 		account = domain.InternationalAccountConnection{
 			IBAN:      string(i),
+			BIC:       bankinfo.FindByBankID(clientConfig.BankID).BIC,
 			AccountID: balanceAccount,
 			BankID:    domain.BankID{CountryCode: 280, ID: clientConfig.BankID},
 		}
-		balances, err := hbciClient.AccountBalances(account.ToAccountConnection(), true)
+		if disableSepa {
+			balances, err := hbciClient.AccountBalances(account.ToAccountConnection(), true)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+			fmt.Println(domain.AccountBalances(balances).String())
+			return
+		}
 
+		balances, err := hbciClient.SepaAccountBalances(account, true, "")
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
 		}
-
-		fmt.Printf(domain.AccountBalances(balances).String())
+		fmt.Println(domain.SepaAccountBalances(balances).String())
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(balancesCmd)
-
+	balancesCmd.Flags().BoolVar(
+		&disableSepa, "disableSepa", false,
+		"whether the library should not handle account data as sepa compliant",
+	)
 	balancesCmd.Flags().StringVar(
 		&balanceAccount, "accountID", "",
 		"the accountID to fetch balance for (defaults to the UserID)",
