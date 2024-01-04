@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/base64"
 	"io"
-	"io/ioutil"
 	"reflect"
 	"strings"
 	"testing"
@@ -47,7 +46,7 @@ func (m *mockTransform) Reset() {
 
 func TestUTF8Encoding(t *testing.T) {
 	called := false
-	transportResponse := transport.Response{Body: ioutil.NopCloser(strings.NewReader("qux"))}
+	transportResponse := transport.Response{Body: io.NopCloser(strings.NewReader("qux"))}
 	var transportRequest *transport.Request
 	innerTransport := transport.Func(func(req *transport.Request) (*transport.Response, error) {
 		called = true
@@ -72,7 +71,7 @@ func TestUTF8Encoding(t *testing.T) {
 
 	request := &transport.Request{
 		URL:  "foo",
-		Body: ioutil.NopCloser(strings.NewReader("bar")),
+		Body: io.NopCloser(strings.NewReader("bar")),
 	}
 
 	response, err := wrappedTransport.Do(request)
@@ -143,7 +142,7 @@ func TestBase64Encoding(t *testing.T) {
 
 	called := false
 	transportResponse := transport.Response{
-		Body: ioutil.NopCloser(strings.NewReader(encoding.EncodeToString([]byte("qux")))),
+		Body: io.NopCloser(strings.NewReader(encoding.EncodeToString([]byte("qux")))),
 	}
 	var transportRequest *transport.Request
 	innerTransport := transport.Func(func(req *transport.Request) (*transport.Response, error) {
@@ -159,7 +158,7 @@ func TestBase64Encoding(t *testing.T) {
 
 	request := &transport.Request{
 		URL:  "foo",
-		Body: ioutil.NopCloser(strings.NewReader("bar")),
+		Body: io.NopCloser(strings.NewReader("bar")),
 	}
 
 	response, _ := wrappedTransport.Do(request)

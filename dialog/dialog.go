@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net"
 	"strconv"
@@ -587,7 +587,7 @@ func (d *dialog) request(clientMessage message.ClientMessage) (message.BankMessa
 
 	request := &transport.Request{
 		URL:  d.hbciURL,
-		Body: ioutil.NopCloser(reqBody),
+		Body: io.NopCloser(reqBody),
 	}
 
 	response, err := d.transport.Do(request)

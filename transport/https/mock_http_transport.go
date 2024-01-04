@@ -4,7 +4,6 @@ import (
 	"encoding/base64"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"strings"
 )
@@ -40,7 +39,7 @@ func (m *MockHTTPTransport) SetResponsePayload(payload []byte) int {
 	encodedMessage := base64.StdEncoding.EncodeToString(payload)
 	reader := strings.NewReader(encodedMessage)
 	m.responses = append(m.responses, &http.Response{
-		Body:          ioutil.NopCloser(reader),
+		Body:          io.NopCloser(reader),
 		ContentLength: int64(len(payload)),
 		Status:        "200 OK",
 		StatusCode:    200,
@@ -64,7 +63,7 @@ func (m *MockHTTPTransport) SetResponsePayloads(payloads [][]byte) {
 		encodedMessage := base64.StdEncoding.EncodeToString(payload)
 		reader := strings.NewReader(encodedMessage)
 		m.responses[i] = &http.Response{
-			Body:          ioutil.NopCloser(reader),
+			Body:          io.NopCloser(reader),
 			ContentLength: int64(len(payload)),
 			Status:        "200 OK",
 			StatusCode:    200,

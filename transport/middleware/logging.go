@@ -5,7 +5,6 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"strings"
 
@@ -28,7 +27,7 @@ func Logging(logger *log.Logger, cryptoProvider message.CryptoProvider) transpor
 			if err != nil {
 				logger.Printf("Error reading request body: %v", err)
 			}
-			req.Body = ioutil.NopCloser(&buf)
+			req.Body = io.NopCloser(&buf)
 			logger.Println("Decrypted Request:")
 			if err := writeMessage(cryptoProvider, logger.Writer(), marshaledRequest); err != nil {
 				logger.Printf("%s\n", marshaledRequest)
@@ -44,7 +43,7 @@ func Logging(logger *log.Logger, cryptoProvider message.CryptoProvider) transpor
 			if err != nil {
 				logger.Printf("Error reading response body: %v", err)
 			}
-			res.Body = ioutil.NopCloser(&responseBuf)
+			res.Body = io.NopCloser(&responseBuf)
 			logger.Println("Decrypted Response:")
 			if err := writeMessage(cryptoProvider, logger.Writer(), marshaledResponse); err != nil {
 				logger.Printf("%s\n", marshaledResponse)
