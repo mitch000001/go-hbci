@@ -22,7 +22,6 @@ import (
 
 	"github.com/mitch000001/go-hbci/client"
 	"github.com/mitch000001/go-hbci/domain"
-	"github.com/mitch000001/go-hbci/internal"
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -62,7 +61,6 @@ func init() {
 	cobra.OnInitialize(
 		initConfig,
 		initClient,
-		initLoggers,
 	)
 
 	// Here you will define your flags and configuration settings.
@@ -95,10 +93,11 @@ func initClient() {
 		os.Exit(1)
 	}
 	clientConfig = client.Config{
-		URL:       url,
-		AccountID: userID,
-		BankID:    blz,
-		PIN:       PIN,
+		URL:                url,
+		AccountID:          userID,
+		BankID:             blz,
+		PIN:                PIN,
+		EnableDebugLogging: debug,
 	}
 	c, err := client.New(clientConfig)
 	if err != nil {
@@ -140,8 +139,4 @@ func initConfig() {
 		}
 		viper.WriteConfigAs(filepath.Join(home, ".banking.yaml"))
 	}
-}
-
-func initLoggers() {
-	internal.SetDebugMode(debug)
 }
