@@ -88,7 +88,7 @@ func (b *builder) AccountTransactionRequest(account domain.AccountConnection, al
 	}
 	request, err := AccountTransactionRequestBuilder(versions)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error building account transaction request (HKKAZ): %w", err)
 	}
 	return request(account, allAccounts), nil
 }
@@ -99,7 +99,7 @@ func (b *builder) SepaAccountTransactionRequest(account domain.InternationalAcco
 	}
 	request, err := SepaAccountTransactionRequestBuilder(versions)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error building sepa account transaction request (HKKAZ): %w", err)
 	}
 	return request(account, allAccounts), nil
 }
@@ -110,7 +110,7 @@ func (b *builder) StatusProtocolRequest(from, to time.Time, maxEntries int, cont
 	}
 	request, err := StatusProtocolRequestBuilder(versions)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error building status protocol request (HKPRO): %w", err)
 	}
 	return request(from, to, maxEntries, continuationReference), nil
 }
