@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"bytes"
 	"io"
-	"io/ioutil"
 
 	"github.com/mitch000001/go-hbci/message"
 	"github.com/mitch000001/go-hbci/segment"
@@ -59,7 +58,7 @@ func ReadResponse(r *bufio.Reader, req *Request) (*Response, error) {
 		Request:           req,
 		MarshaledResponse: marshaledMessage,
 		SegmentExtractor:  extractor,
-		Body:              ioutil.NopCloser(&buf),
+		Body:              io.NopCloser(&buf),
 	}
 	return response, nil
 }

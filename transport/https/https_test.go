@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/base64"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"strings"
 	"testing"
@@ -27,12 +26,12 @@ func TestHttpsBase64Transport(t *testing.T) {
 
 	httpReq := &transport.Request{
 		URL:  "foo",
-		Body: ioutil.NopCloser(strings.NewReader("bar")),
+		Body: io.NopCloser(strings.NewReader("bar")),
 	}
 
 	httpBase64Req := &transport.Request{
 		URL:  "foo",
-		Body: ioutil.NopCloser(strings.NewReader("bar")),
+		Body: io.NopCloser(strings.NewReader("bar")),
 	}
 
 	httpResponse, httpError := httpsTransport.Do(httpReq)

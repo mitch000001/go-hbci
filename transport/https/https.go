@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/base64"
 	"io"
-	"io/ioutil"
 	"net/http"
 
 	"github.com/mitch000001/go-hbci/transport"
@@ -56,7 +55,7 @@ func (h *HTTPSBase64Transport) Do(request *transport.Request) (*transport.Respon
 	} else {
 		reader = httpResponse.Body
 	}
-	return &transport.Response{Body: ioutil.NopCloser(reader), Request: request}, nil
+	return &transport.Response{Body: io.NopCloser(reader), Request: request}, nil
 }
 
 // New returns a HTTPSTransport. It sets http.DefaultClient as http.Client to
