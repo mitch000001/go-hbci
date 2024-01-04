@@ -8,6 +8,7 @@ import (
 	"github.com/mitch000001/go-hbci/dialog"
 	"github.com/mitch000001/go-hbci/domain"
 	"github.com/mitch000001/go-hbci/element"
+	"github.com/mitch000001/go-hbci/internal"
 	"github.com/mitch000001/go-hbci/message"
 	"github.com/mitch000001/go-hbci/segment"
 	"github.com/mitch000001/go-hbci/swift"
@@ -16,12 +17,13 @@ import (
 
 // Config defines the basic configuration needed for a Client to work.
 type Config struct {
-	BankID      string `json:"bank_id"`
-	AccountID   string `json:"account_id"`
-	PIN         string `json:"pin"`
-	URL         string `json:"url"`
-	HBCIVersion int    `json:"hbci_version"`
-	Transport   transport.Transport
+	BankID             string `json:"bank_id"`
+	AccountID          string `json:"account_id"`
+	PIN                string `json:"pin"`
+	URL                string `json:"url"`
+	HBCIVersion        int    `json:"hbci_version"`
+	Transport          transport.Transport
+	EnableDebugLogging bool `json:"enable_debug_logging"`
 }
 
 func (c Config) hbciVersion() (segment.HBCIVersion, error) {
@@ -39,6 +41,7 @@ func (c Config) hbciVersion() (segment.HBCIVersion, error) {
 // If the provided Config does not provide a URL or a HBCI-Version it will be
 // looked up in the bankinfo database.
 func New(config Config) (*Client, error) {
+	internal.SetDebugMode(config.EnableDebugLogging)
 	bankID := domain.BankID{
 		CountryCode: 280,
 		ID:          config.BankID,
