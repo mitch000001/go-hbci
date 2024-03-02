@@ -127,7 +127,7 @@ func (c *Client) Accounts() ([]domain.AccountInformation, error) {
 // If allAccouts is true, it will fetch all transactions associated with the
 // proviced account. For the initial request no continuationReference is
 // needed, as this method will be called recursivly if the server sends one.
-func (c *Client) AccountTransactions(account domain.AccountConnection, timeframe domain.Timeframe, allAccounts bool, continuationReference string) ([]domain.AccountTransaction, error) {
+func (c *Client) AccountTransactions(account domain.AccountConnection, timeframe domain.Timeframe, allAccounts bool, continuationReference string) (*domain.AccountTransactions, error) {
 	if err := c.init(); err != nil {
 		return nil, err
 	}
@@ -135,23 +135,31 @@ func (c *Client) AccountTransactions(account domain.AccountConnection, timeframe
 		builder := segment.NewBuilder(c.pinTanDialog.SupportedSegments())
 		return builder.AccountTransactionRequest(account, allAccounts)
 	}
-	bookedSwiftTransactions, err := c.accountTransactions(requestBuilder, timeframe, continuationReference)
+	swiftTransactions, err := c.accountTransactions(requestBuilder, timeframe, continuationReference)
 	if err != nil {
 		return nil, fmt.Errorf("error executing HBCI request: %w", err)
 	}
-	unmarshaler := swift.NewMT940MessagesUnmarshaler()
-	tx, err := unmarshaler.UnmarshalMT940(bookedSwiftTransactions.Data)
+	unmarshalerMT940 := swift.NewMT940MessagesUnmarshaler()
+	bookedTx, err := unmarshalerMT940.UnmarshalMT940(swiftTransactions.booked.Data)
 	if err != nil {
-		return nil, fmt.Errorf("error unmarshaling SWIFT transactions: %w", err)
+		return nil, fmt.Errorf("error unmarshaling booked SWIFT transactions: %w", err)
 	}
-	return tx, nil
+	unmarshalerMT942 := swift.NewMT942MessagesUnmarshaler()
+	unbookedTx, err := unmarshalerMT942.UnmarshalMT942(swiftTransactions.unbooked.Data)
+	if err != nil {
+		return nil, fmt.Errorf("error unmarshaling unbooked SWIFT transactions: %w", err)
+	}
+	return &domain.AccountTransactions{
+		BookedTransactions:   bookedTx,
+		UnbookedTransactions: unbookedTx,
+	}, nil
 }
 
 // SepaAccountTransactions return all transactions for the provided timeframe.
 // If allAccouts is true, it will fetch all transactions associated with the
 // provided account. For the initial request no continuationReference is
 // needed, as this method will be called recursivly if the server sends one.
-func (c *Client) SepaAccountTransactions(account domain.InternationalAccountConnection, timeframe domain.Timeframe, allAccounts bool, continuationReference string) ([]domain.AccountTransaction, error) {
+func (c *Client) SepaAccountTransactions(account domain.InternationalAccountConnection, timeframe domain.Timeframe, allAccounts bool, continuationReference string) (*domain.AccountTransactions, error) {
 	if err := c.init(); err != nil {
 		return nil, err
 	}
@@ -159,19 +167,27 @@ func (c *Client) SepaAccountTransactions(account domain.InternationalAccountConn
 		builder := segment.NewBuilder(c.pinTanDialog.SupportedSegments())
 		return builder.SepaAccountTransactionRequest(account, allAccounts)
 	}
-	bookedSwiftTransactions, err := c.accountTransactions(requestBuilder, timeframe, continuationReference)
+	swiftTransactions, err := c.accountTransactions(requestBuilder, timeframe, continuationReference)
 	if err != nil {
 		return nil, fmt.Errorf("error executing HBCI request: %w", err)
 	}
-	unmarshaler := swift.NewMT940MessagesUnmarshaler()
-	tx, err := unmarshaler.UnmarshalMT940(bookedSwiftTransactions.Data)
+	unmarshalerMT940 := swift.NewMT940MessagesUnmarshaler()
+	bookedTx, err := unmarshalerMT940.UnmarshalMT940(swiftTransactions.booked.Data)
 	if err != nil {
-		return nil, fmt.Errorf("error unmarshaling SWIFT transactions: %w", err)
+		return nil, fmt.Errorf("error unmarshaling booked SWIFT transactions: %w", err)
 	}
-	return tx, nil
+	unmarshalerMT942 := swift.NewMT942MessagesUnmarshaler()
+	unbookedTx, err := unmarshalerMT942.UnmarshalMT942(swiftTransactions.unbooked.Data)
+	if err != nil {
+		return nil, fmt.Errorf("error unmarshaling unbooked SWIFT transactions: %w", err)
+	}
+	return &domain.AccountTransactions{
+		BookedTransactions:   bookedTx,
+		UnbookedTransactions: unbookedTx,
+	}, nil
 }
 
-func (c *Client) accountTransactions(requestBuilder func() (segment.AccountTransactionRequest, error), timeframe domain.Timeframe, continuationReference string) (*swift.MT940Messages, error) {
+func (c *Client) accountTransactions(requestBuilder func() (segment.AccountTransactionRequest, error), timeframe domain.Timeframe, continuationReference string) (*transactions, error) {
 	accountTransactionRequest, err := requestBuilder()
 	if err != nil {
 		return nil, fmt.Errorf("error building request: %w", err)
@@ -187,6 +203,7 @@ func (c *Client) accountTransactions(requestBuilder func() (segment.AccountTrans
 		return nil, fmt.Errorf("error sending hbci request: %w", err)
 	}
 	var bookedSwiftTransactions []*swift.MT940Messages
+	var unbookedSwiftTransactions []*swift.MT942Messages
 	accountTransactionResponses := decryptedMessage.FindSegments("HIKAZ")
 	for _, unmarshaledSegment := range accountTransactionResponses {
 		seg, ok := unmarshaledSegment.(segment.AccountTransactionResponse)
@@ -194,6 +211,7 @@ func (c *Client) accountTransactions(requestBuilder func() (segment.AccountTrans
 			return nil, fmt.Errorf("malformed segment found with ID `HIKAZ`")
 		}
 		bookedSwiftTransactions = append(bookedSwiftTransactions, seg.BookedSwiftTransactions())
+		unbookedSwiftTransactions = append(unbookedSwiftTransactions, seg.UnbookedSwiftTransactions())
 	}
 	var newContinuationReference string
 	acknowledgements := decryptedMessage.Acknowledgements()
@@ -203,15 +221,28 @@ func (c *Client) accountTransactions(requestBuilder func() (segment.AccountTrans
 			break
 		}
 	}
-	tx := swift.MergeMT940Messages(bookedSwiftTransactions...)
+	bookedTx := swift.MergeMT940Messages(bookedSwiftTransactions...)
+	unbookedTx := swift.MergeMT942Messages(unbookedSwiftTransactions...)
 	if newContinuationReference == "" {
-		return tx, nil
+		return &transactions{
+			booked:   bookedTx,
+			unbooked: unbookedTx,
+		}, nil
 	}
 	msg, err := c.accountTransactions(requestBuilder, timeframe, newContinuationReference)
 	if err != nil {
 		return nil, err
 	}
-	return swift.MergeMT940Messages(msg, tx), err
+	tx := transactions{
+		booked:   swift.MergeMT940Messages(msg.booked, bookedTx),
+		unbooked: swift.MergeMT942Messages(msg.unbooked, unbookedTx),
+	}
+	return &tx, err
+}
+
+type transactions struct {
+	booked   *swift.MT940Messages
+	unbooked *swift.MT942Messages
 }
 
 // AccountInformation will print all information attached to the provided

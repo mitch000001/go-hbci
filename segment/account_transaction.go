@@ -1,7 +1,6 @@
 package segment
 
 import (
-	"fmt"
 	"sort"
 	"time"
 
@@ -23,7 +22,7 @@ func AccountTransactionRequestBuilder(versions []int) (func(account domain.Accou
 			return builder, nil
 		}
 	}
-	return nil, fmt.Errorf("unsupported versions %v", versions)
+	return nil, &unsupportedSegmentVersionError{segmentID: "HKKAZ", versions: versions}
 }
 
 func SepaAccountTransactionRequestBuilder(versions []int) (func(account domain.InternationalAccountConnection, allAccounts bool) *AccountTransactionRequestSegment, error) {
@@ -37,7 +36,7 @@ func SepaAccountTransactionRequestBuilder(versions []int) (func(account domain.I
 			return NewAccountTransactionRequestSegmentV7, nil
 		}
 	}
-	return nil, fmt.Errorf("unsupported versions %v", versions)
+	return nil, &unsupportedSegmentVersionError{segmentID: "HKKAZ", versions: versions}
 }
 
 type AccountTransactionRequestSegment struct {
@@ -221,6 +220,7 @@ func (a *AccountTransactionRequestV7) elements() []element.DataElement {
 type AccountTransactionResponse interface {
 	BankSegment
 	BookedSwiftTransactions() *swift.MT940Messages
+	UnbookedSwiftTransactions() *swift.MT942Messages
 }
 
 //go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment AccountTransactionResponseSegment -segment_interface AccountTransactionResponse -segment_versions="AccountTransactionResponseSegmentV5:5:Segment,AccountTransactionResponseSegmentV6:6:Segment,AccountTransactionResponseSegmentV7:7:Segment"
@@ -232,11 +232,21 @@ type AccountTransactionResponseSegment struct {
 type AccountTransactionResponseSegmentV5 struct {
 	Segment
 	BookedTransactions   *element.SwiftMT940DataElement
-	UnbookedTransactions *element.BinaryDataElement
+	UnbookedTransactions *element.SwiftMT942DataElement
 }
 
 func (a *AccountTransactionResponseSegmentV5) BookedSwiftTransactions() *swift.MT940Messages {
-	return a.BookedTransactions.Val()
+	if a.BookedTransactions != nil {
+		return a.BookedTransactions.Val()
+	}
+	return nil
+}
+
+func (a *AccountTransactionResponseSegmentV5) UnbookedSwiftTransactions() *swift.MT942Messages {
+	if a.UnbookedTransactions != nil {
+		return a.UnbookedTransactions.Val()
+	}
+	return nil
 }
 
 func (a *AccountTransactionResponseSegmentV5) Version() int         { return 5 }
@@ -254,11 +264,21 @@ func (a *AccountTransactionResponseSegmentV5) elements() []element.DataElement {
 type AccountTransactionResponseSegmentV6 struct {
 	Segment
 	BookedTransactions   *element.SwiftMT940DataElement
-	UnbookedTransactions *element.BinaryDataElement
+	UnbookedTransactions *element.SwiftMT942DataElement
 }
 
 func (a *AccountTransactionResponseSegmentV6) BookedSwiftTransactions() *swift.MT940Messages {
-	return a.BookedTransactions.Val()
+	if a.BookedTransactions != nil {
+		return a.BookedTransactions.Val()
+	}
+	return nil
+}
+
+func (a *AccountTransactionResponseSegmentV6) UnbookedSwiftTransactions() *swift.MT942Messages {
+	if a.UnbookedTransactions != nil {
+		return a.UnbookedTransactions.Val()
+	}
+	return nil
 }
 
 func (a *AccountTransactionResponseSegmentV6) Version() int         { return 6 }
@@ -276,11 +296,21 @@ func (a *AccountTransactionResponseSegmentV6) elements() []element.DataElement {
 type AccountTransactionResponseSegmentV7 struct {
 	Segment
 	BookedTransactions   *element.SwiftMT940DataElement
-	UnbookedTransactions *element.BinaryDataElement
+	UnbookedTransactions *element.SwiftMT942DataElement
 }
 
 func (a *AccountTransactionResponseSegmentV7) BookedSwiftTransactions() *swift.MT940Messages {
-	return a.BookedTransactions.Val()
+	if a.BookedTransactions != nil {
+		return a.BookedTransactions.Val()
+	}
+	return nil
+}
+
+func (a *AccountTransactionResponseSegmentV7) UnbookedSwiftTransactions() *swift.MT942Messages {
+	if a.UnbookedTransactions != nil {
+		return a.UnbookedTransactions.Val()
+	}
+	return nil
 }
 
 func (a *AccountTransactionResponseSegmentV7) Version() int         { return 7 }

@@ -1,7 +1,6 @@
 package segment
 
 import (
-	"fmt"
 	"sort"
 	"time"
 
@@ -21,7 +20,7 @@ func StatusProtocolRequestBuilder(versions []int) (func(from, to time.Time, maxE
 			continue
 		}
 	}
-	return nil, fmt.Errorf("unsupported versions %v", versions)
+	return nil, &unsupportedSegmentVersionError{segmentID: "HKPRO", versions: versions}
 }
 
 type StatusProtocolRequest interface {
