@@ -24,7 +24,7 @@ func TestPinTanDialogSendMessage(t *testing.T) {
 		Name1:             "Muster",
 		Name2:             "Max",
 		AllowedBusinessTransactions: []domain.BusinessTransaction{
-			domain.BusinessTransaction{ID: "HKSAL", NeededSignatures: 1},
+			{ID: "HKSAL", NeededSignatures: 1},
 		},
 	}
 	d.Accounts = []domain.AccountInformation{
@@ -33,6 +33,7 @@ func TestPinTanDialogSendMessage(t *testing.T) {
 	initResponse := encryptedTestMessage(
 		"abcde",
 		"HIRMG:2:2:1+0020::Auftrag entgegengenommen'",
+		"HITANS:3:7:4+1+1+1+N:N:0:922:2:pushTAN-dec:Decoupled::pushTAN 2.0:::Aufforderung:2048:J:2:N:0:0:N:N:00:2:N:2:180:1:1:J:J:923:2:pushTAN-cas:Decoupled::pushTAN 2.0:::Aufforderung:2048:J:2:N:0:0:N:N:00:2:N:5:180:1:1:J:J'",
 	)
 	balanceResponse := encryptedTestMessage(
 		"abcde",
@@ -70,10 +71,11 @@ func TestPinTanDialogSyncClientSystemID(t *testing.T) {
 		"newDialogID",
 		"HIRMG:2:2:1+0100::Dialog beendet'",
 		"HIBPA:3:2:+12+280:10000000+Bank Name+3+1+201:210:220+0'",
-		"HIPINS:4:1:+1+1+0+5:38:6:USERID:CUSTID:HKSAL:N:HKUEB:J'",
-		"HISYN:5:3:8+newClientSystemID'",
-		"HIUPA:6:2:7+12345+4+0'",
-		"HIUPD:7:4:8+12345::280:1000000+54321+EUR+Muster+Max+++HKTAN:1+HKKAZ:1'",
+		"HITANS:4:7:4+1+1+1+N:N:0:922:2:pushTAN-dec:Decoupled::pushTAN 2.0:::Aufforderung:2048:J:2:N:0:0:N:N:00:2:N:2:180:1:1:J:J:923:2:pushTAN-cas:Decoupled::pushTAN 2.0:::Aufforderung:2048:J:2:N:0:0:N:N:00:2:N:5:180:1:1:J:J'",
+		"HIPINS:5:1:+1+1+0+5:38:6:USERID:CUSTID:HKSAL:N:HKUEB:J'",
+		"HISYN:6:3:8+newClientSystemID'",
+		"HIUPA:7:2:7+12345+4+0'",
+		"HIUPD:8:4:8+12345::280:1000000+54321+EUR+Muster+Max+++HKTAN:1+HKKAZ:1'",
 	)
 
 	dialogEndResponseMessage := encryptedTestMessage("newDialogID", "HIRMG:2:2:1+0020::Auftrag entgegengenommen'")
@@ -176,8 +178,8 @@ func TestPinTanDialogSyncClientSystemID(t *testing.T) {
 			Name1:             "Muster",
 			Name2:             "Max",
 			AllowedBusinessTransactions: []domain.BusinessTransaction{
-				domain.BusinessTransaction{ID: "HKTAN", NeededSignatures: 1},
-				domain.BusinessTransaction{ID: "HKKAZ", NeededSignatures: 1},
+				{ID: "HKTAN", NeededSignatures: 1},
+				{ID: "HKKAZ", NeededSignatures: 1},
 			},
 		}
 		if !reflect.DeepEqual(expected, account) {
@@ -194,7 +196,7 @@ func TestPinTanDialogSyncClientSystemID(t *testing.T) {
 		[]byte(""),
 	})
 
-	res, err = d.SyncClientSystemID()
+	_, err = d.SyncClientSystemID()
 
 	if err == nil {
 		t.Logf("Expected error, got nil\n")
@@ -255,6 +257,9 @@ func newTestPinTanDialog(transport *mockHTTPSTransport) *PinTanDialog {
 	d.SetPin("abcde")
 	d.SetClientSystemID("xyz")
 	d.transport = transport
+	d.supportedSegments = []segment.VersionedSegment{
+		{ID: "HITANS", Version: 7},
+	}
 	return d
 }
 

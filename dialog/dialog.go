@@ -160,7 +160,7 @@ func (d *dialog) SyncClientSystemID() (string, error) {
 	syncMessage.ProcessingPreparation = segment.NewProcessingPreparationSegmentV3(
 		initialBankParameterDataVersion, initialUserParameterDataVersion, domain.German, d.productName, d.productVersion,
 	)
-	syncMessage.TanRequest = d.hbciVersion.TanProcess4Request(segment.IdentificationID)
+	syncMessage.TanRequest = segment.NewTanProcess4RequestSegmentV6(segment.IdentificationID)
 	syncMessage.Sync = d.hbciVersion.SynchronisationRequest(segment.SyncModeAquireClientID)
 	syncMessage.BasicMessage = d.newBasicMessage(syncMessage)
 	signedSyncMessage, err := syncMessage.Sign(d.signatureProvider)
@@ -262,7 +262,7 @@ func (d *dialog) SendAnonymousMessage(clientMessage message.HBCIMessage) (messag
 		}
 	}
 	if len(errors) > 0 {
-		return nil, fmt.Errorf("Institute returned errors:\n%s", strings.Join(errors, "\n"))
+		return nil, fmt.Errorf("institute returned errors:\n%s", strings.Join(errors, "\n"))
 	}
 	return bankMessage, nil
 }
@@ -358,7 +358,12 @@ func (d *dialog) init() error {
 	initMessage.ProcessingPreparation = segment.NewProcessingPreparationSegmentV3(
 		d.BankParameterDataVersion(), d.UserParameterDataVersion(), d.Language, d.productName, d.productVersion,
 	)
-	initMessage.TanRequest = d.hbciVersion.TanProcess4Request(segment.IdentificationID)
+	builder := segment.NewBuilder(d.supportedSegments)
+	tanRequest, err := builder.TanProcessV4Request(segment.IdentificationID)
+	if err != nil {
+		return fmt.Errorf("error building TAN V4 Process segment: %w", err)
+	}
+	initMessage.TanRequest = tanRequest
 	initMessage.BasicMessage = d.newBasicMessage(initMessage)
 	signedInitMessage, err := initMessage.Sign(d.signatureProvider)
 	if err != nil {

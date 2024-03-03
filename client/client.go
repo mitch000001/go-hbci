@@ -118,7 +118,7 @@ func (c *Client) Accounts() ([]domain.AccountInformation, error) {
 	}
 	err := c.pinTanDialog.SyncUserParameterData()
 	if err != nil {
-		return nil, fmt.Errorf("error getting accounts")
+		return nil, fmt.Errorf("error getting accounts: %w", err)
 	}
 	return c.pinTanDialog.Accounts, nil
 }
@@ -180,8 +180,13 @@ func (c *Client) accountTransactions(requestBuilder func() (segment.AccountTrans
 	if continuationReference != "" {
 		accountTransactionRequest.SetContinuationReference(continuationReference)
 	}
+	builder := segment.NewBuilder(c.pinTanDialog.SupportedSegments())
+	tanRequest, err := builder.TanProcessV4Request(segment.IdentificationID)
+	if err != nil {
+		return nil, fmt.Errorf("error building TAN V4 Process segment: %w", err)
+	}
 	decryptedMessage, err := c.pinTanDialog.SendMessage(
-		message.NewHBCIMessage(c.hbciVersion, c.hbciVersion.TanProcess4Request(segment.IdentificationID), accountTransactionRequest),
+		message.NewHBCIMessage(c.hbciVersion, tanRequest, accountTransactionRequest),
 	)
 	if err != nil {
 		return nil, fmt.Errorf("error sending hbci request: %w", err)
@@ -222,8 +227,13 @@ func (c *Client) AccountInformation(account domain.AccountConnection, allAccount
 		return err
 	}
 	accountInformationRequest := segment.NewAccountInformationRequestSegmentV1(account, allAccounts)
+	builder := segment.NewBuilder(c.pinTanDialog.SupportedSegments())
+	tanRequest, err := builder.TanProcessV4Request(segment.IdentificationID)
+	if err != nil {
+		return fmt.Errorf("error building TAN V4 Process segment: %w", err)
+	}
 	decryptedMessage, err := c.pinTanDialog.SendMessage(
-		message.NewHBCIMessage(c.hbciVersion, c.hbciVersion.TanProcess4Request(segment.IdentificationID), accountInformationRequest),
+		message.NewHBCIMessage(c.hbciVersion, tanRequest, accountInformationRequest),
 	)
 	if err != nil {
 		return err
@@ -248,10 +258,14 @@ func (c *Client) AccountBalances(account domain.AccountConnection, allAccounts b
 	if err != nil {
 		return nil, err
 	}
+	tanRequest, err := builder.TanProcessV4Request(segment.IdentificationID)
+	if err != nil {
+		return nil, fmt.Errorf("error building TAN V4 Process segment: %w", err)
+	}
 	decryptedMessage, err := c.pinTanDialog.SendMessage(
 		message.NewHBCIMessage(
 			c.hbciVersion,
-			c.hbciVersion.TanProcess4Request(segment.IdentificationID),
+			tanRequest,
 			accountBalanceRequest,
 		),
 	)
@@ -289,10 +303,14 @@ func (c *Client) SepaAccountBalances(account domain.InternationalAccountConnecti
 	if continuationReference != "" {
 		accountBalanceRequest.SetContinuationMark(continuationReference)
 	}
+	tanRequest, err := builder.TanProcessV4Request(segment.IdentificationID)
+	if err != nil {
+		return nil, fmt.Errorf("error building TAN V4 Process segment: %w", err)
+	}
 	decryptedMessage, err := c.pinTanDialog.SendMessage(
 		message.NewHBCIMessage(
 			c.hbciVersion,
-			c.hbciVersion.TanProcess4Request(segment.IdentificationID),
+			tanRequest,
 			accountBalanceRequest,
 		),
 	)
@@ -346,8 +364,12 @@ func (c *Client) Status(from, to time.Time, maxEntries int, continuationReferenc
 	if err != nil {
 		return nil, err
 	}
+	tanRequest, err := builder.TanProcessV4Request(segment.IdentificationID)
+	if err != nil {
+		return nil, fmt.Errorf("error building TAN V4 Process segment: %w", err)
+	}
 	bankMessage, err := c.pinTanDialog.SendMessage(
-		message.NewHBCIMessage(c.hbciVersion, c.hbciVersion.TanProcess4Request(segment.IdentificationID), statusRequest),
+		message.NewHBCIMessage(c.hbciVersion, tanRequest, statusRequest),
 	)
 	if err != nil {
 		return nil, err

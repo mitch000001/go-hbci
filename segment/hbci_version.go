@@ -15,19 +15,14 @@ var SupportedHBCIVersions = map[int]HBCIVersion{
 
 // HBCIVersion defines segment constructors for a HBCI version
 type HBCIVersion struct {
-	version                       int
-	PinTanEncryptionHeader        func(clientSystemId string, keyName domain.KeyName) *EncryptionHeaderSegment
-	RDHEncryptionHeader           func(clientSystemId string, keyName domain.KeyName, key []byte) *EncryptionHeaderSegment
-	SignatureHeader               func() *SignatureHeaderSegment
-	PinTanSignatureHeader         func(controlReference string, clientSystemId string, keyName domain.KeyName) *SignatureHeaderSegment
-	RDHSignatureHeader            func(controlReference string, signatureId int, clientSystemId string, keyName domain.KeyName) *SignatureHeaderSegment
-	SignatureEnd                  func() *SignatureEndSegment
-	SynchronisationRequest        func(modus SyncMode) *SynchronisationRequestSegment
-	AccountBalanceRequest         func(account domain.AccountConnection, allAccounts bool) AccountBalanceRequest
-	AccountTransactionRequest     func(account domain.AccountConnection, allAccounts bool) *AccountTransactionRequestSegment
-	SepaAccountTransactionRequest func(account domain.InternationalAccountConnection, allAccounts bool) *AccountTransactionRequestSegment
-	StatusProtocolRequest         func(from, to time.Time, maxEntries int, continuationReference string) StatusProtocolRequest
-	TanProcess4Request            func(referencingSegmentID string) *TanRequestSegment
+	version                int
+	PinTanEncryptionHeader func(clientSystemId string, keyName domain.KeyName) *EncryptionHeaderSegment
+	RDHEncryptionHeader    func(clientSystemId string, keyName domain.KeyName, key []byte) *EncryptionHeaderSegment
+	SignatureHeader        func() *SignatureHeaderSegment
+	PinTanSignatureHeader  func(controlReference string, clientSystemId string, keyName domain.KeyName) *SignatureHeaderSegment
+	RDHSignatureHeader     func(controlReference string, signatureId int, clientSystemId string, keyName domain.KeyName) *SignatureHeaderSegment
+	SignatureEnd           func() *SignatureEndSegment
+	SynchronisationRequest func(modus SyncMode) *SynchronisationRequestSegment
 }
 
 // Version returns the HBCI version as integer
@@ -43,6 +38,7 @@ type Builder interface {
 	AccountTransactionRequest(account domain.AccountConnection, allAccounts bool) (*AccountTransactionRequestSegment, error)
 	SepaAccountTransactionRequest(account domain.InternationalAccountConnection, allAccounts bool) (*AccountTransactionRequestSegment, error)
 	StatusProtocolRequest(from, to time.Time, maxEntries int, continuationReference string) (StatusProtocolRequest, error)
+	TanProcessV4Request(referencingSegmentID string) (*TanRequestSegment, error)
 }
 
 // NewBuilder returns a new Builder which uses the supported segments to
@@ -104,7 +100,7 @@ func (b *builder) SepaAccountTransactionRequest(account domain.InternationalAcco
 	return request(account, allAccounts), nil
 }
 func (b *builder) StatusProtocolRequest(from, to time.Time, maxEntries int, continuationReference string) (StatusProtocolRequest, error) {
-	versions, ok := b.supportedSegments["HIPRO"]
+	versions, ok := b.supportedSegments["HIPROS"]
 	if !ok {
 		return nil, fmt.Errorf("Segment %s not supported", "HKPRO")
 	}
@@ -113,4 +109,15 @@ func (b *builder) StatusProtocolRequest(from, to time.Time, maxEntries int, cont
 		return nil, fmt.Errorf("error building status protocol request (HKPRO): %w", err)
 	}
 	return request(from, to, maxEntries, continuationReference), nil
+}
+func (b *builder) TanProcessV4Request(referencingSegmentID string) (*TanRequestSegment, error) {
+	versions, ok := b.supportedSegments["HITANS"]
+	if !ok {
+		return nil, fmt.Errorf("Segment %s not supported", "HKTAN")
+	}
+	request, err := TanProcess4RequestBuilder(versions)
+	if err != nil {
+		return nil, fmt.Errorf("error building tan request (HKTAN): %w", err)
+	}
+	return request(referencingSegmentID), nil
 }
