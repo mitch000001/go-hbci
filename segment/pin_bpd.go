@@ -22,7 +22,7 @@ type PinTanBankParameterSegment struct {
 //
 // PIN/TAN-spezifische Informationen
 type PinTanBankParameterV1 struct {
-	Segment
+	Segment       `yaml:"-"`
 	MaxJobs       *element.NumberDataElement `yaml:"MaxJobs"`
 	MinSignatures *element.NumberDataElement `yaml:"MinSignatures"`
 	// TODO/FIXME: find out which parameters are here actually

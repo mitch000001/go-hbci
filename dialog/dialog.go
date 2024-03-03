@@ -160,7 +160,7 @@ func (d *dialog) SyncClientSystemID() (string, error) {
 	syncMessage.ProcessingPreparation = segment.NewProcessingPreparationSegmentV3(
 		initialBankParameterDataVersion, initialUserParameterDataVersion, domain.German, d.productName, d.productVersion,
 	)
-	syncMessage.TanRequest = d.hbciVersion.TanProcess4Request(segment.IdentificationID)
+	syncMessage.TanRequest = segment.NewTanProcess4RequestSegmentV6(segment.IdentificationID)
 	syncMessage.Sync = d.hbciVersion.SynchronisationRequest(segment.SyncModeAquireClientID)
 	syncMessage.BasicMessage = d.newBasicMessage(syncMessage)
 	signedSyncMessage, err := syncMessage.Sign(d.signatureProvider)
@@ -253,7 +253,7 @@ func (d *dialog) SendAnonymousMessage(clientMessage message.HBCIMessage) (messag
 		}
 	}
 	if len(errors) > 0 {
-		return nil, fmt.Errorf("Institute returned errors:\n%s", strings.Join(errors, "\n"))
+		return nil, fmt.Errorf("institute returned errors:\n%s", strings.Join(errors, "\n"))
 	}
 	return bankMessage, nil
 }
@@ -349,7 +349,12 @@ func (d *dialog) init() error {
 	initMessage.ProcessingPreparation = segment.NewProcessingPreparationSegmentV3(
 		d.BankParameterDataVersion(), d.UserParameterDataVersion(), d.Language, d.productName, d.productVersion,
 	)
-	initMessage.TanRequest = d.hbciVersion.TanProcess4Request(segment.IdentificationID)
+	builder := segment.NewBuilder(d.supportedSegments)
+	tanRequest, err := builder.TanProcessV4Request(segment.IdentificationID)
+	if err != nil {
+		return fmt.Errorf("error building TAN V4 Process segment: %w", err)
+	}
+	initMessage.TanRequest = tanRequest
 	initMessage.BasicMessage = d.newBasicMessage(initMessage)
 	signedInitMessage, err := initMessage.Sign(d.signatureProvider)
 	if err != nil {
@@ -506,25 +511,34 @@ func (d *dialog) supportedSecurityFunctionsFromBankMessage(message message.BankM
 		return nil, false
 	}
 	securityFunctions := map[string]string{}
-	rawSegment := message.FindSegment(segment.TanBankParameterID)
-	if rawSegment == nil {
-		return nil, false
-	}
-	availableSecurityFns := map[string]*element.Tan2StepSubmissionProcessParameterV6{}
-	for _, pp := range rawSegment.(*segment.TanBankParameterV6).Tan2StepSubmissionParameter.ProcessParameters.GroupDataElements() {
-		tan2StepPP := pp.(*element.Tan2StepSubmissionProcessParameterV6)
-		fn := tan2StepPP.SecurityFunction.Val()
-		availableSecurityFns[fn] = tan2StepPP
-	}
+	availableSecurityFns := extractAvailableSecurityFnsFromMessage(message)
 	for _, sf := range supportedSecurityFns {
 		if pp, ok := availableSecurityFns[sf]; ok {
-			securityFunctions[sf] = pp.TwoStepProcessName.Val()
+			securityFunctions[sf] = pp.TwoStepProcessName
 		}
 	}
 	if len(securityFunctions) == 0 {
 		return nil, false
 	}
 	return securityFunctions, true
+}
+
+func extractAvailableSecurityFnsFromMessage(message message.BankMessage) map[string]domain.TanProcessParameter {
+	rawSegments := message.FindSegments(segment.TanBankParameterID)
+	availableSecurityFns := map[string]domain.TanProcessParameter{}
+	for _, rawSegment := range rawSegments {
+		if rawSegment == nil {
+			return nil
+		}
+		tanBankParams, ok := rawSegment.(segment.TanBankParameter)
+		if !ok {
+			return nil
+		}
+		for _, pp := range tanBankParams.TanProcessParameters() {
+			availableSecurityFns[pp.SecurityFunction] = pp
+		}
+	}
+	return availableSecurityFns
 }
 
 func (d *dialog) parseBankParameterData(bankMessage message.BankMessage) error {
@@ -553,12 +567,23 @@ func (d *dialog) parseBankParameterData(bankMessage message.BankMessage) error {
 	for i, s := range d.supportedSegments {
 		param := SegmentParameter{
 			VersionedSegment: s,
-		}
-		parameterData := bankMessage.FindSegment(s.ID)
-		if parameterData != nil && parameterData.Header().Version.Val() == s.Version {
-			param.Parameters = parameterData
+			Parameters:       extractBPDParameterSegmentFromMessage(bankMessage, s),
 		}
 		d.BankParameterData.SupportedSegmentParameters[i] = param
+	}
+	return nil
+}
+
+func extractBPDParameterSegmentFromMessage(message message.BankMessage, segment segment.VersionedSegment) segment.Segment {
+	parameterDataSegments := message.FindSegments(segment.ID)
+	for _, parameterData := range parameterDataSegments {
+		if parameterData == nil {
+			continue
+		}
+		if parameterData.Header().Version.Val() != segment.Version {
+			continue
+		}
+		return parameterData
 	}
 	return nil
 }

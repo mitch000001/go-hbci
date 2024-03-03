@@ -2,6 +2,7 @@ package client
 
 import (
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/mitch000001/go-hbci/bankinfo"
@@ -13,19 +14,22 @@ import (
 	"github.com/mitch000001/go-hbci/segment"
 	"github.com/mitch000001/go-hbci/swift"
 	"github.com/mitch000001/go-hbci/transport"
+	"gopkg.in/yaml.v3"
 )
 
 // Config defines the basic configuration needed for a Client to work.
 type Config struct {
-	BankID             string `json:"bank_id"`
-	AccountID          string `json:"account_id"`
-	PIN                string `json:"pin"`
-	URL                string `json:"url"`
-	HBCIVersion        int    `json:"hbci_version"`
-	Transport          transport.Transport
-	ProductName        string `json:"product_name"`
-	ProductVersion     string `json:"product_version"`
-	EnableDebugLogging bool   `json:"enable_debug_logging"`
+	BankID                 string `json:"bank_id"`
+	AccountID              string `json:"account_id"`
+	PIN                    string `json:"pin"`
+	URL                    string `json:"url"`
+	HBCIVersion            int    `json:"hbci_version"`
+	Transport              transport.Transport
+	ProductName            string `json:"product_name"`
+	ProductVersion         string `json:"product_version"`
+	StoreBankParameterData bool   `json:"store_bank_parameter_data"`
+	StoreUserParameterData bool   `json:"store_user_parameter_data"`
+	EnableDebugLogging     bool   `json:"enable_debug_logging"`
 }
 
 func (c Config) hbciVersion() (segment.HBCIVersion, error) {
@@ -108,6 +112,19 @@ func (c *Client) init() error {
 			return fmt.Errorf("error while fetching accounts: %v", err)
 		}
 	}
+	if c.config.StoreBankParameterData {
+		path := fmt.Sprintf("bpd_%s_%d.yaml", c.config.BankID, c.pinTanDialog.BankParameterDataVersion())
+		if err := storeDataToDisk(c.pinTanDialog.BankParameterData, path); err != nil {
+			return fmt.Errorf("error writing Bank Parameter data to disk: %w", err)
+		}
+	}
+	if c.config.StoreUserParameterData {
+		path := fmt.Sprintf("upd_%s_%d.yaml", c.config.BankID, c.pinTanDialog.UserParameterDataVersion())
+		if err := storeDataToDisk(c.pinTanDialog.UserParameterData, path); err != nil {
+			return fmt.Errorf("error writing User Parameter data to disk: %w", err)
+		}
+	}
+
 	return nil
 }
 
@@ -118,7 +135,7 @@ func (c *Client) Accounts() ([]domain.AccountInformation, error) {
 	}
 	err := c.pinTanDialog.SyncUserParameterData()
 	if err != nil {
-		return nil, fmt.Errorf("error getting accounts")
+		return nil, fmt.Errorf("error getting accounts: %w", err)
 	}
 	return c.pinTanDialog.Accounts, nil
 }
@@ -180,8 +197,13 @@ func (c *Client) accountTransactions(requestBuilder func() (segment.AccountTrans
 	if continuationReference != "" {
 		accountTransactionRequest.SetContinuationReference(continuationReference)
 	}
+	builder := segment.NewBuilder(c.pinTanDialog.SupportedSegments())
+	tanRequest, err := builder.TanProcessV4Request(segment.IdentificationID)
+	if err != nil {
+		return nil, fmt.Errorf("error building TAN V4 Process segment: %w", err)
+	}
 	decryptedMessage, err := c.pinTanDialog.SendMessage(
-		message.NewHBCIMessage(c.hbciVersion, c.hbciVersion.TanProcess4Request(segment.IdentificationID), accountTransactionRequest),
+		message.NewHBCIMessage(c.hbciVersion, tanRequest, accountTransactionRequest),
 	)
 	if err != nil {
 		return nil, fmt.Errorf("error sending hbci request: %w", err)
@@ -222,8 +244,13 @@ func (c *Client) AccountInformation(account domain.AccountConnection, allAccount
 		return err
 	}
 	accountInformationRequest := segment.NewAccountInformationRequestSegmentV1(account, allAccounts)
+	builder := segment.NewBuilder(c.pinTanDialog.SupportedSegments())
+	tanRequest, err := builder.TanProcessV4Request(segment.IdentificationID)
+	if err != nil {
+		return fmt.Errorf("error building TAN V4 Process segment: %w", err)
+	}
 	decryptedMessage, err := c.pinTanDialog.SendMessage(
-		message.NewHBCIMessage(c.hbciVersion, c.hbciVersion.TanProcess4Request(segment.IdentificationID), accountInformationRequest),
+		message.NewHBCIMessage(c.hbciVersion, tanRequest, accountInformationRequest),
 	)
 	if err != nil {
 		return err
@@ -248,10 +275,14 @@ func (c *Client) AccountBalances(account domain.AccountConnection, allAccounts b
 	if err != nil {
 		return nil, err
 	}
+	tanRequest, err := builder.TanProcessV4Request(segment.IdentificationID)
+	if err != nil {
+		return nil, fmt.Errorf("error building TAN V4 Process segment: %w", err)
+	}
 	decryptedMessage, err := c.pinTanDialog.SendMessage(
 		message.NewHBCIMessage(
 			c.hbciVersion,
-			c.hbciVersion.TanProcess4Request(segment.IdentificationID),
+			tanRequest,
 			accountBalanceRequest,
 		),
 	)
@@ -289,10 +320,14 @@ func (c *Client) SepaAccountBalances(account domain.InternationalAccountConnecti
 	if continuationReference != "" {
 		accountBalanceRequest.SetContinuationMark(continuationReference)
 	}
+	tanRequest, err := builder.TanProcessV4Request(segment.IdentificationID)
+	if err != nil {
+		return nil, fmt.Errorf("error building TAN V4 Process segment: %w", err)
+	}
 	decryptedMessage, err := c.pinTanDialog.SendMessage(
 		message.NewHBCIMessage(
 			c.hbciVersion,
-			c.hbciVersion.TanProcess4Request(segment.IdentificationID),
+			tanRequest,
 			accountBalanceRequest,
 		),
 	)
@@ -346,8 +381,12 @@ func (c *Client) Status(from, to time.Time, maxEntries int, continuationReferenc
 	if err != nil {
 		return nil, err
 	}
+	tanRequest, err := builder.TanProcessV4Request(segment.IdentificationID)
+	if err != nil {
+		return nil, fmt.Errorf("error building TAN V4 Process segment: %w", err)
+	}
 	bankMessage, err := c.pinTanDialog.SendMessage(
-		message.NewHBCIMessage(c.hbciVersion, c.hbciVersion.TanProcess4Request(segment.IdentificationID), statusRequest),
+		message.NewHBCIMessage(c.hbciVersion, tanRequest, statusRequest),
 	)
 	if err != nil {
 		return nil, err
@@ -376,4 +415,23 @@ func (a *AnonymousClient) CommunicationAccess(from, to domain.BankID, maxEntries
 		return nil, err
 	}
 	return []byte(fmt.Sprintf("%+#v", decryptedMessage)), nil
+}
+
+func storeDataToDisk(data interface{}, path string) error {
+	stored := map[string]interface{}{
+		"meta": map[string]string{
+			"createdAt": time.Now().Format(time.RFC3339),
+		},
+		"parameterData": data,
+	}
+	f, err := os.Create(path)
+	if err != nil {
+		return fmt.Errorf("error creating file for path %q: %w", path, err)
+	}
+	defer f.Close()
+	enc := yaml.NewEncoder(f)
+	if err := enc.Encode(stored); err != nil {
+		return fmt.Errorf("error marshaling data into yaml: %w", err)
+	}
+	return nil
 }

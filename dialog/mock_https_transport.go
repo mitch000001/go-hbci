@@ -115,9 +115,9 @@ func (m *mockHTTPSTransport) checkAndAdaptBoundaries(req *transport.Request) {
 		}
 		reqBytes, err := io.ReadAll(req.Body)
 		if err != nil {
-			m.errors = append(m.errors, fmt.Errorf("Unexpected request: %+#v\nBody: %v", req, err))
+			m.errors = append(m.errors, fmt.Errorf("unexpected request: %+#v\nBody: %v", req, err))
 		} else {
-			m.errors = append(m.errors, fmt.Errorf("Unexpected request: %+#v\nBody: %q", req, reqBytes))
+			m.errors = append(m.errors, fmt.Errorf("unexpected request: %+#v\nBody: %q", req, reqBytes))
 		}
 	}
 }
