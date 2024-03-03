@@ -36,6 +36,7 @@ func TestClientBalances(t *testing.T) {
 		"HIRMG:2:2:1+0020::Auftrag entgegengenommen'",
 		"HISYN:193:4:5+LRZYhZNbV2IBAAAd0?+VNqlkXrAQA'",
 		"HIBPA:2:2:+12+280:10000000+Bank Name+3+1+201:210:220+0'",
+		"HITANS:3:7:4+1+1+1+N:N:0:922:2:pushTAN-dec:Decoupled::pushTAN 2.0:::Aufforderung:2048:J:2:N:0:0:N:N:00:2:N:2:180:1:1:J:J:923:2:pushTAN-cas:Decoupled::pushTAN 2.0:::Aufforderung:2048:J:2:N:0:0:N:N:00:2:N:5:180:1:1:J:J'",
 		"HISALS:3:5:4+3+1'",
 	)
 	initResponse := encryptedTestMessage(
@@ -119,7 +120,8 @@ func TestClientSepaBalances(t *testing.T) {
 		"HIRMG:2:2:1+0020::Auftrag entgegengenommen'",
 		"HISYN:193:4:5+LRZYhZNbV2IBAAAd0?+VNqlkXrAQA'",
 		"HIBPA:2:2:+12+280:10000000+Bank Name+3+1+201:210:220+0'",
-		"HISALS:3:7:4+3+1'",
+		"HITANS:3:7:4+1+1+1+N:N:0:922:2:pushTAN-dec:Decoupled::pushTAN 2.0:::Aufforderung:2048:J:2:N:0:0:N:N:00:2:N:2:180:1:1:J:J:923:2:pushTAN-cas:Decoupled::pushTAN 2.0:::Aufforderung:2048:J:2:N:0:0:N:N:00:2:N:5:180:1:1:J:J'",
+		"HISALS:4:7:4+3+1'",
 	)
 	initResponse := encryptedTestMessage(
 		"abcde",
