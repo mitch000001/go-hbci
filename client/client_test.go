@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/mitch000001/go-hbci/bankinfo"
 	"github.com/mitch000001/go-hbci/domain"
 	https "github.com/mitch000001/go-hbci/transport/https"
 )
@@ -215,5 +216,76 @@ func setMockHTTPTransport(transport http.RoundTripper) func() {
 	http.DefaultTransport = transport
 	return func() {
 		http.DefaultTransport = originHTTPTransport
+	}
+}
+
+func TestClient_Config(t *testing.T) {
+	tests := []struct {
+		name           string
+		providedConfig Config
+		want           Config
+	}{
+		{
+			name: "Minimal config",
+			providedConfig: Config{
+				BankID:    "10010010",
+				AccountID: "1234567890",
+				PIN:       "12345",
+			},
+			want: Config{
+				BankID:      "10010010",
+				AccountID:   "1234567890",
+				PIN:         "12345",
+				HBCIVersion: 300,
+				URL:         "https://hbci.postbank.de/banking/hbci.do",
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			c, err := New(tt.providedConfig)
+			if err != nil {
+				t.Errorf("Error creating client: %v", err)
+			}
+			if got := c.Config(); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Client.Config() = %#v, want %#v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestClient_BankInfo(t *testing.T) {
+	tests := []struct {
+		name           string
+		providedConfig Config
+		want           bankinfo.BankInfo
+	}{
+		{
+			name: "Minimal config",
+			providedConfig: Config{
+				BankID: "10010010",
+			},
+			want: bankinfo.BankInfo{
+				BankID:        "10010010",
+				BIC:           "PBNKDEFFXXX",
+				VersionNumber: "",
+				URL:           "https://hbci.postbank.de/banking/hbci.do",
+				VersionName:   "FinTS V3.0",
+				Institute:     "Postbank",
+				City:          "Berlin",
+				LastChanged:   "04.02.2022",
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			c, err := New(tt.providedConfig)
+			if err != nil {
+				t.Errorf("Error creating client: %v", err)
+			}
+			if got := c.BankInfo(); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Client.BankInfo() = %#v, want %#v", got, tt.want)
+			}
+		})
 	}
 }

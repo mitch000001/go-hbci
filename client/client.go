@@ -58,6 +58,7 @@ func New(config Config) (*Client, error) {
 	} else {
 		url = bankInfo.URL
 	}
+	config.URL = url
 	if config.HBCIVersion > 0 {
 		version, err := config.hbciVersion()
 		if err != nil {
@@ -71,6 +72,7 @@ func New(config Config) (*Client, error) {
 		}
 		hbciVersion = version
 	}
+	config.HBCIVersion = hbciVersion.Version()
 	dcfg := dialog.Config{
 		BankID:         bankID,
 		HBCIURL:        url,
@@ -85,6 +87,7 @@ func New(config Config) (*Client, error) {
 	d.SetPin(config.PIN)
 	client := &Client{
 		config:       config,
+		bankInfo:     bankInfo,
 		hbciVersion:  hbciVersion,
 		pinTanDialog: d,
 	}
@@ -97,6 +100,7 @@ func New(config Config) (*Client, error) {
 // methods.
 type Client struct {
 	config       Config
+	bankInfo     bankinfo.BankInfo
 	hbciVersion  segment.HBCIVersion
 	pinTanDialog *dialog.PinTanDialog
 }
@@ -109,6 +113,17 @@ func (c *Client) init() error {
 		}
 	}
 	return nil
+}
+
+// Config returns the config provided on creation with the additional fields being set
+// after initialization
+func (c *Client) Config() Config {
+	return c.config
+}
+
+// BankInfo returns the bank institue the client is connected against
+func (c *Client) BankInfo() bankinfo.BankInfo {
+	return c.bankInfo
 }
 
 // Accounts return the basic account information for the provided client config.

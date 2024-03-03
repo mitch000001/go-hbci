@@ -13,6 +13,21 @@ import (
 	"github.com/mitch000001/go-hbci/iban"
 )
 
+func ExampleNew() {
+	clientConfig := client.Config{
+		AccountID: "100000000",
+		BankID:    "10010010",
+		PIN:       "PIN",
+	}
+	c, err := client.New(clientConfig)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	fmt.Printf("Bank Institute: %s (%s)", c.BankInfo().Institute, c.BankInfo().City)
+	// Output: Bank Institute: Postbank (Berlin)
+}
+
 var testAccount domain.AccountConnection
 var sepaTestAccount domain.InternationalAccountConnection
 
