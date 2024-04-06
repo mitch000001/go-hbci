@@ -11,6 +11,7 @@ import (
 	"github.com/mitch000001/go-hbci/client"
 	"github.com/mitch000001/go-hbci/domain"
 	"github.com/mitch000001/go-hbci/iban"
+	"gopkg.in/yaml.v2"
 )
 
 var testAccount domain.AccountConnection
@@ -138,14 +139,42 @@ func TestClientStatus(t *testing.T) {
 	}
 }
 
+func TestAnonymousClientBankParameterData(t *testing.T) {
+	skipWhenE2EDisabled(t)
+	a := &client.AnonymousClient{
+		Client: newClient(),
+	}
+
+	res, err := a.BankParameterData()
+
+	if err != nil {
+		t.Logf("Expected error to be nil, got %T:%v\n", err, err)
+		// t.Fail()
+	}
+
+	if res != nil {
+		t.Logf("Response: %+#v\n", *res)
+		stored := map[string]interface{}{
+			"meta": map[string]string{
+				"createdAt": time.Now().Format(time.RFC3339),
+			},
+			"parameterData": res,
+		}
+		enc := yaml.NewEncoder(os.Stdout)
+		if err := enc.Encode(stored); err != nil {
+			t.Errorf("error marshaling data into yaml: %v", err)
+		}
+	}
+}
+
 func TestAnonymousClientCommunicationAccess(t *testing.T) {
 	skipWhenE2EDisabled(t)
 	a := &client.AnonymousClient{
 		Client: newClient(),
 	}
 
-	from := domain.BankID{280, "78050000"}
-	to := domain.BankID{280, "78050000"}
+	from := domain.BankID{CountryCode: 280, ID: "78050000"}
+	to := domain.BankID{CountryCode: 280, ID: "78050000"}
 
 	res, err := a.CommunicationAccess(from, to, 10)
 
@@ -160,7 +189,7 @@ func TestAnonymousClientCommunicationAccess(t *testing.T) {
 }
 
 func newClient() *client.Client {
-	configFile, err := os.Open("../.fints300.json")
+	configFile, err := os.Open(os.Getenv("GOHBCI_CONFIG_PATH"))
 	if err != nil && !os.IsNotExist(err) {
 		panic(err)
 	}
@@ -179,6 +208,7 @@ func newClient() *client.Client {
 			PIN:       os.Getenv("GOHBCI_PIN"),
 		}
 	}
+	config.EnableDebugLogging = os.Getenv("GOHBCI_DEBUG_LOGGING") == "true"
 	testAccount = domain.AccountConnection{AccountID: config.AccountID, CountryCode: 280, BankID: config.BankID}
 	i, err := iban.NewGerman(config.BankID, config.AccountID)
 	if err != nil {

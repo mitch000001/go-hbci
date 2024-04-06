@@ -229,6 +229,15 @@ func (d *dialog) SyncClientSystemID() (string, error) {
 	return d.ClientSystemID, nil
 }
 
+func (d *dialog) GetAnonymousBankParameterData() (*BankParameterData, error) {
+	err := d.anonymousInit()
+	if err != nil {
+		return nil, fmt.Errorf("Error while initating anonymous dialog: %v", err)
+	}
+	defer func() { logErr(d.anonymousEnd()) }()
+	return &d.BankParameterData, nil
+}
+
 func (d *dialog) SendAnonymousMessage(clientMessage message.HBCIMessage) (message.BankMessage, error) {
 	err := d.anonymousInit()
 	if err != nil {

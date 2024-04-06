@@ -377,3 +377,12 @@ func (a *AnonymousClient) CommunicationAccess(from, to domain.BankID, maxEntries
 	}
 	return []byte(fmt.Sprintf("%+#v", decryptedMessage)), nil
 }
+
+// BankParameterData return the bankparameter data from the institute.
+func (c *AnonymousClient) BankParameterData() (*dialog.BankParameterData, error) {
+	bpd, err := c.pinTanDialog.GetAnonymousBankParameterData()
+	if err != nil {
+		return nil, fmt.Errorf("error getting anpnymous bank parameter data: %w", err)
+	}
+	return bpd, nil
+}
