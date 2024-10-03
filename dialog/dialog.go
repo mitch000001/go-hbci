@@ -413,6 +413,11 @@ func (d *dialog) init() error {
 			errors = append(errors, ack.String())
 		}
 	}
+	if _, ok := acknowledgements[3955]; ok {
+		internal.Info.Println("Sleeping 10 seconds while waiting for TAN...")
+		time.Sleep(10 * time.Second)
+		internal.Info.Println("Continuing the flow")
+	}
 	if len(errors) > 0 {
 		return fmt.Errorf("DialogEnd: Institute returned errors:\n%s", strings.Join(errors, "\n"))
 	}
