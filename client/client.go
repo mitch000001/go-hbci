@@ -105,9 +105,15 @@ type Client struct {
 
 func (c *Client) init() error {
 	if c.pinTanDialog.BankParameterDataVersion() == 0 {
-		_, err := c.pinTanDialog.SyncClientSystemID()
+		internal.Info.Printf("Fetching new bank parameter data")
+		aClient := &AnonymousClient{c}
+		_, err := aClient.BankParameterData()
 		if err != nil {
-			return fmt.Errorf("error while fetching accounts: %v", err)
+			return fmt.Errorf("error while fetching bank parameter data: %v", err)
+		}
+		internal.Info.Printf("Syncing Client System ID")
+		if _, err := c.pinTanDialog.SyncClientSystemID(); err != nil {
+			return fmt.Errorf("error while syncing Client System ID: %v", err)
 		}
 	}
 	return nil
@@ -115,9 +121,11 @@ func (c *Client) init() error {
 
 // Accounts return the basic account information for the provided client config.
 func (c *Client) Accounts() ([]domain.AccountInformation, error) {
+	internal.Info.Printf("Initiating dialog")
 	if err := c.init(); err != nil {
 		return nil, err
 	}
+	internal.Info.Printf("Syncing User accounts")
 	err := c.pinTanDialog.SyncUserParameterData()
 	if err != nil {
 		return nil, fmt.Errorf("error getting accounts: %w", err)
