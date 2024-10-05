@@ -31,6 +31,7 @@ type ClientMessage interface {
 // BankMessage represents a message composed by the bank
 type BankMessage interface {
 	Message
+	Segments() []segment.Segment
 	Acknowledgements() map[int]domain.Acknowledgement
 	SupportedSegments() []segment.VersionedSegment
 }

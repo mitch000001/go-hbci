@@ -92,7 +92,7 @@ func (u *Unmarshaler) extractSegment(segmentID string) ([]byte, error) {
 	}
 	segmentBytes := u.segmentExtractor.FindSegment(segmentID)
 	if segmentBytes == nil {
-		return nil, fmt.Errorf("Segment not found in message: %q", segmentID)
+		return nil, fmt.Errorf("segment not found in message: %q", segmentID)
 	}
 	return segmentBytes, nil
 }
@@ -109,6 +109,15 @@ func (u *Unmarshaler) SegmentByID(segmentID string) segment.Segment {
 		return segments[0]
 	}
 	return nil
+}
+
+// Segments returns all already unmarshaled segments
+func (u *Unmarshaler) Segments() []segment.Segment {
+	var segments []segment.Segment
+	for _, s := range u.segments {
+		segments = append(segments, s...)
+	}
+	return segments
 }
 
 // MarshaledSegmentsByID returns all segments for a given ID as array of bytes

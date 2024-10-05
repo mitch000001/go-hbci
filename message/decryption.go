@@ -89,6 +89,10 @@ func (d *decryptedMessage) FindSegments(segmentID string) []segment.Segment {
 	return d.unmarshaler.SegmentsByID(segmentID)
 }
 
+func (d *decryptedMessage) Segments() []segment.Segment {
+	return d.unmarshaler.Segments()
+}
+
 func (d *decryptedMessage) SegmentPosition(segmentID string) int {
 	seg := d.unmarshaler.MarshaledSegmentByID(segmentID)
 	if len(seg) == 0 {

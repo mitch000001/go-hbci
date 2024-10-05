@@ -97,7 +97,7 @@ func writeRawSegments(w io.Writer, marshaledMessage []byte) error {
 	return nil
 }
 
-func readMessageData(cryptoProvider message.CryptoProvider, rawMessage []byte) (message.Message, error) {
+func readMessageData(cryptoProvider message.CryptoProvider, rawMessage []byte) (message.BankMessage, error) {
 	response, err := transport.ReadResponse(bufio.NewReader(bytes.NewReader(rawMessage)), nil)
 	if err != nil {
 		return nil, fmt.Errorf("transport#ReadRequest: %v", err)

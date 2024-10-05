@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"sort"
 
+	"github.com/mitch000001/go-hbci/domain"
 	"github.com/mitch000001/go-hbci/element"
 )
 
@@ -32,6 +33,7 @@ type TanRequestSegment struct {
 
 type tanRequestSegment interface {
 	ClientSegment
+	SetTANProcess(string)
 }
 
 func NewTanRequestProcess2(jobReference string, anotherTANFollows bool) *TanRequestSegmentV1 {
@@ -81,10 +83,13 @@ func (t *TanRequestSegmentV1) elements() []element.DataElement {
 		t.TANInformation,
 	}
 }
+func (t *TanRequestSegmentV1) SetTANProcess(process string) {
+	t.TANProcess = element.NewAlphaNumeric(process, 1)
+}
 
 func NewTanProcess4RequestSegmentV6(referencingSegmentID string) *TanRequestSegment {
 	t := &TanRequestSegmentV6{
-		TANProcess:           element.NewAlphaNumeric("4", 1),
+		TANProcess:           element.NewCode("4", 1, []string{"1", "2", "3", "4"}),
 		ReferencingSegmentID: element.NewAlphaNumeric(referencingSegmentID, 6),
 	}
 	t.ClientSegment = NewBasicSegment(1, t)
@@ -97,12 +102,18 @@ func NewTanProcess4RequestSegmentV6(referencingSegmentID string) *TanRequestSegm
 
 type TanRequestSegmentV6 struct {
 	ClientSegment
-	TANProcess           *element.AlphaNumericDataElement
+	TANProcess           *element.CodeDataElement
 	ReferencingSegmentID *element.AlphaNumericDataElement
 	JobHash              *element.BinaryDataElement
 	JobReference         *element.AlphaNumericDataElement
 	TanListNumber        *element.AlphaNumericDataElement
 	AnotherTanFollows    *element.BooleanDataElement
+	CancelJob            *element.BooleanDataElement
+	SMSDebitAccount      *element.BooleanDataElement
+	ChallengeClass       *element.NumberDataElement
+	ChallengeClassParams *element.AlphaNumericDataElement
+	TANMediumDescription *element.AlphaNumericDataElement
+	ResponseHHD_UC       *element.AlphaNumericDataElement
 	TANInformation       *element.AlphaNumericDataElement
 }
 
@@ -119,13 +130,22 @@ func (t *TanRequestSegmentV6) elements() []element.DataElement {
 		t.JobReference,
 		t.TanListNumber,
 		t.AnotherTanFollows,
-		t.TANInformation,
+		t.CancelJob,
+		t.SMSDebitAccount,
+		t.ChallengeClass,
+		t.ChallengeClassParams,
+		t.TANMediumDescription,
+		t.ResponseHHD_UC,
 	}
+}
+
+func (t *TanRequestSegmentV6) SetTANProcess(process string) {
+	t.TANProcess = element.NewCode(process, 1, []string{"1", "2", "3", "4"})
 }
 
 func NewTanProcess4RequestSegmentV7(referencingSegmentID string) *TanRequestSegment {
 	t := &TanRequestSegmentV7{
-		TANProcess:           element.NewAlphaNumeric("4", 1),
+		TANProcess:           element.NewCode("4", 1, []string{"1", "2", "3", "4", "S"}),
 		ReferencingSegmentID: element.NewAlphaNumeric(referencingSegmentID, 6),
 	}
 	t.ClientSegment = NewBasicSegment(1, t)
@@ -138,13 +158,18 @@ func NewTanProcess4RequestSegmentV7(referencingSegmentID string) *TanRequestSegm
 
 type TanRequestSegmentV7 struct {
 	ClientSegment
-	TANProcess           *element.AlphaNumericDataElement
+	TANProcess           *element.CodeDataElement
 	ReferencingSegmentID *element.AlphaNumericDataElement
 	JobHash              *element.BinaryDataElement
 	JobReference         *element.AlphaNumericDataElement
 	TanListNumber        *element.AlphaNumericDataElement
 	AnotherTanFollows    *element.BooleanDataElement
-	TANInformation       *element.AlphaNumericDataElement
+	CancelJob            *element.BooleanDataElement
+	SMSDebitAccount      *element.BooleanDataElement
+	ChallengeClass       *element.NumberDataElement
+	ChallengeClassParams *element.AlphaNumericDataElement
+	TANMediumDescription *element.AlphaNumericDataElement
+	ResponseHHD_UC       *element.AlphaNumericDataElement
 }
 
 func (t *TanRequestSegmentV7) Version() int         { return 7 }
@@ -160,12 +185,22 @@ func (t *TanRequestSegmentV7) elements() []element.DataElement {
 		t.JobReference,
 		t.TanListNumber,
 		t.AnotherTanFollows,
-		t.TANInformation,
+		t.CancelJob,
+		t.SMSDebitAccount,
+		t.ChallengeClass,
+		t.ChallengeClassParams,
+		t.TANMediumDescription,
+		t.ResponseHHD_UC,
 	}
+}
+
+func (t *TanRequestSegmentV7) SetTANProcess(process string) {
+	t.TANProcess = element.NewCode(process, 1, []string{"1", "2", "3", "4", "S"})
 }
 
 type TanResponse interface {
 	BankSegment
+	TanParams() domain.TanParams
 }
 
 //go:generate go run ../cmd/unmarshaler/unmarshaler_generator.go -segment TanResponseSegment -segment_interface TanResponse -segment_versions="TanResponseSegmentV6:6:Segment,TanResponseSegmentV7:7:Segment"
@@ -195,7 +230,35 @@ func (t *TanResponseSegmentV6) elements() []element.DataElement {
 		t.TANProcess,
 		t.JobHash,
 		t.JobReference,
+		t.Challenge,
+		t.ChallengeHHD_UC,
+		t.TANMediumDescription,
+		t.ChallengeExpiryDate,
 	}
+}
+
+func (t *TanResponseSegmentV6) TanParams() domain.TanParams {
+	params := domain.TanParams{}
+	params.TANProcess = t.TANProcess.Val()
+	if t.JobHash != nil {
+		params.JobHash = t.JobHash.Val()
+	}
+	if t.JobReference != nil {
+		params.JobReference = t.JobReference.Val()
+	}
+	if t.Challenge != nil {
+		params.Challenge = t.Challenge.Val()
+	}
+	if t.ChallengeHHD_UC != nil {
+		params.ChallengeHHD_UC = t.ChallengeHHD_UC.Val()
+	}
+	if t.TANMediumDescription != nil {
+		params.TANMediumDescription = t.TANMediumDescription.Val()
+	}
+	if t.ChallengeExpiryDate != nil {
+		params.ChallengeExpiryDate = t.ChallengeExpiryDate.Val()
+	}
+	return params
 }
 
 type TanResponseSegmentV7 struct {
@@ -219,5 +282,33 @@ func (t *TanResponseSegmentV7) elements() []element.DataElement {
 		t.TANProcess,
 		t.JobHash,
 		t.JobReference,
+		t.Challenge,
+		t.ChallengeHHD_UC,
+		t.TANMediumDescription,
+		t.ChallengeExpiryDate,
 	}
+}
+
+func (t *TanResponseSegmentV7) TanParams() domain.TanParams {
+	params := domain.TanParams{}
+	params.TANProcess = t.TANProcess.Val()
+	if t.JobHash != nil {
+		params.JobHash = t.JobHash.Val()
+	}
+	if t.JobReference != nil {
+		params.JobReference = t.JobReference.Val()
+	}
+	if t.Challenge != nil {
+		params.Challenge = t.Challenge.Val()
+	}
+	if t.ChallengeHHD_UC != nil {
+		params.ChallengeHHD_UC = t.ChallengeHHD_UC.Val()
+	}
+	if t.TANMediumDescription != nil {
+		params.TANMediumDescription = t.TANMediumDescription.Val()
+	}
+	if t.ChallengeExpiryDate != nil {
+		params.ChallengeExpiryDate = t.ChallengeExpiryDate.Val()
+	}
+	return params
 }

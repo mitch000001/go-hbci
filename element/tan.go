@@ -3,6 +3,7 @@ package element
 import (
 	"bytes"
 	"fmt"
+	"time"
 
 	"github.com/mitch000001/go-hbci/charset"
 	"github.com/mitch000001/go-hbci/internal"
@@ -25,6 +26,12 @@ func (t *TanChallengeExpiryDate) GroupDataElements() []DataElement {
 		t.Date,
 		t.Time,
 	}
+}
+
+func (t *TanChallengeExpiryDate) Val() time.Time {
+	date := t.Date.Val()
+	timeD := t.Time.Val()
+	return timeD.AddDate(date.Year(), int(date.Month()), date.Day())
 }
 
 // Tan2StepSubmissionParameterV6

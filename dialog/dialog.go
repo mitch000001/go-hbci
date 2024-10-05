@@ -11,6 +11,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/kr/pretty"
 	"github.com/mitch000001/go-hbci/domain"
 	"github.com/mitch000001/go-hbci/element"
 	"github.com/mitch000001/go-hbci/internal"
@@ -155,12 +156,17 @@ func (d *dialog) SyncUserParameterData() error {
 }
 
 func (d *dialog) SyncClientSystemID() (string, error) {
+	d.dialogID = initialDialogID
 	syncMessage := message.NewSynchronisationMessage(d.hbciVersion)
 	syncMessage.Identification = segment.NewIdentificationSegment(d.BankID, d.clientID, initialClientSystemID, true)
 	syncMessage.ProcessingPreparation = segment.NewProcessingPreparationSegmentV3(
-		initialBankParameterDataVersion, initialUserParameterDataVersion, domain.German, d.productName, d.productVersion,
+		d.BankParameterDataVersion(), initialUserParameterDataVersion, domain.German, d.productName, d.productVersion,
 	)
-	syncMessage.TanRequest = segment.NewTanProcess4RequestSegmentV6(segment.IdentificationID)
+	tanRequest, err := d.getTanRequestSegment()
+	if err != nil {
+		return "", fmt.Errorf("error getting TAN request segment: %w", err)
+	}
+	syncMessage.TanRequest = tanRequest
 	syncMessage.Sync = d.hbciVersion.SynchronisationRequest(segment.SyncModeAquireClientID)
 	syncMessage.BasicMessage = d.newBasicMessage(syncMessage)
 	signedSyncMessage, err := syncMessage.Sign(d.signatureProvider)
@@ -187,10 +193,10 @@ func (d *dialog) SyncClientSystemID() (string, error) {
 	acknowledgements := decryptedMessage.Acknowledgements()
 	for _, ack := range acknowledgements {
 		if ack.IsSuccess() {
-			internal.Debug.Printf("%v\n", ack)
+			internal.Debug.Printf("Dialog %s: %v\n", d.dialogID, ack)
 		}
 		if ack.IsWarning() {
-			internal.Info.Printf("%v\n", ack)
+			internal.Info.Printf("Dialog %s: %v\n", d.dialogID, ack)
 		}
 		if ack.IsError() {
 			errors = append(errors, ack.String())
@@ -227,6 +233,48 @@ func (d *dialog) SyncClientSystemID() (string, error) {
 	}
 
 	return d.ClientSystemID, nil
+}
+
+func (d *dialog) getTanRequestSegment() (*segment.TanRequestSegment, error) {
+	if d.BankParameterData.Version == 0 {
+		return nil, fmt.Errorf("no bank parameter data found")
+	}
+	b := segment.NewBuilder(d.supportedSegments)
+	tanRequest, err := b.TanProcessV4Request(segment.IdentificationID)
+	if err != nil {
+		return nil, fmt.Errorf("error building TAN request (HKTAN): %w", err)
+	}
+	tanRequestVersion := tanRequest.Header().Version.Val()
+	internal.Info.Printf("Searching for parameters for version %d", tanRequestVersion)
+	var supportedTanParameters *SegmentParameter
+	for _, segParams := range d.BankParameterData.SupportedSegmentParameters {
+		if segParams.ID == segment.TanBankParameterID && segParams.Version == tanRequestVersion {
+			supportedTanParameters = &segParams
+			break
+		}
+	}
+	if supportedTanParameters == nil {
+		return nil, fmt.Errorf("no TAN parameters found")
+	}
+	// tanBankParams, ok := supportedTanParameters.Parameters.(segment.TanBankParameter)
+	// if !ok {
+	// 	return nil, fmt.Errorf("error parsing TAN bank parameters")
+	// }
+	// internal.Info.Print("Supported TAN parameters")
+	// internal.Info.Printf("%#v", tanBankParams.TanProcessParameters())
+	// internal.Info.Printf("Security function: %s", d.securityFn)
+	// availableTANProcessParameters := map[string]domain.TanProcessParameter{}
+	// for _, tanProcess := range supportedTanParameters {
+	// 	if rawSegment == nil {
+	// 		return nil
+	// 	}
+	// 	for _, pp := range tanBankParams.TanProcessParameters() {
+	// 		availableTANProcessParameters[pp.SecurityFunction] = pp
+	// 	}
+	// }
+
+	// hitans, ok := d.SupportedSegments()
+	return tanRequest, nil
 }
 
 func (d *dialog) GetAnonymousBankParameterData() (*BankParameterData, error) {
@@ -315,6 +363,9 @@ func (d *dialog) anonymousInit() error {
 	}
 	if len(errors) > 0 {
 		return fmt.Errorf("DialogEnd: Institute returned errors:\n%s", strings.Join(errors, "\n"))
+	}
+	if err := d.updateSecurityFunctionIfNeeded(bankMessage); err != nil {
+		return fmt.Errorf("error updating security function: %w", err)
 	}
 	return nil
 }
@@ -413,6 +464,13 @@ func (d *dialog) init() error {
 			errors = append(errors, ack.String())
 		}
 	}
+	tanResponse := decryptedMessage.FindSegment("HITAN")
+	if tanResponse != nil {
+		tanResponseSegment := tanResponse.(segment.TanResponse)
+		params := pretty.Sprintf("%# v", tanResponseSegment.TanParams())
+		internal.Info.Printf("TAN params:\n%s\n", params)
+	}
+
 	if _, ok := acknowledgements[3955]; ok {
 		internal.Info.Println("Sleeping 10 seconds while waiting for TAN...")
 		time.Sleep(10 * time.Second)
@@ -460,10 +518,6 @@ func (d *dialog) end() error {
 	return nil
 }
 
-func (d *dialog) newClientMessage(hbciMessage message.HBCIMessage) message.ClientMessage {
-	return d.newBasicMessage(hbciMessage)
-}
-
 func (d *dialog) newBasicMessage(hbciMessage message.HBCIMessage) *message.BasicMessage {
 	messageNum := d.nextMessageNumber()
 	clientMessage := message.NewBasicMessage(hbciMessage)
@@ -476,9 +530,9 @@ func (d *dialog) updateSecurityFunctionIfNeeded(message message.BankMessage) err
 	if !d.hasSupportedSecurityAcknowledgement(message) {
 		return nil
 	}
-	supportedSecurityFns, ok := d.supportedSecurityFunctionsFromBankMessage(message)
+	supportedSecurityFns, availableSecurityFns, ok := d.supportedSecurityFunctionsFromBankMessage(message)
 	if !ok {
-		return fmt.Errorf("no supported security function implemented")
+		return fmt.Errorf("no supported security function implemented. available are %v", availableSecurityFns)
 	}
 	oldSecurityFn := d.securityFn
 	newSecurityFn := ""
@@ -500,10 +554,6 @@ func (d *dialog) updateSecurityFunctionIfNeeded(message message.BankMessage) err
 }
 
 func (d *dialog) hasSupportedSecurityAcknowledgement(message message.BankMessage) bool {
-	rawTanBPDSegment := message.FindSegment(segment.TanBankParameterID)
-	if rawTanBPDSegment == nil {
-		return false
-	}
 	for _, ack := range message.Acknowledgements() {
 		if ack.Code == element.AcknowledgementSupportedSecurityFunction {
 			return true
@@ -512,7 +562,7 @@ func (d *dialog) hasSupportedSecurityAcknowledgement(message message.BankMessage
 	return false
 }
 
-func (d *dialog) supportedSecurityFunctionsFromBankMessage(message message.BankMessage) (map[string]string, bool) {
+func (d *dialog) supportedSecurityFunctionsFromBankMessage(message message.BankMessage) (map[string]string, map[string]string, bool) {
 	acknowledgements := message.Acknowledgements()
 	var supportedSecurityFns []string
 	for _, ack := range acknowledgements {
@@ -522,22 +572,27 @@ func (d *dialog) supportedSecurityFunctionsFromBankMessage(message message.BankM
 		}
 	}
 	if len(supportedSecurityFns) == 0 {
-		return nil, false
+		return nil, nil, false
 	}
 	securityFunctions := map[string]string{}
-	availableSecurityFns := extractAvailableSecurityFnsFromMessage(message)
+	availableSecurityFns := extractAvailableTanProcessParametersFromBankParameterData(d.BankParameterData)
+	internal.Info.Print(availableSecurityFns)
 	for _, sf := range supportedSecurityFns {
 		if pp, ok := availableSecurityFns[sf]; ok {
 			securityFunctions[sf] = pp.TwoStepProcessName
 		}
 	}
-	if len(securityFunctions) == 0 {
-		return nil, false
+	availSecurityFns := map[string]string{}
+	for k, v := range availableSecurityFns {
+		availSecurityFns[k] = v.TwoStepProcessName
 	}
-	return securityFunctions, true
+	if len(securityFunctions) == 0 {
+		return nil, availSecurityFns, false
+	}
+	return securityFunctions, availSecurityFns, true
 }
 
-func extractAvailableSecurityFnsFromMessage(message message.BankMessage) map[string]domain.TanProcessParameter {
+func extractAvailableTanProcessParametersFromMessage(message message.BankMessage) map[string]domain.TanProcessParameter {
 	rawSegments := message.FindSegments(segment.TanBankParameterID)
 	availableSecurityFns := map[string]domain.TanProcessParameter{}
 	for _, rawSegment := range rawSegments {
@@ -550,6 +605,26 @@ func extractAvailableSecurityFnsFromMessage(message message.BankMessage) map[str
 		}
 		for _, pp := range tanBankParams.TanProcessParameters() {
 			availableSecurityFns[pp.SecurityFunction] = pp
+		}
+	}
+	return availableSecurityFns
+}
+
+func extractAvailableTanProcessParametersFromBankParameterData(bpd BankParameterData) map[string]domain.TanProcessParameter {
+	availableSecurityFns := map[string]domain.TanProcessParameter{}
+	for _, segParams := range bpd.SupportedSegmentParameters {
+		if segParams.ID == segment.TanBankParameterID {
+			if segParams.Parameters == nil {
+				internal.Info.Printf("Parameters are nil for %v", segParams.String())
+				continue
+			}
+			tanBankParams, ok := segParams.Parameters.(segment.TanBankParameter)
+			if !ok {
+				return nil
+			}
+			for _, pp := range tanBankParams.TanProcessParameters() {
+				availableSecurityFns[pp.SecurityFunction] = pp
+			}
 		}
 	}
 	return availableSecurityFns
@@ -582,9 +657,11 @@ func (d *dialog) parseBankParameterData(bankMessage message.BankMessage) error {
 		param := SegmentParameter{
 			VersionedSegment: s,
 		}
-		parameterData := bankMessage.FindSegment(s.ID)
-		if parameterData != nil && parameterData.Header().Version.Val() == s.Version {
-			param.Parameters = parameterData
+		parameterDataSegments := bankMessage.FindSegments(s.ID)
+		for _, parameterData := range parameterDataSegments {
+			if parameterData != nil && parameterData.Header().Version.Val() == s.Version {
+				param.Parameters = parameterData
+			}
 		}
 		d.BankParameterData.SupportedSegmentParameters[i] = param
 	}
