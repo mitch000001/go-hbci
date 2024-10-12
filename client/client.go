@@ -2,6 +2,7 @@ package client
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/mitch000001/go-hbci/bankinfo"
@@ -17,6 +18,7 @@ import (
 
 // Config defines the basic configuration needed for a Client to work.
 type Config struct {
+	ClientSystemID     string `json:"client_system_id"`
 	BankID             string `json:"bank_id"`
 	AccountID          string `json:"account_id"`
 	PIN                string `json:"pin"`
@@ -25,8 +27,8 @@ type Config struct {
 	Transport          transport.Transport
 	ProductName        string `json:"product_name"`
 	ProductVersion     string `json:"product_version"`
-	SecurityFunction   string
-	EnableDebugLogging bool `json:"enable_debug_logging"`
+	SecurityFunction   string `json:"security_function"`
+	EnableDebugLogging bool   `json:"enable_debug_logging"`
 }
 
 func (c Config) hbciVersion() (segment.HBCIVersion, error) {
@@ -85,6 +87,9 @@ func New(config Config) (*Client, error) {
 
 	d := dialog.NewPinTanDialog(dcfg)
 	d.SetPin(config.PIN)
+	if config.ClientSystemID != "" {
+		d.SetClientSystemID(config.ClientSystemID)
+	}
 	client := &Client{
 		config:       config,
 		hbciVersion:  hbciVersion,
@@ -109,13 +114,32 @@ func (c *Client) init() error {
 		aClient := &AnonymousClient{c}
 		_, err := aClient.BankParameterData()
 		if err != nil {
-			return fmt.Errorf("error while fetching bank parameter data: %v", err)
-		}
-		internal.Info.Printf("Syncing Client System ID")
-		if _, err := c.pinTanDialog.SyncClientSystemID(); err != nil {
-			return fmt.Errorf("error while syncing Client System ID: %v", err)
+			return fmt.Errorf("error while fetching bank parameter data: %w", err)
 		}
 	}
+	if c.pinTanDialog.ClientSystemID() == "" || c.pinTanDialog.ClientSystemID() == "0" {
+		internal.Info.Printf("Syncing Client System ID")
+		clientSystemID, err := c.pinTanDialog.SyncClientSystemID()
+		if err != nil {
+			return fmt.Errorf("error while syncing Client System ID: %w", err)
+		}
+		internal.Info.Printf("New Client System ID: `%s`", clientSystemID)
+	} else {
+		internal.Debug.Printf("Using Client System ID: `%s`", c.pinTanDialog.ClientSystemID())
+	}
+	if c.pinTanDialog.SecurityFunction() == "" {
+		internal.Info.Printf("Syncing supported security functions")
+		supportedSecurityFunctions, err := c.pinTanDialog.SyncSecurityFunctions()
+		if err != nil {
+			return fmt.Errorf("error while syncing supported security functions: %w", err)
+		}
+		secFns := []string{}
+		for id, desc := range supportedSecurityFunctions {
+			secFns = append(secFns, fmt.Sprintf("%q (%s)", desc, id))
+		}
+		internal.Info.Printf("Supported security functions: %s", strings.Join(secFns, ", "))
+	}
+
 	return nil
 }
 

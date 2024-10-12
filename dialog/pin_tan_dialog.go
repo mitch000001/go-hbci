@@ -66,7 +66,7 @@ type PinTanDialog struct {
 // SetPin lets the user reset the pin after creation
 func (d *PinTanDialog) SetPin(pin string) {
 	pinKey := domain.NewPinKey(pin, domain.NewPinTanKeyName(d.BankID, d.UserID, domain.KeyTypeSigning))
-	d.signatureProvider = message.NewPinTanSignatureProvider(pinKey, d.ClientSystemID)
+	d.signatureProvider = message.NewPinTanSignatureProvider(pinKey, d.clientSystemID)
 	pinKey = domain.NewPinKey(pin, domain.NewPinTanKeyName(d.BankID, d.UserID, domain.KeyTypeEncryption))
-	d.cryptoProvider = message.NewPinTanCryptoProvider(pinKey, d.ClientSystemID)
+	d.cryptoProvider = message.NewPinTanCryptoProvider(pinKey, d.clientSystemID)
 }

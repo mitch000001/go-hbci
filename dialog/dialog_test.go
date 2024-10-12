@@ -128,8 +128,8 @@ func TestPinTanDialogSyncClientSystemID(t *testing.T) {
 		t.Fail()
 	}
 
-	if d.ClientSystemID != expected {
-		t.Logf("Expected ClientSystemID to equal %q, got %q\n", expected, d.ClientSystemID)
+	if d.clientSystemID != expected {
+		t.Logf("Expected ClientSystemID to equal %q, got %q\n", expected, d.clientSystemID)
 		t.Fail()
 	}
 

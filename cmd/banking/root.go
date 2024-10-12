@@ -98,6 +98,8 @@ func initClient() {
 		BankID:             blz,
 		PIN:                PIN,
 		EnableDebugLogging: debug,
+		ClientSystemID:     viper.GetString("client_system_id"),
+		SecurityFunction:   viper.GetString("security_function"),
 	}
 	c, err := client.New(clientConfig)
 	if err != nil {
