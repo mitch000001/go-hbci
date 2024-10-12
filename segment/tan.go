@@ -216,8 +216,8 @@ type TanResponseSegmentV6 struct {
 	JobReference         *element.AlphaNumericDataElement
 	Challenge            *element.AlphaNumericDataElement
 	ChallengeHHD_UC      *element.BinaryDataElement
-	TANMediumDescription *element.AlphaNumericDataElement
 	ChallengeExpiryDate  *element.TanChallengeExpiryDate
+	TANMediumDescription *element.AlphaNumericDataElement
 }
 
 func (t *TanResponseSegmentV6) Version() int         { return 6 }
@@ -232,8 +232,8 @@ func (t *TanResponseSegmentV6) elements() []element.DataElement {
 		t.JobReference,
 		t.Challenge,
 		t.ChallengeHHD_UC,
-		t.TANMediumDescription,
 		t.ChallengeExpiryDate,
+		t.TANMediumDescription,
 	}
 }
 
@@ -268,8 +268,8 @@ type TanResponseSegmentV7 struct {
 	JobReference         *element.AlphaNumericDataElement
 	Challenge            *element.AlphaNumericDataElement
 	ChallengeHHD_UC      *element.BinaryDataElement
-	TANMediumDescription *element.AlphaNumericDataElement
 	ChallengeExpiryDate  *element.TanChallengeExpiryDate
+	TANMediumDescription *element.AlphaNumericDataElement
 }
 
 func (t *TanResponseSegmentV7) Version() int         { return 7 }
@@ -284,8 +284,8 @@ func (t *TanResponseSegmentV7) elements() []element.DataElement {
 		t.JobReference,
 		t.Challenge,
 		t.ChallengeHHD_UC,
-		t.TANMediumDescription,
 		t.ChallengeExpiryDate,
+		t.TANMediumDescription,
 	}
 }
 
