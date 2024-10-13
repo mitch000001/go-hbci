@@ -104,6 +104,7 @@ type TanRequestSegmentV6 struct {
 	ClientSegment
 	TANProcess           *element.CodeDataElement
 	ReferencingSegmentID *element.AlphaNumericDataElement
+	AccountConnection    *element.InternationalAccountConnectionDataElement
 	JobHash              *element.BinaryDataElement
 	JobReference         *element.AlphaNumericDataElement
 	TanListNumber        *element.AlphaNumericDataElement
@@ -126,6 +127,7 @@ func (t *TanRequestSegmentV6) elements() []element.DataElement {
 	return []element.DataElement{
 		t.TANProcess,
 		t.ReferencingSegmentID,
+		t.AccountConnection,
 		t.JobHash,
 		t.JobReference,
 		t.TanListNumber,
@@ -160,6 +162,7 @@ type TanRequestSegmentV7 struct {
 	ClientSegment
 	TANProcess           *element.CodeDataElement
 	ReferencingSegmentID *element.AlphaNumericDataElement
+	AccountConnection    *element.InternationalAccountConnectionDataElement
 	JobHash              *element.BinaryDataElement
 	JobReference         *element.AlphaNumericDataElement
 	TanListNumber        *element.AlphaNumericDataElement
@@ -181,6 +184,7 @@ func (t *TanRequestSegmentV7) elements() []element.DataElement {
 	return []element.DataElement{
 		t.TANProcess,
 		t.ReferencingSegmentID,
+		t.AccountConnection,
 		t.JobHash,
 		t.JobReference,
 		t.TanListNumber,
