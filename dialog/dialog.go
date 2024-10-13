@@ -195,6 +195,45 @@ func (d *dialog) SyncUserParameterData() error {
 	return nil
 }
 
+func (d *dialog) TryTrustedDeviceRegistration() error {
+	internal.Info.Printf("Initializing dialog")
+	err := d.init()
+	if err != nil {
+		return err
+	}
+	defer func() {
+		internal.Info.Printf("Ending dialog")
+		logErr(d.end())
+	}()
+	if _, ok := d.lastMessageAcknowledges[3955]; ok {
+		internal.Info.Println("Sleeping 20 seconds while waiting for TAN...")
+		time.Sleep(20 * time.Second)
+		internal.Info.Println("...Continuing the flow")
+		internal.Info.Printf("Checking for TAN confirmation")
+		// Check TAN confirmation
+		tanRequest, err := d.createTanRequestSegment()
+		if err != nil {
+			return fmt.Errorf("error creating TAN request segment: %w", err)
+		}
+		tanRequest.SetTANProcess("S")
+		tanRequest.SetTANParams(d.lastTANParams)
+		tanRequest.SetAnotherTanFollows(false)
+		decryptedMessage, err := d.SendMessage(
+			message.NewHBCIMessage(d.hbciVersion, tanRequest),
+		)
+		if err != nil {
+			return fmt.Errorf("error sending hbci request: %w", err)
+		}
+		tanResponse := decryptedMessage.FindSegment("HITAN")
+		if tanResponse != nil {
+			tanResponseSegment := tanResponse.(segment.TanResponse)
+			params := pretty.Sprintf("%# v", tanResponseSegment.TanParams())
+			internal.Info.Printf("TAN params:\n%s\n", params)
+		}
+	}
+	return nil
+}
+
 func (d *dialog) SyncClientSystemID() (string, error) {
 	d.dialogID = initialDialogID
 	syncMessage := message.NewSynchronisationMessage(d.hbciVersion)
@@ -578,11 +617,6 @@ func (d *dialog) init() error {
 		d.lastTANParams = params
 	}
 
-	if _, ok := acknowledgements[3955]; ok {
-		internal.Info.Println("Sleeping 20 seconds while waiting for TAN...")
-		time.Sleep(20 * time.Second)
-		internal.Info.Println("Continuing the flow")
-	}
 	if len(errors) > 0 {
 		return fmt.Errorf("DialogEnd: Institute returned errors:\n%s", strings.Join(errors, "\n"))
 	}

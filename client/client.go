@@ -139,6 +139,9 @@ func (c *Client) init() error {
 		}
 		internal.Info.Printf("Supported security functions: %s", strings.Join(secFns, ", "))
 	}
+	if err := c.pinTanDialog.TryTrustedDeviceRegistration(); err != nil {
+		return fmt.Errorf("error while trying to register client as trusted device: %w", err)
+	}
 
 	return nil
 }
