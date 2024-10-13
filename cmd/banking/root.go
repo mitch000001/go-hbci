@@ -48,9 +48,6 @@ func execute() {
 
 var cfgFile string
 var url string
-var UserID string
-var BLZ string
-var PIN string
 
 var account domain.InternationalAccountConnection
 var clientConfig client.Config
@@ -68,12 +65,12 @@ func init() {
 	// will be global for your application.
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.banking.yaml)")
 	rootCmd.PersistentFlags().StringVar(&url, "hbci.url", "", "the URL to the bank institute")
-	rootCmd.PersistentFlags().StringVar(&UserID, "userID", "", "the account ID to authenticate with")
-	rootCmd.PersistentFlags().StringVar(&BLZ, "blz", "", "the identifier for the bank institute")
-	rootCmd.PersistentFlags().StringVar(&PIN, "pin", "", "the pin for the provided account")
+	rootCmd.PersistentFlags().String("userID", "", "the account ID to authenticate with")
+	rootCmd.PersistentFlags().String("blz", "", "the identifier for the bank institute")
+	rootCmd.PersistentFlags().String("pin", "", "the pin for the provided account")
 	viper.BindPFlag("userID", rootCmd.PersistentFlags().Lookup("userID"))
 	viper.BindPFlag("blz", rootCmd.PersistentFlags().Lookup("blz"))
-	rootCmd.MarkPersistentFlagRequired("pin")
+	viper.BindPFlag("pin", rootCmd.PersistentFlags().Lookup("pin"))
 
 	rootCmd.PersistentFlags().BoolVarP(&debug, "debug", "d", false, "enable debug logging (very verbose)")
 }
@@ -82,11 +79,15 @@ func initClient() {
 	var missingFlags []string
 	userID := viper.GetString("userID")
 	blz := viper.GetString("blz")
+	pin := viper.GetString("pin")
 	if userID == "" {
 		missingFlags = append(missingFlags, `"userID"`)
 	}
 	if blz == "" {
 		missingFlags = append(missingFlags, `"blz"`)
+	}
+	if pin == "" {
+		missingFlags = append(missingFlags, `"pin"`)
 	}
 	if len(missingFlags) != 0 {
 		fmt.Printf("Error: required flag(s) %s not set\n", strings.Join(missingFlags, ", "))
@@ -96,7 +97,7 @@ func initClient() {
 		URL:                url,
 		AccountID:          userID,
 		BankID:             blz,
-		PIN:                PIN,
+		PIN:                pin,
 		EnableDebugLogging: debug,
 	}
 	c, err := client.New(clientConfig)
