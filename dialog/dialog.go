@@ -83,6 +83,8 @@ type dialog struct {
 	supportedSegments          []segment.VersionedSegment
 	supportedSecurityFunctions map[string]string
 	availableSecurityFunctions map[string]string
+	lastMessageAcknowledges    map[int]domain.Acknowledgement
+	lastTANParams              domain.TanParams
 }
 
 func (d *dialog) UserParameterDataVersion() int {
@@ -138,6 +140,7 @@ func (d *dialog) SendMessage(clientMessage message.HBCIMessage) (message.BankMes
 	}
 	var errors []string
 	acknowledgements := decryptedMessage.Acknowledgements()
+	d.lastMessageAcknowledges = acknowledgements
 	for _, ack := range acknowledgements {
 		if ack.IsSegmentAcknowledgement() {
 			for _, seg := range signedMessage.HBCISegments() {
@@ -159,6 +162,14 @@ func (d *dialog) SendMessage(clientMessage message.HBCIMessage) (message.BankMes
 		if ack.IsError() {
 			errors = append(errors, ack.String())
 		}
+	}
+	tanResponse := decryptedMessage.FindSegment("HITAN")
+	if tanResponse != nil {
+		tanResponseSegment := tanResponse.(segment.TanResponse)
+		params := tanResponseSegment.TanParams()
+		prettyPrintedParams := pretty.Sprintf("%# v", params)
+		internal.Info.Printf("TAN params:\n%s\n", prettyPrintedParams)
+		d.lastTANParams = params
 	}
 	if len(errors) > 0 {
 		return nil, fmt.Errorf("institute returned errors:\n%s", strings.Join(errors, "\n"))
@@ -215,6 +226,7 @@ func (d *dialog) SyncClientSystemID() (string, error) {
 	d.dialogID = messageHeader.DialogID.Val()
 	var errors []string
 	acknowledgements := decryptedMessage.Acknowledgements()
+	d.lastMessageAcknowledges = acknowledgements
 	for _, ack := range acknowledgements {
 		if ack.IsSegmentAcknowledgement() {
 			for _, seg := range signedSyncMessage.HBCISegments() {
@@ -441,6 +453,7 @@ func (d *dialog) anonymousEnd() error {
 
 	errors := make([]string, 0)
 	acknowledgements := decryptedMessage.Acknowledgements()
+	d.lastMessageAcknowledges = acknowledgements
 	for _, ack := range acknowledgements {
 		if ack.IsSegmentAcknowledgement() {
 			for _, seg := range dialogEnd.HBCISegments() {
@@ -521,6 +534,7 @@ func (d *dialog) init() error {
 
 	var errors []string
 	acknowledgements := decryptedMessage.Acknowledgements()
+	d.lastMessageAcknowledges = acknowledgements
 	for _, ack := range acknowledgements {
 		if ack.IsSegmentAcknowledgement() {
 			for _, seg := range signedInitMessage.HBCISegments() {
@@ -549,8 +563,10 @@ func (d *dialog) init() error {
 	tanResponse := decryptedMessage.FindSegment("HITAN")
 	if tanResponse != nil {
 		tanResponseSegment := tanResponse.(segment.TanResponse)
-		params := pretty.Sprintf("%# v", tanResponseSegment.TanParams())
-		internal.Info.Printf("TAN params:\n%s\n", params)
+		params := tanResponseSegment.TanParams()
+		prettyPrintedParams := pretty.Sprintf("%# v", params)
+		internal.Info.Printf("TAN params:\n%s\n", prettyPrintedParams)
+		d.lastTANParams = params
 	}
 
 	if _, ok := acknowledgements[3955]; ok {
@@ -585,9 +601,9 @@ func (d *dialog) end() error {
 	if err != nil {
 		return fmt.Errorf("Error while ending dialog: %v", err)
 	}
-
 	errors := make([]string, 0)
 	acknowledgements := decryptedMessage.Acknowledgements()
+	d.lastMessageAcknowledges = acknowledgements
 	for _, ack := range acknowledgements {
 		if ack.IsSegmentAcknowledgement() {
 			for _, seg := range signedDialogEnd.HBCISegments() {
