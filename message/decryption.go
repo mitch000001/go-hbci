@@ -13,7 +13,7 @@ func NewDecryptedMessage(header *segment.MessageHeaderSegment, end *segment.Mess
 	unmarshaler := NewUnmarshaler(rawMessage)
 	err := unmarshaler.Unmarshal()
 	if err != nil {
-		return nil, fmt.Errorf("Malformed decrypted message bytes: %v", err)
+		return nil, fmt.Errorf("malformed decrypted message bytes: %w", err)
 	}
 	acknowledgements := map[int]domain.Acknowledgement{}
 	messageAcknowledgement, ok := unmarshaler.SegmentByID("HIRMG").(*segment.MessageAcknowledgement)
@@ -25,16 +25,17 @@ func NewDecryptedMessage(header *segment.MessageHeaderSegment, end *segment.Mess
 	}
 	for _, seg := range unmarshaler.SegmentsByID("HIRMS") {
 		if segmentAcknowledgement, ok := seg.(*segment.SegmentAcknowledgement); ok {
+			segmentAcknowledgement.SetReferencingMessage(header.ReferencingMessage())
 			for _, ack := range segmentAcknowledgement.Acknowledgements() {
 				acknowledgements[ack.Code] = ack
 			}
 		} else {
-			panic(fmt.Errorf("Error while unmarshaling segments"))
+			panic(fmt.Errorf("error while unmarshaling segment acknowledgements"))
 		}
 	}
 	version, ok := segment.SupportedHBCIVersions[header.HBCIVersion.Val()]
 	if !ok {
-		return nil, fmt.Errorf("Unsupported HBCI version: %d", header.HBCIVersion.Val())
+		return nil, fmt.Errorf("unsupported HBCI version: %d", header.HBCIVersion.Val())
 	}
 	message := &decryptedMessage{
 		rawMessage:       rawMessage,

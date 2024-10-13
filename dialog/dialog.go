@@ -139,6 +139,20 @@ func (d *dialog) SendMessage(clientMessage message.HBCIMessage) (message.BankMes
 	var errors []string
 	acknowledgements := decryptedMessage.Acknowledgements()
 	for _, ack := range acknowledgements {
+		if ack.IsSegmentAcknowledgement() {
+			for _, seg := range signedMessage.HBCISegments() {
+				if seg.Header().Position.Val() == ack.ReferencingSegmentNumber {
+					ack.ReferencingSegmentID = seg.Header().ID.String()
+					if ack.ReferenceDataElementPosition != "" {
+						pos, err := strconv.Atoi(ack.ReferenceDataElementPosition)
+						if err == nil && pos >= 0 {
+							ack.ReferencingDataElement = seg.ElementAt(pos - 1)
+						}
+					}
+					break
+				}
+			}
+		}
 		if ack.IsWarning() {
 			internal.Info.Printf("%v\n", ack)
 		}
@@ -202,6 +216,20 @@ func (d *dialog) SyncClientSystemID() (string, error) {
 	var errors []string
 	acknowledgements := decryptedMessage.Acknowledgements()
 	for _, ack := range acknowledgements {
+		if ack.IsSegmentAcknowledgement() {
+			for _, seg := range signedSyncMessage.HBCISegments() {
+				if seg.Header().Position.Val() == ack.ReferencingSegmentNumber {
+					ack.ReferencingSegmentID = seg.Header().ID.String()
+					if ack.ReferenceDataElementPosition != "" {
+						pos, err := strconv.Atoi(ack.ReferenceDataElementPosition)
+						if err == nil && pos >= 0 {
+							ack.ReferencingDataElement = seg.ElementAt(pos - 1)
+						}
+					}
+					break
+				}
+			}
+		}
 		if ack.IsSuccess() {
 			internal.Debug.Printf("Dialog %s: %v\n", d.dialogID, ack)
 		}
@@ -305,6 +333,20 @@ func (d *dialog) SendAnonymousMessage(clientMessage message.HBCIMessage) (messag
 	var errors []string
 	acknowledgements := bankMessage.Acknowledgements()
 	for _, ack := range acknowledgements {
+		if ack.IsSegmentAcknowledgement() {
+			for _, seg := range requestMessage.HBCISegments() {
+				if seg.Header().Position.Val() == ack.ReferencingSegmentNumber {
+					ack.ReferencingSegmentID = seg.Header().ID.String()
+					if ack.ReferenceDataElementPosition != "" {
+						pos, err := strconv.Atoi(ack.ReferenceDataElementPosition)
+						if err == nil && pos >= 0 {
+							ack.ReferencingDataElement = seg.ElementAt(pos - 1)
+						}
+					}
+					break
+				}
+			}
+		}
 		if ack.IsWarning() {
 			fmt.Printf("%v\n", ack)
 		}
@@ -357,6 +399,20 @@ func (d *dialog) anonymousInit() error {
 	errors := make([]string, 0)
 	acknowledgements := bankMessage.Acknowledgements()
 	for _, ack := range acknowledgements {
+		if ack.IsSegmentAcknowledgement() {
+			for _, seg := range initMessage.HBCISegments() {
+				if seg.Header().Position.Val() == ack.ReferencingSegmentNumber {
+					ack.ReferencingSegmentID = seg.Header().ID.String()
+					if ack.ReferenceDataElementPosition != "" {
+						pos, err := strconv.Atoi(ack.ReferenceDataElementPosition)
+						if err == nil && pos >= 0 {
+							ack.ReferencingDataElement = seg.ElementAt(pos - 1)
+						}
+					}
+					break
+				}
+			}
+		}
 		if ack.IsWarning() {
 			fmt.Printf("%v\n", ack)
 		}
@@ -386,6 +442,20 @@ func (d *dialog) anonymousEnd() error {
 	errors := make([]string, 0)
 	acknowledgements := decryptedMessage.Acknowledgements()
 	for _, ack := range acknowledgements {
+		if ack.IsSegmentAcknowledgement() {
+			for _, seg := range dialogEnd.HBCISegments() {
+				if seg.Header().Position.Val() == ack.ReferencingSegmentNumber {
+					ack.ReferencingSegmentID = seg.Header().ID.String()
+					if ack.ReferenceDataElementPosition != "" {
+						pos, err := strconv.Atoi(ack.ReferenceDataElementPosition)
+						if err == nil && pos >= 0 {
+							ack.ReferencingDataElement = seg.ElementAt(pos - 1)
+						}
+					}
+					break
+				}
+			}
+		}
 		if ack.IsError() {
 			errors = append(errors, ack.String())
 		}
@@ -452,6 +522,20 @@ func (d *dialog) init() error {
 	var errors []string
 	acknowledgements := decryptedMessage.Acknowledgements()
 	for _, ack := range acknowledgements {
+		if ack.IsSegmentAcknowledgement() {
+			for _, seg := range signedInitMessage.HBCISegments() {
+				if seg.Header().Position.Val() == ack.ReferencingSegmentNumber {
+					ack.ReferencingSegmentID = seg.Header().ID.String()
+					if ack.ReferenceDataElementPosition != "" {
+						pos, err := strconv.Atoi(ack.ReferenceDataElementPosition)
+						if err == nil && pos >= 0 {
+							ack.ReferencingDataElement = seg.ElementAt(pos - 1)
+						}
+					}
+					break
+				}
+			}
+		}
 		if ack.IsSuccess() {
 			internal.Debug.Printf("%v\n", ack)
 		}
@@ -505,6 +589,20 @@ func (d *dialog) end() error {
 	errors := make([]string, 0)
 	acknowledgements := decryptedMessage.Acknowledgements()
 	for _, ack := range acknowledgements {
+		if ack.IsSegmentAcknowledgement() {
+			for _, seg := range signedDialogEnd.HBCISegments() {
+				if seg.Header().Position.Val() == ack.ReferencingSegmentNumber {
+					ack.ReferencingSegmentID = seg.Header().ID.String()
+					if ack.ReferenceDataElementPosition != "" {
+						pos, err := strconv.Atoi(ack.ReferenceDataElementPosition)
+						if err == nil && pos >= 0 {
+							ack.ReferencingDataElement = seg.ElementAt(pos - 1)
+						}
+					}
+					break
+				}
+			}
+		}
 		if ack.IsError() {
 			errors = append(errors, ack.String())
 		}

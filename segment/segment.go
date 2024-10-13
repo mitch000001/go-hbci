@@ -19,6 +19,8 @@ type Segment interface {
 	Header() *element.SegmentHeader
 	SetPosition(func() int)
 	String() string
+	ElementAt(position int) string
+	NumElements() int
 }
 
 type ClientSegment interface {
@@ -57,7 +59,7 @@ func SegmentFromHeaderBytes(headerBytes []byte, seg basicSegment) (*segment, err
 	header := &element.SegmentHeader{}
 	err := header.UnmarshalHBCI(headerBytes)
 	if err != nil {
-		return nil, fmt.Errorf("Error while unmarshaling segment header: %v", err)
+		return nil, fmt.Errorf("error while unmarshaling segment header: %w", err)
 	}
 	return NewBasicSegmentWithHeader(header, seg), nil
 }
@@ -141,4 +143,13 @@ func (s *segment) SetPosition(positionFn func() int) {
 
 func (s *segment) SetReference(ref int) {
 	s.header.SetReference(ref)
+}
+
+func (s *segment) ElementAt(position int) string {
+	elem := s.DataElements()[position]
+	return fmt.Sprintf("%T (%v)", elem, elem.Value())
+}
+
+func (s *segment) NumElements() int {
+	return len(s.DataElements())
 }

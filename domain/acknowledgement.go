@@ -10,22 +10,22 @@ import (
 // NewMessageAcknowledgement creactes a new message acknowledgement
 func NewMessageAcknowledgement(code int, referenceDataElement, text string, params []string) Acknowledgement {
 	return Acknowledgement{
-		Type:                 MessageAcknowledgement,
-		Code:                 code,
-		ReferenceDataElement: referenceDataElement,
-		Text:                 text,
-		Params:               params,
+		Type:                         MessageAcknowledgement,
+		Code:                         code,
+		ReferenceDataElementPosition: referenceDataElement,
+		Text:                         text,
+		Params:                       params,
 	}
 }
 
 // NewSegmentAcknowledgement creactes a new segment acknowledgement
 func NewSegmentAcknowledgement(code int, referenceDataElement, text string, params []string) Acknowledgement {
 	return Acknowledgement{
-		Type:                 SegmentAcknowledgement,
-		Code:                 code,
-		ReferenceDataElement: referenceDataElement,
-		Text:                 text,
-		Params:               params,
+		Type:                         SegmentAcknowledgement,
+		Code:                         code,
+		ReferenceDataElementPosition: referenceDataElement,
+		Text:                         text,
+		Params:                       params,
 	}
 }
 
@@ -38,29 +38,37 @@ const (
 
 // Acknowledgement represents an acknowledgement from the bank institute
 type Acknowledgement struct {
-	Type                     string
-	Code                     int
-	ReferenceDataElement     string
-	Text                     string
-	Params                   []string
-	ReferencingMessage       MessageReference
-	ReferencingSegmentNumber int
+	Type                         string
+	Code                         int
+	ReferenceDataElementPosition string
+	ReferencingDataElement       string
+	Text                         string
+	Params                       []string
+	ReferencingMessage           MessageReference
+	ReferencingSegmentNumber     int
+	ReferencingSegmentID         string
 }
 
 func (a Acknowledgement) String() string {
 	var buf bytes.Buffer
 	fmt.Fprintf(&buf, "%s for message %d (%s)", a.Type, a.ReferencingMessage.MessageNumber, a.ReferencingMessage.DialogID)
 	if a.ReferencingSegmentNumber > 0 {
-		fmt.Fprintf(&buf, ", segment %d: ", a.ReferencingSegmentNumber)
-	} else {
-		fmt.Fprintf(&buf, ": ")
+		fmt.Fprintf(&buf, ", segment %d", a.ReferencingSegmentNumber)
 	}
+	if a.ReferencingSegmentID != "" {
+		fmt.Fprintf(&buf, " (%s)", a.ReferencingSegmentID)
+	}
+	fmt.Fprintf(&buf, ": ")
 	fmt.Fprintf(&buf, "Code: %d, ", a.Code)
-	if a.ReferenceDataElement != "" {
-		fmt.Fprintf(&buf, "Position: %s, ", a.ReferenceDataElement)
+	if a.ReferenceDataElementPosition != "" {
+		fmt.Fprintf(&buf, "Position: %s", a.ReferenceDataElementPosition)
 	} else {
-		fmt.Fprintf(&buf, "Position: none, ")
+		fmt.Fprintf(&buf, "Position: none")
 	}
+	if a.ReferencingDataElement != "" {
+		fmt.Fprintf(&buf, " (%s)", a.ReferencingDataElement)
+	}
+	fmt.Fprint(&buf, ", ")
 	fmt.Fprintf(&buf, "Text: '%s'", a.Text)
 	if len(a.Params) != 0 {
 		fmt.Fprintf(&buf, ", Parameters: %q", strings.Join(a.Params, ", "))
@@ -109,8 +117,8 @@ func (s StatusAcknowledgement) String() string {
 	}
 	fmt.Fprintf(&buf, "Transmitted at: %s, ", s.TransmittedAt)
 	fmt.Fprintf(&buf, "Code: %d, ", s.Code)
-	if s.ReferenceDataElement != "" {
-		fmt.Fprintf(&buf, "Position: %s, ", s.ReferenceDataElement)
+	if s.ReferenceDataElementPosition != "" {
+		fmt.Fprintf(&buf, "Position: %s, ", s.ReferenceDataElementPosition)
 	} else {
 		fmt.Fprintf(&buf, "Position: none, ")
 	}

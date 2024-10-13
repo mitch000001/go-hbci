@@ -108,6 +108,19 @@ type BasicMessage struct {
 	marshaledContent []byte
 }
 
+func (b *BasicMessage) HBCISegments() []segment.ClientSegment {
+	var segments []segment.ClientSegment
+	if b.SignatureBegin != nil {
+		segments = append(segments, b.SignatureBegin)
+	}
+	segments = append(segments, b.HBCIMessage.HBCISegments()...)
+
+	if b.SignatureEnd != nil {
+		segments = append(segments, b.SignatureEnd)
+	}
+	return segments
+}
+
 // SetSegmentPositions sets the message number on every segment within the message
 func (b *BasicMessage) SetSegmentPositions() {
 	if b.HBCIMessage == nil {

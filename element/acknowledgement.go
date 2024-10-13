@@ -19,7 +19,7 @@ const (
 func NewAcknowledgement(acknowledgement domain.Acknowledgement) *AcknowledgementDataElement {
 	a := &AcknowledgementDataElement{
 		Code:                 NewDigit(acknowledgement.Code, 4),
-		ReferenceDataElement: NewAlphaNumeric(acknowledgement.ReferenceDataElement, 7),
+		ReferenceDataElement: NewAlphaNumeric(acknowledgement.ReferenceDataElementPosition, 7),
 		Text:                 NewAlphaNumeric(acknowledgement.Text, 80),
 		Params:               NewParams(10, 10, acknowledgement.Params...),
 	}
@@ -65,13 +65,13 @@ func (a *AcknowledgementDataElement) SetType(acknowledgementType string) {
 // Val returns the underlying value of the acknowledgement.
 func (a *AcknowledgementDataElement) Val() domain.Acknowledgement {
 	return domain.Acknowledgement{
-		Code:                     a.Code.Val(),
-		ReferenceDataElement:     a.ReferenceDataElement.Val(),
-		Text:                     a.Text.Val(),
-		Params:                   a.Params.Val(),
-		Type:                     a.typ,
-		ReferencingMessage:       a.referencingMessage,
-		ReferencingSegmentNumber: a.referencingSegmentPosition,
+		Code:                         a.Code.Val(),
+		ReferenceDataElementPosition: a.ReferenceDataElement.Val(),
+		Text:                         a.Text.Val(),
+		Params:                       a.Params.Val(),
+		Type:                         a.typ,
+		ReferencingMessage:           a.referencingMessage,
+		ReferencingSegmentNumber:     a.referencingSegmentPosition,
 	}
 }
 
@@ -109,7 +109,7 @@ func (a *AcknowledgementDataElement) UnmarshalHBCI(value []byte) error {
 		return fmt.Errorf("%T: Malformed code", a)
 	}
 	acknowledgement.Code = code
-	acknowledgement.ReferenceDataElement = charset.ToUTF8(chunks[1])
+	acknowledgement.ReferenceDataElementPosition = charset.ToUTF8(chunks[1])
 	acknowledgement.Text = charset.ToUTF8(chunks[2])
 	if len(chunks) > 3 {
 		params := make([]string, len(chunks[3:]))
