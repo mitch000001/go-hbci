@@ -30,6 +30,15 @@ type CustomSignatureDataElement struct {
 	*PinTanDataElement
 }
 
+func (c *CustomSignatureDataElement) UnmarshalHBCI(value []byte) error {
+	p := &PinTanDataElement{}
+	if err := p.UnmarshalHBCI(value); err != nil {
+		return err
+	}
+	c.PinTanDataElement = p
+	return nil
+}
+
 // NewPinTan returns a new PinTanDataElement for pin and tan
 func NewPinTan(pin, tan string) *PinTanDataElement {
 	p := &PinTanDataElement{
@@ -64,7 +73,7 @@ func (p *PinTanDataElement) UnmarshalHBCI(value []byte) error {
 	if err != nil {
 		return err
 	}
-	if len(elements) < 2 {
+	if len(elements) > 2 {
 		return fmt.Errorf("malformed marshaled value")
 	}
 	p.DataElement = NewDataElementGroup(securityIdentificationDEG, 3, p)
