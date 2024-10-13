@@ -34,6 +34,8 @@ type TanRequestSegment struct {
 type tanRequestSegment interface {
 	ClientSegment
 	SetTANProcess(string)
+	SetAnotherTanFollows(bool)
+	SetTANParams(domain.TanParams)
 }
 
 func NewTanRequestProcess2(jobReference string, anotherTANFollows bool) *TanRequestSegmentV1 {
@@ -85,6 +87,15 @@ func (t *TanRequestSegmentV1) elements() []element.DataElement {
 }
 func (t *TanRequestSegmentV1) SetTANProcess(process string) {
 	t.TANProcess = element.NewAlphaNumeric(process, 1)
+}
+func (t *TanRequestSegmentV1) SetAnotherTanFollows(another bool) {
+	t.AnotherTanFollows = element.NewBoolean(another)
+}
+func (t *TanRequestSegmentV1) SetTANParams(params domain.TanParams) {
+	t.JobReference = element.NewAlphaNumeric(params.JobReference, 35)
+	if params.JobHash != nil {
+		t.JobHash = element.NewBinary(params.JobHash, 256)
+	}
 }
 
 func NewTanProcess4RequestSegmentV6(referencingSegmentID string) *TanRequestSegment {
@@ -144,6 +155,15 @@ func (t *TanRequestSegmentV6) elements() []element.DataElement {
 func (t *TanRequestSegmentV6) SetTANProcess(process string) {
 	t.TANProcess = element.NewCode(process, 1, []string{"1", "2", "3", "4"})
 }
+func (t *TanRequestSegmentV6) SetAnotherTanFollows(another bool) {
+	t.AnotherTanFollows = element.NewBoolean(another)
+}
+func (t *TanRequestSegmentV6) SetTANParams(params domain.TanParams) {
+	t.JobReference = element.NewAlphaNumeric(params.JobReference, 35)
+	if params.JobHash != nil {
+		t.JobHash = element.NewBinary(params.JobHash, 256)
+	}
+}
 
 func NewTanProcess4RequestSegmentV7(referencingSegmentID string) *TanRequestSegment {
 	t := &TanRequestSegmentV7{
@@ -200,6 +220,15 @@ func (t *TanRequestSegmentV7) elements() []element.DataElement {
 
 func (t *TanRequestSegmentV7) SetTANProcess(process string) {
 	t.TANProcess = element.NewCode(process, 1, []string{"1", "2", "3", "4", "S"})
+}
+func (t *TanRequestSegmentV7) SetAnotherTanFollows(another bool) {
+	t.AnotherTanFollows = element.NewBoolean(another)
+}
+func (t *TanRequestSegmentV7) SetTANParams(params domain.TanParams) {
+	t.JobReference = element.NewAlphaNumeric(params.JobReference, 35)
+	if params.JobHash != nil {
+		t.JobHash = element.NewBinary(params.JobHash, 256)
+	}
 }
 
 type TanResponse interface {

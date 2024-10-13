@@ -143,6 +143,57 @@ func (c *Client) init() error {
 	return nil
 }
 
+func (c *Client) CheckTANStatus(retries int, delay time.Duration) (bool, error) {
+	retriesLeft := retries
+	for retriesLeft != 0 {
+		tanRequest, err := c.createTanRequestSegment("S")
+		if err != nil {
+			return false, fmt.Errorf("error creating TAN request segment: %w", err)
+		}
+		bankResponse, err := c.pinTanDialog.SendMessage(
+			message.NewHBCIMessage(c.hbciVersion, tanRequest),
+		)
+		if err != nil {
+			return false, fmt.Errorf("error sending hbci message: %w", err)
+		}
+		if _, ok := bankResponse.Acknowledgements()[3956]; !ok {
+			return true, nil
+		}
+		retriesLeft--
+		time.Sleep(delay)
+	}
+	return false, nil
+}
+
+func (c *Client) createTanRequestSegment(tanProcess string) (*segment.TanRequestSegment, error) {
+	if c.pinTanDialog.BankParameterData.Version == 0 {
+		return nil, fmt.Errorf("no bank parameter data found")
+	}
+	b := segment.NewBuilder(c.pinTanDialog.SupportedSegments())
+	tanRequest, err := b.TanProcessV4Request(segment.IdentificationID)
+	if err != nil {
+		return nil, fmt.Errorf("error building TAN request (HKTAN): %w", err)
+	}
+	tanRequestVersion := tanRequest.Header().Version.Val()
+	var supportedTanParameters *dialog.SegmentParameter
+	for _, segParams := range c.pinTanDialog.BankParameterData.SupportedSegmentParameters {
+		if segParams.ID == segment.TanBankParameterID && segParams.Version == tanRequestVersion {
+			supportedTanParameters = &segParams
+			break
+		}
+	}
+	if supportedTanParameters == nil {
+		return nil, fmt.Errorf("no TAN parameters found")
+	}
+	// TODO: parse supported TAN parameters and fill the TAN request properly
+	if tanProcess == "S" {
+		tanRequest.SetTANProcess("S")
+		tanRequest.SetTANParams(c.pinTanDialog.LastTANParams())
+		tanRequest.SetAnotherTanFollows(false)
+	}
+	return tanRequest, nil
+}
+
 // Accounts return the basic account information for the provided client config.
 func (c *Client) Accounts() ([]domain.AccountInformation, error) {
 	internal.Info.Printf("Initiating dialog")

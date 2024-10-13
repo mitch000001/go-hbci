@@ -99,6 +99,10 @@ func (d *dialog) SupportedSegments() []segment.VersionedSegment {
 	return d.supportedSegments
 }
 
+func (d *dialog) LastTANParams() domain.TanParams {
+	return d.lastTANParams
+}
+
 func (d *dialog) ClientSystemID() string {
 	return d.clientSystemID
 }
