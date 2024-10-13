@@ -5,7 +5,6 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"log"
 	"net"
 	"strconv"
 	"strings"
@@ -124,11 +123,13 @@ func (d *dialog) SetSecurityFunction(securityFn string) {
 }
 
 func (d *dialog) SendMessage(clientMessage message.HBCIMessage) (message.BankMessage, error) {
-	err := d.init()
-	if err != nil {
-		return nil, err
+	if d.dialogID == initialDialogID {
+		err := d.init()
+		if err != nil {
+			return nil, err
+		}
+		defer func() { logErr(d.end()) }()
 	}
-	defer func() { logErr(d.end()) }()
 	requestMessage := d.newBasicMessage(clientMessage)
 	signedMessage, err := requestMessage.Sign(d.signatureProvider)
 	if err != nil {
@@ -449,6 +450,10 @@ func (d *dialog) anonymousEnd() error {
 	dialogEnd := message.NewDialogFinishingMessage(d.hbciVersion, d.dialogID)
 	dialogEnd.BasicMessage = d.newBasicMessage(dialogEnd)
 	dialogEnd.SetSegmentPositions()
+	defer func() {
+		d.dialogID = initialDialogID
+		d.messageCount = 0
+	}()
 
 	decryptedMessage, err := d.request(dialogEnd)
 	if err != nil {
@@ -600,6 +605,10 @@ func (d *dialog) end() error {
 	if err != nil {
 		return err
 	}
+	defer func() {
+		d.dialogID = initialDialogID
+		d.messageCount = 0
+	}()
 
 	decryptedMessage, err := d.request(encryptedDialogEnd)
 	if err != nil {
@@ -925,6 +934,6 @@ func (d *dialog) dial(message []byte) ([]byte, error) {
 
 func logErr(err error) {
 	if err != nil {
-		log.Println(err)
+		internal.Info.Println(err)
 	}
 }
